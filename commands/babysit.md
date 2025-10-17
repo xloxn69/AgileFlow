@@ -55,6 +55,14 @@ COMMAND EXECUTION (allowed, guarded)
 AGILEFLOW COMMAND ORCHESTRATION
 You have access to ALL 38 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
 
+**IMPORTANT**: You can directly invoke these commands using the SlashCommand tool without manual input.
+- Example: `SlashCommand("/board")`
+- Example: `SlashCommand("/velocity")`
+- Example: `SlashCommand("/status STORY=US-0042 STATUS=in-progress")`
+- Example: `SlashCommand("/github-sync DRY_RUN=true")`
+
+An agent can autonomously decide that invoking a specific slash command is the best way to accomplish a task and execute it directly. You do NOT need to ask the user to run the command - you can run it yourself.
+
 **When to use AgileFlow commands**:
 - `/epic-new` - When user wants to start a new feature (create epic first)
 - `/story-new` - Break down epics into implementable stories
@@ -72,39 +80,44 @@ You have access to ALL 38 AgileFlow slash commands and can orchestrate them to a
 - `/chatgpt-research` - Generate research prompts for complex topics
 - `/stakeholder-update` - Generate executive summary
 
-**Example workflow orchestration**:
+**Example workflow orchestration** (autonomously executed):
 ```
 User: "I want to implement user authentication"
 
-/babysit orchestration:
-1. Check if epic exists for authentication → /epic-new if missing
-2. Break down into stories → /story-new for each component
-3. Check dependencies → /dependency-update (check if auth libs need updates)
-4. Analyze impact → /impact-analysis (what files will be affected?)
-5. Research best practices → /chatgpt-research TOPIC=authentication
+/babysit orchestration (runs commands automatically):
+1. Check if epic exists for authentication → SlashCommand("/epic-new") if missing
+2. Break down into stories → SlashCommand("/story-new") for each component
+3. Check dependencies → SlashCommand("/dependency-update")
+4. Analyze impact → SlashCommand("/impact-analysis")
+5. Research best practices → SlashCommand("/chatgpt-research TOPIC=authentication")
 6. Implement step-by-step (guide user with code)
-7. Update status → /status STORY=US-XXXX STATUS=in-progress
-8. Run AI review → /ai-code-review
-9. Document decision → /adr-new (why this auth approach?)
-10. Show progress → /board
-11. Sync externally → /github-sync, /notion-export (if enabled)
-12. Generate changelog → /generate-changelog
-13. Create stakeholder update → /stakeholder-update
+7. Update status → SlashCommand("/status STORY=US-XXXX STATUS=in-progress")
+8. Run AI review → SlashCommand("/ai-code-review")
+9. Document decision → SlashCommand("/adr-new")
+10. Show progress → SlashCommand("/board")
+11. Sync externally → SlashCommand("/github-sync"), SlashCommand("/notion-export")
+12. Generate changelog → SlashCommand("/generate-changelog")
+13. Create stakeholder update → SlashCommand("/stakeholder-update")
+
+All commands are invoked directly by the agent - no manual user intervention required.
 ```
 
-**Command chaining examples**:
-- After `/story-new`: Suggest `/assign` to assign to agent
-- After code implementation: Suggest `/ai-code-review`, then `/status`, then `/board`
-- Before major refactor: Run `/impact-analysis` and `/tech-debt`
-- After feature complete: Run `/generate-changelog`, `/stakeholder-update`, `/velocity`
-- When blocked: Check `/board` for WIP limits, suggest reassigning
+**Command chaining examples** (autonomous execution):
+- After `/story-new`: Automatically invoke SlashCommand("/assign STORY=US-XXX OWNER=AG-API")
+- After code implementation: Chain SlashCommand("/ai-code-review") → SlashCommand("/status ...") → SlashCommand("/board")
+- Before major refactor: Invoke SlashCommand("/impact-analysis") and SlashCommand("/tech-debt")
+- After feature complete: Chain SlashCommand("/generate-changelog"), SlashCommand("/stakeholder-update"), SlashCommand("/velocity")
+- When blocked: Invoke SlashCommand("/board") to check WIP limits
 
-**Proactive suggestions**:
-- If velocity is low: "Run /velocity to see if we're overcommitted"
-- If many stories in-review: "Run /board to check WIP limits"
-- If dependencies outdated: "Run /dependency-update to check for security issues"
-- If major decision made: "Document this with /adr-new"
-- If GitHub enabled: "Sync to GitHub with /github-sync"
+**Proactive command execution** (run without asking):
+- If velocity is low: Automatically run SlashCommand("/velocity") and show results
+- If many stories in-review: Run SlashCommand("/board") and highlight bottlenecks
+- If dependencies outdated: Run SlashCommand("/dependency-update") and report vulnerabilities
+- If major decision made: Automatically run SlashCommand("/adr-new") with decision context
+- If GitHub enabled and story done: Automatically run SlashCommand("/github-sync")
+- After significant changes: Run SlashCommand("/impact-analysis") to show affected areas
+
+The agent should be proactive and autonomous - don't just suggest commands, actually invoke them when appropriate.
 
 CI INTEGRATION
 - If CI workflow missing/weak, offer to create/update (diff-first).
