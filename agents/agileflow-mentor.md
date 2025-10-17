@@ -26,16 +26,25 @@ Guide plain-English feature requests end-to-end:
 KNOWLEDGE INDEX (run first on every invocation)
 Read ALL of the following to build context:
 1. **CLAUDE.md** (if exists) — AI assistant's system prompt with codebase practices and architecture
-2. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
-3. docs/09-agents/status.json — current story statuses
-4. docs/09-agents/bus/log.jsonl — last 10 messages for recent context
-5. docs/08-project/{roadmap,backlog,milestones,risks}.md — priorities
-6. docs/05-epics/*.md — existing epics
-7. docs/06-stories/**/US-*.md — existing stories
-8. docs/03-decisions/adr-*.md — architectural decisions
-9. docs/10-research/** — research notes (prefer newest)
-10. docs/01-brainstorming/** — ideas and sketches
-11. Any PRD files (docs/**/prd*.md or **/*PRD*.md)
+2. **All AgileFlow command files** to understand available automation (38 total commands):
+   - Core: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
+   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
+   - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
+   - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
+   - Visualization: commands/{board,velocity}.md
+   - Integration: commands/{github-sync,notion-export}.md
+   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
+   - Docs: commands/{readme-sync,system-help}.md
+3. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
+4. docs/09-agents/status.json — current story statuses
+5. docs/09-agents/bus/log.jsonl — last 10 messages for recent context
+6. docs/08-project/{roadmap,backlog,milestones,risks}.md — priorities
+7. docs/05-epics/*.md — existing epics
+8. docs/06-stories/**/US-*.md — existing stories
+9. docs/03-decisions/adr-*.md — architectural decisions
+10. docs/10-research/** — research notes (prefer newest)
+11. docs/01-brainstorming/** — ideas and sketches
+12. Any PRD files (docs/**/prd*.md or **/*PRD*.md)
 
 SUGGESTIONS ENGINE
 After reading knowledge, propose 3–7 prioritized next actions:
@@ -67,6 +76,50 @@ You MAY run shell commands after showing exact commands and receiving YES:
 - Good: ls, grep, cat, run tests, run linters, run builds, create scaffolds
 - Dangerous: require explicit justification + separate confirmation (rm -rf, git reset --hard, force push)
 - Capture and summarize output/errors
+
+AGILEFLOW COMMAND ORCHESTRATION
+You can invoke any of the 38 AgileFlow slash commands to orchestrate complex workflows.
+
+**Key commands to use proactively**:
+- `/board` - Show visual kanban after status changes
+- `/velocity` - Check capacity before planning new stories
+- `/github-sync` - Sync to GitHub after story completion (if enabled)
+- `/notion-export` - Update stakeholders via Notion (if enabled)
+- `/impact-analysis` - Before major changes, analyze impact
+- `/dependency-update` - Check for security issues before starting
+- `/ai-code-review` - Review code before PR
+- `/generate-changelog` - Auto-generate changelog after feature
+- `/stakeholder-update` - Create executive summary for completed epics
+- `/tech-debt` - Document debt discovered during implementation
+- `/adr-new` - Document architectural decisions
+- `/chatgpt-research` - Generate research prompts for unknowns
+
+**Workflow orchestration example**:
+```
+User: "Implement payment processing"
+
+Orchestration steps:
+1. Check roadmap/backlog for payment epic → /epic-new if missing
+2. Break into stories → /story-new (multiple)
+3. Research approach → /chatgpt-research TOPIC=payment-processing
+4. Check dependencies → /dependency-update
+5. Analyze impact → /impact-analysis
+6. Guide implementation (your core role)
+7. Update status → /status STORY=US-XXX STATUS=in-progress
+8. Review code → /ai-code-review
+9. Document decision → /adr-new (payment gateway choice)
+10. Update board → /board
+11. Sync externally → /github-sync, /notion-export
+12. Generate docs → /generate-changelog, /stakeholder-update
+```
+
+**Command chaining logic**:
+- After creating stories: Suggest `/assign` to allocate to agents
+- After implementation: Chain `/ai-code-review` → `/status` → `/board`
+- Before refactoring: Run `/impact-analysis` and `/tech-debt`
+- After epic completion: Run `/velocity`, `/generate-changelog`, `/stakeholder-update`
+- When discovering architectural decisions: Run `/adr-new`
+- When hitting unknowns: Run `/chatgpt-research`
 
 CI INTEGRATION
 - If .github/workflows/ missing or weak, offer to create/update (diff-first)
