@@ -132,6 +132,52 @@ You autonomously invoke all these commands - no manual user action needed.
 - After story completion: Invoke SlashCommand("/github-sync") if GitHub is enabled
 - When seeing outdated dependencies: Invoke SlashCommand("/dependency-update")
 
+**CRITICAL - Notion Auto-Sync (if enabled)**:
+Detect if Notion is enabled by checking for `NOTION_TOKEN` in .env or `docs/08-project/notion-sync-map.json`.
+
+**ALWAYS sync to Notion after these changes** (if enabled):
+- After creating epic → SlashCommand("/notion-export DATABASE=epics")
+- After creating story → SlashCommand("/notion-export DATABASE=stories")
+- After ANY status change → SlashCommand("/notion-export DATABASE=stories")
+- After creating ADR → SlashCommand("/notion-export DATABASE=adrs")
+- After updating story content/AC → SlashCommand("/notion-export DATABASE=stories")
+- After epic completion → SlashCommand("/notion-export DATABASE=all")
+- After bus/log.jsonl update → SlashCommand("/notion-export DATABASE=stories")
+
+**Why automatic sync is mandatory**:
+- status.json and bus/log.jsonl are AgileFlow's source of truth (local files)
+- Notion is the collaboration/visualization layer for stakeholders
+- Stakeholders expect real-time updates in Notion
+- Breaking the sync breaks team visibility and collaboration
+- Always sync immediately after AgileFlow state changes
+
+**Mandatory sync pattern** (follow strictly):
+```
+Step 1: Update AgileFlow source of truth
+  - Update docs/09-agents/status.json
+  - Append to docs/09-agents/bus/log.jsonl
+
+Step 2: Immediately sync to Notion (if enabled)
+  - Check if Notion enabled
+  - Invoke SlashCommand("/notion-export DATABASE=stories")
+  - Wait for confirmation
+
+Step 3: Continue workflow
+```
+
+**Example workflow with Notion sync**:
+```
+User: "Mark US-0042 as in-progress"
+
+1. Update status.json: {"US-0042": {"status": "in-progress", ...}}
+2. Append to bus: {"type":"status-change","story":"US-0042","status":"in-progress"}
+3. Check .env for NOTION_TOKEN
+4. If found → SlashCommand("/notion-export DATABASE=stories")
+5. Confirm "✅ Synced to Notion - stakeholders can see US-0042 is in progress"
+```
+
+**Same applies to GitHub sync** - after status.json or bus changes, sync to GitHub if enabled with SlashCommand("/github-sync").
+
 Be proactive - invoke commands when they're helpful, don't wait for user to ask.
 
 CI INTEGRATION
@@ -167,10 +213,16 @@ IMPLEMENTATION FLOW
 3. Plan ≤4 implementation steps with exact file paths
 4. Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands)
 5. Update status.json → in-progress; append bus message
-6. After implementation: update status.json → in-review
-7. **[NEW]** Check if CLAUDE.md should be updated with new patterns/practices learned
-8. Generate PR body with /pr-template command
-9. Suggest syncing docs/chatgpt.md and saving research if applicable
+6. **[CRITICAL]** Immediately sync to external systems if enabled:
+   - SlashCommand("/notion-export DATABASE=stories") if NOTION_TOKEN in .env
+   - SlashCommand("/github-sync") if GITHUB_REPO in .env
+7. After implementation: update status.json → in-review
+8. **[CRITICAL]** Sync again after status change:
+   - SlashCommand("/notion-export DATABASE=stories")
+   - SlashCommand("/github-sync")
+9. Check if CLAUDE.md should be updated with new patterns/practices learned
+10. Generate PR body with /pr-template command
+11. Suggest syncing docs/chatgpt.md and saving research if applicable
 
 COORDINATION
 - Check docs/09-agents/status.json for WIP limits (max 2 stories/agent)
