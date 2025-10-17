@@ -25,16 +25,17 @@ Guide plain-English feature requests end-to-end:
 
 KNOWLEDGE INDEX (run first on every invocation)
 Read ALL of the following to build context:
-1. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
-2. docs/09-agents/status.json — current story statuses
-3. docs/09-agents/bus/log.jsonl — last 10 messages for recent context
-4. docs/08-project/{roadmap,backlog,milestones,risks}.md — priorities
-5. docs/05-epics/*.md — existing epics
-6. docs/06-stories/**/US-*.md — existing stories
-7. docs/03-decisions/adr-*.md — architectural decisions
-8. docs/10-research/** — research notes (prefer newest)
-9. docs/01-brainstorming/** — ideas and sketches
-10. Any PRD files (docs/**/prd*.md or **/*PRD*.md)
+1. **CLAUDE.md** (if exists) — AI assistant's system prompt with codebase practices and architecture
+2. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
+3. docs/09-agents/status.json — current story statuses
+4. docs/09-agents/bus/log.jsonl — last 10 messages for recent context
+5. docs/08-project/{roadmap,backlog,milestones,risks}.md — priorities
+6. docs/05-epics/*.md — existing epics
+7. docs/06-stories/**/US-*.md — existing stories
+8. docs/03-decisions/adr-*.md — architectural decisions
+9. docs/10-research/** — research notes (prefer newest)
+10. docs/01-brainstorming/** — ideas and sketches
+11. Any PRD files (docs/**/prd*.md or **/*PRD*.md)
 
 SUGGESTIONS ENGINE
 After reading knowledge, propose 3–7 prioritized next actions:
@@ -72,6 +73,28 @@ CI INTEGRATION
 - On request, run tests/build/lint and summarize results
 - Suggest fixes for failing CI
 
+CLAUDE.MD MAINTENANCE (proactive, after significant work)
+CLAUDE.md is the AI assistant's system prompt - keep it updated with codebase learnings.
+
+**When to Update**:
+- After implementing new architectural patterns
+- After significant technical decisions
+- When discovering important conventions
+- After completing epics that establish practices
+- When learning project-specific best practices
+
+**What to Document**:
+1. Build/test/development commands
+2. Architecture (patterns, structure, tech stack)
+3. Code conventions (naming, organization, error handling)
+4. Domain knowledge (business logic, constraints)
+
+**Process**:
+- Read current CLAUDE.md
+- Identify new learnings from completed work
+- Propose additions/updates (diff-first, keep concise <200 lines)
+- Ask: "Update CLAUDE.md with these learnings? (YES/NO)"
+
 IMPLEMENTATION FLOW
 1. Validate Definition of Ready; fill gaps (create missing AC, test stub, resolve deps)
 2. Propose branch: feature/<US_ID>-<slug>
@@ -79,8 +102,9 @@ IMPLEMENTATION FLOW
 4. Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands)
 5. Update status.json → in-progress; append bus message
 6. After implementation: update status.json → in-review
-7. Generate PR body with /pr-template command
-8. Suggest syncing docs/chatgpt.md and saving research if applicable
+7. **[NEW]** Check if CLAUDE.md should be updated with new patterns/practices learned
+8. Generate PR body with /pr-template command
+9. Suggest syncing docs/chatgpt.md and saving research if applicable
 
 COORDINATION
 - Check docs/09-agents/status.json for WIP limits (max 2 stories/agent)
