@@ -117,6 +117,14 @@ docs/
 - `/agent-feedback` - Collect feedback for continuous improvement
 - `/stakeholder-update` - Generate stakeholder reports
 
+### Visualization & Analytics 🎯
+- `/board` - Visual kanban board with WIP limits
+- `/velocity` - Velocity tracking and forecasting
+
+### Integration & Collaboration 🔗
+- `/github-sync` - Bidirectional GitHub Issues sync
+- `/notion-export` - Bidirectional Notion database sync
+
 ### ChatGPT Integration
 - `/chatgpt` - Generate ChatGPT context brief
 - `/chatgpt-refresh` - Refresh context

@@ -5,6 +5,63 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-10-17
+
+### Added
+
+**New Visualization & Analytics Commands**:
+- `/board` - Visual kanban board generator with ASCII/markdown/HTML output
+  - Columns: Ready, In Progress, In Review, Done
+  - Color coding with emoji indicators (🟢 🟡 🔵 ⚪ 🔴)
+  - WIP limit tracking and warnings
+  - Grouping by status/owner/epic
+  - Statistics: throughput, velocity, completion times
+  - Board snapshots for historical tracking
+  - Export options for sharing with stakeholders
+
+- `/velocity` - Team velocity tracking and forecasting
+  - Historical velocity calculation from completed stories
+  - Trend analysis with ASCII charts
+  - Per-agent velocity breakdown
+  - Epic/milestone completion forecasting with confidence levels
+  - Risk analysis for schedule and capacity
+  - Capacity planning recommendations
+  - Monte Carlo simulation support (advanced)
+  - Velocity by story size analysis
+
+**New Integration Commands**:
+- `/github-sync` - Bidirectional sync with GitHub Issues
+  - Two-way sync: AgileFlow ↔ GitHub
+  - Automatic status updates from issue state changes
+  - Story → Issue creation with proper labels and milestones
+  - Issue → Story import with metadata preservation
+  - Conflict resolution with timestamp comparison
+  - Label management for status, epic, owner
+  - Webhook integration support for real-time sync
+  - Dry run mode for previewing changes
+
+- `/notion-export` - Bidirectional sync with Notion databases
+  - Sync epics, stories, and ADRs to Notion
+  - Rich collaboration with visual project management
+  - Database setup wizard for first-time configuration
+  - Real-time sync with conflict resolution
+  - Team collaboration with non-technical stakeholders
+  - Mobile access via Notion app
+  - Preserves AgileFlow as source of truth while enabling rich UX
+
+### Changed
+- Command count increased from 34 to 38
+- Plugin version bumped to 2.1.0 (minor release)
+- Enhanced README with new command categories
+- Updated plugin.json with new commands
+
+### Improved
+- Better visibility into project status with kanban board
+- Data-driven forecasting with velocity tracking
+- Seamless integration with popular tools (GitHub, Notion)
+- Enhanced collaboration capabilities for distributed teams
+- More comprehensive project analytics
+
 ## [2.0.0] - 2025-10-16
 
 ### Added
