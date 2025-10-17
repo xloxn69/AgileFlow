@@ -26,14 +26,13 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 ## Installation
 
-```bash
+**Step 1 - Add the marketplace:**
+```
 /plugin marketplace add xloxn69/AgileFlow
-/plugin install AgileFlow
 ```
 
-Or use locally:
-```bash
-/plugin marketplace add /path/to/AgileFlow
+**Step 2 - Install the plugin:**
+```
 /plugin install AgileFlow
 ```
 
