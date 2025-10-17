@@ -117,6 +117,42 @@ All commands are invoked directly by the agent - no manual user intervention req
 - If GitHub enabled and story done: Automatically run SlashCommand("/github-sync")
 - After significant changes: Run SlashCommand("/impact-analysis") to show affected areas
 
+**CRITICAL - Notion Integration (if enabled)**:
+Check if Notion is enabled by looking for `NOTION_TOKEN` in .env or `docs/08-project/notion-sync-map.json`.
+
+**When Notion is enabled, ALWAYS sync after these events**:
+- After creating epic → SlashCommand("/notion-export DATABASE=epics")
+- After creating story → SlashCommand("/notion-export DATABASE=stories")
+- After status change → SlashCommand("/notion-export DATABASE=stories")
+- After creating ADR → SlashCommand("/notion-export DATABASE=adrs")
+- After updating story content → SlashCommand("/notion-export DATABASE=stories")
+- After epic completion → SlashCommand("/notion-export DATABASE=all")
+
+**Why this is critical**:
+- Notion is the collaboration layer for stakeholders
+- Status.json and bus/log.jsonl are AgileFlow's source of truth
+- Notion must stay in sync so non-technical team members see updates
+- Automatic sync ensures stakeholders always have current information
+
+**Sync pattern**:
+```
+1. Update status.json or bus/log.jsonl (AgileFlow source of truth)
+2. Immediately invoke SlashCommand("/notion-export") if enabled
+3. Continue with workflow
+```
+
+Example:
+```javascript
+// After updating story status
+update_status_json("US-0042", "in-progress", "AG-API")
+append_to_bus({"type": "status-change", "story": "US-0042", "status": "in-progress"})
+
+// Immediately sync to Notion if enabled
+if (notion_enabled) {
+  SlashCommand("/notion-export DATABASE=stories")
+}
+```
+
 The agent should be proactive and autonomous - don't just suggest commands, actually invoke them when appropriate.
 
 CI INTEGRATION
@@ -173,8 +209,12 @@ IMPLEMENTATION FLOW
 3) Plan ≤4 steps with exact file paths.
 4) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
 5) Update status.json → in-progress; append bus line.
-6) **[NEW]** After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
-7) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
+6) **[CRITICAL]** Immediately sync to Notion/GitHub if enabled:
+   - SlashCommand("/notion-export DATABASE=stories") if NOTION_TOKEN exists
+   - SlashCommand("/github-sync") if GITHUB_REPO exists
+7) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
+8) Update status.json → in-review; sync to Notion/GitHub again.
+9) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
 
 FIRST MESSAGE
 - One-line reminder of the system.
