@@ -18,6 +18,15 @@ GOAL
 
 KNOWLEDGE INDEX (run first)
 - Read CLAUDE.md (if exists) - This is the AI assistant's system prompt with codebase practices and architecture
+- Read ALL AgileFlow command files to understand available commands and their capabilities:
+  - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
+  - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
+  - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
+  - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
+  - Visualization: commands/{board,velocity}.md
+  - Integration: commands/{github-sync,notion-export}.md
+  - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
+  - Docs: commands/{readme-sync,system-help}.md
 - Read ALL docs/**/README.md; map "Next steps/TODO/Open Questions/Planned/Risks".
 - Then read: docs/09-agents/status.json; docs/09-agents/bus/log.jsonl (last 10); docs/08-project/{roadmap,backlog,milestones}.md; docs/05-epics/*.md; docs/06-stories/**/US-*.md; docs/03-decisions/adr-*.md; docs/10-research/** (prefer newest); docs/01-brainstorming/**; any PRDs (docs/**/prd*.md or **/*PRD*.md).
 
@@ -42,6 +51,60 @@ COMMAND EXECUTION (allowed, guarded)
 - Good: list files, print snippets, run tests/linters/builds, generate scaffolds.
 - Dangerous ops require explicit justification + separate confirmation.
 - Capture and summarize output/errors.
+
+AGILEFLOW COMMAND ORCHESTRATION
+You have access to ALL 38 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
+
+**When to use AgileFlow commands**:
+- `/epic-new` - When user wants to start a new feature (create epic first)
+- `/story-new` - Break down epics into implementable stories
+- `/adr-new` - Document architectural decisions made during implementation
+- `/status` - Update story status as work progresses
+- `/board` - Show visual progress to user
+- `/velocity` - Check team capacity and forecast completion
+- `/github-sync` - Sync stories to GitHub Issues (if enabled)
+- `/notion-export` - Share progress with stakeholders via Notion (if enabled)
+- `/impact-analysis` - Before making changes, analyze impact
+- `/tech-debt` - Document technical debt discovered
+- `/dependency-update` - Check for security vulnerabilities
+- `/ai-code-review` - Run AI review on code before PR
+- `/generate-changelog` - Auto-generate changelog from commits
+- `/chatgpt-research` - Generate research prompts for complex topics
+- `/stakeholder-update` - Generate executive summary
+
+**Example workflow orchestration**:
+```
+User: "I want to implement user authentication"
+
+/babysit orchestration:
+1. Check if epic exists for authentication → /epic-new if missing
+2. Break down into stories → /story-new for each component
+3. Check dependencies → /dependency-update (check if auth libs need updates)
+4. Analyze impact → /impact-analysis (what files will be affected?)
+5. Research best practices → /chatgpt-research TOPIC=authentication
+6. Implement step-by-step (guide user with code)
+7. Update status → /status STORY=US-XXXX STATUS=in-progress
+8. Run AI review → /ai-code-review
+9. Document decision → /adr-new (why this auth approach?)
+10. Show progress → /board
+11. Sync externally → /github-sync, /notion-export (if enabled)
+12. Generate changelog → /generate-changelog
+13. Create stakeholder update → /stakeholder-update
+```
+
+**Command chaining examples**:
+- After `/story-new`: Suggest `/assign` to assign to agent
+- After code implementation: Suggest `/ai-code-review`, then `/status`, then `/board`
+- Before major refactor: Run `/impact-analysis` and `/tech-debt`
+- After feature complete: Run `/generate-changelog`, `/stakeholder-update`, `/velocity`
+- When blocked: Check `/board` for WIP limits, suggest reassigning
+
+**Proactive suggestions**:
+- If velocity is low: "Run /velocity to see if we're overcommitted"
+- If many stories in-review: "Run /board to check WIP limits"
+- If dependencies outdated: "Run /dependency-update to check for security issues"
+- If major decision made: "Document this with /adr-new"
+- If GitHub enabled: "Sync to GitHub with /github-sync"
 
 CI INTEGRATION
 - If CI workflow missing/weak, offer to create/update (diff-first).
