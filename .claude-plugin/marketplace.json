@@ -1,9 +1,10 @@
 {
-  "name": "AgileFlow Marketplace",
+  "name": "agileflow-marketplace",
+  "owner": "xloxn69",
   "description": "Universal agile/docs-as-code system with 34 commands and 8 specialized subagents",
   "plugins": [
     {
-      "source": ".",
+      "source": "./",
       "name": "AgileFlow",
       "description": "Universal agile/docs-as-code system combining Scrum, Kanban, ADRs, and docs-as-code. Framework-agnostic command pack for managing epics, stories, decisions, research, and multi-agent collaboration with automation features."
     }
