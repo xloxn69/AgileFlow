@@ -16,7 +16,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 - ✅ Durable memory and decision history
 - ✅ Effortless multi-agent collaboration via message bus
 - ✅ 8 specialized subagents for focused work (UI, API, CI, DevOps, planning, ADRs, research, mentor)
-- ✅ 34 slash commands for complete workflow automation
+- ✅ 41 slash commands for complete workflow automation
 - ✅ Automated dependency management and security audits
 - ✅ AI-powered code review and quality checks
 - ✅ Technical debt tracking and reduction
@@ -120,6 +120,9 @@ docs/
 ### Visualization & Analytics 🎯
 - `/board` - Visual kanban board with WIP limits
 - `/velocity` - Velocity tracking and forecasting
+- `/metrics` - Comprehensive analytics dashboard (cycle time, lead time, throughput, flow efficiency)
+- `/retro` - Automated retrospective generator with insights and action items
+- `/dependencies` - Dependency graph visualization with critical path and circular dependency detection
 
 ### Integration & Collaboration 🔗
 - `/github-sync` - Bidirectional GitHub Issues sync

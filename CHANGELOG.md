@@ -5,6 +5,83 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-10-17
+
+### Added
+
+**New Data-Driven Analytics Commands**:
+
+- `/metrics` - Comprehensive analytics dashboard
+  - Cycle time, lead time, throughput analysis
+  - Work In Progress (WIP) tracking with limits
+  - Agent utilization and workload distribution
+  - Epic health scores and progress tracking
+  - Estimation accuracy metrics
+  - Blocked story analysis
+  - Flow efficiency calculation
+  - Cumulative flow diagrams (ASCII visualization)
+  - Export formats: ASCII dashboard, JSON, CSV, Markdown
+  - Historical trend analysis with comparisons
+  - Actionable recommendations based on data
+  - Saved reports to docs/08-project/metrics-reports/
+
+- `/retro` - Automated retrospective generator
+  - Start/Stop/Continue format insights
+  - Pattern detection (velocity changes, blocking trends, estimation drift)
+  - Team contribution analysis by agent
+  - Action items prioritized by impact
+  - Celebration moments for wins
+  - Day-of-week productivity patterns
+  - Recurring blocker identification
+  - Story size efficiency analysis
+  - Forward-looking predictions for next sprint
+  - Saved to docs/08-project/retrospectives/
+  - Integration with /metrics for data-driven insights
+
+- `/dependencies` - Dependency graph visualization and analysis
+  - ASCII dependency graph with status indicators
+  - Critical path detection with duration estimates
+  - Circular dependency detection and warnings
+  - Blocking story impact analysis
+  - Parallel work opportunity identification
+  - Gantt chart generation (dependency-based scheduling)
+  - Dependency health scoring
+  - Mermaid and GraphViz export formats
+  - Epic hierarchy visualization
+  - Story-level and epic-level dependency tracking
+  - Actionable recommendations for optimal work ordering
+
+**Enhanced /babysit and agileflow-mentor**:
+- Added full command catalog to knowledge index (all 41 commands)
+- Explicit SlashCommand tool usage instructions
+- Autonomous command execution capabilities
+- Mandatory Notion/GitHub auto-sync after state changes
+- Proactive command orchestration and chaining
+- Updated implementation flow with sync steps
+
+**Enhanced /setup-system**:
+- Optional Notion integration setup during initialization
+- Optional GitHub Issues sync setup
+- Token management and .env configuration
+- Database setup wizard for Notion
+- Label creation for GitHub sync
+- One-command complete system setup
+
+### Changed
+- Command count increased from 38 to 41
+- Plugin version bumped to 2.2.0 (minor release)
+- Updated README with new analytics commands
+- Enhanced plugin.json with new commands
+- Agents now read all command files for full context awareness
+
+### Improved
+- Better data-driven decision making with comprehensive metrics
+- Automated retrospective insights save hours of manual analysis
+- Dependency visualization prevents scheduling disasters
+- Proactive problem detection through pattern analysis
+- Real-time collaboration with automatic Notion/GitHub sync
+- Complete workflow orchestration through babysit/mentor
+
 ## [2.1.0] - 2025-10-17
 
 ### Added
