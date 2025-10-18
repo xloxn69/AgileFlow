@@ -96,6 +96,9 @@ Your existing database IDs are preserved - no need to recreate databases!
 - Updated `commands/setup-system.md` with MCP flow
 - Documented all Notion MCP tools in command reference
 - Added migration path from API-based to MCP-based approach
+- Updated `/babysit` command to detect Notion via `.mcp.json` instead of NOTION_TOKEN
+- Updated `agileflow-mentor` subagent with MCP-based Notion detection
+- Command count updated from 38 to 41 in all orchestration documentation
 
 ## [2.2.0] - 2025-10-17
 
