@@ -44,6 +44,10 @@ AgileFlow combines three proven methodologies into one cohesive system:
    ```
    This scaffolds the entire docs structure, templates, and optional CI.
 
+   During setup, you can optionally enable:
+   - GitHub Issues sync (requires `gh` CLI)
+   - Notion integration (uses MCP - OAuth authentication, no manual tokens needed)
+
 2. **Get help**:
    ```
    /system-help
@@ -125,8 +129,8 @@ docs/
 - `/dependencies` - Dependency graph visualization with critical path and circular dependency detection
 
 ### Integration & Collaboration 🔗
-- `/github-sync` - Bidirectional GitHub Issues sync
-- `/notion-export` - Bidirectional Notion database sync
+- `/github-sync` - Bidirectional GitHub Issues sync (uses GitHub CLI)
+- `/notion-export` - Bidirectional Notion database sync (uses MCP - Model Context Protocol)
 
 ### ChatGPT Integration
 - `/chatgpt` - Generate ChatGPT context brief
@@ -277,6 +281,55 @@ AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for agent coordina
 - Messages are logged to the bus for async communication
 - Use `/handoff` to explicitly transfer work between agents
 - WIP limit: max 2 stories per agent
+
+## Notion Integration (MCP-based) 🆕
+
+AgileFlow v2.3.0 integrates with Notion using **Model Context Protocol (MCP)** for secure, team-friendly synchronization:
+
+### Features
+- ✅ **OAuth authentication** - No manual token management
+- ✅ **Bidirectional sync** - Changes flow both ways (AgileFlow ↔ Notion)
+- ✅ **Team-friendly** - Each member authenticates individually (no token sharing)
+- ✅ **Project-scoped** - `.mcp.json` committed to git for instant team setup
+- ✅ **Three databases** - Epics, Stories, and ADRs synced to Notion
+
+### Setup (One-Time)
+
+1. **Enable during system setup**:
+   ```
+   /setup-system
+   # Select "yes" for Notion integration
+   ```
+
+2. **Authenticate with OAuth**:
+   ```
+   /mcp
+   # Follow browser prompts to authorize Notion
+   ```
+
+3. **Create Notion databases**:
+   ```
+   /notion-export MODE=setup
+   ```
+
+4. **Start syncing**:
+   ```
+   /notion-export
+   ```
+
+### Team Onboarding
+New team members just need to:
+1. Pull the latest code (includes `.mcp.json`)
+2. Run `/mcp` to authenticate with their own Notion account
+3. Start using `/notion-export` - database IDs already configured!
+
+### Advantages Over API Token Approach
+- 🔒 More secure (OAuth vs static tokens)
+- 👥 Easier team setup (no token sharing)
+- 🚀 Native Claude Code integration
+- 🛠️ Automatic API version updates from Notion
+
+See `/notion-export` command for full documentation.
 
 ## ChatGPT Integration
 
