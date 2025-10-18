@@ -46,7 +46,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
    During setup, you can optionally enable:
    - GitHub Issues sync (requires `gh` CLI)
-   - Notion integration (uses MCP with token-based auth - NOTION_TOKEN in .env)
+   - Notion integration (uses MCP with token hardcoded in `.mcp.json`)
 
 2. **Get help**:
    ```
@@ -284,7 +284,7 @@ AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for agent coordina
 
 ## Notion Integration (MCP-based) 🆕
 
-AgileFlow v2.3.0 integrates with Notion using **Model Context Protocol (MCP)** for standardized tool access:
+AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for standardized tool access:
 
 ### Features
 - ✅ **Standardized interface** - MCP provides unified tool API across services
@@ -306,13 +306,14 @@ AgileFlow v2.3.0 integrates with Notion using **Model Context Protocol (MCP)** f
    # Select "yes" for Notion integration
    ```
 
-3. **Add your token locally**:
+3. **Add your token to MCP config**:
    ```bash
-   # Add to .env (gitignored, never commit)
-   echo "NOTION_TOKEN=secret_your_token_here" >> .env
-
    # Copy MCP template to active config
    cp .mcp.json.example .mcp.json
+
+   # Edit .mcp.json and replace "secret_YOUR_NOTION_TOKEN_HERE" with your actual token
+   # CRITICAL: Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
+   # Verify .mcp.json is in .gitignore - NEVER commit it!
    ```
 
 4. **Restart Claude Code** (to load MCP server)
@@ -332,19 +333,25 @@ New team members need to:
 1. Pull the latest code (includes `.mcp.json.example`)
 2. Create their own Notion integration at https://www.notion.so/my-integrations
 3. Copy template: `cp .mcp.json.example .mcp.json`
-4. Add their token to .env: `NOTION_TOKEN=secret_xxx`
-5. Restart Claude Code
-6. Share databases with their integration
-7. Start using `/notion-export`!
+4. Edit `.mcp.json` and hardcode their real token (replace placeholder)
+5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
+6. Restart Claude Code
+7. Share databases with their integration
+8. Start using `/notion-export`!
 
 ### Advantages of MCP Approach
-- 🔒 Tokens in .env (gitignored, never committed)
-- 👥 Template-based setup (.mcp.json.example in git)
+- 🔒 Tokens in `.mcp.json` (gitignored, never committed)
+- 👥 Template-based setup (`.mcp.json.example` in git with placeholder)
 - 🚀 Native Claude Code integration via MCP tools
 - 🛠️ Better error handling and rate limiting
 - 📦 Standardized protocol across services
 
-**Note**: Each team member needs their own Notion token. Tokens are never shared or committed to git.
+### Critical Security Notes
+- ⚠️ Environment variable substitution (`${NOTION_TOKEN}`) does NOT work in `.mcp.json`
+- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
+- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks
+- ⚠️ Each team member needs their own token (no sharing)
+- ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
 
 See `/notion-export` command for full documentation.
 
