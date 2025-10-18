@@ -46,7 +46,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
    During setup, you can optionally enable:
    - GitHub Issues sync (requires `gh` CLI)
-   - Notion integration (uses MCP - OAuth authentication, no manual tokens needed)
+   - Notion integration (uses MCP with token-based auth - NOTION_TOKEN in .env)
 
 2. **Get help**:
    ```
