@@ -9,12 +9,56 @@ ROLE: System Scaffolder (Agile + Docs-as-Code)
 OBJECTIVE
 Create/update a universal agile/docs system that works in any repo. Be idempotent. Diff-first. Ask YES/NO before changing files or executing commands.
 
-INPUTS (ask the user up front)
-- Provide a GitHub token now? (optional; masked) TOKEN=<value or empty>
-- Configure minimal CI and branch protections via GitHub CLI if available? yes/no
-- Enable GitHub Issues sync? (creates sync mapping, sets up labels) yes/no
-- Enable Notion integration via MCP? (uses Model Context Protocol) yes/no
-  - If yes: Configure Notion MCP server for the project? yes/no
+DETECTION PHASE (run first, before asking anything)
+Detect what's already configured and report status:
+
+```bash
+# Check core structure
+[ -d docs/00-meta ] && echo "✅ Core docs structure exists" || echo "❌ Core docs structure missing"
+[ -f docs/09-agents/status.json ] && echo "✅ Agent status tracking exists" || echo "❌ Agent status tracking missing"
+
+# Check GitHub Issues integration
+[ -f docs/08-project/github-sync-map.json ] && echo "✅ GitHub Issues sync configured" || echo "❌ GitHub Issues sync not configured"
+
+# Check Notion integration
+if [ -f .mcp.json.example ]; then
+  echo "✅ Notion MCP template exists (.mcp.json.example)"
+  [ -f .mcp.json ] && echo "  ✅ Active config exists (.mcp.json)" || echo "  ⚠️  Active config missing (.mcp.json) - copy template"
+  grep -q "NOTION_TOKEN" .env 2>/dev/null && echo "  ✅ NOTION_TOKEN in .env" || echo "  ⚠️  NOTION_TOKEN not in .env"
+  [ -f docs/08-project/notion-sync-map.json ] && echo "  ✅ Notion databases configured" || echo "  ⚠️  Notion databases not set up - run /notion-export MODE=setup"
+else
+  echo "❌ Notion MCP not configured"
+fi
+
+# Check CI
+[ -f .github/workflows/ci.yml ] && echo "✅ CI workflow exists" || echo "❌ CI workflow missing"
+
+# Check runtime detection
+[ -f docs/00-meta/runtime.json ] && echo "✅ Runtime detected" || echo "❌ Runtime not detected"
+```
+
+**Display Status Summary First**:
+```
+📊 Current AgileFlow Setup Status:
+==================================
+Core System: ✅ Configured / ❌ Not configured
+GitHub Issues Sync: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+Notion Integration: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+CI Workflow: ✅ Configured / ❌ Not configured
+```
+
+INPUTS (ask only about missing/incomplete features)
+Based on detection results above, ask ONLY about features that aren't fully configured:
+
+- IF core system missing: "Initialize core AgileFlow structure? yes/no"
+- IF GitHub sync missing: "Enable GitHub Issues sync? (creates sync mapping, sets up labels) yes/no"
+  - IF yes and no token: "Provide a GitHub token now? (optional; masked) TOKEN=<value or empty>"
+  - IF yes: "Configure minimal CI and branch protections via GitHub CLI? yes/no"
+- IF Notion missing: "Enable Notion integration via MCP? (uses Model Context Protocol) yes/no"
+- IF Notion partially configured: Report what's missing and ask if they want to complete setup
+- IF CI missing: "Create minimal CI workflow? yes/no"
+
+Skip asking about features that are already fully configured (just report them as ✅).
 
 CREATE DIRECTORIES (if missing)
 docs/{00-meta/templates,01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
@@ -38,7 +82,7 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/10-research/README.md              // index table: Date | Topic | Path | Summary
 - .github/workflows/ci.yml                // minimal, language-agnostic CI (lint/type/test placeholders)
 - .gitignore                              // generic: .env*, .DS_Store, .idea/, .vscode/, node_modules/, dist/, build/, coverage/
-- .env.example                            // placeholder with GH_TOKEN= and note not to commit secrets (Notion uses MCP OAuth, not .env)
+- .env.example                            // placeholder with GH_TOKEN= and NOTION_TOKEN= with note: never commit .env (contains secrets)
 - docs/08-project/github-sync-map.json    // if GitHub sync enabled: {"last_sync":null,"mappings":{},"config":{}}
 - docs/08-project/notion-sync-map.json    // if Notion enabled: {"last_sync":null,"epics":{},"stories":{},"adrs":{}}
 - docs/02-practices/prompts/commands-catalog.md // paste-ready list of all slash commands & prompts (print content at the end)
@@ -209,23 +253,39 @@ RULES
 - After all writes/commands, print DONE + list of created/updated paths + executed commands with exit codes.
 
 OUTPUT
-- Preview tree and diffs
-- runtime.json preview
+- Initial detection summary (what was found)
+- Preview tree and diffs (only for NEW files)
+- runtime.json preview (if being created)
 - If chosen: CI workflow preview and branch-protection commands
 - If GitHub sync enabled: List of labels created and next steps
 - If Notion enabled: Integration setup summary and next steps
 - A rendered "commands catalog" (all prompts) to paste into your tool's custom commands UI
-- Summary of integration status:
+- Final status summary showing what was:
+  - ✅ Already configured (skipped)
+  - 🆕 Newly configured (created in this run)
+  - ⚠️ Partially configured (needs user action)
+
+  Example:
   ```
-  ✅ AgileFlow system initialized
-  ✅ GitHub token configured (optional)
-  ✅ GitHub Issues sync ready (optional)
-  ✅ Notion integration configured (optional)
+  📊 Final AgileFlow Setup Status:
+  ==================================
+  Core System: ✅ Already configured (skipped)
+  GitHub Issues Sync: 🆕 Newly configured
+    - Created docs/08-project/github-sync-map.json
+    - Created 12 labels in repository
+    - Next: Run /github-sync DRY_RUN=true
+  Notion Integration: ⚠️ Partially configured
+    - 🆕 Created .mcp.json.example template
+    - ⚠️ You still need to add NOTION_TOKEN to .env
+    - ⚠️ Copy template: cp .mcp.json.example .mcp.json
+    - ⚠️ Restart Claude Code
+    - Next: /notion-export MODE=setup
+  CI Workflow: ✅ Already configured (skipped)
 
   Next steps:
   - Create your first epic: /epic-new
   - Create your first story: /story-new
   - View your board: /board
-  - Sync to GitHub: /github-sync (if enabled)
-  - Sync to Notion: /notion-export (if enabled)
+  - Sync to GitHub: /github-sync (newly enabled)
+  - Complete Notion setup: Add token, copy template, restart
   ```
