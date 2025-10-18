@@ -20,14 +20,30 @@ Detect what's already configured and report status:
 # Check GitHub Issues integration
 [ -f docs/08-project/github-sync-map.json ] && echo "✅ GitHub Issues sync configured" || echo "❌ GitHub Issues sync not configured"
 
-# Check Notion integration
-if [ -f .mcp.json.example ]; then
-  echo "✅ Notion MCP template exists (.mcp.json.example)"
-  [ -f .mcp.json ] && echo "  ✅ Active config exists (.mcp.json)" || echo "  ⚠️  Active config missing (.mcp.json) - copy template"
-  grep -q "NOTION_TOKEN" .env 2>/dev/null && echo "  ✅ NOTION_TOKEN in .env" || echo "  ⚠️  NOTION_TOKEN not in .env"
-  [ -f docs/08-project/notion-sync-map.json ] && echo "  ✅ Notion databases configured" || echo "  ⚠️  Notion databases not set up - run /notion-export MODE=setup"
+# Check MCP integrations (Notion, Supabase, etc.)
+if [ -f .mcp.json ]; then
+  echo "✅ MCP config exists (.mcp.json)"
+
+  # Check Notion
+  if grep -q '"notion"' .mcp.json 2>/dev/null; then
+    echo "  ✅ Notion MCP configured in .mcp.json"
+    grep -q "NOTION_TOKEN" .env.example 2>/dev/null && echo "    ✅ NOTION_TOKEN in .env.example" || echo "    ⚠️  NOTION_TOKEN not in .env.example"
+    grep -q "NOTION_TOKEN" .env 2>/dev/null && echo "    ✅ NOTION_TOKEN in .env" || echo "    ⚠️  NOTION_TOKEN not in .env - add your token"
+    [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /notion-export MODE=setup"
+  else
+    echo "  ⚠️  Notion not configured in .mcp.json"
+  fi
+
+  # Check Supabase
+  if grep -q '"supabase"' .mcp.json 2>/dev/null; then
+    echo "  ✅ Supabase MCP configured"
+    grep -q "SUPABASE_URL" .env.example 2>/dev/null && echo "    ✅ Supabase vars in .env.example" || echo "    ⚠️  Supabase vars not in .env.example"
+  fi
+elif [ -f .mcp.json.example ]; then
+  echo "⚠️  MCP template exists (.mcp.json.example) but not copied to .mcp.json"
+  echo "   Run: cp .mcp.json.example .mcp.json"
 else
-  echo "❌ Notion MCP not configured"
+  echo "❌ MCP not configured (no .mcp.json or .mcp.json.example)"
 fi
 
 # Check CI
@@ -43,7 +59,9 @@ fi
 ==================================
 Core System: ✅ Configured / ❌ Not configured
 GitHub Issues Sync: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
-Notion Integration: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+MCP Integrations:
+  - Notion: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+  - Supabase: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
 CI Workflow: ✅ Configured / ❌ Not configured
 ```
 
@@ -54,8 +72,12 @@ Based on detection results above, ask ONLY about features that aren't fully conf
 - IF GitHub sync missing: "Enable GitHub Issues sync? (creates sync mapping, sets up labels) yes/no"
   - IF yes and no token: "Provide a GitHub token now? (optional; masked) TOKEN=<value or empty>"
   - IF yes: "Configure minimal CI and branch protections via GitHub CLI? yes/no"
-- IF Notion missing: "Enable Notion integration via MCP? (uses Model Context Protocol) yes/no"
-- IF Notion partially configured: Report what's missing and ask if they want to complete setup
+- IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for Notion, Supabase, etc.) yes/no"
+  - IF yes: Ask which servers to enable: "Enable Notion? yes/no", "Enable Supabase? yes/no"
+- IF MCP partially configured:
+  - IF .mcp.json has servers but missing env vars: Report what's missing (e.g., "NOTION_TOKEN needed in .env")
+  - Offer to add missing env vars to .env.example: "Add missing env var templates to .env.example? yes/no"
+  - Print next steps: "To complete setup: 1) Add your actual tokens to .env, 2) Restart Claude Code"
 - IF CI missing: "Create minimal CI workflow? yes/no"
 
 Skip asking about features that are already fully configured (just report them as ✅).
@@ -274,12 +296,17 @@ OUTPUT
     - Created docs/08-project/github-sync-map.json
     - Created 12 labels in repository
     - Next: Run /github-sync DRY_RUN=true
-  Notion Integration: ⚠️ Partially configured
-    - 🆕 Created .mcp.json.example template
-    - ⚠️ You still need to add NOTION_TOKEN to .env
-    - ⚠️ Copy template: cp .mcp.json.example .mcp.json
-    - ⚠️ Restart Claude Code
-    - Next: /notion-export MODE=setup
+  MCP Integrations:
+    Notion: ⚠️ Partially configured
+      - ✅ .mcp.json has Notion server configured
+      - 🆕 Added NOTION_TOKEN to .env.example
+      - ⚠️ You need to add your actual token to .env
+      - ⚠️ Restart Claude Code after adding token
+      - Next: /notion-export MODE=setup
+    Supabase: ✅ Fully configured
+      - ✅ .mcp.json has Supabase server configured
+      - ✅ SUPABASE_URL in .env.example
+      - Ready to use mcp__supabase__* tools
   CI Workflow: ✅ Already configured (skipped)
 
   Next steps:
@@ -287,5 +314,9 @@ OUTPUT
   - Create your first story: /story-new
   - View your board: /board
   - Sync to GitHub: /github-sync (newly enabled)
-  - Complete Notion setup: Add token, copy template, restart
+  - Complete Notion setup:
+    1. Create integration: https://www.notion.so/my-integrations
+    2. Add token to .env: NOTION_TOKEN=secret_xxx
+    3. Restart Claude Code
+    4. Run: /notion-export MODE=setup
   ```
