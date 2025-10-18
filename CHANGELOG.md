@@ -5,6 +5,41 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2025-10-18
+
+### Added
+
+- **`.env.example` template** with comprehensive environment variable documentation
+  - NOTION_TOKEN with setup instructions
+  - SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY placeholders
+  - GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO for GitHub sync
+  - Clear instructions for obtaining each token type
+
+### Improved
+
+- **Enhanced `/setup-system` MCP detection** - Now properly detects and reports MCP integration status
+  - Detects existing `.mcp.json` (not just `.mcp.json.example`)
+  - Checks individual MCP servers (Notion, Supabase) and their configuration
+  - Reports three-level status: `.mcp.json` config vs `.env.example` vs actual `.env`
+  - Granular status reporting: ✅ Configured / ⚠️ Partially configured / ❌ Missing
+  - Offers to add missing environment variables to `.env.example`
+  - Updated prompts to handle partial MCP configuration scenarios
+  - Better final status summary with detailed MCP integration breakdown
+  - Prevents redundant setup prompts when MCP is already configured
+
+### Fixed
+
+- `/setup-system` no longer skips MCP setup when `.mcp.json` already exists
+- Environment variable templates now properly documented for all integrations
+- Better detection of incomplete MCP setups (config exists but env vars missing)
+
+### Technical
+
+- Updated `commands/setup-system.md` detection phase with improved MCP checks
+- Created `.env.example` as committed template (gitignored `.env` for actual secrets)
+- Improved status reporting logic for partial configurations
+- Added support for detecting multiple MCP servers simultaneously
+
 ## [2.3.0] - 2025-10-18
 
 ### ⚠️ CRITICAL CORRECTION (2025-10-18 - Same Day)
