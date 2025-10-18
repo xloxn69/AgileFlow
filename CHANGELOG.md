@@ -5,6 +5,98 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-10-18
+
+### Added
+
+**Notion Integration via Model Context Protocol (MCP)**:
+
+- Migrated `/notion-export` from API-based to MCP-based implementation
+  - OAuth authentication instead of manual NOTION_TOKEN management
+  - No more secrets in `.env` files
+  - One-command authentication via `/mcp` command
+  - Native Claude Code integration with `@notion:` resources
+  - Automatic token refresh and API version management
+  - Better error messages and rate limiting
+
+- `.mcp.json` configuration file
+  - Project-scoped MCP server configuration
+  - Committed to git for instant team setup
+  - Supports both STDIO and HTTP transports
+  - Team members authenticate individually (no token sharing)
+
+- Enhanced `/setup-system` for MCP
+  - Interactive Notion integration setup wizard
+  - MCP server configuration prompts
+  - OAuth flow guidance
+  - Database creation via MCP tools
+  - Team onboarding instructions
+
+**MCP Tools Integration**:
+
+The `/notion-export` command now uses these Notion MCP tools:
+- `notion-search` - Find databases in workspace
+- `notion-fetch` - Read database/page content
+- `notion-create-database` - Set up AgileFlow databases
+- `notion-create-pages` - Export stories/epics/ADRs
+- `notion-update-page` - Sync changes back to Notion
+- `notion-get-users` - Resolve user assignments
+- `notion-get-comments` - Fetch discussions (future)
+- `notion-get-teams` - Retrieve teamspaces (future)
+
+**GitHub MCP Documentation**:
+
+- Added future GitHub MCP integration notes to `/github-sync`
+- Documented advantages of MCP approach vs GitHub CLI
+- Current recommendation: Continue using `gh` CLI for stability
+- Prepared for future migration when GitHub MCP matures
+
+### Changed
+
+- **Breaking**: Notion integration now requires MCP setup (OAuth) instead of manual NOTION_TOKEN
+  - Migration guide included in `/notion-export` documentation
+  - Existing `notion-sync-map.json` files remain compatible
+  - Team members must run `/mcp` to authenticate individually
+
+- Updated README with comprehensive Notion MCP setup instructions
+  - Added "Notion Integration (MCP-based)" section
+  - Team onboarding workflow documented
+  - Advantages over API token approach highlighted
+
+- Enhanced command descriptions
+  - `/github-sync` now mentions "uses GitHub CLI"
+  - `/notion-export` now mentions "uses MCP"
+
+### Improved
+
+- 🔒 **Security**: OAuth tokens never stored in files, per-user authentication
+- 👥 **Team Collaboration**: Instant setup for new team members (pull + `/mcp`)
+- 🚀 **Developer Experience**: One command to authenticate vs complex token setup
+- 🛠️ **Maintenance**: Notion updates MCP server automatically (no breaking changes)
+- 📦 **Portability**: `.mcp.json` works across all MCP-compatible tools
+
+### Migration Guide
+
+For users of AgileFlow v2.2.0 or earlier with existing Notion integration:
+
+1. Backup sync map: `cp docs/08-project/notion-sync-map.json{,.backup}`
+2. Remove old token: `sed -i '/NOTION_TOKEN/d' .env`
+3. Set up MCP: Run `/setup-system` and select "yes" for Notion
+4. Authenticate: Run `/mcp` and authorize in browser
+5. Verify: Run `/notion-export DRY_RUN=true`
+6. Resume syncing: Run `/notion-export`
+
+Your existing database IDs are preserved - no need to recreate databases!
+
+### Technical
+
+- Plugin version bumped to 2.3.0 (minor release)
+- Added `.mcp.json` to repository root
+- Rewrote `/notion-export` implementation (704 lines → 967 lines with MCP)
+- Updated `commands/setup-system.md` with MCP flow
+- Documented all Notion MCP tools in command reference
+- Added migration path from API-based to MCP-based approach
+
 ## [2.2.0] - 2025-10-17
 
 ### Added

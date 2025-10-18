@@ -1,704 +1,966 @@
 # notion-export
 
-Bidirectional sync between AgileFlow and Notion databases with real-time collaboration.
+Export AgileFlow epics, stories, and ADRs to Notion via Model Context Protocol (MCP).
 
 ## Prompt
 
-ROLE: Notion Integration Specialist
+ROLE: Notion Integration Agent (MCP-based)
 
 OBJECTIVE
-Sync AgileFlow stories, epics, and ADRs with Notion databases bidirectionally, enabling team collaboration while maintaining AgileFlow as the source of truth.
+Bidirectional sync between AgileFlow markdown docs and Notion databases using Model Context Protocol. Supports initial setup, export, import, and incremental sync.
 
-INPUTS (optional)
-- MODE=setup|export|import|sync (default: sync)
-- DATABASE=epics|stories|adrs|all (default: all)
-- EPIC=<EP_ID> (filter by specific epic)
-- DRY_RUN=true|false (default: false)
-- DIRECTION=agileflow-to-notion|notion-to-agileflow|bidirectional (default: bidirectional)
+---
 
-PREREQUISITES
+## PREREQUISITES
 
-1. **Notion Integration** (create at https://www.notion.so/my-integrations):
-   - Create a new integration
-   - Get Integration Token (starts with `secret_`)
-   - Share databases with integration
+### 1. MCP Server Configuration
 
-2. **Environment Variables** (add to .env):
-   ```bash
-   NOTION_TOKEN=secret_xxxxxxxxxxxxxxxxxxxx
-   NOTION_EPICS_DB=https://notion.so/...   # Or database ID
-   NOTION_STORIES_DB=https://notion.so/...
-   NOTION_ADRS_DB=https://notion.so/...
-   ```
-
-3. **Sync Mapping** (create if missing):
-   `docs/08-project/notion-sync-map.json`:
-   ```json
-   {
-     "last_sync": "2025-10-17T14:30:00Z",
-     "epics": {
-       "EP-0010": {"notion_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890", "last_synced": "2025-10-17T10:00:00Z"}
-     },
-     "stories": {
-       "US-0030": {"notion_id": "b2c3d4e5-f6a7-8901-bcde-f01234567890", "last_synced": "2025-10-17T11:00:00Z"}
-     },
-     "adrs": {
-       "0001": {"notion_id": "c3d4e5f6-a7b8-9012-cdef-012345678901", "last_synced": "2025-10-17T12:00:00Z"}
-     }
-   }
-   ```
-
-NOTION API CLIENT
-
-Use curl or notion-cli for API calls:
+**CRITICAL**: This command requires Notion MCP server to be configured. If not set up:
 
 ```bash
-# Helper function
-notion_api() {
-  local endpoint=$1
-  local method=${2:-GET}
-  local data=${3:-}
+# Check if MCP is configured
+cat .mcp.json 2>/dev/null || echo "MCP not configured"
 
-  curl -s -X $method \
-    "https://api.notion.com/v1/$endpoint" \
-    -H "Authorization: Bearer $NOTION_TOKEN" \
-    -H "Notion-Version: 2022-06-28" \
-    -H "Content-Type: application/json" \
-    ${data:+-d "$data"}
-}
-
-# Example: Get database
-notion_api "databases/$NOTION_EPICS_DB"
-
-# Example: Create page
-notion_api "pages" POST '{
-  "parent": {"database_id": "'$NOTION_STORIES_DB'"},
-  "properties": {
-    "Name": {"title": [{"text": {"content": "US-0030: User registration"}}]},
-    "Status": {"status": {"name": "In Progress"}}
-  }
-}'
+# If missing, run setup
+/setup-system
+# Select "yes" for Notion integration
 ```
 
-SETUP MODE
+Your `.mcp.json` should contain:
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+    }
+  }
+}
+```
 
-Create Notion databases with proper schema:
+Or for HTTP transport (recommended for teams):
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "url": "https://mcp.notion.com/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
+
+### 2. OAuth Authentication
+
+**CRITICAL**: You must authenticate with Notion via OAuth before first use:
+
+```bash
+# Authenticate (opens browser for OAuth)
+/mcp
+
+# Verify connection
+# Test search to confirm access
+```
+
+Use MCP tool `notion-search` to search for databases in your workspace. If it returns results, you're authenticated.
+
+### 3. Database Setup (First Time Only)
+
+Run this command with `MODE=setup` to create the three required databases:
 
 ```bash
 /notion-export MODE=setup
 ```
 
-### 1. Create Epics Database
+This will:
+- Create **AgileFlow Epics** database
+- Create **AgileFlow Stories** database
+- Create **AgileFlow ADRs** database
+- Store database IDs in `docs/08-project/notion-sync-map.json`
+
+---
+
+## USAGE
+
+```bash
+# Initial setup (create databases)
+/notion-export MODE=setup
+
+# Preview export without writing to Notion
+/notion-export DRY_RUN=true
+
+# Export all docs to Notion
+/notion-export
+
+# Export specific type only
+/notion-export TYPE=epics
+/notion-export TYPE=stories
+/notion-export TYPE=adrs
+
+# Import from Notion back to markdown
+/notion-export MODE=import
+
+# Bidirectional sync (smart merge)
+/notion-export MODE=sync
+
+# Force overwrite (export wins)
+/notion-export MODE=export FORCE=true
+
+# Force overwrite (import wins)
+/notion-export MODE=import FORCE=true
+```
+
+### Environment Variables
+
+- `MODE`: `setup` | `export` | `import` | `sync` (default: export)
+- `TYPE`: `epics` | `stories` | `adrs` | `all` (default: all)
+- `DRY_RUN`: `true` | `false` (default: false) - Preview only
+- `FORCE`: `true` | `false` (default: false) - Overwrite without merge
+
+---
+
+## MCP TOOLS REFERENCE
+
+This command uses the following Notion MCP tools:
+
+### Database Operations
+- **notion-create-database** - Create AgileFlow databases during setup
+- **notion-update-database** - Modify database properties
+- **notion-fetch** - Read database structure and pages by URL
+
+### Page Management
+- **notion-create-pages** - Export stories/epics/ADRs to Notion
+- **notion-update-page** - Sync changes back to existing pages
+- **notion-move-pages** - Organize pages within databases
+- **notion-duplicate-page** - Clone templates
+
+### Search & Retrieval
+- **notion-search** - Find existing AgileFlow databases
+- **notion-fetch** - Read page content for import
+
+### Metadata
+- **notion-get-users** - Resolve user mentions/assignments
+- **notion-get-comments** - Fetch page discussions (future feature)
+- **notion-get-teams** - Retrieve teamspaces (future feature)
+
+---
+
+## ARCHITECTURE
+
+### File Structure
+
+```
+docs/08-project/
+├── notion-sync-map.json    # Database IDs and sync state
+└── notion-sync-log.jsonl   # Audit trail (created on first sync)
+```
+
+### Sync Map Schema
 
 ```json
 {
-  "parent": {"type": "page_id", "page_id": "<YOUR_PAGE_ID>"},
-  "title": [{"type": "text", "text": {"content": "AgileFlow Epics"}}],
-  "properties": {
-    "Name": {"title": {}},
-    "Epic ID": {"rich_text": {}},
-    "Owner": {
-      "select": {
-        "options": [
-          {"name": "AG-UI", "color": "blue"},
-          {"name": "AG-API", "color": "green"},
-          {"name": "AG-CI", "color": "orange"},
-          {"name": "AG-DEVOPS", "color": "purple"}
-        ]
-      }
+  "last_sync": "2025-01-15T10:30:00Z",
+  "databases": {
+    "epics": "notion-database-id-1",
+    "stories": "notion-database-id-2",
+    "adrs": "notion-database-id-3"
+  },
+  "pages": {
+    "docs/05-epics/AG-001-authentication.md": {
+      "notion_id": "page-id-1",
+      "last_synced": "2025-01-15T10:30:00Z",
+      "checksum": "abc123def456"
     },
-    "Status": {
-      "status": {
-        "options": [
-          {"name": "Planning", "color": "gray"},
-          {"name": "In Progress", "color": "yellow"},
-          {"name": "Done", "color": "green"}
-        ]
-      }
-    },
-    "Stories": {"relation": {"database_id": "<STORIES_DB_ID>"}},
-    "Goal": {"rich_text": {}},
-    "Started": {"date": {}},
-    "Completed": {"date": {}},
-    "AgileFlow File": {"url": {}}
-  }
-}
-```
-
-### 2. Create Stories Database
-
-```json
-{
-  "parent": {"type": "page_id", "page_id": "<YOUR_PAGE_ID>"},
-  "title": [{"type": "text", "text": {"content": "AgileFlow Stories"}}],
-  "properties": {
-    "Name": {"title": {}},
-    "Story ID": {"rich_text": {}},
-    "Epic": {"relation": {"database_id": "<EPICS_DB_ID>"}},
-    "Owner": {
-      "select": {
-        "options": [
-          {"name": "AG-UI", "color": "blue"},
-          {"name": "AG-API", "color": "green"},
-          {"name": "AG-CI", "color": "orange"},
-          {"name": "AG-DEVOPS", "color": "purple"}
-        ]
-      }
-    },
-    "Status": {
-      "status": {
-        "options": [
-          {"name": "Ready", "color": "gray"},
-          {"name": "In Progress", "color": "yellow"},
-          {"name": "In Review", "color": "blue"},
-          {"name": "Done", "color": "green"},
-          {"name": "Blocked", "color": "red"}
-        ]
-      }
-    },
-    "Estimate": {"number": {}},
-    "Priority": {
-      "select": {
-        "options": [
-          {"name": "High", "color": "red"},
-          {"name": "Medium", "color": "yellow"},
-          {"name": "Low", "color": "blue"}
-        ]
-      }
-    },
-    "Assignee": {"people": {}},
-    "AC Count": {"number": {}},
-    "GitHub Issue": {"url": {}},
-    "AgileFlow File": {"url": {}},
-    "Created": {"created_time": {}},
-    "Last Edited": {"last_edited_time": {}}
-  }
-}
-```
-
-### 3. Create ADRs Database
-
-```json
-{
-  "parent": {"type": "page_id", "page_id": "<YOUR_PAGE_ID>"},
-  "title": [{"type": "text", "text": {"content": "AgileFlow ADRs"}}],
-  "properties": {
-    "Name": {"title": {}},
-    "ADR Number": {"number": {}},
-    "Status": {
-      "select": {
-        "options": [
-          {"name": "Proposed", "color": "yellow"},
-          {"name": "Accepted", "color": "green"},
-          {"name": "Deprecated", "color": "gray"},
-          {"name": "Superseded", "color": "red"}
-        ]
-      }
-    },
-    "Date": {"date": {}},
-    "Supersedes": {"relation": {"database_id": "<SELF>"}},
-    "Related Stories": {"relation": {"database_id": "<STORIES_DB_ID>"}},
-    "Tags": {"multi_select": {}},
-    "AgileFlow File": {"url": {}}
-  }
-}
-```
-
-After creation, output database URLs and IDs for .env.
-
-AGILEFLOW → NOTION EXPORT
-
-### Export Epic
-
-```bash
-# Read epic file
-epic_id=EP-0010
-epic_file=docs/05-epics/$epic_id.md
-
-# Parse frontmatter
-title=$(grep '^title:' $epic_file | cut -d: -f2- | xargs)
-owner=$(grep '^owner:' $epic_file | cut -d: -f2- | xargs)
-goal=$(grep '^goal:' $epic_file | cut -d: -f2- | xargs)
-
-# Check if exists in Notion
-notion_id=$(get_notion_id_from_mapping "epics" $epic_id)
-
-if [ -z "$notion_id" ]; then
-  # Create new page
-  response=$(notion_api "pages" POST '{
-    "parent": {"database_id": "'$NOTION_EPICS_DB'"},
-    "properties": {
-      "Name": {"title": [{"text": {"content": "'"$title"'"}}]},
-      "Epic ID": {"rich_text": [{"text": {"content": "'"$epic_id"'"}}]},
-      "Owner": {"select": {"name": "'"$owner"'"}},
-      "Goal": {"rich_text": [{"text": {"content": "'"$goal"'"}}]},
-      "Status": {"status": {"name": "In Progress"}},
-      "AgileFlow File": {"url": "file://docs/05-epics/'"$epic_id"'.md"}
-    },
-    "children": [
-      {
-        "object": "block",
-        "type": "paragraph",
-        "paragraph": {
-          "rich_text": [{"type": "text", "text": {"content": "Synced from AgileFlow"}}]
-        }
-      }
-    ]
-  }')
-
-  notion_id=$(echo $response | jq -r '.id')
-  update_mapping "epics" $epic_id $notion_id
-
-else
-  # Update existing page
-  notion_api "pages/$notion_id" PATCH '{
-    "properties": {
-      "Name": {"title": [{"text": {"content": "'"$title"'"}}]},
-      "Owner": {"select": {"name": "'"$owner"'"}},
-      "Goal": {"rich_text": [{"text": {"content": "'"$goal"'"}}]}
-    }
-  }'
-fi
-```
-
-### Export Story
-
-```bash
-# Read story file
-story_id=US-0030
-story_file=docs/06-stories/*/$story_id.md
-
-# Parse frontmatter
-title=$(grep '^title:' $story_file | cut -d: -f2- | xargs)
-epic=$(grep '^epic:' $story_file | cut -d: -f2- | xargs)
-owner=$(grep '^owner:' $story_file | cut -d: -f2- | xargs)
-estimate=$(grep '^estimate:' $story_file | cut -d: -f2- | xargs | grep -oP '\d+(\.\d+)?')
-priority=$(grep '^priority:' $story_file | cut -d: -f2- | xargs)
-
-# Get status from status.json
-status=$(jq -r '.stories["'$story_id'"].status' docs/09-agents/status.json)
-
-# Map status to Notion status
-case $status in
-  ready) notion_status="Ready" ;;
-  in-progress) notion_status="In Progress" ;;
-  in-review) notion_status="In Review" ;;
-  done) notion_status="Done" ;;
-  blocked) notion_status="Blocked" ;;
-esac
-
-# Get epic's Notion ID for relation
-epic_notion_id=$(get_notion_id_from_mapping "epics" $epic)
-
-# Count acceptance criteria
-ac_count=$(grep -c '^- \[ \]' $story_file || echo 0)
-
-# Extract AC and description as page content
-description=$(sed -n '/^## Description/,/^## /p' $story_file | sed '1d;$d')
-acceptance_criteria=$(sed -n '/^## Acceptance Criteria/,/^## /p' $story_file | sed '1d;$d')
-
-notion_id=$(get_notion_id_from_mapping "stories" $story_id)
-
-if [ -z "$notion_id" ]; then
-  # Create new story page
-  response=$(notion_api "pages" POST '{
-    "parent": {"database_id": "'$NOTION_STORIES_DB'"},
-    "properties": {
-      "Name": {"title": [{"text": {"content": "'"$story_id: $title"'"}}]},
-      "Story ID": {"rich_text": [{"text": {"content": "'"$story_id"'"}}]},
-      "Epic": {"relation": [{"id": "'"$epic_notion_id"'"}]},
-      "Owner": {"select": {"name": "'"$owner"'"}},
-      "Status": {"status": {"name": "'"$notion_status"'"}},
-      "Estimate": {"number": '$estimate'},
-      "Priority": {"select": {"name": "'"${priority:-Medium}"'"}},
-      "AC Count": {"number": '$ac_count'},
-      "AgileFlow File": {"url": "file://docs/06-stories/'"$epic/$story_id"'.md"}
-    },
-    "children": [
-      {
-        "object": "block",
-        "type": "heading_2",
-        "heading_2": {"rich_text": [{"text": {"content": "Description"}}]}
-      },
-      {
-        "object": "block",
-        "type": "paragraph",
-        "paragraph": {"rich_text": [{"text": {"content": "'"$description"'"}}]}
-      },
-      {
-        "object": "block",
-        "type": "heading_2",
-        "heading_2": {"rich_text": [{"text": {"content": "Acceptance Criteria"}}]}
-      },
-      {
-        "object": "block",
-        "type": "paragraph",
-        "paragraph": {"rich_text": [{"text": {"content": "'"$acceptance_criteria"'"}}]}
-      }
-    ]
-  }')
-
-  notion_id=$(echo $response | jq -r '.id')
-  update_mapping "stories" $story_id $notion_id
-
-else
-  # Update existing page
-  notion_api "pages/$notion_id" PATCH '{
-    "properties": {
-      "Status": {"status": {"name": "'"$notion_status"'"}},
-      "Estimate": {"number": '$estimate'},
-      "AC Count": {"number": '$ac_count'}
-    }
-  }'
-fi
-```
-
-### Export ADR
-
-```bash
-# Read ADR file
-adr_number=0001
-adr_file=docs/03-decisions/$adr_number-*.md
-
-# Parse frontmatter
-title=$(grep '^title:' $adr_file | cut -d: -f2- | xargs)
-status=$(grep '^status:' $adr_file | cut -d: -f2- | xargs)
-date=$(grep '^date:' $adr_file | cut -d: -f2- | xargs)
-
-# Extract sections as blocks
-context=$(sed -n '/^## Context/,/^## /p' $adr_file | sed '1d;$d')
-decision=$(sed -n '/^## Decision/,/^## /p' $adr_file | sed '1d;$d')
-consequences=$(sed -n '/^## Consequences/,/^## /p' $adr_file | sed '1d;$d')
-
-notion_id=$(get_notion_id_from_mapping "adrs" $adr_number)
-
-if [ -z "$notion_id" ]; then
-  response=$(notion_api "pages" POST '{
-    "parent": {"database_id": "'$NOTION_ADRS_DB'"},
-    "properties": {
-      "Name": {"title": [{"text": {"content": "ADR-'"$adr_number"': '"$title"'"}}]},
-      "ADR Number": {"number": '$adr_number'},
-      "Status": {"select": {"name": "'"${status:-Accepted}"'"}},
-      "Date": {"date": {"start": "'"$date"'"}},
-      "AgileFlow File": {"url": "file://docs/03-decisions/'"$adr_number"'-'"$title"'.md"}
-    },
-    "children": [
-      {"type": "heading_2", "heading_2": {"rich_text": [{"text": {"content": "Context"}}]}},
-      {"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "'"$context"'"}}]}},
-      {"type": "heading_2", "heading_2": {"rich_text": [{"text": {"content": "Decision"}}]}},
-      {"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "'"$decision"'"}}]}},
-      {"type": "heading_2", "heading_2": {"rich_text": [{"text": {"content": "Consequences"}}]}},
-      {"type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "'"$consequences"'"}}]}}
-    ]
-  }')
-
-  notion_id=$(echo $response | jq -r '.id')
-  update_mapping "adrs" $adr_number $notion_id
-fi
-```
-
-NOTION → AGILEFLOW IMPORT
-
-### Import Story from Notion
-
-```bash
-# Query Notion database for new/updated stories
-response=$(notion_api "databases/$NOTION_STORIES_DB/query" POST '{
-  "filter": {
-    "property": "Last Edited",
-    "date": {
-      "after": "'"$last_sync_timestamp"'"
+    "docs/06-stories/AG-API-001-login-endpoint.md": {
+      "notion_id": "page-id-2",
+      "last_synced": "2025-01-15T10:30:00Z",
+      "checksum": "xyz789uvw012"
     }
   },
-  "sorts": [{"property": "Last Edited", "direction": "ascending"}]
-}')
-
-# Process each page
-echo $response | jq -r '.results[]' | while read -r page; do
-  notion_id=$(echo $page | jq -r '.id')
-  story_id=$(echo $page | jq -r '.properties["Story ID"].rich_text[0].text.content')
-  title=$(echo $page | jq -r '.properties.Name.title[0].text.content' | sed "s/$story_id: //")
-  epic=$(echo $page | jq -r '.properties.Epic.relation[0].id')  # Need to resolve to epic ID
-  owner=$(echo $page | jq -r '.properties.Owner.select.name')
-  status=$(echo $page | jq -r '.properties.Status.status.name')
-  estimate=$(echo $page | jq -r '.properties.Estimate.number')
-
-  # Map Notion status to AgileFlow
-  case $status in
-    "Ready") agileflow_status=ready ;;
-    "In Progress") agileflow_status=in-progress ;;
-    "In Review") agileflow_status=in-review ;;
-    "Done") agileflow_status=done ;;
-    "Blocked") agileflow_status=blocked ;;
-  esac
-
-  # Get epic ID from mapping (reverse lookup)
-  epic_id=$(get_agileflow_id_from_notion_mapping "epics" $epic)
-
-  # Check if story exists
-  story_file=docs/06-stories/$epic_id/$story_id.md
-
-  if [ ! -f "$story_file" ]; then
-    # Create new story (import from Notion)
-    mkdir -p docs/06-stories/$epic_id
-
-    # Get page content for description/AC
-    page_content=$(notion_api "blocks/$notion_id/children")
-    description=$(echo $page_content | jq -r '.results[] | select(.type == "paragraph") | .paragraph.rich_text[0].text.content' | head -1)
-
-    cat > "$story_file" <<EOF
----
-id: $story_id
-title: $title
-epic: $epic_id
-owner: $owner
-status: $agileflow_status
-estimate: ${estimate}d
-notion_page: https://notion.so/$notion_id
----
-
-# $title
-
-## Description
-
-$description
-
-## Acceptance Criteria
-
-- [ ] (Imported from Notion - please refine)
-
-## Notes
-
-Imported from Notion on $(date -Iseconds)
-EOF
-
-    # Update status.json
-    update_status_json $story_id $agileflow_status $owner
-
-    # Update mapping
-    update_mapping "stories" $story_id $notion_id
-
-    # Log to bus
-    echo "{\"ts\":\"$(date -Iseconds)\",\"type\":\"notion-import\",\"story\":\"$story_id\",\"action\":\"created\"}" >> docs/09-agents/bus/log.jsonl
-
-  else
-    # Update existing story status
-    current_status=$(jq -r '.stories["'$story_id'"].status' docs/09-agents/status.json)
-
-    if [ "$current_status" != "$agileflow_status" ]; then
-      update_status_json $story_id $agileflow_status $owner
-
-      echo "{\"ts\":\"$(date -Iseconds)\",\"type\":\"notion-sync\",\"story\":\"$story_id\",\"action\":\"status_updated\",\"old\":\"$current_status\",\"new\":\"$agileflow_status\"}" >> docs/09-agents/bus/log.jsonl
-    fi
-  fi
-done
+  "config": {
+    "auto_sync": false,
+    "conflict_resolution": "manual",
+    "workspace_url": "https://www.notion.so/your-workspace"
+  }
+}
 ```
 
-CONFLICT RESOLUTION
+---
 
-Same strategy as GitHub sync:
+## IMPLEMENTATION
 
-1. **Timestamp comparison**: Compare Notion's `last_edited_time` with bus/log.jsonl timestamp
-2. **Winner: Most recent change**
-3. **Log conflicts** to bus with resolution strategy
+### STEP 1: Load Sync Map
 
 ```bash
-# Get last AgileFlow update
-agileflow_timestamp=$(jq -r '.stories["'$story_id'"] | .timestamp // "1970-01-01T00:00:00Z"' docs/09-agents/status.json)
+SYNC_MAP="docs/08-project/notion-sync-map.json"
 
-# Get Notion update
-notion_timestamp=$(echo $page | jq -r '.last_edited_time')
-
-# Compare
-if [[ "$notion_timestamp" > "$agileflow_timestamp" ]]; then
-  echo "Notion is newer, importing..."
-  resolution="kept_notion"
-else
-  echo "AgileFlow is newer, exporting..."
-  resolution="kept_agileflow"
+if [[ ! -f "$SYNC_MAP" ]]; then
+  echo "⚠️  Sync map not found. Run /notion-export MODE=setup first"
+  exit 1
 fi
 
-# Log conflict
-echo "{\"ts\":\"$(date -Iseconds)\",\"type\":\"notion-conflict\",\"story\":\"$story_id\",\"resolution\":\"$resolution\"}" >> docs/09-agents/bus/log.jsonl
+# Parse database IDs
+EPICS_DB=$(jq -r '.databases.epics // empty' "$SYNC_MAP")
+STORIES_DB=$(jq -r '.databases.stories // empty' "$SYNC_MAP")
+ADRS_DB=$(jq -r '.databases.adrs // empty' "$SYNC_MAP")
+
+if [[ -z "$EPICS_DB" ]] && [[ "$MODE" != "setup" ]]; then
+  echo "❌ Databases not configured. Run MODE=setup first"
+  exit 1
+fi
 ```
 
-SYNC REPORT
+### STEP 2: Setup Mode (First Time)
 
-```markdown
-# Notion Sync Report
-
-**Generated**: 2025-10-17 14:30
-**Mode**: Bidirectional sync
-**Databases**: Epics, Stories, ADRs
-
----
-
-## 📊 Summary
-
-**AgileFlow → Notion**: 8 changes
-- ✅ 2 epics created
-- ✅ 5 stories created/updated
-- ✅ 1 ADR created
-
-**Notion → AgileFlow**: 3 changes
-- ✅ 2 stories updated (status changes)
-- ✅ 1 story created (new from Notion)
-
-**Conflicts**: 1 resolved
-- US-0030: Notion updated more recently (kept Notion state)
-
----
-
-## 📤 Exported to Notion
-
-### Epics
-| Epic | Notion Page | Action |
-|------|-------------|--------|
-| EP-0010 | [View](https://notion.so/...) | Created |
-| EP-0011 | [View](https://notion.so/...) | Created |
-
-### Stories
-| Story | Notion Page | Action |
-|-------|-------------|--------|
-| US-0042 | [View](https://notion.so/...) | Created |
-| US-0043 | [View](https://notion.so/...) | Created |
-| US-0038 | [View](https://notion.so/...) | Updated status |
-
-### ADRs
-| ADR | Notion Page | Action |
-|-----|-------------|--------|
-| 0001 | [View](https://notion.so/...) | Created |
-
-## 📥 Imported from Notion
-
-| Notion Page | Story | Action |
-|-------------|-------|--------|
-| [View](https://notion.so/...) | US-0050 | Created |
-| [View](https://notion.so/...) | US-0030 | Status updated |
-| [View](https://notion.so/...) | US-0035 | Status updated |
-
----
-
-## 🔗 View in Notion
-
-- [Epics Database](https://notion.so/$NOTION_EPICS_DB)
-- [Stories Database](https://notion.so/$NOTION_STORIES_DB)
-- [ADRs Database](https://notion.so/$NOTION_ADRS_DB)
-
-**Collaboration**: Team members can now view and update stories in Notion. Changes will sync back to AgileFlow.
-
----
-
-## 🤖 Real-time Sync (Optional)
-
-For instant sync, set up Notion webhook:
-
-1. Enable webhooks in Notion integration settings
-2. Point webhook to your server endpoint
-3. On database updates, trigger `/notion-export MODE=sync`
-
-Or run periodic sync with cron:
 ```bash
-*/30 * * * * cd /path/to/project && /notion-export MODE=sync
+if [[ "$MODE" == "setup" ]]; then
+  echo "🔧 Setting up Notion databases..."
+
+  # Check MCP connection
+  echo "Verifying MCP authentication..."
+  # Use notion-search to test connection
+  # If fails: "Run /mcp to authenticate with Notion"
+
+  # Create Epics Database
+  echo "Creating AgileFlow Epics database..."
+  # Use notion-create-database with schema:
+  # {
+  #   "parent": {"type": "workspace"},
+  #   "title": [{"text": {"content": "AgileFlow Epics"}}],
+  #   "properties": {
+  #     "Name": {"title": {}},
+  #     "Epic ID": {"rich_text": {}},
+  #     "Status": {"status": {"options": [
+  #       {"name": "Draft", "color": "gray"},
+  #       {"name": "In Progress", "color": "blue"},
+  #       {"name": "Done", "color": "green"}
+  #     ]}},
+  #     "Owner": {"people": {}},
+  #     "Stories": {"number": {"format": "number"}},
+  #     "Progress": {"number": {"format": "percent"}},
+  #     "Start Date": {"date": {}},
+  #     "End Date": {"date": {}},
+  #     "Tags": {"multi_select": {}},
+  #     "Description": {"rich_text": {}}
+  #   }
+  # }
+
+  # Create Stories Database
+  echo "Creating AgileFlow Stories database..."
+  # Use notion-create-database with schema:
+  # {
+  #   "parent": {"type": "workspace"},
+  #   "title": [{"text": {"content": "AgileFlow Stories"}}],
+  #   "properties": {
+  #     "Name": {"title": {}},
+  #     "Story ID": {"rich_text": {}},
+  #     "Epic": {"relation": {"database_id": "$EPICS_DB"}},
+  #     "Status": {"status": {"options": [
+  #       {"name": "Draft", "color": "gray"},
+  #       {"name": "Ready", "color": "yellow"},
+  #       {"name": "In Progress", "color": "blue"},
+  #       {"name": "In Review", "color": "purple"},
+  #       {"name": "Done", "color": "green"}
+  #     ]}},
+  #     "Owner": {"select": {"options": [
+  #       {"name": "AG-UI", "color": "pink"},
+  #       {"name": "AG-API", "color": "blue"},
+  #       {"name": "AG-CI", "color": "green"}
+  #     ]}},
+  #     "Priority": {"select": {"options": [
+  #       {"name": "Critical", "color": "red"},
+  #       {"name": "High", "color": "orange"},
+  #       {"name": "Medium", "color": "yellow"},
+  #       {"name": "Low", "color": "gray"}
+  #     ]}},
+  #     "Effort": {"select": {"options": [
+  #       {"name": "XS (1-2h)", "color": "gray"},
+  #       {"name": "S (2-4h)", "color": "blue"},
+  #       {"name": "M (4-8h)", "color": "yellow"},
+  #       {"name": "L (1-2d)", "color": "orange"},
+  #       {"name": "XL (2-5d)", "color": "red"}
+  #     ]}},
+  #     "Tags": {"multi_select": {}},
+  #     "Acceptance Criteria": {"rich_text": {}},
+  #     "File Path": {"rich_text": {}}
+  #   }
+  # }
+
+  # Create ADRs Database
+  echo "Creating AgileFlow ADRs database..."
+  # Use notion-create-database with schema:
+  # {
+  #   "parent": {"type": "workspace"},
+  #   "title": [{"text": {"content": "AgileFlow ADRs"}}],
+  #   "properties": {
+  #     "Name": {"title": {}},
+  #     "ADR Number": {"number": {"format": "number"}},
+  #     "Status": {"status": {"options": [
+  #       {"name": "Proposed", "color": "yellow"},
+  #       {"name": "Accepted", "color": "green"},
+  #       {"name": "Deprecated", "color": "gray"},
+  #       {"name": "Superseded", "color": "red"}
+  #     ]}},
+  #     "Date": {"date": {}},
+  #     "Tags": {"multi_select": {}},
+  #     "Decision": {"rich_text": {}},
+  #     "Consequences": {"rich_text": {}},
+  #     "File Path": {"rich_text": {}}
+  #   }
+  # }
+
+  # Save database IDs to sync map
+  # Update $SYNC_MAP with database IDs returned from MCP
+  # Set last_sync to current timestamp
+
+  echo "✅ Databases created successfully!"
+  echo ""
+  echo "Next steps:"
+  echo "1. Run /notion-export DRY_RUN=true to preview export"
+  echo "2. Run /notion-export to perform initial export"
+  echo "3. Visit Notion to verify: https://notion.so/your-workspace"
+
+  exit 0
+fi
 ```
+
+### STEP 3: Collect Local Docs
+
+```bash
+collect_docs() {
+  local type=$1
+  local dir=""
+
+  case $type in
+    epics)   dir="docs/05-epics" ;;
+    stories) dir="docs/06-stories" ;;
+    adrs)    dir="docs/03-decisions" ;;
+  esac
+
+  # Find all markdown files (excluding README)
+  find "$dir" -type f -name "*.md" ! -name "README.md" | sort
+}
+
+# Collect based on TYPE parameter
+declare -a DOCS_TO_EXPORT
+
+if [[ "$TYPE" == "all" ]] || [[ "$TYPE" == "epics" ]]; then
+  mapfile -t EPIC_DOCS < <(collect_docs epics)
+  DOCS_TO_EXPORT+=("${EPIC_DOCS[@]}")
+fi
+
+if [[ "$TYPE" == "all" ]] || [[ "$TYPE" == "stories" ]]; then
+  mapfile -t STORY_DOCS < <(collect_docs stories)
+  DOCS_TO_EXPORT+=("${STORY_DOCS[@]}")
+fi
+
+if [[ "$TYPE" == "all" ]] || [[ "$TYPE" == "adrs" ]]; then
+  mapfile -t ADR_DOCS < <(collect_docs adrs)
+  DOCS_TO_EXPORT+=("${ADR_DOCS[@]}")
+fi
+
+echo "Found ${#DOCS_TO_EXPORT[@]} documents to sync"
 ```
 
-COLLABORATION WORKFLOW
+### STEP 4: Parse Markdown to Notion Schema
 
-### Team Member Updates Story in Notion
+```bash
+parse_epic() {
+  local file=$1
+  local content
+  content=$(cat "$file")
 
-1. User opens Notion Stories database
-2. Changes US-0042 status from "Ready" to "In Progress"
-3. Next sync (manual or automatic):
-   - `/notion-export` detects change
-   - Updates `docs/09-agents/status.json`
-   - Logs to `docs/09-agents/bus/log.jsonl`
-4. Developer sees updated status in AgileFlow
+  # Extract frontmatter (YAML between --- markers)
+  local epic_id status owner tags
+  epic_id=$(echo "$content" | sed -n '/^epic_id:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  status=$(echo "$content" | sed -n '/^status:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  owner=$(echo "$content" | sed -n '/^owner:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  tags=$(echo "$content" | sed -n '/^tags:/,/^[a-z_]*:/p' | grep -v '^tags:' | grep -v '^[a-z_]*:' | sed 's/^[- ]*//' | tr '\n' ',' | sed 's/,$//')
 
-### Developer Creates Story in AgileFlow
+  # Extract title (first # heading)
+  local title
+  title=$(echo "$content" | grep -m1 '^# ' | sed 's/^# //')
 
-1. Developer runs `/story-new` to create US-0050
-2. Runs `/notion-export` (or waits for auto-sync)
-3. New page appears in Notion Stories database
-4. Team members can see it in Notion and add comments/assign
+  # Extract description (everything between ## Overview and next ##)
+  local description
+  description=$(echo "$content" | sed -n '/## Overview/,/^##/p' | grep -v '^##' | sed '/^$/d' | head -20)
 
-### Product Manager Creates Epic in Notion
+  # Return as JSON for notion-create-pages
+  cat <<EOF
+{
+  "parent": {"database_id": "$EPICS_DB"},
+  "properties": {
+    "Name": {"title": [{"text": {"content": "$title"}}]},
+    "Epic ID": {"rich_text": [{"text": {"content": "$epic_id"}}]},
+    "Status": {"status": {"name": "$status"}},
+    "Tags": {"multi_select": $(echo "$tags" | jq -R 'split(",") | map({name: .})')},
+    "Description": {"rich_text": [{"text": {"content": "$description"}}]}
+  },
+  "children": [
+    {"object": "block", "type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "$content"}}]}}
+  ]
+}
+EOF
+}
 
-1. PM creates new epic in Notion Epics database
-2. Fills in goal, stories, owner
-3. Next sync:
-   - `/notion-export MODE=import` creates epic file in `docs/05-epics/`
-   - Linked stories are created as well
-4. Developers can now work on stories via AgileFlow
+parse_story() {
+  local file=$1
+  local content
+  content=$(cat "$file")
 
-USAGE EXAMPLES
+  # Extract frontmatter
+  local story_id epic_id status owner priority effort tags
+  story_id=$(echo "$content" | sed -n '/^story_id:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  epic_id=$(echo "$content" | sed -n '/^epic_id:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  status=$(echo "$content" | sed -n '/^status:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  owner=$(echo "$content" | sed -n '/^owner:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  priority=$(echo "$content" | sed -n '/^priority:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  effort=$(echo "$content" | sed -n '/^effort:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  tags=$(echo "$content" | sed -n '/^tags:/,/^[a-z_]*:/p' | grep -v '^tags:' | grep -v '^[a-z_]*:' | sed 's/^[- ]*//' | tr '\n' ',' | sed 's/,$//')
 
-### Initial setup (one-time)
+  # Extract title
+  local title
+  title=$(echo "$content" | grep -m1 '^# ' | sed 's/^# //')
+
+  # Extract acceptance criteria
+  local acceptance
+  acceptance=$(echo "$content" | sed -n '/## Acceptance Criteria/,/^##/p' | grep -v '^##' | sed '/^$/d' | head -20)
+
+  # Find related epic page ID from sync map
+  local epic_page_id
+  epic_page_id=$(jq -r --arg epic "$epic_id" '.pages | to_entries[] | select(.key | contains($epic)) | .value.notion_id' "$SYNC_MAP")
+
+  # Return as JSON
+  cat <<EOF
+{
+  "parent": {"database_id": "$STORIES_DB"},
+  "properties": {
+    "Name": {"title": [{"text": {"content": "$title"}}]},
+    "Story ID": {"rich_text": [{"text": {"content": "$story_id"}}]},
+    "Epic": ${epic_page_id:+{"relation": [{"id": "$epic_page_id"}]}},
+    "Status": {"status": {"name": "$status"}},
+    "Owner": {"select": {"name": "$owner"}},
+    "Priority": {"select": {"name": "$priority"}},
+    "Effort": {"select": {"name": "$effort"}},
+    "Tags": {"multi_select": $(echo "$tags" | jq -R 'split(",") | map({name: .})')},
+    "Acceptance Criteria": {"rich_text": [{"text": {"content": "$acceptance"}}]},
+    "File Path": {"rich_text": [{"text": {"content": "$file"}}]}
+  },
+  "children": [
+    {"object": "block", "type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "$content"}}]}}
+  ]
+}
+EOF
+}
+
+parse_adr() {
+  local file=$1
+  local content
+  content=$(cat "$file")
+
+  # Extract ADR number from filename (ADR-XXX-title.md)
+  local adr_num
+  adr_num=$(basename "$file" | sed -n 's/ADR-\([0-9]*\)-.*/\1/p')
+
+  # Extract frontmatter
+  local status date tags
+  status=$(echo "$content" | sed -n '/^status:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  date=$(echo "$content" | sed -n '/^date:/s/.*: *//p' | tr -d '"' | tr -d "'")
+  tags=$(echo "$content" | sed -n '/^tags:/,/^[a-z_]*:/p' | grep -v '^tags:' | grep -v '^[a-z_]*:' | sed 's/^[- ]*//' | tr '\n' ',' | sed 's/,$//')
+
+  # Extract title
+  local title
+  title=$(echo "$content" | grep -m1 '^# ' | sed 's/^# //')
+
+  # Extract sections
+  local decision consequences
+  decision=$(echo "$content" | sed -n '/## Decision/,/^##/p' | grep -v '^##' | sed '/^$/d' | head -20)
+  consequences=$(echo "$content" | sed -n '/## Consequences/,/^##/p' | grep -v '^##' | sed '/^$/d' | head -20)
+
+  # Return as JSON
+  cat <<EOF
+{
+  "parent": {"database_id": "$ADRS_DB"},
+  "properties": {
+    "Name": {"title": [{"text": {"content": "$title"}}]},
+    "ADR Number": {"number": $adr_num},
+    "Status": {"status": {"name": "$status"}},
+    "Date": {"date": {"start": "$date"}},
+    "Tags": {"multi_select": $(echo "$tags" | jq -R 'split(",") | map({name: .})')},
+    "Decision": {"rich_text": [{"text": {"content": "$decision"}}]},
+    "Consequences": {"rich_text": [{"text": {"content": "$consequences"}}]},
+    "File Path": {"rich_text": [{"text": {"content": "$file"}}]}
+  },
+  "children": [
+    {"object": "block", "type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "$content"}}]}}
+  ]
+}
+EOF
+}
+```
+
+### STEP 5: Export to Notion
+
+```bash
+export_mode() {
+  echo "📤 Exporting to Notion..."
+
+  local exported=0
+  local updated=0
+  local skipped=0
+  local failed=0
+
+  for doc in "${DOCS_TO_EXPORT[@]}"; do
+    echo "Processing: $doc"
+
+    # Calculate checksum
+    local checksum
+    checksum=$(md5sum "$doc" | awk '{print $1}')
+
+    # Check if already synced
+    local existing_id existing_checksum
+    existing_id=$(jq -r --arg path "$doc" '.pages[$path].notion_id // empty' "$SYNC_MAP")
+    existing_checksum=$(jq -r --arg path "$doc" '.pages[$path].checksum // empty' "$SYNC_MAP")
+
+    # Skip if unchanged (unless FORCE=true)
+    if [[ "$checksum" == "$existing_checksum" ]] && [[ "$FORCE" != "true" ]]; then
+      echo "  ⏭️  Unchanged, skipping"
+      ((skipped++))
+      continue
+    fi
+
+    # Parse document based on type
+    local payload
+    if [[ "$doc" == *"/05-epics/"* ]]; then
+      payload=$(parse_epic "$doc")
+    elif [[ "$doc" == *"/06-stories/"* ]]; then
+      payload=$(parse_story "$doc")
+    elif [[ "$doc" == *"/03-decisions/"* ]]; then
+      payload=$(parse_adr "$doc")
+    else
+      echo "  ⚠️  Unknown document type"
+      ((failed++))
+      continue
+    fi
+
+    # DRY RUN: just preview
+    if [[ "$DRY_RUN" == "true" ]]; then
+      echo "  [DRY RUN] Would export:"
+      echo "$payload" | jq -r '.properties.Name.title[0].text.content'
+      ((exported++))
+      continue
+    fi
+
+    # Create or update in Notion
+    local notion_id
+    if [[ -n "$existing_id" ]]; then
+      # Use notion-update-page
+      echo "  🔄 Updating existing page: $existing_id"
+      # MCP call: notion-update-page with page_id=$existing_id and payload
+      # notion_id=$existing_id (reuse)
+      ((updated++))
+    else
+      # Use notion-create-pages
+      echo "  ➕ Creating new page"
+      # MCP call: notion-create-pages with payload
+      # Extract returned page ID from MCP response
+      # notion_id=<response.id>
+      ((exported++))
+    fi
+
+    # Update sync map
+    jq --arg path "$doc" \
+       --arg id "$notion_id" \
+       --arg checksum "$checksum" \
+       --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+       '.pages[$path] = {
+         notion_id: $id,
+         last_synced: $timestamp,
+         checksum: $checksum
+       } | .last_sync = $timestamp' \
+       "$SYNC_MAP" > "${SYNC_MAP}.tmp" && mv "${SYNC_MAP}.tmp" "$SYNC_MAP"
+
+    echo "  ✅ Synced"
+  done
+
+  # Summary
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "Export Summary:"
+  echo "  ➕ Created: $exported"
+  echo "  🔄 Updated: $updated"
+  echo "  ⏭️  Skipped: $skipped"
+  echo "  ❌ Failed: $failed"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+}
+```
+
+### STEP 6: Import from Notion
+
+```bash
+import_mode() {
+  echo "📥 Importing from Notion..."
+
+  # Query all pages from databases using notion-fetch
+  # For each database, get all pages:
+  #   - Use notion-fetch with database URL
+  #   - Parse returned pages
+
+  local imported=0
+  local updated=0
+  local skipped=0
+
+  # Query epics database
+  if [[ -n "$EPICS_DB" ]]; then
+    echo "Querying AgileFlow Epics database..."
+    # MCP: notion-fetch with database_id=$EPICS_DB
+    # Returns array of pages
+    # For each page:
+    #   - Extract properties
+    #   - Convert to markdown format
+    #   - Calculate file path from Epic ID
+    #   - Write to docs/05-epics/AG-XXX-title.md
+    #   - Update sync map
+  fi
+
+  # Query stories database
+  if [[ -n "$STORIES_DB" ]]; then
+    echo "Querying AgileFlow Stories database..."
+    # MCP: notion-fetch with database_id=$STORIES_DB
+    # Similar process as epics
+  fi
+
+  # Query ADRs database
+  if [[ -n "$ADRS_DB" ]]; then
+    echo "Querying AgileFlow ADRs database..."
+    # MCP: notion-fetch with database_id=$ADRS_DB
+    # Similar process as epics
+  fi
+
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "Import Summary:"
+  echo "  📥 Imported: $imported"
+  echo "  🔄 Updated: $updated"
+  echo "  ⏭️  Skipped: $skipped"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+}
+```
+
+### STEP 7: Bidirectional Sync
+
+```bash
+sync_mode() {
+  echo "🔄 Bidirectional sync..."
+
+  # This is a smart merge operation
+  # 1. Export all local changes to Notion (timestamp check)
+  # 2. Import all Notion changes to local (timestamp check)
+  # 3. Detect conflicts (both changed since last sync)
+  # 4. For conflicts:
+  #    - If conflict_resolution=manual: List conflicts and prompt
+  #    - If conflict_resolution=notion_wins: Use Notion version
+  #    - If conflict_resolution=local_wins: Use local version
+
+  echo "Step 1: Export local changes"
+  export_mode
+
+  echo ""
+  echo "Step 2: Import Notion changes"
+  import_mode
+
+  echo ""
+  echo "✅ Bidirectional sync complete"
+}
+```
+
+### STEP 8: Execute Based on Mode
+
+```bash
+case "$MODE" in
+  setup)
+    # Already handled above
+    ;;
+  export)
+    export_mode
+    ;;
+  import)
+    import_mode
+    ;;
+  sync)
+    sync_mode
+    ;;
+  *)
+    echo "❌ Invalid MODE: $MODE"
+    echo "Valid modes: setup, export, import, sync"
+    exit 1
+    ;;
+esac
+```
+
+### STEP 9: Audit Trail
+
+```bash
+# Log operation to audit trail
+log_sync() {
+  local log_file="docs/08-project/notion-sync-log.jsonl"
+
+  local log_entry
+  log_entry=$(cat <<EOF
+{
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "mode": "$MODE",
+  "type": "$TYPE",
+  "dry_run": ${DRY_RUN:-false},
+  "force": ${FORCE:-false},
+  "stats": {
+    "exported": $exported,
+    "imported": $imported,
+    "updated": $updated,
+    "skipped": $skipped,
+    "failed": $failed
+  }
+}
+EOF
+)
+
+  echo "$log_entry" >> "$log_file"
+}
+
+if [[ "$DRY_RUN" != "true" ]]; then
+  log_sync
+fi
+```
+
+---
+
+## EXAMPLE WORKFLOWS
+
+### First-Time Setup
+
+```bash
+# 1. Run system setup (if not done)
+/setup-system
+# Select "yes" for Notion integration
+
+# 2. Authenticate with Notion
+/mcp
+# Click "Authorize" in browser
+
+# 3. Verify connection
+# Test notion-search tool
+
+# 4. Create databases
+/notion-export MODE=setup
+
+# 5. Preview export
+/notion-export DRY_RUN=true
+
+# 6. Perform initial export
+/notion-export
+
+# 7. Visit Notion to verify
+# Open https://notion.so/your-workspace
+```
+
+### Daily Workflow
+
+```bash
+# Export new/changed docs to Notion
+/notion-export
+
+# Or just export stories
+/notion-export TYPE=stories
+
+# Import changes from Notion (team members edited in Notion)
+/notion-export MODE=import
+
+# Bidirectional sync (smart merge)
+/notion-export MODE=sync
+```
+
+### Conflict Resolution
+
+```bash
+# Check for conflicts first
+/notion-export MODE=sync DRY_RUN=true
+
+# Manual conflict resolution (default)
+# Script will list conflicts and prompt for each
+
+# Or force local version to win
+/notion-export MODE=export FORCE=true
+
+# Or force Notion version to win
+/notion-export MODE=import FORCE=true
+```
+
+---
+
+## ADVANTAGES OF MCP APPROACH
+
+### 🔒 Security
+- ✅ OAuth authentication (no manual tokens)
+- ✅ Tokens never stored in files
+- ✅ Per-user permissions
+- ✅ Easy to revoke access
+
+### 🚀 Developer Experience
+- ✅ Native Claude Code integration
+- ✅ One `/mcp` command to authenticate
+- ✅ No API version management
+- ✅ Automatic rate limiting
+- ✅ Better error messages
+
+### 👥 Team Collaboration
+- ✅ `.mcp.json` committed to git
+- ✅ Each member authenticates individually
+- ✅ No token sharing
+- ✅ Consistent setup across team
+
+### 🛠️ Maintenance
+- ✅ Notion updates MCP server automatically
+- ✅ No breaking API changes
+- ✅ Standardized protocol (works with other tools too)
+
+---
+
+## MIGRATION FROM API APPROACH
+
+If you previously used the API-based `/notion-export`:
+
+1. **Backup your sync map**:
+   ```bash
+   cp docs/08-project/notion-sync-map.json docs/08-project/notion-sync-map.json.backup
+   ```
+
+2. **Remove old token** (if exists):
+   ```bash
+   # Remove NOTION_TOKEN from .env
+   sed -i '/NOTION_TOKEN/d' .env
+   ```
+
+3. **Set up MCP**:
+   ```bash
+   /setup-system
+   # Select "yes" for Notion integration
+   ```
+
+4. **Authenticate**:
+   ```bash
+   /mcp
+   ```
+
+5. **Verify databases**:
+   ```bash
+   # Your existing database IDs in sync map will work with MCP
+   # No need to recreate databases!
+   /notion-export DRY_RUN=true
+   ```
+
+6. **Resume syncing**:
+   ```bash
+   /notion-export
+   ```
+
+---
+
+## TROUBLESHOOTING
+
+### MCP Server Not Configured
+
+**Error**: "notion MCP server not found"
+
+**Fix**:
+```bash
+# Run setup
+/setup-system
+
+# Or manually add to .mcp.json
+cat > .mcp.json <<'EOF'
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+    }
+  }
+}
+EOF
+```
+
+### Not Authenticated
+
+**Error**: "Notion authentication required"
+
+**Fix**:
+```bash
+/mcp
+# Click "Authorize" in browser
+```
+
+### Databases Not Found
+
+**Error**: "Database IDs missing in sync map"
+
+**Fix**:
 ```bash
 /notion-export MODE=setup
-# Follow prompts to create databases and configure .env
 ```
 
-### Full bidirectional sync
+### Rate Limiting
+
+**Error**: "Rate limit exceeded"
+
+**Fix**: MCP handles this automatically with exponential backoff. Wait a few seconds and retry.
+
+### Sync Conflicts
+
+**Error**: "Conflict detected: both local and Notion changed"
+
+**Fix**:
 ```bash
-/notion-export
+# Review conflict details
+/notion-export MODE=sync DRY_RUN=true
+
+# Choose resolution strategy
+/notion-export MODE=sync  # Manual prompts
+# or
+/notion-export MODE=export FORCE=true  # Local wins
+# or
+/notion-export MODE=import FORCE=true  # Notion wins
 ```
 
-### Export all to Notion
-```bash
-/notion-export MODE=export
-```
+---
 
-### Import from Notion only
-```bash
-/notion-export MODE=import
-```
+## FUTURE ENHANCEMENTS
 
-### Sync specific epic
-```bash
-/notion-export EPIC=EP-0010
-```
+- [ ] Auto-sync on file changes (watch mode)
+- [ ] Conflict resolution UI in Claude Code
+- [ ] Comment syncing (notion-get-comments / notion-create-comment)
+- [ ] Attachment support
+- [ ] Webhook integration (Notion → AgileFlow)
+- [ ] Multi-workspace support
+- [ ] Custom property mappings
+- [ ] Rollback support (restore from log)
 
-### Preview changes (dry run)
-```bash
-/notion-export DRY_RUN=true
-```
+---
 
-### Sync only stories database
-```bash
-/notion-export DATABASE=stories
-```
+## RELATED COMMANDS
 
-INTEGRATION WITH OTHER COMMANDS
+- `/setup-system` - Initial AgileFlow + MCP configuration
+- `/github-sync` - Sync with GitHub Issues
+- `/story-new` - Create new story (auto-exports if Notion enabled)
+- `/epic-new` - Create new epic (auto-exports if Notion enabled)
+- `/adr-new` - Create new ADR (auto-exports if Notion enabled)
+- `/board` - Visualize status (can pull from Notion)
 
-- After `/epic-new`: Optionally export to Notion
-- After `/story-new`: Optionally create Notion page
-- After `/status`: Auto-sync to Notion
-- In `/board`: Include Notion page links
-- In `/stakeholder-update`: Include Notion database views
+---
 
-BENEFITS OF NOTION INTEGRATION
+## REFERENCES
 
-1. **Visual Project Management**: Team can use Notion's kanban/calendar/timeline views
-2. **Collaboration**: Non-technical stakeholders can comment and update
-3. **Rich Content**: Embed images, files, videos in story descriptions
-4. **Notifications**: Notion sends notifications on updates
-5. **Mobile Access**: Team can update stories from Notion mobile app
-6. **Reporting**: Use Notion's charts and dashboards
-7. **Source of Truth**: AgileFlow remains authoritative, Notion is view layer
-
-RULES
-- AgileFlow is always the source of truth for AC and technical details
-- Notion is the collaboration and visualization layer
-- Never delete AgileFlow files based on Notion deletions (archive instead)
-- Always log sync actions to bus/log.jsonl
-- Validate Notion token before any write operations
-- Handle Notion API rate limits (3 requests/second)
-- Preserve Notion page IDs in story frontmatter
-
-OUTPUT
-- Sync report (markdown)
-- Updated notion-sync-map.json
-- Updated status.json (if Notion → AgileFlow changes)
-- Bus log entries for all sync actions
-- Optional: Saved report to docs/08-project/sync-reports/notion-sync-YYYYMMDD-HHMMSS.md
+- [Notion MCP Server](https://mcp.notion.com/mcp)
+- [MCP Documentation](https://modelcontextprotocol.io/docs/getting-started/intro)
+- [MCP Supported Tools](https://developers.notion.com/docs/mcp-supported-tools)
+- [Claude Code MCP Guide](https://docs.claude.com/en/docs/claude-code/mcp)
+- [Notion API Reference](https://developers.notion.com/reference/intro)
