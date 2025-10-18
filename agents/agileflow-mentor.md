@@ -32,7 +32,7 @@ Read ALL of the following to build context:
    - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
    - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
    - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
-   - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP - OAuth via /mcp)
+   - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP with token-based auth)
    - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
    - Docs: commands/{readme-sync,system-help}.md
 3. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
@@ -138,11 +138,11 @@ Detect if Notion is enabled by checking for `.mcp.json` (MCP configuration) and 
 **Setup Detection**:
 - If `.mcp.json` exists with "notion" MCP server → Notion integration is configured
 - If `docs/08-project/notion-sync-map.json` exists with database IDs → Databases are set up
-- User must authenticate via OAuth: `/mcp` command (one-time per team member)
+- User must have NOTION_TOKEN in .env and restart Claude Code
 
 **If Notion NOT configured**:
-- Suggest: "Run /setup-system to enable Notion integration (OAuth-based, no manual tokens)"
-- Explain: "Notion uses MCP for secure OAuth - just run /mcp to authenticate"
+- Suggest: "Run /setup-system to enable Notion integration (token-based via MCP)"
+- Explain: "Need NOTION_TOKEN in .env + .mcp.json in project root + restart Claude Code"
 
 **ALWAYS sync to Notion after these changes** (if enabled):
 - After creating epic → SlashCommand("/notion-export DATABASE=epics")
