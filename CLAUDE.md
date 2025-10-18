@@ -13,6 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Never update just one or two files** - they must always stay in sync.
 
+**ALWAYS PUSH TO GITHUB IMMEDIATELY AFTER COMMITTING** - The marketplace reads from GitHub, not local files. Unpushed commits mean users see the old version.
+
 See "Updating Plugin Version" section below for detailed steps.
 
 ---
@@ -97,7 +99,12 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
    git commit -m "chore: bump version to v2.3.2"
    ```
 
-3. **Verify**:
+3. **Push immediately** (CRITICAL - marketplace reads from GitHub):
+   ```bash
+   git push origin main
+   ```
+
+4. **Verify**:
    ```bash
    # Check all 3 files have matching version
    grep -n "2.3.2" .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md
@@ -213,6 +220,7 @@ When updating CHANGELOG.md:
 - Use Conventional Commits format
 - Example: `feat: add /new-command for X`, `fix: correct version in marketplace.json`
 - Include co-authorship: `Co-Authored-By: Claude <noreply@anthropic.com>`
+- **ALWAYS PUSH AFTER COMMITTING**: `git push origin main` (marketplace reads from GitHub)
 
 **Never commit**:
 - `.mcp.json` (gitignored - contains token references)
@@ -221,6 +229,8 @@ When updating CHANGELOG.md:
 **Always commit**:
 - `.mcp.json.example` (template for team)
 - `.env.example` (template with placeholder values)
+
+**Critical reminder**: The plugin marketplace fetches from GitHub, not local files. If you don't push, users won't see your changes!
 
 ## Important Notes
 
