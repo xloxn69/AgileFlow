@@ -13,9 +13,8 @@ INPUTS (ask the user up front)
 - Provide a GitHub token now? (optional; masked) TOKEN=<value or empty>
 - Configure minimal CI and branch protections via GitHub CLI if available? yes/no
 - Enable GitHub Issues sync? (creates sync mapping, sets up labels) yes/no
-- Enable Notion integration? (requires Notion token) yes/no
-  - If yes: NOTION_TOKEN=<value or empty>
-  - Run Notion database setup wizard? yes/no
+- Enable Notion integration via MCP? (uses Model Context Protocol) yes/no
+  - If yes: Configure Notion MCP server for the project? yes/no
 
 CREATE DIRECTORIES (if missing)
 docs/{00-meta/templates,01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
@@ -39,7 +38,7 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/10-research/README.md              // index table: Date | Topic | Path | Summary
 - .github/workflows/ci.yml                // minimal, language-agnostic CI (lint/type/test placeholders)
 - .gitignore                              // generic: .env*, .DS_Store, .idea/, .vscode/, node_modules/, dist/, build/, coverage/
-- .env.example                            // placeholder with GH_TOKEN=, NOTION_TOKEN=, NOTION_*_DB= and note not to commit secrets
+- .env.example                            // placeholder with GH_TOKEN= and note not to commit secrets (Notion uses MCP OAuth, not .env)
 - docs/08-project/github-sync-map.json    // if GitHub sync enabled: {"last_sync":null,"mappings":{},"config":{}}
 - docs/08-project/notion-sync-map.json    // if Notion enabled: {"last_sync":null,"epics":{},"stories":{},"adrs":{}}
 - docs/02-practices/prompts/commands-catalog.md // paste-ready list of all slash commands & prompts (print content at the end)
@@ -74,31 +73,109 @@ GITHUB ISSUES SYNC SETUP (if enabled)
   - "Run /github-sync DRY_RUN=true to preview first sync"
   - "Run /github-sync to perform initial export"
 
-NOTION INTEGRATION SETUP (if enabled)
-- Never write NOTION_TOKEN to the repo. If provided:
-  - Write to .env (ensure .env is in .gitignore)
-  - Update .env.example with placeholders:
-    ```
-    NOTION_TOKEN=secret_your_integration_token_here
-    NOTION_EPICS_DB=https://notion.so/...
-    NOTION_STORIES_DB=https://notion.so/...
-    NOTION_ADRS_DB=https://notion.so/...
-    ```
-- Create docs/08-project/notion-sync-map.json with initial structure
-- If user wants database setup wizard:
-  - Run `/notion-export MODE=setup` automatically
-  - This creates 3 databases and outputs their URLs
-  - Prompt user to add database URLs to .env
-  - Remind user to share databases with integration in Notion
-- If user skips wizard:
-  - Print manual setup instructions:
-    1. Create Notion integration at https://www.notion.so/my-integrations
-    2. Run /notion-export MODE=setup
-    3. Add database URLs to .env
-    4. Share databases with integration
-- Print next steps:
-  - "Run /notion-export DRY_RUN=true to preview first sync"
-  - "Run /notion-export to perform initial export"
+NOTION INTEGRATION SETUP VIA MCP (if enabled)
+**IMPORTANT**: Notion integration uses Model Context Protocol (MCP), not manual API tokens. MCP provides secure OAuth authentication and native Claude Code integration.
+
+**Prerequisites Check**:
+```bash
+# Ensure Claude Code MCP support
+claude mcp --version  # If fails, update Claude Code
+```
+
+**Step 1: Create .mcp.json** (project-scoped, shareable via git)
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+    }
+  }
+}
+```
+
+Alternative (recommended for remote teams):
+```bash
+# Add Notion MCP server via command
+claude mcp add --scope project --transport http notion https://mcp.notion.com/mcp
+```
+
+This automatically creates/updates `.mcp.json` with:
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "url": "https://mcp.notion.com/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
+
+**Step 2: Authenticate via OAuth** (secure, no manual tokens)
+```bash
+# Initiate OAuth flow
+/mcp
+
+# User will see:
+# "Authenticate with Notion MCP server"
+# Follow browser prompts to authorize
+# Token stored securely by Claude Code (not in files)
+```
+
+**Step 3: Verify MCP Connection**
+```bash
+# Test Notion access
+@notion:search/databases
+
+# Should return list of accessible databases
+# If error: User hasn't authorized or MCP server not configured
+```
+
+**Step 4: Create AgileFlow Databases**
+Run `/notion-export MODE=setup` which will:
+- Use MCP to create 3 databases (Epics, Stories, ADRs)
+- Store database IDs in `docs/08-project/notion-sync-map.json`
+- No manual token management needed!
+
+**Step 5: Verify Setup**
+```bash
+# Check database access via MCP
+@notion:databases/[EPICS_DB_ID]
+@notion:databases/[STORIES_DB_ID]
+@notion:databases/[ADRS_DB_ID]
+```
+
+**Advantages Over API Token Approach**:
+- ✅ OAuth authentication (more secure)
+- ✅ No manual token management (.env not needed)
+- ✅ Native Claude Code integration
+- ✅ Project-scoped configuration (team-shareable via git)
+- ✅ Automatic token refresh
+- ✅ Per-user permissions (each team member authorizes their own account)
+
+**For Team Setup**:
+1. One person runs `/setup-system` with Notion enabled
+2. Commits `.mcp.json` to git
+3. Team members clone repo and run `/mcp` to authenticate
+4. Done! No token sharing needed
+
+**Print Next Steps**:
+```
+✅ Notion MCP server configured
+✅ .mcp.json created (committed to git)
+
+Next steps for you:
+1. Authenticate: Run /mcp and follow OAuth flow
+2. Create databases: Run /notion-export MODE=setup
+3. Preview sync: Run /notion-export DRY_RUN=true
+4. Perform initial sync: Run /notion-export
+
+Next steps for team members:
+1. Pull latest code (includes .mcp.json)
+2. Authenticate: Run /mcp (their own OAuth)
+3. Start using Notion integration!
+```
 
 COMMAND EXECUTION
 - Allowed after explicit YES with full preview. Good examples: `ls`, `tree`, `cat`, `grep`, formatters, running tests, creating files.

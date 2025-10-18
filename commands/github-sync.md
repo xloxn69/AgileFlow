@@ -527,3 +527,53 @@ OUTPUT
 - Updated status.json (if GitHub → AgileFlow changes)
 - Bus log entries for all sync actions
 - Optional: Saved report to docs/08-project/sync-reports/sync-YYYYMMDD-HHMMSS.md
+
+---
+
+## FUTURE: GITHUB MCP INTEGRATION
+
+GitHub also offers a Model Context Protocol (MCP) server similar to Notion. While this command currently uses the GitHub CLI (`gh`), future versions could optionally use GitHub MCP for:
+
+### Advantages of GitHub MCP
+- ✅ OAuth authentication (similar to Notion)
+- ✅ Native Claude Code integration
+- ✅ Standardized protocol across services
+- ✅ No CLI dependency
+
+### Setup (Optional, for future use)
+Add to `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"]
+    }
+  }
+}
+```
+
+### Current Recommendation
+**Continue using GitHub CLI** (`gh`) for now because:
+- More stable and widely adopted
+- Better error messages
+- Easier testing and debugging
+- Direct integration with GitHub Actions
+
+**Consider GitHub MCP** when:
+- MCP ecosystem matures
+- Team already using MCP for other services (Notion, Slack, etc.)
+- Need unified authentication approach
+
+---
+
+## RELATED COMMANDS
+
+- `/notion-export` - Sync with Notion (uses MCP)
+- `/story-new` - Create new story (can auto-create GitHub issue)
+- `/board` - Visualize stories with GitHub links
+- `/velocity` - Track velocity including GitHub activity
