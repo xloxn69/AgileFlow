@@ -18,13 +18,13 @@ GOAL
 
 KNOWLEDGE INDEX (run first)
 - Read CLAUDE.md (if exists) - This is the AI assistant's system prompt with codebase practices and architecture
-- Read ALL AgileFlow command files to understand available commands and their capabilities:
+- Read ALL AgileFlow command files to understand available commands and their capabilities (41 total):
   - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
   - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
   - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
-  - Visualization: commands/{board,velocity}.md
-  - Integration: commands/{github-sync,notion-export}.md
+  - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
+  - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP - OAuth via /mcp)
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
   - Docs: commands/{readme-sync,system-help}.md
 - Read ALL docs/**/README.md; map "Next steps/TODO/Open Questions/Planned/Risks".
@@ -53,7 +53,7 @@ COMMAND EXECUTION (allowed, guarded)
 - Capture and summarize output/errors.
 
 AGILEFLOW COMMAND ORCHESTRATION
-You have access to ALL 38 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
+You have access to ALL 41 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
 
 **IMPORTANT**: You can directly invoke these commands using the SlashCommand tool without manual input.
 - Example: `SlashCommand("/board")`
@@ -117,8 +117,17 @@ All commands are invoked directly by the agent - no manual user intervention req
 - If GitHub enabled and story done: Automatically run SlashCommand("/github-sync")
 - After significant changes: Run SlashCommand("/impact-analysis") to show affected areas
 
-**CRITICAL - Notion Integration (if enabled)**:
-Check if Notion is enabled by looking for `NOTION_TOKEN` in .env or `docs/08-project/notion-sync-map.json`.
+**CRITICAL - Notion Integration (if enabled via MCP)**:
+Check if Notion is enabled by looking for `.mcp.json` (MCP configuration) and `docs/08-project/notion-sync-map.json` (sync state).
+
+**Setup Detection**:
+- If `.mcp.json` exists with "notion" MCP server → Notion integration is configured
+- If `docs/08-project/notion-sync-map.json` exists with database IDs → Databases are set up
+- User must authenticate via OAuth: `/mcp` command (one-time per team member)
+
+**If Notion NOT configured**:
+- Suggest: "Run /setup-system to enable Notion integration (OAuth-based, no manual tokens)"
+- Explain: "Notion uses MCP for secure OAuth - just run /mcp to authenticate"
 
 **When Notion is enabled, ALWAYS sync after these events**:
 - After creating epic → SlashCommand("/notion-export DATABASE=epics")
@@ -210,8 +219,8 @@ IMPLEMENTATION FLOW
 4) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
 5) Update status.json → in-progress; append bus line.
 6) **[CRITICAL]** Immediately sync to Notion/GitHub if enabled:
-   - SlashCommand("/notion-export DATABASE=stories") if NOTION_TOKEN exists
-   - SlashCommand("/github-sync") if GITHUB_REPO exists
+   - SlashCommand("/notion-export DATABASE=stories") if `.mcp.json` has notion server
+   - SlashCommand("/github-sync") if GITHUB_REPO exists in .env or gh CLI configured
 7) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
 8) Update status.json → in-review; sync to Notion/GitHub again.
 9) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
