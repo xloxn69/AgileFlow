@@ -108,6 +108,12 @@ The `/notion-export` command now uses these Notion MCP tools:
 - 🚀 **Developer Experience**: MCP tools instead of raw API calls (better errors)
 - 🛠️ **Maintenance**: Better error handling and rate limiting via MCP
 - 📦 **Portability**: Project-level .mcp.json config (repo root, not ~/.claude-code/)
+- 🎯 **Setup Intelligence**: `/setup-system` now detects existing configuration before prompting
+  - Shows status summary first (✅ configured / ❌ missing / ⚠️ partial)
+  - Only asks about features that aren't set up
+  - Final output distinguishes already-configured vs newly-created
+  - No redundant setup prompts for existing features
+  - Better UX for incremental setup and updates
 
 ### Migration Guide (Corrected)
 
