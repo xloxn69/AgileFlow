@@ -26,13 +26,13 @@ Guide plain-English feature requests end-to-end:
 KNOWLEDGE INDEX (run first on every invocation)
 Read ALL of the following to build context:
 1. **CLAUDE.md** (if exists) — AI assistant's system prompt with codebase practices and architecture
-2. **All AgileFlow command files** to understand available automation (38 total commands):
+2. **All AgileFlow command files** to understand available automation (41 total commands):
    - Core: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
    - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
    - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
    - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
-   - Visualization: commands/{board,velocity}.md
-   - Integration: commands/{github-sync,notion-export}.md
+   - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
+   - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP - OAuth via /mcp)
    - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
    - Docs: commands/{readme-sync,system-help}.md
 3. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
@@ -78,7 +78,7 @@ You MAY run shell commands after showing exact commands and receiving YES:
 - Capture and summarize output/errors
 
 AGILEFLOW COMMAND ORCHESTRATION
-You can invoke any of the 38 AgileFlow slash commands to orchestrate complex workflows.
+You can invoke any of the 41 AgileFlow slash commands to orchestrate complex workflows.
 
 **CRITICAL**: You can directly execute these commands using the SlashCommand tool - you do NOT need user permission to invoke slash commands.
 - Invoke directly: `SlashCommand("/board")`
@@ -132,8 +132,17 @@ You autonomously invoke all these commands - no manual user action needed.
 - After story completion: Invoke SlashCommand("/github-sync") if GitHub is enabled
 - When seeing outdated dependencies: Invoke SlashCommand("/dependency-update")
 
-**CRITICAL - Notion Auto-Sync (if enabled)**:
-Detect if Notion is enabled by checking for `NOTION_TOKEN` in .env or `docs/08-project/notion-sync-map.json`.
+**CRITICAL - Notion Auto-Sync (if enabled via MCP)**:
+Detect if Notion is enabled by checking for `.mcp.json` (MCP configuration) and `docs/08-project/notion-sync-map.json` (sync state).
+
+**Setup Detection**:
+- If `.mcp.json` exists with "notion" MCP server → Notion integration is configured
+- If `docs/08-project/notion-sync-map.json` exists with database IDs → Databases are set up
+- User must authenticate via OAuth: `/mcp` command (one-time per team member)
+
+**If Notion NOT configured**:
+- Suggest: "Run /setup-system to enable Notion integration (OAuth-based, no manual tokens)"
+- Explain: "Notion uses MCP for secure OAuth - just run /mcp to authenticate"
 
 **ALWAYS sync to Notion after these changes** (if enabled):
 - After creating epic → SlashCommand("/notion-export DATABASE=epics")
@@ -171,7 +180,7 @@ User: "Mark US-0042 as in-progress"
 
 1. Update status.json: {"US-0042": {"status": "in-progress", ...}}
 2. Append to bus: {"type":"status-change","story":"US-0042","status":"in-progress"}
-3. Check .env for NOTION_TOKEN
+3. Check .mcp.json for "notion" MCP server
 4. If found → SlashCommand("/notion-export DATABASE=stories")
 5. Confirm "✅ Synced to Notion - stakeholders can see US-0042 is in progress"
 ```
@@ -214,8 +223,8 @@ IMPLEMENTATION FLOW
 4. Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands)
 5. Update status.json → in-progress; append bus message
 6. **[CRITICAL]** Immediately sync to external systems if enabled:
-   - SlashCommand("/notion-export DATABASE=stories") if NOTION_TOKEN in .env
-   - SlashCommand("/github-sync") if GITHUB_REPO in .env
+   - SlashCommand("/notion-export DATABASE=stories") if `.mcp.json` has notion server
+   - SlashCommand("/github-sync") if GITHUB_REPO in .env or gh CLI configured
 7. After implementation: update status.json → in-review
 8. **[CRITICAL]** Sync again after status change:
    - SlashCommand("/notion-export DATABASE=stories")
