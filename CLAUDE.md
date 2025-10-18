@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## ⚠️ CRITICAL: Version Management
+
+**ALWAYS update versions in these 3 files together when making ANY release:**
+1. `.claude-plugin/plugin.json` → `"version": "X.Y.Z"`
+2. `.claude-plugin/marketplace.json` → `"description"` (mentions version)
+3. `CHANGELOG.md` → Add new `[X.Y.Z]` section at top
+
+**Never update just one or two files** - they must always stay in sync.
+
+See "Updating Plugin Version" section below for detailed steps.
+
+---
+
 ## Repository Overview
 
 **AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (41 slash commands + 8 subagents), not a traditional application codebase. There is no build step, runtime, or deployment process.
@@ -108,7 +123,10 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
 
 3. **Update README.md** - Add command to appropriate section
 
-4. **Update CHANGELOG.md** - Document under "Added" section
+4. **Bump version and update changelog**:
+   - Update `.claude-plugin/plugin.json` version (e.g., 2.3.1 → 2.3.2)
+   - Update `.claude-plugin/marketplace.json` description with new version
+   - Add new section to `CHANGELOG.md` documenting the new command under "Added"
 
 ### Adding a New Subagent
 
@@ -129,13 +147,17 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
 
 3. **Update README.md** and **SUBAGENTS.md** - Document new subagent
 
-4. **Update CHANGELOG.md** - Document under "Added" section
+4. **Bump version and update changelog**:
+   - Update `.claude-plugin/plugin.json` version (e.g., 2.3.1 → 2.3.2)
+   - Update `.claude-plugin/marketplace.json` description with new version
+   - Add new section to `CHANGELOG.md` documenting the new subagent under "Added"
 
 ### Modifying Commands or Subagents
 
 - **Command/subagent behavior** is defined in the `.md` file content (the prompt)
 - **No build step required** - changes are live when plugin reloads
 - **Test changes** by running the command or invoking the subagent in a test project
+- **For bug fixes or improvements**: Bump version (patch for fixes, minor for improvements) and update all 3 version files
 
 ## MCP Integration
 
