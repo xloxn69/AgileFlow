@@ -17,3 +17,9 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# MCP Configuration (contains secrets)
+.mcp.json
+
+# Environment
+.env

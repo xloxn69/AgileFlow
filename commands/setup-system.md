@@ -74,107 +74,128 @@ GITHUB ISSUES SYNC SETUP (if enabled)
   - "Run /github-sync to perform initial export"
 
 NOTION INTEGRATION SETUP VIA MCP (if enabled)
-**IMPORTANT**: Notion integration uses Model Context Protocol (MCP), not manual API tokens. MCP provides secure OAuth authentication and native Claude Code integration.
+**IMPORTANT**: Notion integration uses Model Context Protocol (MCP) for tool access, but still requires a Notion API token. MCP provides a standardized interface to Notion's API.
 
-**Prerequisites Check**:
+**Prerequisites**:
+1. Create a Notion integration at https://www.notion.so/my-integrations
+2. Get your Integration Token (starts with `secret_`)
+3. Share your Notion databases with the integration
+
+**Step 1: Add NOTION_TOKEN to .env** (gitignored, never commit)
 ```bash
-# Ensure Claude Code MCP support
-claude mcp --version  # If fails, update Claude Code
+# Add to .env file
+echo "NOTION_TOKEN=secret_your_token_here" >> .env
+
+# Verify .env is in .gitignore
+grep -q "^\.env$" .gitignore || echo ".env" >> .gitignore
 ```
 
-**Step 1: Create .mcp.json** (project-scoped, shareable via git)
+**Step 2: Create .mcp.json.example** (template for team, committed to git)
 ```json
 {
   "mcpServers": {
     "notion": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+      "args": ["-y", "@notionhq/notion-mcp-server"],
+      "env": {
+        "NOTION_TOKEN": "${NOTION_TOKEN}"
+      }
     }
   }
 }
 ```
 
-Alternative (recommended for remote teams):
+**IMPORTANT - Project-Level Configuration**:
+- .mcp.json must be in the **project root** (not ~/.claude-code/ or ~/.config/)
+- The ${NOTION_TOKEN} reference pulls from your .env file
+- .mcp.json should be gitignored to avoid committing tokens
+- Commit .mcp.json.example as a template for team members
+
+**Step 3: Create/Update .gitignore**
 ```bash
-# Add Notion MCP server via command
-claude mcp add --scope project --transport http notion https://mcp.notion.com/mcp
+# Add MCP config to gitignore
+echo ".mcp.json" >> .gitignore
+echo ".env" >> .gitignore
 ```
 
-This automatically creates/updates `.mcp.json` with:
-```json
-{
-  "mcpServers": {
-    "notion": {
-      "url": "https://mcp.notion.com/mcp",
-      "transport": "http"
-    }
-  }
-}
-```
-
-**Step 2: Authenticate via OAuth** (secure, no manual tokens)
+**Step 4: Copy Template to Active Config**
 ```bash
-# Initiate OAuth flow
-/mcp
+# Each developer does this locally (not committed)
+cp .mcp.json.example .mcp.json
 
-# User will see:
-# "Authenticate with Notion MCP server"
-# Follow browser prompts to authorize
-# Token stored securely by Claude Code (not in files)
+# Add their own NOTION_TOKEN to .env
+echo "NOTION_TOKEN=secret_their_token_here" >> .env
 ```
 
-**Step 3: Verify MCP Connection**
+**Step 5: Restart Claude Code**
 ```bash
-# Test Notion access
-@notion:search/databases
-
-# Should return list of accessible databases
-# If error: User hasn't authorized or MCP server not configured
+# MCP servers load on startup
+# After restart, Notion tools available as mcp__notion__*
 ```
 
-**Step 4: Create AgileFlow Databases**
+**Step 6: Create AgileFlow Databases**
 Run `/notion-export MODE=setup` which will:
-- Use MCP to create 3 databases (Epics, Stories, ADRs)
+- Use MCP tools to create 3 databases (Epics, Stories, ADRs)
 - Store database IDs in `docs/08-project/notion-sync-map.json`
-- No manual token management needed!
+- Database creation uses NOTION_TOKEN from .env via MCP
 
-**Step 5: Verify Setup**
+**Step 7: Verify Setup**
 ```bash
-# Check database access via MCP
-@notion:databases/[EPICS_DB_ID]
-@notion:databases/[STORIES_DB_ID]
-@notion:databases/[ADRS_DB_ID]
+# Check if MCP tools loaded
+# Look for mcp__notion__* tools in Claude Code
+
+# Test by running
+/notion-export DRY_RUN=true
 ```
 
-**Advantages Over API Token Approach**:
-- ✅ OAuth authentication (more secure)
-- ✅ No manual token management (.env not needed)
+**Advantages of MCP Approach**:
+- ✅ Standardized tool interface across services
 - ✅ Native Claude Code integration
-- ✅ Project-scoped configuration (team-shareable via git)
-- ✅ Automatic token refresh
-- ✅ Per-user permissions (each team member authorizes their own account)
+- ✅ Better error handling than raw API calls
+- ✅ Automatic rate limiting
+- ✅ Project-scoped configuration
 
 **For Team Setup**:
-1. One person runs `/setup-system` with Notion enabled
-2. Commits `.mcp.json` to git
-3. Team members clone repo and run `/mcp` to authenticate
-4. Done! No token sharing needed
+1. One person creates integration and .mcp.json.example
+2. Commit .mcp.json.example to git (with ${NOTION_TOKEN} placeholder)
+3. Add .mcp.json and .env to .gitignore
+4. Team members:
+   - Pull latest code
+   - Create their own Notion integration
+   - Copy .mcp.json.example to .mcp.json
+   - Add their NOTION_TOKEN to .env
+   - Restart Claude Code
+   - Share databases with their integration
+
+**Important Notes**:
+- Each team member needs their own Notion token (no token sharing)
+- Tokens are never committed to git
+- .mcp.json uses env var substitution: ${NOTION_TOKEN}
+- Project-level .mcp.json takes precedence over user-level config
 
 **Print Next Steps**:
 ```
-✅ Notion MCP server configured
-✅ .mcp.json created (committed to git)
+✅ Notion MCP template created (.mcp.json.example)
+✅ .gitignore updated (.mcp.json and .env excluded)
+⚠️  You still need to configure YOUR Notion token
 
 Next steps for you:
-1. Authenticate: Run /mcp and follow OAuth flow
-2. Create databases: Run /notion-export MODE=setup
-3. Preview sync: Run /notion-export DRY_RUN=true
-4. Perform initial sync: Run /notion-export
+1. Create Notion integration: https://www.notion.so/my-integrations
+2. Add token to .env: NOTION_TOKEN=secret_xxx
+3. Copy template: cp .mcp.json.example .mcp.json
+4. Restart Claude Code (to load MCP server)
+5. Create databases: /notion-export MODE=setup
+6. Preview sync: /notion-export DRY_RUN=true
+7. Perform initial sync: /notion-export
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json)
-2. Authenticate: Run /mcp (their own OAuth)
-3. Start using Notion integration!
+1. Pull latest code (includes .mcp.json.example)
+2. Create their own Notion integration
+3. Copy template: cp .mcp.json.example .mcp.json
+4. Add their token to .env
+5. Restart Claude Code
+6. Share databases with their integration
+7. Start syncing!
 ```
 
 COMMAND EXECUTION
