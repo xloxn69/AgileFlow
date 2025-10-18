@@ -172,15 +172,21 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 
 **`.mcp.json.example`** - Template committed to git:
 - Configures MCP servers (Notion, Supabase, etc.)
-- Uses environment variable substitution: `${NOTION_TOKEN}`
-- Users copy to `.mcp.json` (gitignored) and add their tokens to `.env`
+- Contains placeholder tokens like `"secret_YOUR_NOTION_TOKEN_HERE"`
+- Users copy to `.mcp.json` (gitignored) and replace placeholders with real tokens
 
-**`.env.example`** - Environment variable template:
-- Documents required tokens (NOTION_TOKEN, SUPABASE_*, GITHUB_*)
+**CRITICAL: Token Hardcoding Required**:
+- ⚠️ Environment variable substitution (`${NOTION_TOKEN}`) does NOT work in `.mcp.json`
+- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
+- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks (already in .gitignore)
+- ⚠️ `.mcp.json.example` is committed with placeholder text, never real tokens
+
+**`.env.example`** - Environment variable template (optional):
+- Documents other environment variables (SUPABASE_*, GITHUB_* if needed by other tools)
+- NOTION_TOKEN documented here for reference but NOT used by MCP (hardcode in .mcp.json instead)
 - Never contains actual secrets
-- Users copy to `.env` (gitignored) for local development
 
-**Key principle**: Templates are committed, actual configs/tokens are gitignored.
+**Key principle**: Template (`.mcp.json.example`) is committed with placeholders, actual config (`.mcp.json`) with hardcoded tokens is gitignored.
 
 ## Documentation Standards
 
@@ -223,8 +229,8 @@ When updating CHANGELOG.md:
 - **ALWAYS PUSH AFTER COMMITTING**: `git push origin main` (marketplace reads from GitHub)
 
 **Never commit**:
-- `.mcp.json` (gitignored - contains token references)
-- `.env` (gitignored - contains actual secrets)
+- `.mcp.json` (gitignored - contains hardcoded tokens)
+- `.env` (gitignored - contains other secrets if used)
 
 **Always commit**:
 - `.mcp.json.example` (template for team)

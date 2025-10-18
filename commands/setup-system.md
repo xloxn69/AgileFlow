@@ -27,8 +27,12 @@ if [ -f .mcp.json ]; then
   # Check Notion
   if grep -q '"notion"' .mcp.json 2>/dev/null; then
     echo "  ✅ Notion MCP configured in .mcp.json"
-    grep -q "NOTION_TOKEN" .env.example 2>/dev/null && echo "    ✅ NOTION_TOKEN in .env.example" || echo "    ⚠️  NOTION_TOKEN not in .env.example"
-    grep -q "NOTION_TOKEN" .env 2>/dev/null && echo "    ✅ NOTION_TOKEN in .env" || echo "    ⚠️  NOTION_TOKEN not in .env - add your token"
+    # Check if token is still placeholder
+    if grep -q "secret_YOUR_NOTION_TOKEN_HERE" .mcp.json 2>/dev/null; then
+      echo "    ⚠️  Token is still placeholder - edit .mcp.json with your real token"
+    else
+      echo "    ✅ Token configured in .mcp.json"
+    fi
     [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /notion-export MODE=setup"
   else
     echo "  ⚠️  Notion not configured in .mcp.json"
@@ -75,9 +79,8 @@ Based on detection results above, ask ONLY about features that aren't fully conf
 - IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for Notion, Supabase, etc.) yes/no"
   - IF yes: Ask which servers to enable: "Enable Notion? yes/no", "Enable Supabase? yes/no"
 - IF MCP partially configured:
-  - IF .mcp.json has servers but missing env vars: Report what's missing (e.g., "NOTION_TOKEN needed in .env")
-  - Offer to add missing env vars to .env.example: "Add missing env var templates to .env.example? yes/no"
-  - Print next steps: "To complete setup: 1) Add your actual tokens to .env, 2) Restart Claude Code"
+  - IF .mcp.json has servers with placeholder tokens: Report what's missing (e.g., "Notion token is still placeholder")
+  - Print next steps: "To complete setup: 1) Edit .mcp.json with your real tokens, 2) Restart Claude Code"
 - IF CI missing: "Create minimal CI workflow? yes/no"
 
 Skip asking about features that are already fully configured (just report them as ✅).
@@ -140,23 +143,14 @@ GITHUB ISSUES SYNC SETUP (if enabled)
   - "Run /github-sync to perform initial export"
 
 NOTION INTEGRATION SETUP VIA MCP (if enabled)
-**IMPORTANT**: Notion integration uses Model Context Protocol (MCP) for tool access, but still requires a Notion API token. MCP provides a standardized interface to Notion's API.
+**IMPORTANT**: Notion integration uses Model Context Protocol (MCP) for tool access and requires a Notion API token. MCP provides a standardized interface to Notion's API.
 
 **Prerequisites**:
 1. Create a Notion integration at https://www.notion.so/my-integrations
 2. Get your Integration Token (starts with `secret_`)
 3. Share your Notion databases with the integration
 
-**Step 1: Add NOTION_TOKEN to .env** (gitignored, never commit)
-```bash
-# Add to .env file
-echo "NOTION_TOKEN=secret_your_token_here" >> .env
-
-# Verify .env is in .gitignore
-grep -q "^\.env$" .gitignore || echo ".env" >> .gitignore
-```
-
-**Step 2: Create .mcp.json.example** (template for team, committed to git)
+**Step 1: Create .mcp.json.example** (template for team, committed to git)
 ```json
 {
   "mcpServers": {
@@ -164,48 +158,46 @@ grep -q "^\.env$" .gitignore || echo ".env" >> .gitignore
       "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
-        "NOTION_TOKEN": "${NOTION_TOKEN}"
+        "NOTION_TOKEN": "secret_YOUR_NOTION_TOKEN_HERE"
       }
     }
   }
 }
 ```
 
-**IMPORTANT - Project-Level Configuration**:
-- .mcp.json must be in the **project root** (not ~/.claude-code/ or ~/.config/)
-- The ${NOTION_TOKEN} reference pulls from your .env file
-- .mcp.json should be gitignored to avoid committing tokens
-- Commit .mcp.json.example as a template for team members
+**CRITICAL - Token Hardcoding Required**:
+- ⚠️ Environment variable substitution (${NOTION_TOKEN}) does NOT work in .mcp.json
+- Tokens must be hardcoded directly in .mcp.json file
+- .mcp.json MUST be gitignored to prevent token leaks
+- .mcp.json.example is a template with placeholder text (committed to git)
 
-**Step 3: Create/Update .gitignore**
+**Step 2: Create/Update .gitignore**
 ```bash
 # Add MCP config to gitignore
 echo ".mcp.json" >> .gitignore
-echo ".env" >> .gitignore
 ```
 
-**Step 4: Copy Template to Active Config**
+**Step 3: Copy Template and Add Real Token**
 ```bash
 # Each developer does this locally (not committed)
 cp .mcp.json.example .mcp.json
 
-# Add their own NOTION_TOKEN to .env
-echo "NOTION_TOKEN=secret_their_token_here" >> .env
+# Edit .mcp.json and replace "secret_YOUR_NOTION_TOKEN_HERE" with your actual token
+# NEVER commit .mcp.json - it contains your real token!
 ```
 
-**Step 5: Restart Claude Code**
+**Step 4: Restart Claude Code**
 ```bash
 # MCP servers load on startup
 # After restart, Notion tools available as mcp__notion__*
 ```
 
-**Step 6: Create AgileFlow Databases**
+**Step 5: Create AgileFlow Databases**
 Run `/notion-export MODE=setup` which will:
 - Use MCP tools to create 3 databases (Epics, Stories, ADRs)
 - Store database IDs in `docs/08-project/notion-sync-map.json`
-- Database creation uses NOTION_TOKEN from .env via MCP
 
-**Step 7: Verify Setup**
+**Step 6: Verify Setup**
 ```bash
 # Check if MCP tools loaded
 # Look for mcp__notion__* tools in Claude Code
@@ -223,45 +215,48 @@ Run `/notion-export MODE=setup` which will:
 
 **For Team Setup**:
 1. One person creates integration and .mcp.json.example
-2. Commit .mcp.json.example to git (with ${NOTION_TOKEN} placeholder)
-3. Add .mcp.json and .env to .gitignore
+2. Commit .mcp.json.example to git (with placeholder token)
+3. Ensure .mcp.json is in .gitignore
 4. Team members:
    - Pull latest code
    - Create their own Notion integration
    - Copy .mcp.json.example to .mcp.json
-   - Add their NOTION_TOKEN to .env
+   - Edit .mcp.json and hardcode their real token
    - Restart Claude Code
    - Share databases with their integration
 
-**Important Notes**:
+**Important Security Notes**:
 - Each team member needs their own Notion token (no token sharing)
-- Tokens are never committed to git
-- .mcp.json uses env var substitution: ${NOTION_TOKEN}
+- Tokens are never committed to git (.mcp.json is gitignored)
+- Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
+- Always verify .mcp.json is in .gitignore before committing
 - Project-level .mcp.json takes precedence over user-level config
 
 **Print Next Steps**:
 ```
 ✅ Notion MCP template created (.mcp.json.example)
-✅ .gitignore updated (.mcp.json and .env excluded)
+✅ .gitignore updated (.mcp.json excluded)
 ⚠️  You still need to configure YOUR Notion token
 
 Next steps for you:
 1. Create Notion integration: https://www.notion.so/my-integrations
-2. Add token to .env: NOTION_TOKEN=secret_xxx
-3. Copy template: cp .mcp.json.example .mcp.json
-4. Restart Claude Code (to load MCP server)
-5. Create databases: /notion-export MODE=setup
-6. Preview sync: /notion-export DRY_RUN=true
-7. Perform initial sync: /notion-export
+2. Copy template: cp .mcp.json.example .mcp.json
+3. Edit .mcp.json and replace placeholder with your real token
+4. Verify .mcp.json is in .gitignore (NEVER commit it!)
+5. Restart Claude Code (to load MCP server)
+6. Create databases: /notion-export MODE=setup
+7. Preview sync: /notion-export DRY_RUN=true
+8. Perform initial sync: /notion-export
 
 Next steps for team members:
 1. Pull latest code (includes .mcp.json.example)
 2. Create their own Notion integration
 3. Copy template: cp .mcp.json.example .mcp.json
-4. Add their token to .env
-5. Restart Claude Code
-6. Share databases with their integration
-7. Start syncing!
+4. Edit .mcp.json with their real token
+5. Verify .mcp.json is gitignored
+6. Restart Claude Code
+7. Share databases with their integration
+8. Start syncing!
 ```
 
 COMMAND EXECUTION
@@ -299,13 +294,12 @@ OUTPUT
   MCP Integrations:
     Notion: ⚠️ Partially configured
       - ✅ .mcp.json has Notion server configured
-      - 🆕 Added NOTION_TOKEN to .env.example
-      - ⚠️ You need to add your actual token to .env
-      - ⚠️ Restart Claude Code after adding token
+      - ⚠️ Token is still placeholder - edit .mcp.json with your real token
+      - ⚠️ Restart Claude Code after updating token
       - Next: /notion-export MODE=setup
     Supabase: ✅ Fully configured
       - ✅ .mcp.json has Supabase server configured
-      - ✅ SUPABASE_URL in .env.example
+      - ✅ Token configured
       - Ready to use mcp__supabase__* tools
   CI Workflow: ✅ Already configured (skipped)
 
@@ -316,7 +310,8 @@ OUTPUT
   - Sync to GitHub: /github-sync (newly enabled)
   - Complete Notion setup:
     1. Create integration: https://www.notion.so/my-integrations
-    2. Add token to .env: NOTION_TOKEN=secret_xxx
-    3. Restart Claude Code
-    4. Run: /notion-export MODE=setup
+    2. Edit .mcp.json: Replace placeholder with your real token
+    3. Verify .mcp.json is in .gitignore (NEVER commit it!)
+    4. Restart Claude Code
+    5. Run: /notion-export MODE=setup
   ```

@@ -5,6 +5,45 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2] - 2025-10-18
+
+### Fixed
+
+**CRITICAL FIX: Notion MCP Token Configuration**
+
+- ⚠️ **Environment variable substitution does NOT work** in `.mcp.json` - Tokens must be hardcoded
+- Updated `.mcp.json.example` to show correct approach with placeholder token
+- Updated `/setup-system` command to guide users to hardcode tokens
+- Updated README.md Notion integration section with correct security model
+- Updated CLAUDE.md MCP integration documentation
+- Added prominent security warnings about token hardcoding
+
+**What Changed:**
+- `.mcp.json.example` now contains `"NOTION_TOKEN": "secret_YOUR_NOTION_TOKEN_HERE"` (placeholder)
+- Users must copy to `.mcp.json` and replace placeholder with real token
+- Removed all references to `${NOTION_TOKEN}` environment variable substitution
+- Clarified that `.mcp.json` must be gitignored (already was)
+
+**Migration from v2.3.1:**
+If you followed v2.3.1 docs and used `${NOTION_TOKEN}`:
+1. Open your `.mcp.json` file
+2. Replace `"NOTION_TOKEN": "${NOTION_TOKEN}"` with your actual token: `"NOTION_TOKEN": "secret_your_real_token_here"`
+3. Remove NOTION_TOKEN from `.env` (not used by MCP)
+4. Verify `.mcp.json` is in `.gitignore`
+5. Restart Claude Code
+
+**Security Notes:**
+- `.mcp.json` MUST be gitignored (contains real tokens)
+- `.mcp.json.example` is committed (contains only placeholders)
+- Each team member needs their own token hardcoded in their local `.mcp.json`
+- Never commit `.mcp.json` to version control
+
+### Changed
+
+- `/setup-system` detection now checks if token is still placeholder vs real token
+- README Quick Start updated to reflect hardcoded token approach
+- All documentation now consistently explains token hardcoding requirement
+
 ## [2.3.1] - 2025-10-18
 
 ### Added
