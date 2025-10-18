@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.3.0 - Notion MCP integration)",
+  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.3.1 - Enhanced MCP detection)",
   "plugins": [
     {
       "name": "AgileFlow",
