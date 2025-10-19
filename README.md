@@ -45,8 +45,8 @@ AgileFlow combines three proven methodologies into one cohesive system:
    This scaffolds the entire docs structure, templates, and optional CI.
 
    During setup, you can optionally enable:
-   - GitHub Issues sync (requires `gh` CLI)
-   - Notion integration (uses MCP with token hardcoded in `.mcp.json`)
+   - GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
+   - Notion integration (uses Notion MCP - Model Context Protocol)
 
 2. **Get help**:
    ```
@@ -129,8 +129,8 @@ docs/
 - `/dependencies` - Dependency graph visualization with critical path and circular dependency detection
 
 ### Integration & Collaboration 🔗
-- `/github-sync` - Bidirectional GitHub Issues sync (uses GitHub CLI)
-- `/notion-export` - Bidirectional Notion database sync (uses MCP - Model Context Protocol)
+- `/github-sync` - Bidirectional GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
+- `/notion-export` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
 
 ### ChatGPT Integration
 - `/chatgpt` - Generate ChatGPT context brief
@@ -355,6 +355,94 @@ New team members need to:
 - ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
 
 See `/notion-export` command for full documentation.
+
+## GitHub Integration (MCP-based) 🆕
+
+AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for standardized tool access:
+
+### Features
+- ✅ **Standardized interface** - MCP provides unified tool API across services
+- ✅ **Bidirectional sync** - Changes flow both ways (AgileFlow ↔ GitHub Issues)
+- ✅ **No sudo required** - Uses npx (unlike `gh` CLI which requires installation)
+- ✅ **Better portability** - Works across environments without dependencies
+- ✅ **Project-scoped** - `.mcp.json.example` template committed to git
+- ✅ **Issue/PR management** - Create issues, labels, sync stories with GitHub
+
+### Setup (One-Time)
+
+1. **Create GitHub Personal Access Token**:
+   - Visit https://github.com/settings/tokens
+   - Click "Generate new token (classic)"
+   - Select scopes: `repo` (full control), `read:org` (if using organization repos)
+   - Copy token (starts with `ghp_`)
+
+2. **Enable during system setup**:
+   ```
+   /setup-system
+   # Select "yes" for GitHub integration
+   ```
+
+3. **Add your token to MCP config**:
+   ```bash
+   # Copy MCP template to active config
+   cp .mcp.json.example .mcp.json
+
+   # Edit .mcp.json and replace "ghp_YOUR_GITHUB_TOKEN_HERE" with your actual token
+   # GitHub PATs start with "ghp_"
+   # CRITICAL: Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
+   # Verify .mcp.json is in .gitignore - NEVER commit it!
+   ```
+
+4. **Restart Claude Code** (to load MCP server)
+
+5. **Configure repository**:
+   ```
+   # Edit docs/08-project/github-sync-map.json
+   # Set "repository": "owner/repo"
+   ```
+
+6. **Start syncing**:
+   ```
+   # Preview first
+   /github-sync DRY_RUN=true
+
+   # Perform sync
+   /github-sync
+   ```
+
+### Team Onboarding
+New team members need to:
+1. Pull the latest code (includes `.mcp.json.example`)
+2. Create their own GitHub PAT at https://github.com/settings/tokens
+3. Copy template: `cp .mcp.json.example .mcp.json`
+4. Edit `.mcp.json` and hardcode their real token (replace placeholder)
+5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
+6. Restart Claude Code
+7. Start using `/github-sync`!
+
+### Advantages of MCP Approach
+- 🔒 Tokens in `.mcp.json` (gitignored, never committed)
+- 👥 Template-based setup (`.mcp.json.example` in git with placeholder)
+- 🚀 Native Claude Code integration via MCP tools
+- 🛠️ Better error handling and rate limiting
+- 📦 Standardized protocol across services
+- ⚡ No sudo required (unlike `gh` CLI installation)
+
+### Why We Switched from GitHub CLI
+- ✅ No installation required (npx handles it automatically)
+- ✅ No sudo permissions needed
+- ✅ Consistent with Notion MCP approach
+- ✅ Unified configuration in `.mcp.json`
+- ✅ Better portability across environments
+
+### Critical Security Notes
+- ⚠️ Environment variable substitution (`${GITHUB_TOKEN}`) does NOT work in `.mcp.json`
+- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
+- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks
+- ⚠️ Each team member needs their own token (no sharing)
+- ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
+
+See `/github-sync` command for full documentation.
 
 ## ChatGPT Integration
 
