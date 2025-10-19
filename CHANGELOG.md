@@ -5,6 +5,99 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-10-19
+
+### Changed
+
+**GitHub Integration: Migrated from GitHub CLI to GitHub MCP**
+
+- ⚡ **No sudo required** - Uses `npx @modelcontextprotocol/server-github` instead of `gh` CLI installation
+- 🔧 **Unified MCP configuration** - GitHub joins Notion in `.mcp.json` for consistent setup
+- 🚀 **Better portability** - Works across environments without system dependencies
+- 📦 **Standardized interface** - MCP provides unified tool API across services
+- 🛠️ **Better error handling** - Improved over direct CLI calls with MCP abstraction
+
+**Why We Switched:**
+- GitHub CLI requires sudo permissions for installation (friction for users)
+- MCP approach is consistent with Notion integration (unified developer experience)
+- Automatic installation via npx (no manual setup steps)
+- Project-scoped configuration in `.mcp.json` (better team collaboration)
+
+**Updated Documentation:**
+- `.mcp.json.example` - Added GitHub MCP server configuration
+  ```json
+  "github": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-github"],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_YOUR_GITHUB_TOKEN_HERE"
+    }
+  }
+  ```
+- `/setup-system` - Added GitHub MCP detection and setup instructions
+  - Detects existing GitHub MCP configuration
+  - Checks if token is still placeholder vs real token
+  - Guides users through GitHub PAT creation and configuration
+- `/github-sync` - Updated to use GitHub MCP instead of `gh` CLI
+  - Prerequisites changed from CLI installation to MCP setup
+  - Error handling checks for MCP tools instead of `gh` command
+  - Added "Why We Switched" section explaining migration rationale
+- `README.md` - Added comprehensive "GitHub Integration (MCP-based)" section
+  - Setup instructions matching Notion pattern
+  - Team onboarding workflow
+  - Security notes about token hardcoding
+  - Advantages of MCP approach vs CLI
+- `CLAUDE.md` - Updated MCP Integration section
+  - Added GitHub alongside Notion and Supabase
+  - Documented token format (ghp_*) and required permissions
+  - Added setup flow and security notes
+
+**Migration Guide for Existing Users:**
+
+If you were using GitHub CLI (`gh`) for `/github-sync`:
+
+1. **Create GitHub Personal Access Token:**
+   - Visit https://github.com/settings/tokens
+   - Generate new token (classic) with scopes: `repo`, `read:org`
+   - Copy token (starts with `ghp_`)
+
+2. **Update MCP configuration:**
+   ```bash
+   # If you don't have .mcp.json yet
+   cp .mcp.json.example .mcp.json
+
+   # Edit .mcp.json and add your GitHub token
+   # Replace "ghp_YOUR_GITHUB_TOKEN_HERE" with your actual token
+   # CRITICAL: Token must be hardcoded (env var substitution doesn't work)
+   ```
+
+3. **Restart Claude Code** (to load GitHub MCP server)
+
+4. **Continue using /github-sync as before** - All existing `docs/08-project/github-sync-map.json` files remain compatible
+
+5. **Optional: Uninstall GitHub CLI** if you only used it for AgileFlow
+
+**No Breaking Changes:**
+- Existing `github-sync-map.json` files are fully compatible
+- `/github-sync` command interface unchanged (same DRY_RUN mode, same options)
+- Only the underlying implementation changed (MCP tools instead of CLI)
+
+### Improved
+
+- **Consistency** - GitHub and Notion now follow identical MCP setup patterns
+- **Security** - All tokens managed in one place (`.mcp.json`), gitignored
+- **Developer Experience** - No sudo, no manual installations, just npx and config
+- **Team Onboarding** - Same workflow for all integrations (copy template, add token, restart)
+
+### Technical
+
+- Updated `.mcp.json.example` with GitHub MCP server configuration
+- Updated `commands/setup-system.md` detection phase to check for GitHub MCP
+- Updated `commands/github-sync.md` implementation to use MCP tools
+- Updated `README.md` with GitHub integration section (mirrors Notion section)
+- Updated `CLAUDE.md` MCP documentation with GitHub details
+- Plugin version bumped to 2.4.0 (minor release - new feature, backward compatible)
+
 ## [2.3.3] - 2025-10-18
 
 ### Fixed

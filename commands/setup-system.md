@@ -38,6 +38,19 @@ if [ -f .mcp.json ]; then
     echo "  ⚠️  Notion not configured in .mcp.json"
   fi
 
+  # Check GitHub
+  if grep -q '"github"' .mcp.json 2>/dev/null; then
+    echo "  ✅ GitHub MCP configured in .mcp.json"
+    # Check if token is still placeholder
+    if grep -q "ghp_YOUR_GITHUB_TOKEN_HERE" .mcp.json 2>/dev/null; then
+      echo "    ⚠️  Token is still placeholder - edit .mcp.json with your real token"
+    else
+      echo "    ✅ Token configured in .mcp.json"
+    fi
+  else
+    echo "  ⚠️  GitHub not configured in .mcp.json"
+  fi
+
   # Check Supabase
   if grep -q '"supabase"' .mcp.json 2>/dev/null; then
     echo "  ✅ Supabase MCP configured"
@@ -65,6 +78,7 @@ Core System: ✅ Configured / ❌ Not configured
 GitHub Issues Sync: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
 MCP Integrations:
   - Notion: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+  - GitHub: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
   - Supabase: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
 CI Workflow: ✅ Configured / ❌ Not configured
 ```
@@ -73,14 +87,12 @@ INPUTS (ask only about missing/incomplete features)
 Based on detection results above, ask ONLY about features that aren't fully configured:
 
 - IF core system missing: "Initialize core AgileFlow structure? yes/no"
-- IF GitHub sync missing: "Enable GitHub Issues sync? (creates sync mapping, sets up labels) yes/no"
-  - IF yes and no token: "Provide a GitHub token now? (optional; masked) TOKEN=<value or empty>"
-  - IF yes: "Configure minimal CI and branch protections via GitHub CLI? yes/no"
-- IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for Notion, Supabase, etc.) yes/no"
-  - IF yes: Ask which servers to enable: "Enable Notion? yes/no", "Enable Supabase? yes/no"
+- IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for GitHub, Notion, etc.) yes/no"
+  - IF yes: Ask which servers to enable: "Enable GitHub? yes/no", "Enable Notion? yes/no", "Enable Supabase? yes/no"
 - IF MCP partially configured:
-  - IF .mcp.json has servers with placeholder tokens: Report what's missing (e.g., "Notion token is still placeholder")
+  - IF .mcp.json has servers with placeholder tokens: Report what's missing (e.g., "GitHub token is still placeholder")
   - Print next steps: "To complete setup: 1) Edit .mcp.json with your real tokens, 2) Restart Claude Code"
+- IF GitHub sync missing: "Create GitHub sync mapping? (requires GitHub MCP) yes/no"
 - IF CI missing: "Create minimal CI workflow? yes/no"
 
 Skip asking about features that are already fully configured (just report them as ✅).
@@ -118,29 +130,97 @@ OS/RUNTIME DETECTION (safe, best-effort)
   - Windows: `cmd /c ver` (or similar, best-effort)
 - Save to docs/00-meta/runtime.json: { os, arch, git_version, detected_at }
 
-GITHUB TOKEN & CI INTEGRATION (optional)
-- Never write TOKEN to the repo. If provided:
-  - Offer to set it as a repo secret via GitHub CLI (preview commands; require YES):
-    - `gh auth status || gh auth login`
-    - `gh secret set GH_TOKEN -b"$TOKEN"`
-  - If CLI unavailable, print manual steps for Settings → Secrets and variables → Actions.
-- Offer to enable minimal branch protection (if confirmed and `gh` works):
-  - Preview command (require YES):
-    - `gh api -X PUT repos/{owner}/{repo}/branches/main/protection --input - <<<'{"required_status_checks":{"strict":true,"contexts":["CI"]},"enforce_admins":true,"required_pull_request_reviews":{"required_approving_review_count":1}}'`
-  - Otherwise print manual instructions.
+GITHUB MCP INTEGRATION SETUP (if enabled)
+**IMPORTANT**: GitHub integration uses Model Context Protocol (MCP) for tool access and requires a GitHub Personal Access Token. MCP provides a standardized interface to GitHub's API.
 
-GITHUB ISSUES SYNC SETUP (if enabled)
-- Create docs/08-project/github-sync-map.json with initial structure
-- Detect repository from git remote (or ask user for owner/repo)
-- Add GITHUB_REPO to .env (never commit)
-- Create standard AgileFlow labels in repository:
-  - `agileflow:story`, `epic:*`, `owner:*`, `Status: *`
-  - Preview command (require YES):
-    - `gh label create "agileflow:story" --description "Story tracked in AgileFlow" --color "0366d6"`
-    - (repeat for all standard labels)
-- Print next steps:
-  - "Run /github-sync DRY_RUN=true to preview first sync"
-  - "Run /github-sync to perform initial export"
+**Prerequisites**:
+1. Create a GitHub Personal Access Token at https://github.com/settings/tokens
+2. Get your token (starts with `ghp_`)
+3. Token permissions needed: `repo` (full control), `read:org` (if using organization repos)
+
+**Step 1: Add GitHub to .mcp.json.example** (if not already present):
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_YOUR_GITHUB_TOKEN_HERE"
+      }
+    }
+  }
+}
+```
+
+**CRITICAL - Token Hardcoding Required**:
+- ⚠️ Environment variable substitution does NOT work in .mcp.json
+- Tokens must be hardcoded directly in .mcp.json file
+- .mcp.json MUST be gitignored to prevent token leaks
+- .mcp.json.example is a template with placeholder text (committed to git)
+
+**Step 2: Create GitHub Sync Mapping**:
+Create `docs/08-project/github-sync-map.json`:
+```json
+{
+  "last_sync": null,
+  "mappings": {},
+  "config": {
+    "repository": "owner/repo"
+  }
+}
+```
+
+**Step 3: Copy Template and Add Real Token**:
+```bash
+# Each developer does this locally (not committed)
+cp .mcp.json.example .mcp.json
+
+# Edit .mcp.json and replace "ghp_YOUR_GITHUB_TOKEN_HERE" with your actual token
+# GitHub PATs start with "ghp_"
+# NEVER commit .mcp.json - it contains your real token!
+```
+
+**Step 4: Restart Claude Code**:
+```bash
+# MCP servers load on startup
+# After restart, GitHub tools available as mcp__github__*
+```
+
+**Step 5: Run Initial Sync**:
+```bash
+# Preview what will happen
+/github-sync DRY_RUN=true
+
+# Perform sync
+/github-sync
+```
+
+**Print Next Steps**:
+```
+✅ GitHub MCP template created (.mcp.json.example)
+✅ .gitignore updated (.mcp.json excluded)
+✅ GitHub sync mapping created
+⚠️  You still need to configure YOUR GitHub token
+
+Next steps for you:
+1. Create GitHub PAT: https://github.com/settings/tokens (permissions: repo, read:org)
+2. Copy template: cp .mcp.json.example .mcp.json
+3. Edit .mcp.json and replace placeholder with your real token
+4. Verify .mcp.json is in .gitignore (NEVER commit it!)
+5. Restart Claude Code (to load MCP server)
+6. Preview sync: /github-sync DRY_RUN=true
+7. Perform sync: /github-sync
+
+Next steps for team members:
+1. Pull latest code (includes .mcp.json.example)
+2. Create their own GitHub PAT
+3. Copy template: cp .mcp.json.example .mcp.json
+4. Edit .mcp.json with their real token
+5. Verify .mcp.json is gitignored
+6. Restart Claude Code
+7. Start syncing!
+```
 
 NOTION INTEGRATION SETUP VIA MCP (if enabled)
 **IMPORTANT**: Notion integration uses Model Context Protocol (MCP) for tool access and requires a Notion API token. MCP provides a standardized interface to Notion's API.
