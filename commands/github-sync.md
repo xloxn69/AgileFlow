@@ -18,16 +18,28 @@ INPUTS (optional)
 
 PREREQUISITES
 
-1. **GitHub Token** (read from .env):
-   ```bash
-   GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
-   GITHUB_REPO=owner/repo
+1. **GitHub MCP Server** configured in `.mcp.json`:
+   ```json
+   {
+     "mcpServers": {
+       "github": {
+         "command": "npx",
+         "args": ["-y", "@modelcontextprotocol/server-github"],
+         "env": {
+           "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your_token_here"
+         }
+       }
+     }
+   }
    ```
 
-2. **GitHub CLI** (check if installed):
-   ```bash
-   which gh || echo "Please install GitHub CLI: https://cli.github.com"
-   ```
+   Token permissions needed:
+   - `repo` (full control) - for issues, PRs, labels
+   - `read:org` - for organization access (if needed)
+
+   Get token from: https://github.com/settings/tokens
+
+2. **Repository configured** in sync map or provided via GITHUB_REPO parameter
 
 3. **Sync Mapping** (create if missing):
    `docs/08-project/github-sync-map.json`:
@@ -62,8 +74,10 @@ SYNC WORKFLOW
 Read docs/09-agents/status.json
 Read docs/06-stories/**/*.md
 
-# GitHub state
-gh issue list --repo $GITHUB_REPO --json number,title,state,labels,assignees,milestone --limit 1000
+# GitHub state (via MCP tools)
+# Use mcp__github__* tools to list issues, get repo info, etc.
+# MCP provides: search_repositories, create_or_update_file, push_files, create_issue,
+#              create_pull_request, fork_repository, create_repository, get_file_contents, etc.
 ```
 
 ### 2. Detect Changes
@@ -443,21 +457,16 @@ Output:
 ERROR HANDLING
 
 ```bash
-# Check for GitHub CLI
-if ! command -v gh &> /dev/null; then
-  echo "❌ GitHub CLI not installed. Install: https://cli.github.com"
-  exit 1
-fi
-
-# Check authentication
-if ! gh auth status &> /dev/null; then
-  echo "❌ Not authenticated. Run: gh auth login"
-  exit 1
-fi
-
-# Check repo access
-if ! gh repo view $GITHUB_REPO &> /dev/null; then
-  echo "❌ Cannot access repo $GITHUB_REPO. Check GITHUB_REPO in .env"
+# Check for GitHub MCP tools
+if ! command -v mcp__github__search_repositories &> /dev/null; then
+  echo "❌ GitHub MCP not configured. Add to .mcp.json:"
+  echo '  "github": {'
+  echo '    "command": "npx",'
+  echo '    "args": ["-y", "@modelcontextprotocol/server-github"],'
+  echo '    "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_your_token"}'
+  echo '  }'
+  echo ""
+  echo "Then restart Claude Code to load MCP server."
   exit 1
 fi
 
@@ -530,44 +539,40 @@ OUTPUT
 
 ---
 
-## FUTURE: GITHUB MCP INTEGRATION
+## GITHUB MCP INTEGRATION
 
-GitHub also offers a Model Context Protocol (MCP) server similar to Notion. While this command currently uses the GitHub CLI (`gh`), future versions could optionally use GitHub MCP for:
+This command uses **GitHub MCP** for all GitHub operations, providing:
 
-### Advantages of GitHub MCP
-- ✅ OAuth authentication (similar to Notion)
-- ✅ Native Claude Code integration
-- ✅ Standardized protocol across services
-- ✅ No CLI dependency
+### Advantages
+- ✅ **No sudo required** - npx handles installation automatically
+- ✅ **Consistent with Notion** - Both use MCP with tokens in `.mcp.json`
+- ✅ **Native Claude Code integration** - Built-in MCP tool support
+- ✅ **No CLI dependency** - Works in any environment (Docker, codespaces, etc.)
+- ✅ **Unified configuration** - All integrations in one `.mcp.json` file
 
-### Setup (Optional, for future use)
-Add to `.mcp.json`:
-```json
-{
-  "mcpServers": {
-    "notion": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"]
-    }
-  }
-}
-```
+### Available MCP Tools
+The GitHub MCP server provides these tools (prefix: `mcp__github__`):
+- `search_repositories` - Search for repositories
+- `create_or_update_file` - Create/update files in repo
+- `create_issue` - Create GitHub issues
+- `create_pull_request` - Create PRs
+- `get_file_contents` - Read file contents
+- `push_files` - Batch file operations
+- `fork_repository` - Fork repos
+- `create_repository` - Create new repos
 
-### Current Recommendation
-**Continue using GitHub CLI** (`gh`) for now because:
-- More stable and widely adopted
-- Better error messages
-- Easier testing and debugging
-- Direct integration with GitHub Actions
+### Migration from `gh` CLI
+If you previously used GitHub CLI (`gh`):
+1. Remove `gh` CLI (no longer needed)
+2. Add GitHub MCP to `.mcp.json` (see Prerequisites above)
+3. Restart Claude Code to load MCP server
+4. Run `/github-sync` - it now uses MCP automatically
 
-**Consider GitHub MCP** when:
-- MCP ecosystem matures
-- Team already using MCP for other services (Notion, Slack, etc.)
-- Need unified authentication approach
+### Why We Switched
+- Removes sudo/installation barrier
+- Consistent security model across all integrations
+- Better portability across environments
+- Simpler team onboarding (just copy `.mcp.json.example`)
 
 ---
 

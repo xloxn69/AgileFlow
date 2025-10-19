@@ -6,14 +6,26 @@
       "env": {
         "NOTION_TOKEN": "ntn_YOUR_NOTION_TOKEN_HERE"
       }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_YOUR_GITHUB_TOKEN_HERE"
+      }
     }
   }
 }
 
 // INSTRUCTIONS:
 // 1. Copy this file to .mcp.json (NOT committed to git)
-// 2. Replace "ntn_YOUR_NOTION_TOKEN_HERE" with your actual Notion integration token
-// 3. Get your token from: https://www.notion.so/my-integrations
-// 4. Notion tokens start with "ntn_" (not "secret_")
-// 5. NEVER commit .mcp.json to git (it's in .gitignore)
-// 6. Each team member needs their own copy with their own token
+// 2. Replace placeholder tokens with your actual tokens:
+//    - Notion: Get from https://www.notion.so/my-integrations (starts with "ntn_")
+//    - GitHub: Get from https://github.com/settings/tokens (starts with "ghp_")
+// 3. CRITICAL: Tokens must be hardcoded (env var substitution doesn't work)
+// 4. NEVER commit .mcp.json to git (it's in .gitignore)
+// 5. Each team member needs their own copy with their own tokens
+//
+// GitHub token permissions needed:
+// - repo (full control) - for issues, PRs, labels
+// - read:org - for organization access (if needed)

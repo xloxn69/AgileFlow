@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.3.3 - Fixed token format docs)",
+  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.4.0 - GitHub MCP migration)",
   "plugins": [
     {
       "name": "AgileFlow",
