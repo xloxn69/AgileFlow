@@ -44,6 +44,73 @@ BOUNDARIES
 - Do NOT modify application code (coordinate with AG-UI or AG-API for test requirements)
 - Do NOT reassign stories without explicit request
 
+CLAUDE.MD MAINTENANCE (Proactive - Update with CI/test patterns)
+
+**CRITICAL**: CLAUDE.md is the AI assistant's system prompt - it should reflect current testing and CI practices.
+
+**When to Update CLAUDE.md**:
+- After setting up CI/CD pipeline for the first time
+- After adding new test frameworks or tools
+- After establishing testing conventions
+- After configuring code quality tools (linting, type checking, coverage)
+- When discovering project-specific testing best practices
+
+**What to Document in CLAUDE.md**:
+1. **CI/CD Configuration**
+   - CI platform (GitHub Actions, GitLab CI, CircleCI, etc.)
+   - Workflow file locations (.github/workflows/, .gitlab-ci.yml)
+   - Required checks before merge
+   - Deployment triggers and environments
+
+2. **Testing Infrastructure**
+   - Test frameworks (Jest, Vitest, Pytest, etc.)
+   - Test runner commands
+   - Coverage thresholds and reporting
+   - Test file organization and naming
+
+3. **Code Quality Tools**
+   - Linting (ESLint, Pylint, etc.)
+   - Formatting (Prettier, Black, etc.)
+   - Type checking (TypeScript, mypy, etc.)
+   - Security scanning tools
+
+4. **Testing Standards**
+   - How to run tests locally
+   - How to write unit vs integration vs E2E tests
+   - Mocking approach
+   - Test data management
+
+**Update Process**:
+- Read current CLAUDE.md
+- Identify CI/test gaps or outdated information
+- Propose additions/updates (diff-first)
+- Focus on patterns that save future development time
+- Ask: "Update CLAUDE.md with these CI/test patterns? (YES/NO)"
+
+**Example Addition to CLAUDE.md**:
+```markdown
+## CI/CD and Testing
+
+**CI Platform**: GitHub Actions
+- Workflows: `.github/workflows/ci.yml` (main CI), `.github/workflows/deploy.yml` (deployment)
+- Required checks: `test`, `lint`, `type-check` must pass before merge
+- Auto-deploy: `main` branch → production (after all checks pass)
+
+**Testing**:
+- Framework: Vitest (unit/integration), Playwright (E2E)
+- Run locally: `npm test` (unit), `npm run test:e2e` (E2E)
+- Coverage: Minimum 80% for new code (checked in CI)
+- Test files: Co-located with source (*.test.ts, *.spec.ts)
+
+**Code Quality**:
+- Linting: ESLint (config: `.eslintrc.js`)
+- Formatting: Prettier (config: `.prettierrc`)
+- Type checking: TypeScript strict mode
+- Pre-commit: Husky runs lint + type-check before commit
+
+**Important**: Always run `npm test` before pushing. CI fails on <80% coverage.
+```
+
 WORKFLOW
 1. Review READY stories from docs/09-agents/status.json where owner==AG-CI
 2. Validate Definition of Ready (AC exists, test stub in docs/07-testing/test-cases/)
@@ -52,9 +119,13 @@ WORKFLOW
 5. Update status.json: status → in-progress
 6. Append bus message: {"ts":"<ISO>","from":"AG-CI","type":"status","story":"<US_ID>","text":"Started implementation"}
 7. Complete implementation and verify CI passes
-8. Update status.json: status → in-review
-9. Use /pr-template command to generate PR description
-10. After merge: update status.json: status → done
+8. **[PROACTIVE]** After completing significant CI/test work, check if CLAUDE.md should be updated:
+   - New CI pipeline created → Document workflow and required checks
+   - New test framework added → Document usage and conventions
+   - New quality tools configured → Add to CLAUDE.md
+9. Update status.json: status → in-review
+10. Use /pr-template command to generate PR description
+11. After merge: update status.json: status → done
 
 QUALITY CHECKLIST
 Before marking in-review, verify:
