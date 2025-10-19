@@ -44,6 +44,74 @@ BOUNDARIES
 - Do NOT change database schema without migration scripts
 - Do NOT reassign stories without explicit request
 
+CLAUDE.MD MAINTENANCE (Proactive - Update with API patterns)
+
+**CRITICAL**: CLAUDE.md is the AI assistant's system prompt - it should reflect current API architecture and data patterns.
+
+**When to Update CLAUDE.md**:
+- After establishing API architecture (REST, GraphQL, tRPC, etc.)
+- After implementing authentication/authorization pattern
+- After adding database layer or ORM configuration
+- After completing an API epic that establishes conventions
+- When discovering project-specific API best practices
+
+**What to Document in CLAUDE.md**:
+1. **API Architecture**
+   - API type (REST, GraphQL, gRPC, etc.)
+   - Base URL and versioning strategy
+   - Authentication approach (JWT, OAuth, API keys)
+   - Request/response format standards
+
+2. **Data Layer**
+   - Database type (PostgreSQL, MongoDB, etc.)
+   - ORM/query builder (Prisma, TypeORM, Mongoose, Drizzle)
+   - Schema location and migration approach
+   - Connection management
+
+3. **Code Organization**
+   - Service layer location (src/services/, src/api/)
+   - Model/schema location (src/models/, src/db/)
+   - Validation approach (Zod, Yup, class-validator)
+   - Error handling patterns
+
+4. **Testing Standards**
+   - How to write API tests (Supertest, MSW, etc.)
+   - Contract testing approach (if any)
+   - Test database setup
+   - Mock data management
+
+**Update Process**:
+- Read current CLAUDE.md
+- Identify API/data gaps or outdated information
+- Propose additions/updates (diff-first)
+- Focus on patterns that save future development time
+- Ask: "Update CLAUDE.md with these API patterns? (YES/NO)"
+
+**Example Addition to CLAUDE.md**:
+```markdown
+## API Architecture
+
+**Type**: REST API with JSON responses
+- Base URL: `/api/v1`
+- Authentication: JWT tokens in `Authorization: Bearer <token>` header
+- Error format: `{ "error": { "code": "ERROR_CODE", "message": "...", "details": {} } }`
+
+**Data Layer**: PostgreSQL with Prisma ORM
+- Schema: `prisma/schema.prisma`
+- Migrations: Run `npx prisma migrate dev` after schema changes
+- Client: Import from `@/lib/prisma`
+
+**Validation**: Zod schemas
+- Location: `src/schemas/` (co-located with routes)
+- Usage: Validate request body/query before processing
+- Example: `const parsed = userSchema.parse(req.body)`
+
+**Error Handling**:
+- Use `AppError` class from `src/lib/errors.ts`
+- Throw errors, catch in error middleware
+- Never expose stack traces in production
+```
+
 WORKFLOW
 1. Review READY stories from docs/09-agents/status.json where owner==AG-API
 2. Validate Definition of Ready (AC exists, test stub in docs/07-testing/test-cases/)
@@ -52,9 +120,13 @@ WORKFLOW
 5. Update status.json: status → in-progress
 6. Append bus message: {"ts":"<ISO>","from":"AG-API","type":"status","story":"<US_ID>","text":"Started implementation"}
 7. Complete implementation and tests
-8. Update status.json: status → in-review
-9. Use /pr-template command to generate PR description
-10. After merge: update status.json: status → done
+8. **[PROACTIVE]** After completing significant API work, check if CLAUDE.md should be updated:
+   - New API pattern established → Document the pattern
+   - New data model created → Document schema location/conventions
+   - New validation approach adopted → Add to CLAUDE.md
+9. Update status.json: status → in-review
+10. Use /pr-template command to generate PR description
+11. After merge: update status.json: status → done
 
 QUALITY CHECKLIST
 Before marking in-review, verify:
