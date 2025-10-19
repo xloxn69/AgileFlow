@@ -38,7 +38,7 @@ AgileFlow/
 ├── CHANGELOG.md             # Version history (Keep a Changelog format)
 ├── README.md                # Plugin documentation
 ├── SUBAGENTS.md             # Subagent usage guide
-├── .mcp.json.example        # MCP server config template (Notion, Supabase)
+├── .mcp.json.example        # MCP server config template (GitHub, Notion, Supabase)
 └── .env.example             # Environment variable template
 ```
 
@@ -171,20 +171,49 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
 AgileFlow integrates with external services via Model Context Protocol (MCP):
 
 **`.mcp.json.example`** - Template committed to git:
-- Configures MCP servers (Notion, Supabase, etc.)
-- Contains placeholder tokens like `"secret_YOUR_NOTION_TOKEN_HERE"`
+- Configures MCP servers for GitHub, Notion, and Supabase integrations
+- Contains placeholder tokens:
+  - GitHub: `"ghp_YOUR_GITHUB_TOKEN_HERE"` (Personal Access Token)
+  - Notion: `"ntn_YOUR_NOTION_TOKEN_HERE"` (Integration Token)
+  - Supabase: Configured via environment variables
 - Users copy to `.mcp.json` (gitignored) and replace placeholders with real tokens
+- **Why MCP?** Standardized tool interface, no sudo required, better portability
 
 **CRITICAL: Token Hardcoding Required**:
-- ⚠️ Environment variable substitution (`${NOTION_TOKEN}`) does NOT work in `.mcp.json`
+- ⚠️ Environment variable substitution (`${GITHUB_TOKEN}`, `${NOTION_TOKEN}`) does NOT work in `.mcp.json`
 - ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
 - ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks (already in .gitignore)
 - ⚠️ `.mcp.json.example` is committed with placeholder text, never real tokens
+- ⚠️ Each team member needs their own tokens (no sharing)
+
+**Supported MCP Servers**:
+- **GitHub MCP** (`@modelcontextprotocol/server-github`):
+  - Bidirectional GitHub Issues sync
+  - No sudo required (uses npx)
+  - Token: GitHub Personal Access Token (ghp_*)
+  - Permissions: `repo`, `read:org`
+  - Command: `/github-sync`
+
+- **Notion MCP** (`@notionhq/notion-mcp-server`):
+  - Bidirectional Notion database sync
+  - Token: Notion Integration Token (ntn_*)
+  - Command: `/notion-export`
+
+- **Supabase MCP** (if configured):
+  - Configured via environment variables in `.env`
 
 **`.env.example`** - Environment variable template (optional):
-- Documents other environment variables (SUPABASE_*, GITHUB_* if needed by other tools)
-- NOTION_TOKEN documented here for reference but NOT used by MCP (hardcode in .mcp.json instead)
+- Documents other environment variables (SUPABASE_*, legacy references)
+- GITHUB_TOKEN and NOTION_TOKEN documented here for reference only
+- Actual tokens for MCP must be hardcoded in `.mcp.json`, not read from .env
 - Never contains actual secrets
+
+**Setup Flow**:
+1. User runs `/setup-system` → Creates `.mcp.json.example` with placeholders
+2. User copies: `cp .mcp.json.example .mcp.json`
+3. User edits `.mcp.json` and hardcodes their real tokens
+4. User restarts Claude Code (to load MCP servers)
+5. User runs `/github-sync` or `/notion-export` to sync
 
 **Key principle**: Template (`.mcp.json.example`) is committed with placeholders, actual config (`.mcp.json`) with hardcoded tokens is gitignored.
 
