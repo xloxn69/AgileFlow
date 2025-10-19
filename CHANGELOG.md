@@ -5,6 +5,20 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.3] - 2025-10-18
+
+### Fixed
+
+**Documentation: Correct Notion Token Format**
+
+- Fixed incorrect token format in all documentation (Notion tokens start with `ntn_`, not `secret_`)
+- Updated `.mcp.json.example` placeholder from `secret_YOUR_NOTION_TOKEN_HERE` to `ntn_YOUR_NOTION_TOKEN_HERE`
+- Updated `/setup-system` command to check for correct placeholder format
+- Updated README.md Notion integration section
+- Added clarification that Notion tokens start with `ntn_`
+
+**Note**: If you copied from v2.3.2 docs and used `secret_` as your placeholder, replace it with `ntn_YOUR_ACTUAL_TOKEN`.
+
 ## [2.3.2] - 2025-10-18
 
 ### Fixed
@@ -19,18 +33,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added prominent security warnings about token hardcoding
 
 **What Changed:**
-- `.mcp.json.example` now contains `"NOTION_TOKEN": "secret_YOUR_NOTION_TOKEN_HERE"` (placeholder)
+- `.mcp.json.example` now contains `"NOTION_TOKEN": "ntn_YOUR_NOTION_TOKEN_HERE"` (placeholder)
 - Users must copy to `.mcp.json` and replace placeholder with real token
 - Removed all references to `${NOTION_TOKEN}` environment variable substitution
 - Clarified that `.mcp.json` must be gitignored (already was)
+- **v2.3.3 update**: Fixed token format (Notion tokens start with `ntn_`, not `secret_`)
 
 **Migration from v2.3.1:**
 If you followed v2.3.1 docs and used `${NOTION_TOKEN}`:
 1. Open your `.mcp.json` file
-2. Replace `"NOTION_TOKEN": "${NOTION_TOKEN}"` with your actual token: `"NOTION_TOKEN": "secret_your_real_token_here"`
-3. Remove NOTION_TOKEN from `.env` (not used by MCP)
-4. Verify `.mcp.json` is in `.gitignore`
-5. Restart Claude Code
+2. Replace `"NOTION_TOKEN": "${NOTION_TOKEN}"` with your actual token: `"NOTION_TOKEN": "ntn_your_real_token_here"`
+3. Notion tokens start with `ntn_` (not `secret_`)
+4. Remove NOTION_TOKEN from `.env` (not used by MCP)
+5. Verify `.mcp.json` is in `.gitignore`
+6. Restart Claude Code
 
 **Security Notes:**
 - `.mcp.json` MUST be gitignored (contains real tokens)

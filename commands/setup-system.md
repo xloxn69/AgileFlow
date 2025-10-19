@@ -28,7 +28,7 @@ if [ -f .mcp.json ]; then
   if grep -q '"notion"' .mcp.json 2>/dev/null; then
     echo "  ✅ Notion MCP configured in .mcp.json"
     # Check if token is still placeholder
-    if grep -q "secret_YOUR_NOTION_TOKEN_HERE" .mcp.json 2>/dev/null; then
+    if grep -q "ntn_YOUR_NOTION_TOKEN_HERE" .mcp.json 2>/dev/null; then
       echo "    ⚠️  Token is still placeholder - edit .mcp.json with your real token"
     else
       echo "    ✅ Token configured in .mcp.json"
@@ -147,7 +147,7 @@ NOTION INTEGRATION SETUP VIA MCP (if enabled)
 
 **Prerequisites**:
 1. Create a Notion integration at https://www.notion.so/my-integrations
-2. Get your Integration Token (starts with `secret_`)
+2. Get your Integration Token (starts with `ntn_`)
 3. Share your Notion databases with the integration
 
 **Step 1: Create .mcp.json.example** (template for team, committed to git)
@@ -158,7 +158,7 @@ NOTION INTEGRATION SETUP VIA MCP (if enabled)
       "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
-        "NOTION_TOKEN": "secret_YOUR_NOTION_TOKEN_HERE"
+        "NOTION_TOKEN": "ntn_YOUR_NOTION_TOKEN_HERE"
       }
     }
   }
@@ -182,7 +182,8 @@ echo ".mcp.json" >> .gitignore
 # Each developer does this locally (not committed)
 cp .mcp.json.example .mcp.json
 
-# Edit .mcp.json and replace "secret_YOUR_NOTION_TOKEN_HERE" with your actual token
+# Edit .mcp.json and replace "ntn_YOUR_NOTION_TOKEN_HERE" with your actual token
+# Notion tokens start with "ntn_"
 # NEVER commit .mcp.json - it contains your real token!
 ```
 
