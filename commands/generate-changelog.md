@@ -88,7 +88,7 @@ Recognize commit prefixes:
 - `perf:` → **Changed** (note performance improvement)
 - `test:` → (skip)
 - `chore:` → (skip unless important)
-- `BREAKING CHANGE:` or `!` → **Changed** (breaking) + note
+- `BREAKING CHANGE:` or exclamation mark → **Changed** (breaking) + note
 - `security:` → **Security**
 
 CATEGORIZATION
@@ -126,7 +126,7 @@ Please categorize:
 BREAKING CHANGES
 
 Detect breaking changes:
-- Commit with `!` after type: `feat!: new API`
+- Commit with exclamation mark after type: `feat!: new API`
 - Commit with `BREAKING CHANGE:` footer
 - PR label: `breaking-change`
 
