@@ -5,6 +5,92 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2025-10-19
+
+### Improved
+
+**All Agent Slash Commands Now Match Full Agent Capabilities**
+
+Updated all agent slash commands (`/agent-ui`, `/agent-api`, `/agent-ci`) to fully document what their corresponding subagents do:
+
+- **`/agent-ui` Command** - Now comprehensive with:
+  - 🎨 Design system automation (detection, creation, migration)
+  - 🧠 Complete UX laws and design fundamentals (Jakob's Law, Miller's Law, Fitts's Law, etc.)
+  - ♿ WCAG 2.1 AA accessibility requirements
+  - 📋 Full quality checklist
+  - 📝 CLAUDE.md maintenance for UI patterns
+  - 🔄 Step-by-step workflow
+
+- **`/agent-api` Command** - Now comprehensive with:
+  - 🔧 Backend architecture capabilities
+  - 🔒 Security and validation practices
+  - 📊 Data layer best practices
+  - 📝 CLAUDE.md maintenance for API patterns
+  - 📋 Full quality checklist
+  - 🔄 Complete workflow
+
+- **`/agent-ci` Command** - Now comprehensive with:
+  - ⚡ CI/CD pipeline management
+  - 🧪 Test infrastructure setup
+  - 🔍 Code quality enforcement
+  - 📝 CLAUDE.md maintenance for CI/test patterns
+  - 📋 Full quality checklist
+  - 🎯 Proactive actions (auditing, optimization)
+
+**Why This Matters:**
+- Users can now see full agent capabilities from slash commands
+- Commands serve as comprehensive reference documentation
+- Easier to choose the right agent for the job
+- Slash commands and agents stay perfectly in sync
+
+### Added
+
+**CLAUDE.md Maintenance for All Core Agents**
+
+All three core agents (`agileflow-ui`, `agileflow-api`, `agileflow-ci`) now proactively maintain CLAUDE.md:
+
+- **UI Agent** - Documents after:
+  - Establishing design system → Token structure and usage
+  - Implementing UI patterns → Pattern documentation
+  - Adopting styling approach → CSS conventions
+  - Documents: Styling system, component patterns, UI conventions, testing standards
+
+- **API Agent** - Documents after:
+  - Establishing API architecture → API type, auth, versioning
+  - Adding database/ORM → Schema location, migration approach
+  - Implementing validation → Validation conventions
+  - Documents: API architecture, data layer, code organization, testing standards
+
+- **CI Agent** - Documents after:
+  - Setting up CI pipeline → Workflow files, required checks
+  - Adding test frameworks → Test commands, organization
+  - Configuring quality tools → Linting, formatting, type-check
+  - Documents: CI/CD config, testing infrastructure, code quality tools, testing standards
+
+**Benefits:**
+- ✅ CLAUDE.md always stays current with project practices
+- ✅ AI assistant has accurate context for all future work
+- ✅ New team members see documented patterns immediately
+- ✅ Reduces "how do we do X?" questions
+- ✅ Ensures consistency across features
+
+### Changed
+
+- `agents/agileflow-ui.md` - Added CLAUDE.md maintenance section and updated workflow
+- `agents/agileflow-api.md` - Added CLAUDE.md maintenance section and updated workflow
+- `agents/agileflow-ci.md` - Added CLAUDE.md maintenance section and updated workflow
+- `commands/agent-ui.md` - Completely rewritten to match full agent capabilities
+- `commands/agent-api.md` - Completely rewritten to match full agent capabilities
+- `commands/agent-ci.md` - Completely rewritten to match full agent capabilities
+- Plugin version bumped to 2.6.0 (minor release - enhanced agent features)
+
+### Technical
+
+- All agent workflows now include step for updating CLAUDE.md after significant work
+- Slash commands now serve as comprehensive agent documentation
+- Added example CLAUDE.md snippets for each agent type
+- Documented when/what to update in CLAUDE.md for each specialization
+
 ## [2.5.0] - 2025-10-19
 
 ### Added

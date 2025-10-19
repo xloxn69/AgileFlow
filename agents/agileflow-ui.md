@@ -254,6 +254,70 @@ module.exports = {
 - ✅ Developer Experience: Autocomplete for design tokens
 - ✅ Scalability: New components automatically match existing design
 
+CLAUDE.MD MAINTENANCE (Proactive - Update with UI patterns)
+
+**CRITICAL**: CLAUDE.md is the AI assistant's system prompt - it should reflect current styling practices and design patterns.
+
+**When to Update CLAUDE.md**:
+- After establishing a design system (document the token structure)
+- After implementing a new UI pattern (e.g., card layout, modal system)
+- When adopting a new styling approach (CSS-in-JS, CSS Modules, Tailwind utilities)
+- After completing a UI epic that establishes design conventions
+- When discovering project-specific UI best practices
+
+**What to Document in CLAUDE.md**:
+1. **Styling System**
+   - Design token location and structure (e.g., `src/theme/tokens.ts`)
+   - How to use design tokens (import path, usage examples)
+   - CSS approach (CSS Modules, styled-components, Tailwind, vanilla CSS)
+   - Global styles location (e.g., `src/styles/global.css`)
+
+2. **Component Patterns**
+   - Component organization (atomic design, feature-based, etc.)
+   - Naming conventions for components
+   - Where to place components (src/components/, src/ui/, etc.)
+   - Shared vs. feature-specific components
+
+3. **UI Conventions**
+   - Responsive breakpoint usage
+   - Accessibility requirements (ARIA patterns, keyboard nav)
+   - Animation/transition standards
+   - Icon system (library, usage)
+   - Image optimization approach
+
+4. **Testing Standards**
+   - How to write UI tests (Testing Library, Enzyme, etc.)
+   - Accessibility testing approach (axe-core, jest-axe)
+   - Visual regression testing (if any)
+   - Test file location patterns
+
+**Update Process**:
+- Read current CLAUDE.md
+- Identify UI/styling gaps or outdated information
+- Propose additions/updates (diff-first)
+- Focus on patterns that save future development time
+- Ask: "Update CLAUDE.md with these UI patterns? (YES/NO)"
+
+**Example Addition to CLAUDE.md**:
+```markdown
+## Styling System
+
+**Design Tokens**: Located in `src/theme/tokens.ts`
+- Import: `import { colors, spacing, typography } from '@/theme/tokens'`
+- Usage: `<div style={{ color: colors.primary, padding: spacing.md }}>`
+- DO NOT hardcode colors, spacing, or fonts - always use tokens
+
+**CSS Approach**: CSS Modules (*.module.css)
+- Component-specific styles in same directory as component
+- Global styles in `src/styles/global.css`
+- Naming: PascalCase for class names (`.Button`, `.CardHeader`)
+
+**Responsive Design**:
+- Mobile-first approach (base styles = mobile, add breakpoints up)
+- Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
+- Use `@media (min-width: ...)` for breakpoints
+```
+
 WORKFLOW
 1. **[PROACTIVE - First Story Only]** Check for design system (see DESIGN SYSTEM INITIALIZATION section above)
    - If none exists → Ask to create one
@@ -267,9 +331,13 @@ WORKFLOW
 6. Update status.json: status → in-progress
 7. Append bus message: {"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Started implementation"}
 8. Complete implementation and tests
-9. Update status.json: status → in-review
-10. Use /pr-template command to generate PR description
-11. After merge: update status.json: status → done
+9. **[PROACTIVE]** After completing significant UI work, check if CLAUDE.md should be updated:
+   - New design system created → Document token structure and usage
+   - New UI pattern established → Document the pattern
+   - New styling convention adopted → Add to CLAUDE.md
+10. Update status.json: status → in-review
+11. Use /pr-template command to generate PR description
+12. After merge: update status.json: status → done
 
 UX LAWS & DESIGN FUNDAMENTALS
 
