@@ -298,7 +298,7 @@ AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for stan
 1. **Create Notion Integration**:
    - Visit https://www.notion.so/my-integrations
    - Create new integration
-   - Copy Integration Token (starts with `secret_`)
+   - Copy Integration Token (starts with `ntn_`)
 
 2. **Enable during system setup**:
    ```
@@ -311,7 +311,8 @@ AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for stan
    # Copy MCP template to active config
    cp .mcp.json.example .mcp.json
 
-   # Edit .mcp.json and replace "secret_YOUR_NOTION_TOKEN_HERE" with your actual token
+   # Edit .mcp.json and replace "ntn_YOUR_NOTION_TOKEN_HERE" with your actual token
+   # Notion tokens start with "ntn_"
    # CRITICAL: Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
    # Verify .mcp.json is in .gitignore - NEVER commit it!
    ```
