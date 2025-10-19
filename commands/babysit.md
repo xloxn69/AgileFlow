@@ -24,7 +24,7 @@ KNOWLEDGE INDEX (run first)
   - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
   - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
   - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
-  - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP with token-based auth)
+  - Integration: commands/{github-sync,notion-export}.md (both use MCP with token-based auth)
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
   - Docs: commands/{readme-sync,system-help}.md
 - Read ALL docs/**/README.md; map "Next steps/TODO/Open Questions/Planned/Risks".
@@ -117,17 +117,29 @@ All commands are invoked directly by the agent - no manual user intervention req
 - If GitHub enabled and story done: Automatically run SlashCommand("/github-sync")
 - After significant changes: Run SlashCommand("/impact-analysis") to show affected areas
 
-**CRITICAL - Notion Integration (if enabled via MCP)**:
-Check if Notion is enabled by looking for `.mcp.json` (MCP configuration) and `docs/08-project/notion-sync-map.json` (sync state).
+**CRITICAL - GitHub & Notion Integration (if enabled via MCP)**:
+Check if integrations are enabled by looking for `.mcp.json` (MCP configuration).
 
 **Setup Detection**:
+- If `.mcp.json` exists with "github" MCP server → GitHub integration is configured
 - If `.mcp.json` exists with "notion" MCP server → Notion integration is configured
-- If `docs/08-project/notion-sync-map.json` exists with database IDs → Databases are set up
-- User must have NOTION_TOKEN in .env and restart Claude Code
+- If `docs/08-project/notion-sync-map.json` exists with database IDs → Notion databases are set up
+- Tokens are HARDCODED directly in `.mcp.json` (not read from .env)
+- User must restart Claude Code after adding tokens to `.mcp.json`
+
+**If GitHub NOT configured**:
+- Suggest: "Run /setup-system to enable GitHub integration (token-based via MCP)"
+- Explain: "Need GitHub PAT hardcoded in .mcp.json + restart Claude Code"
 
 **If Notion NOT configured**:
 - Suggest: "Run /setup-system to enable Notion integration (token-based via MCP)"
-- Explain: "Need NOTION_TOKEN in .env + .mcp.json in project root + restart Claude Code"
+- Explain: "Need Notion token hardcoded in .mcp.json + restart Claude Code"
+
+**When GitHub is enabled, ALWAYS sync after these events**:
+- After creating story → SlashCommand("/github-sync")
+- After status change → SlashCommand("/github-sync")
+- After updating story content → SlashCommand("/github-sync")
+- After epic completion → SlashCommand("/github-sync")
 
 **When Notion is enabled, ALWAYS sync after these events**:
 - After creating epic → SlashCommand("/notion-export DATABASE=epics")
@@ -138,16 +150,18 @@ Check if Notion is enabled by looking for `.mcp.json` (MCP configuration) and `d
 - After epic completion → SlashCommand("/notion-export DATABASE=all")
 
 **Why this is critical**:
-- Notion is the collaboration layer for stakeholders
+- GitHub Issues is the developer collaboration layer
+- Notion is the stakeholder collaboration layer
 - Status.json and bus/log.jsonl are AgileFlow's source of truth
-- Notion must stay in sync so non-technical team members see updates
-- Automatic sync ensures stakeholders always have current information
+- Both integrations must stay in sync so all team members see updates
+- Automatic sync ensures everyone has current information
 
 **Sync pattern**:
 ```
 1. Update status.json or bus/log.jsonl (AgileFlow source of truth)
-2. Immediately invoke SlashCommand("/notion-export") if enabled
-3. Continue with workflow
+2. Immediately invoke SlashCommand("/github-sync") if GitHub enabled
+3. Immediately invoke SlashCommand("/notion-export") if Notion enabled
+4. Continue with workflow
 ```
 
 Example:
@@ -155,6 +169,11 @@ Example:
 // After updating story status
 update_status_json("US-0042", "in-progress", "AG-API")
 append_to_bus({"type": "status-change", "story": "US-0042", "status": "in-progress"})
+
+// Immediately sync to GitHub if enabled
+if (github_enabled) {
+  SlashCommand("/github-sync")
+}
 
 // Immediately sync to Notion if enabled
 if (notion_enabled) {
@@ -218,9 +237,9 @@ IMPLEMENTATION FLOW
 3) Plan ≤4 steps with exact file paths.
 4) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
 5) Update status.json → in-progress; append bus line.
-6) **[CRITICAL]** Immediately sync to Notion/GitHub if enabled:
-   - SlashCommand("/notion-export DATABASE=stories") if `.mcp.json` has notion server
-   - SlashCommand("/github-sync") if GITHUB_REPO exists in .env or gh CLI configured
+6) **[CRITICAL]** Immediately sync to GitHub/Notion if enabled:
+   - SlashCommand("/github-sync") if `.mcp.json` has github MCP server configured
+   - SlashCommand("/notion-export DATABASE=stories") if `.mcp.json` has notion MCP server configured
 7) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
 8) Update status.json → in-review; sync to Notion/GitHub again.
 9) Generate PR body; suggest syncing docs/chatgpt.md and saving research.

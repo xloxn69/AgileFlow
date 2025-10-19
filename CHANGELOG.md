@@ -5,6 +5,94 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-10-19
+
+### Added
+
+**UI Agent: Proactive Design System Initialization**
+
+The `agileflow-ui` subagent now automatically detects and creates design systems:
+
+- ✅ **Automatic Detection** - Checks for existing design systems before first UI story
+  - Scans common locations: `src/styles/`, `src/theme/`, `tailwind.config.js`
+  - Detects CSS variables (`:root { --color-*, --spacing-* }`)
+  - Searches for hardcoded colors/spacing across components
+  - Identifies inconsistent styling patterns
+
+- 🎨 **Smart Design Token Extraction**
+  - Scans existing components for hardcoded styles
+  - Identifies patterns (most-used colors, spacing values, fonts)
+  - Creates consolidated design token file from codebase conventions
+  - Learns from existing design language
+
+- 🔧 **Multi-Framework Support**
+  - **CSS/Vanilla**: Creates `design-tokens.css` with CSS variables
+  - **React/TypeScript**: Creates `tokens.ts` with typed exports
+  - **Tailwind CSS**: Updates `tailwind.config.js` with extracted tokens
+
+- 📦 **Comprehensive Token Categories**
+  - Colors (primary, semantic, text, backgrounds, borders)
+  - Spacing (xs through 2xl, 8px grid system)
+  - Typography (font families, sizes, weights, line heights)
+  - Shadows (elevation levels)
+  - Border radius (component roundness)
+  - Breakpoints (responsive design)
+
+- 🔄 **Migration Automation**
+  - Offers to refactor existing components
+  - Replaces hardcoded values with design tokens
+  - Maintains visual consistency during migration
+  - Tests components after refactoring
+
+- 📋 **Quality Enforcement**
+  - Added checklist item: "Uses design tokens (no hardcoded colors/spacing/fonts)"
+  - Workflow step 1: Check design system before implementing UI stories
+  - FIRST ACTION: Proactively checks and offers to create design system
+
+**Benefits:**
+- ✅ Consistency: All components use same design language
+- ✅ Maintainability: Change one value, updates everywhere
+- ✅ Theming: Easy to add dark mode or brand variations
+- ✅ Accessibility: Ensures consistent contrast ratios
+- ✅ Developer Experience: Autocomplete for design tokens
+- ✅ Scalability: New components automatically match existing design
+
+### Improved
+
+**Command: /babysit - GitHub MCP Integration**
+
+Updated `/babysit` command to reference GitHub MCP configuration (migrated from legacy approach):
+
+- Updated integration detection to check `.mcp.json` for GitHub MCP server
+- Added GitHub sync events alongside Notion sync events
+- Updated sync pattern to include both GitHub and Notion integrations
+- Clarified that tokens are hardcoded in `.mcp.json` (not read from `.env`)
+- Added setup detection for both GitHub and Notion MCP servers
+- Updated implementation flow to sync to GitHub/Notion after status changes
+- Consistent MCP-based approach across all integrations
+
+**Why This Matters:**
+- Ensures `/babysit` mentor uses modern GitHub MCP approach
+- Consistent with v2.4.0 GitHub MCP migration
+- Automatic bidirectional sync for developer collaboration
+- No more references to legacy `.env` or `gh` CLI approach
+
+### Changed
+
+- `commands/babysit.md` - Updated all GitHub integration references to use MCP
+- `agents/agileflow-ui.md` - Added design system initialization workflow
+- Plugin version bumped to 2.5.0 (minor release - new UI agent capability)
+
+### Technical
+
+- Added "DESIGN SYSTEM INITIALIZATION" section to agileflow-ui agent
+- Updated UI agent SCOPE to include design tokens and theme files
+- Updated UI agent WORKFLOW to check design system proactively
+- Updated UI agent QUALITY CHECKLIST to enforce design token usage
+- Updated UI agent FIRST ACTION to check design system before stories
+- Removed legacy GitHub CLI references from /babysit command
+- Added GitHub MCP sync automation to /babysit implementation flow
+
 ## [2.4.0] - 2025-10-19
 
 ### Changed
