@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
-        "NOTION_TOKEN": "secret_YOUR_NOTION_TOKEN_HERE"
+        "NOTION_TOKEN": "ntn_YOUR_NOTION_TOKEN_HERE"
       }
     }
   }
@@ -12,7 +12,8 @@
 
 // INSTRUCTIONS:
 // 1. Copy this file to .mcp.json (NOT committed to git)
-// 2. Replace "secret_YOUR_NOTION_TOKEN_HERE" with your actual Notion integration token
+// 2. Replace "ntn_YOUR_NOTION_TOKEN_HERE" with your actual Notion integration token
 // 3. Get your token from: https://www.notion.so/my-integrations
-// 4. NEVER commit .mcp.json to git (it's in .gitignore)
-// 5. Each team member needs their own copy with their own token
+// 4. Notion tokens start with "ntn_" (not "secret_")
+// 5. NEVER commit .mcp.json to git (it's in .gitignore)
+// 6. Each team member needs their own copy with their own token
