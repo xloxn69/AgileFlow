@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.6.0 - All agents sync slash commands + CLAUDE.md maintenance)",
+  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.7.0 - Proactive agents with shared vocabulary + AG-UI/AG-API coordination)",
   "plugins": [
     {
       "name": "AgileFlow",

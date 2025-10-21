@@ -5,6 +5,187 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2025-10-21
+
+### Improved
+
+**All Agents Now Proactive with Shared Vocabulary and Cross-Agent Coordination**
+
+This is a major enhancement to agent intelligence and coordination. All 8 agents now:
+
+#### 🗣️ **Shared Vocabulary** - Consistent terminology across all agents
+- **Common Terms**: Story, Epic, AC, DoR, DoD, Bus, WIP, Blocker, Unblock, Handoff, Research Note, ADR, Test Stub
+- **Agent IDs**: MENTOR, AG-UI, AG-API, AG-CI, AG-DEVOPS, EPIC-PLANNER, ADR-WRITER, RESEARCH
+- **Standardized Bus Message Formats**:
+  ```jsonl
+  {"ts":"<ISO>","from":"<AGENT-ID>","type":"status|blocked|unblock|assign|handoff|question|research-request|research-complete","story":"<US-ID>","text":"<description>"}
+  ```
+- **Agent-Specific Terminology**: Each agent has domain-specific vocabulary (Component, Endpoint, Pipeline, Migration, Vulnerability, etc.)
+
+#### 🔄 **Proactive FIRST ACTION** - All agents now load knowledge before asking user
+- **Knowledge Loading** (automatic on first message):
+  - Read `docs/09-agents/status.json` → Current story statuses, WIP, blockers
+  - Read `docs/09-agents/bus/log.jsonl` (last 10 messages) → Recent coordination
+  - Read `CLAUDE.md` → Project-specific conventions and architecture
+  - Check `docs/10-research/` → Existing research notes
+  - Check `docs/03-decisions/` → Architectural constraints from ADRs
+  - Check `.mcp.json` → Notion/GitHub sync enabled?
+
+- **Status Summaries** (provided before asking user):
+  - **MENTOR**: "AgileFlow active. X stories in progress, Y ready, Z blocked. ⚠️ 2 stories blocked: [list]"
+  - **AG-UI**: "3 UI stories ready, 1 in progress, 2 blocked on AG-API. ⚠️ Blocked: US-0042 needs API endpoint"
+  - **AG-API**: "2 API stories ready, 1 in progress. ⚠️ CRITICAL: 2 AG-UI stories blocked waiting for endpoints"
+  - **AG-CI**: "CI found: GitHub Actions, 3 workflows, last run: passing. 1 CI story ready"
+  - **AG-DEVOPS**: "47 dependencies, 3 outdated, 2 vulnerabilities (1 critical). 🚨 CRITICAL: CVE-2024-XXXX in lodash"
+  - **EPIC-PLANNER**: "Team capacity: 3 agents at WIP limit, 2 available. Last epic: EP-0005 (4/6 stories done)"
+  - **ADR-WRITER**: "Next ADR: ADR-0006. Recent decisions: [last 3 ADRs]. Found research: auth patterns"
+  - **RESEARCH**: "15 research notes, 3 >90 days old (stale). ⚠️ Stale: JWT auth (210 days old). 📋 Pending: AG-API requested OAuth2 research"
+
+- **Auto-Suggestions** (prioritized actions with context):
+  - Format: `US-####: <title> (estimate: <time>, priority: <why>, impact: <what>, unblocks: <story-ids>)`
+  - Includes file paths: `docs/06-stories/EP-####/US-####.md`
+  - **AG-API prioritizes** stories that unblock AG-UI
+  - **AG-DEVOPS prioritizes** critical security vulnerabilities
+  - **RESEARCH** suggests stale research to refresh
+
+#### 🔗 **Cross-Agent Dependency Handling** - Especially AG-UI ↔ AG-API
+- **AG-UI Blocking Pattern**:
+  ```jsonl
+  // AG-UI marks story as blocked
+  {"ts":"2025-10-21T10:00:00Z","from":"AG-UI","type":"blocked","story":"US-0042","text":"Blocked: needs GET /api/users/:id endpoint from US-0040"}
+
+  // AG-API actively checks for AG-UI blockers before starting work
+  // When AG-API completes endpoint, sends unblock message
+  {"ts":"2025-10-21T10:15:00Z","from":"AG-API","type":"unblock","story":"US-0040","text":"API endpoint GET /api/users/:id ready (200 OK, user object), unblocking US-0042"}
+
+  // AG-UI monitors bus, sees unblock, resumes work
+  {"ts":"2025-10-21T10:16:00Z","from":"AG-UI","type":"status","story":"US-0042","text":"Unblocked, resuming implementation"}
+  ```
+
+- **AG-API Proactive Coordination**:
+  - **CRITICAL**: Before starting API story, checks `bus/log.jsonl` for blocked AG-UI stories
+  - Prioritizes API stories that unblock AG-UI (shown in FIRST ACTION)
+  - After completing endpoint, actively sends unblock message with endpoint details (method, path, response format)
+  - Updates `status.json`: changes blocked AG-UI story from `blocked` → `ready`
+
+- **Other Common Patterns**:
+  - **AG-CI** → AG-UI/AG-API: Test infrastructure ready messages
+  - **AG-DEVOPS** → All agents: Critical security vulnerability alerts
+  - **RESEARCH** → Requesting agent: Research complete notifications
+  - **MENTOR** → Specialized agents: Dependency resolution and unblocking
+
+#### 🎯 **Agent Coordination Shortcuts** - Quick reference for who handles what
+- **AG-UI**: Components, styling, design systems, accessibility, user interactions
+- **AG-API**: Endpoints, business logic, data models, database, external integrations
+- **AG-CI**: Test infrastructure, CI/CD pipelines, linting, code coverage, quality tools
+- **AG-DEVOPS**: Dependencies, deployment, technical debt, impact analysis, changelogs, security
+- **EPIC-PLANNER**: Breaking features into epics/stories, AC writing, estimation, dependency mapping
+- **ADR-WRITER**: Architecture decisions, alternatives analysis, consequence documentation
+- **RESEARCH**: Technical research, ChatGPT prompt building, stale research identification
+- **MENTOR**: End-to-end orchestration, story creation, research integration, agent coordination
+
+#### 📊 **Dependency Handling Protocols** - Formal blocking/unblocking process
+- **When Story Has Dependencies**:
+  1. Mark status as `blocked` in `status.json`
+  2. Append bus message with blocker details
+  3. Check if blocking story exists (create if needed)
+  4. Sync to Notion/GitHub (stakeholders see blocker)
+
+- **When Removing Blocker**:
+  1. Update `status.json`: change story from `blocked` to `ready`
+  2. Append bus message: unblock notification with details
+  3. Sync to Notion/GitHub
+  4. Notify assigned agent if they're waiting
+
+- **Examples**:
+  - AG-UI blocked on AG-API endpoint → Bus message + prioritize API story
+  - AG-API blocked on database migration → Coordinate with AG-DEVOPS
+  - AG-CI blocked on test data → Request fixtures from AG-API
+
+#### 🛠️ **Enhanced Agent Context** - Every agent knows:
+- **AgileFlow System Overview**: Docs structure, story lifecycle, coordination files, WIP limits
+- **Slash Commands**: Which commands they can invoke autonomously
+- **Agent Coordination**: When to delegate to specialized agents
+- **Research Integration**: Check existing research, invoke `/AgileFlow:chatgpt-research` when needed
+- **Notion/GitHub Auto-Sync**: Sync after status changes (if enabled)
+- **CLAUDE.md Maintenance**: When to update project conventions
+
+### Added
+
+**Specialized Agent Features**:
+
+- **AG-UI**:
+  - Design system check on first story (proactive detection)
+  - Monitors bus for AG-API unblock messages
+  - Checks for blocked UI stories waiting on endpoints
+
+- **AG-API**:
+  - **CRITICAL**: Actively searches for blocked AG-UI stories on first message
+  - Prioritizes stories that unblock AG-UI
+  - Includes endpoint details in unblock messages
+
+- **AG-CI**:
+  - CI health check on first message (platform, workflows, last run status)
+  - Proactive audit offers (flaky tests, slow builds, coverage gaps)
+
+- **AG-DEVOPS**:
+  - Proactive security scan on first message (dependencies, vulnerabilities)
+  - Flags critical vulnerabilities with CVE IDs
+  - Prioritizes security issues in recommendations
+
+- **EPIC-PLANNER**:
+  - Team capacity check before planning (WIP limits)
+  - Warns if team at max capacity
+  - Auto-syncs to Notion after creating epics/stories
+
+- **ADR-WRITER**:
+  - Checks for supporting research before writing ADR
+  - Offers to invoke `/AgileFlow:chatgpt-research` if alternatives unknown
+  - Links ADRs to research notes
+
+- **RESEARCH**:
+  - Scans for stale research (>90 days old) on first message
+  - Checks bus for pending research requests from other agents
+  - Identifies ADRs lacking supporting research
+
+- **MENTOR**:
+  - Comprehensive status summary on first message
+  - Auto-proposes 3-7 prioritized actions from knowledge index
+  - Proactive blocker detection and resolution
+
+### Changed
+
+- All 8 agent prompts completely rewritten with enhanced intelligence
+- `agents/agileflow-mentor.md` - Added shared vocabulary, dependency protocols, proactive FIRST ACTION
+- `agents/agileflow-ui.md` - Added vocabulary, AG-API coordination, dependency handling, proactive status
+- `agents/agileflow-api.md` - Added vocabulary, AG-UI unblocking patterns, proactive blocker detection
+- `agents/agileflow-ci.md` - Added vocabulary, health checks, proactive audit offers
+- `agents/agileflow-devops.md` - Added vocabulary, security scans, proactive vulnerability alerts
+- `agents/agileflow-epic-planner.md` - Added vocabulary, capacity checks, auto-sync
+- `agents/agileflow-adr-writer.md` - Added vocabulary, research integration, proactive context
+- `agents/agileflow-research.md` - Added vocabulary, stale research detection, agent coordination
+- Plugin version bumped to 2.7.0 (minor release - enhanced agent intelligence)
+
+### Technical
+
+**Key Behavioral Changes**:
+- Agents load knowledge BEFORE asking user (not after)
+- Agents provide status summaries automatically
+- Agents auto-suggest prioritized actions with reasoning
+- AG-API actively seeks blocked AG-UI stories and prioritizes their unblocking
+- AG-DEVOPS proactively scans for security issues on first message
+- All agents use standardized bus message formats
+- Consistent terminology across all agent communication
+
+**What This Means**:
+- ✅ **Better Coordination**: Agents communicate via standardized bus messages
+- ✅ **Reduced Latency**: AG-API unblocks AG-UI proactively (no manual coordination)
+- ✅ **Proactive Intelligence**: Agents assess state before asking user
+- ✅ **Shared Context**: All agents speak same language (vocabulary)
+- ✅ **Prioritized Work**: Agents suggest highest-impact actions first
+- ✅ **Security Focus**: AG-DEVOPS flags critical vulnerabilities immediately
+- ✅ **Research-Driven**: Agents check existing research and identify gaps
+
 ## [2.6.0] - 2025-10-19
 
 ### Improved
