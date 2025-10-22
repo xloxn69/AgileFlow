@@ -16,7 +16,10 @@ AgileFlow combines three proven methodologies into one cohesive system:
 - ✅ Durable memory and decision history
 - ✅ Effortless multi-agent collaboration via message bus
 - ✅ 8 specialized subagents for focused work (UI, API, CI, DevOps, planning, ADRs, research, mentor)
-- ✅ 41 slash commands for complete workflow automation
+- ✅ 44 slash commands for complete workflow automation
+- ✅ System validation with JSON schemas
+- ✅ Intelligent blocker tracking and resolution
+- ✅ Data-driven sprint planning with velocity forecasting
 - ✅ Automated dependency management and security audits
 - ✅ AI-powered code review and quality checks
 - ✅ Technical debt tracking and reduction
@@ -87,12 +90,14 @@ docs/
 
 ### Core Workflow
 - `/setup-system` - Bootstrap the entire system
+- `/validate-system` - Validate system integrity (JSON schemas, orphaned stories, WIP limits, dependencies) 🆕
 - `/system-help` - Display system overview
 - `/babysit` - Interactive mentor for end-to-end implementation
 
 ### Planning & Structure
 - `/epic-new` - Create a new epic
 - `/story-new` - Create a user story with AC
+- `/sprint-plan` - Data-driven sprint planning with velocity forecasting and capacity analysis 🆕
 - `/adr-new` - Create an Architecture Decision Record
 - `/agent-new` - Onboard a new agent
 
@@ -123,6 +128,7 @@ docs/
 
 ### Visualization & Analytics 🎯
 - `/board` - Visual kanban board with WIP limits
+- `/blockers` - Comprehensive blocker tracking with resolution suggestions and cross-agent coordination analysis 🆕
 - `/velocity` - Velocity tracking and forecasting
 - `/metrics` - Comprehensive analytics dashboard (cycle time, lead time, throughput, flow efficiency)
 - `/retro` - Automated retrospective generator with insights and action items
