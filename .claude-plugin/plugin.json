@@ -1,12 +1,13 @@
 {
   "name": "AgileFlow",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "Universal agile/docs-as-code system combining Scrum, Kanban, ADRs, and docs-as-code. Framework-agnostic command pack for managing epics, stories, decisions, research, and multi-agent collaboration with automation features.",
   "author": {
     "name": "AgileFlow Contributors"
   },
   "commands": [
     "./commands/setup-system.md",
+    "./commands/validate-system.md",
     "./commands/system-help.md",
     "./commands/epic-new.md",
     "./commands/story-new.md",
@@ -42,6 +43,8 @@
     "./commands/custom-template.md",
     "./commands/stakeholder-update.md",
     "./commands/board.md",
+    "./commands/blockers.md",
+    "./commands/sprint-plan.md",
     "./commands/velocity.md",
     "./commands/github-sync.md",
     "./commands/notion-export.md",
