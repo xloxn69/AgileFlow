@@ -5,6 +5,103 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2025-10-22
+
+### Added
+
+**System Validation, Blocker Tracking, and Sprint Planning (3 new commands)**
+
+This release focuses on quality assurance, workflow optimization, and intelligent planning capabilities.
+
+#### 🔍 **JSON Schema Validation** (`/validate-system`)
+- **Schema Definitions**: Added JSON schemas for `status.json` and `bus/log.jsonl` messages
+  - `schemas/status.schema.json` - Validates story structure, required fields, enums
+  - `schemas/bus-message.schema.json` - Validates message bus format and message types
+- **Comprehensive System Validation**: `/validate-system` command performs 8 validation categories:
+  1. **JSON Schema Validation** - Validates status.json and bus messages against schemas
+  2. **Orphaned Story Detection** - Finds stories in status.json without files (and vice versa)
+  3. **WIP Limit Violations** - Detects agents exceeding max 2 in-progress stories
+  4. **Dependency Validation** - Checks for circular dependencies and invalid references
+  5. **Story Files Validation** - Ensures AC and test stubs exist
+  6. **Epic Validation** - Verifies epic references are valid
+  7. **Data Freshness Checks** - Flags stale in-progress (>7 days) and blocked (>14 days) stories
+  8. **Integration Consistency** - Validates GitHub/Notion sync mappings
+- **Detailed Reporting**: Groups issues by severity (Critical → Warning → Info) with statistics
+- **Actionable Recommendations**: Suggests specific fix commands for each issue type
+- **Read-Only Safety**: Validation never modifies files, only reports inconsistencies
+
+#### 🚧 **Blocker Dashboard** (`/blockers`)
+- **Comprehensive Blocker Extraction**: Extracts 4 types of blockers:
+  1. **Direct Blockers** - Stories with status="blocked"
+  2. **Dependency Blockers** - Stories waiting on incomplete dependencies
+  3. **WIP Capacity Blockers** - Agents at limit with ready stories waiting
+  4. **Stale Blockers** - Blocked >14 days (critical priority)
+- **Blocker Categorization**: Automatically categorizes by type:
+  - Technical (missing APIs, infrastructure)
+  - Coordination (waiting on other agents)
+  - Clarification (unclear requirements)
+  - External (third-party dependencies)
+  - Capacity (agent bandwidth)
+  - Research (needs investigation)
+- **AG-API ↔ AG-UI Coordination Analysis** (leverages v2.7.0):
+  - Shows which AG-UI stories are blocked waiting for AG-API
+  - Displays AG-API progress on unblocking stories
+  - Estimates unblock timeline based on story estimates
+  - Highlights recent AG-API unblock messages from bus
+- **Resolution Suggestions**: Provides actionable recommendations for each blocker:
+  - Technical: Completion estimates, interim workarounds (mocks, feature flags)
+  - Coordination: Handoff suggestions, communication gaps
+  - Clarification: Specific questions to ask, AC analysis
+  - External: Escalation paths, parallel work suggestions
+  - Capacity: Workload redistribution, bandwidth forecasts
+  - Research: Links to docs/10-research/, suggests `/chatgpt-research`
+- **ADR & Research Linking**: Automatically links relevant ADRs and research notes based on keyword matching
+- **Recently Resolved Tracking**: Shows blockers resolved in last 7 days (with `SHOW_RESOLVED=true`)
+- **Prioritized Actions**: Lists specific next commands to resolve blockers
+
+#### 📅 **Sprint Planning** (`/sprint-plan`)
+- **Data-Driven Planning**: Creates sprint plans based on historical velocity and team capacity
+- **5-Phase Planning Process**:
+  1. **Current State Analysis** - Agent capacity assessment, backlog health check
+  2. **Historical Velocity Calculation** - Team and per-agent velocity from last 30 days
+  3. **Story Selection & Prioritization** - Validates dependencies, respects backlog order
+  4. **Risk Assessment** - Dependency chains, cross-agent coordination, epic freshness
+  5. **Sprint Commitment** - Updates status.json and milestones.md (if `MODE=commit`)
+- **Intelligent Story Selection**: 7 prioritization criteria:
+  1. Story must be "ready" (Definition of Ready met)
+  2. Dependencies resolved (all deps status="done")
+  3. Backlog priority (from backlog.md/roadmap.md)
+  4. Epic alignment (optional `FOCUS_EPIC` parameter)
+  5. Milestone deadlines (urgent items from milestones.md)
+  6. Team capacity (respects calculated velocity)
+  7. Agent balance (distributes work evenly)
+- **Velocity Forecasting**: Analyzes completed stories from last 30 days:
+  - Calculates team velocity (total days completed)
+  - Per-agent velocity for accurate capacity planning
+  - Projects capacity for sprint duration (default: 10 days)
+  - Uses historical data or defaults if insufficient history
+- **Risk Analysis**:
+  - **Dependency Chain Analysis** - Warns about stories blocking others
+  - **Cross-Agent Coordination Check** - Identifies AG-API + AG-UI work requiring sequencing
+  - **Stale Epic Check** - Flags mixing of old and new epics
+- **Sprint Modes**:
+  - `MODE=suggest` (default) - Preview sprint plan without modifications
+  - `MODE=commit` - Updates status.json with sprint metadata and creates milestone
+- **Comprehensive Output**: Includes capacity analysis, backlog status, recommended commitment, deferred stories, sprint goals, risks, timeline, and next steps
+
+### Technical
+
+- **Command Count**: Increased from 41 to 44 commands
+- **New Schema Files**: Added 2 JSON schema definitions in `schemas/` directory
+- **Validation Coverage**: 8 validation categories covering entire AgileFlow system
+- **Blocker Types**: Tracks 6 distinct blocker categories with 4 extraction methods
+- **Planning Phases**: 5-phase sprint planning process with 7 prioritization criteria
+
+### Changed
+
+- **plugin.json**: Updated version to 2.8.0, added 3 new commands to registry
+- **marketplace.json**: Updated description to reflect 44 commands and v2.8.0 features
+
 ## [2.7.0] - 2025-10-21
 
 ### Improved
