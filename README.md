@@ -279,6 +279,31 @@ User: "Use the agileflow-adr-writer subagent to document why we chose JWT"
 5. **Create PR**: Use `/pr-template` to generate description
 6. **Mark done**: Update status after merge
 
+## Advanced Workflows
+
+### Git Worktrees for Context Preservation
+
+For advanced users who need to handle urgent hotfixes during feature work or compare architectural approaches side-by-side, AgileFlow supports **git worktrees** for isolated parallel development.
+
+**Key Benefits:**
+- Preserve AI context when switching between tasks
+- Handle urgent production bugs without losing feature work flow
+- Compare different implementations side-by-side
+- Test risky refactors in complete isolation
+
+**Quick Start:**
+```bash
+# Use the helper script (created by /setup-system)
+./docs/00-meta/scripts/worktree-create.sh auth-hotfix
+
+# Open in new window and start babysit
+code ../myapp-auth-hotfix
+/babysit
+```
+
+**Important:** Use worktrees for **ISOLATION** (separate features/experiments), not **PARALLEL EXECUTION** (concurrent edits to same epic).
+See `docs/00-meta/guides/worktrees.md` for comprehensive guide and best practices.
+
 ## Multi-Agent Collaboration
 
 AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for agent coordination:
