@@ -5,6 +5,116 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2025-10-24
+
+### Added
+
+**Git Worktrees Guide for Context Preservation**
+
+This release adds comprehensive documentation and tooling for using git worktrees with AgileFlow, enabling developers to work on multiple features simultaneously while preserving AI context in each `/babysit` session.
+
+#### 📚 **Worktrees Guide** (`docs/00-meta/guides/worktrees.md`)
+- **What Are Git Worktrees?** - Explanation of multiple working directories for same repo
+- **Key Benefits**:
+  - Context Preservation - Each worktree maintains independent `/babysit` session with full AI context
+  - Zero Context Switching - No need to `git stash` and re-explain work to Claude
+  - Safe Isolation - Experiment with risky changes without affecting main work
+  - Instant Availability - Main work stays exactly as you left it
+
+- **✅ GOOD Use Cases**:
+  - **Critical Hotfix During Feature Development** - Handle urgent production bugs without losing feature work context
+  - **Comparing Architectural Approaches** - Test GraphQL vs REST side-by-side with separate `/babysit` sessions
+  - **Safe Testing of Risky Refactors** - Isolate experimental migrations from stable codebase
+
+- **⚠️ CRITICAL LIMITATIONS**:
+  - **DO NOT Run Multiple Babysits on Same Epic** - AgileFlow's `status.json` uses read-modify-write (race condition risk)
+  - **The Golden Rule**: Use worktrees for **ISOLATION** (different features), not **PARALLEL EXECUTION** (concurrent edits to same epic)
+  - Prominent warnings about file-based coordination (`status.json`, `bus/log.jsonl`)
+
+- **Quick Start Guide**:
+  - Helper script usage instructions
+  - Manual worktree creation steps
+  - Cleanup procedures
+
+- **Best Practices**:
+  - One epic per worktree (keep work streams completely separate)
+  - Descriptive naming conventions
+  - Regular cleanup of merged worktrees
+  - Independent dependencies per worktree
+
+- **Integration with AgileFlow**:
+  - Message bus coordination (`bus/log.jsonl` is append-only, safer for concurrent use)
+  - GitHub & Notion MCP sync (both update same remote workspace)
+  - Troubleshooting guide for common issues
+
+#### 🛠️ **Worktree Helper Script** (`docs/00-meta/scripts/worktree-create.sh`)
+- **Automated Worktree Creation**:
+  - Proper naming conventions (`../myapp-feature-name`)
+  - Branch management with base branch support
+  - Safety checks (existing directories, branch conflicts)
+  - Colorized terminal output with clear instructions
+
+- **Features**:
+  - Base branch validation (defaults to `main`)
+  - Worktree path conflict detection
+  - Existing branch handling
+  - Post-creation guidance (how to open editor, start `/babysit`)
+
+- **Safety Checks**:
+  - Git repository detection
+  - Feature name requirement
+  - Base branch existence verification
+  - Directory conflict prevention
+  - Branch status reporting
+
+- **User Guidance**:
+  - Step-by-step next actions
+  - Important reminders about isolation vs parallel execution
+  - Links to comprehensive documentation
+  - All active worktrees listing
+
+#### 🔧 **Enhanced /setup-system Command**
+- **New Directories Created**:
+  - `docs/00-meta/guides/` - AgileFlow system guides
+  - `docs/00-meta/scripts/` - Helper scripts
+
+- **New Files Seeded**:
+  - `docs/00-meta/guides/worktrees.md` - Copied from `templates/worktrees-guide.md`
+  - `docs/00-meta/scripts/worktree-create.sh` - Copied from `templates/worktree-create.sh` (made executable)
+
+- **Automatic Deployment**:
+  - Users running `/setup-system` automatically get worktrees guide and helper script
+  - Zero manual setup required
+  - Files placed in correct location (`00-meta/` for AgileFlow system documentation)
+
+#### 📖 **Enhanced README Documentation**
+- **New "Advanced Workflows" Section**:
+  - Git worktrees quick start
+  - Key benefits summary
+  - Critical warning about isolation vs parallel execution
+  - Links to comprehensive guide in user projects
+
+### Changed
+
+- **plugin.json**: Updated version to 2.9.0
+- **marketplace.json**: Updated description to reflect v2.9.0 and worktrees feature
+- **commands/setup-system.md**: Added worktrees guide and script deployment
+- **README.md**: Added "Advanced Workflows" section with worktrees documentation
+
+### Technical
+
+- **Template System**: Added 2 new templates for worktrees documentation and tooling
+- **Location Strategy**: Files placed in `docs/00-meta/` (AgileFlow system meta-documentation) rather than `docs/02-practices/` (codebase practices)
+- **Documentation-Only Release**: No new commands or subagents, purely documentation and tooling
+- **File-Based Coordination**: Explicitly documented limitations of concurrent `status.json` edits
+- **Message Bus Safety**: Documented that `bus/log.jsonl` (append-only JSONL) is safer for concurrent use than `status.json` (read-modify-write)
+
+**Why Documentation-Only?**
+- The `/babysit` command already understands worktrees through `CLAUDE.md` and documentation
+- Users need education on **when to use worktrees** (isolation) vs **when NOT to use them** (parallel execution on same epic)
+- Worktrees are a git feature, not an AgileFlow feature - we just need to explain safe usage patterns
+- AgileFlow's file-based coordination naturally supports isolation but has limitations for parallel execution
+
 ## [2.8.0] - 2025-10-22
 
 ### Added

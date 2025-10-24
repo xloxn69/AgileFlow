@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 44 commands and 8 specialized subagents (v2.8.0 - System validation + blocker tracking + sprint planning)",
+  "description": "Universal agile/docs-as-code system with 44 commands and 8 specialized subagents (v2.9.0 - Worktrees guide for context preservation)",
   "plugins": [
     {
       "name": "AgileFlow",

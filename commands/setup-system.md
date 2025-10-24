@@ -98,7 +98,7 @@ Based on detection results above, ask ONLY about features that aren't fully conf
 Skip asking about features that are already fully configured (just report them as ✅).
 
 CREATE DIRECTORIES (if missing)
-docs/{00-meta/templates,01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
+docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
 .github/workflows
 
 CREATE/SEED FILES (only if missing; never overwrite non-empty content)
@@ -106,6 +106,8 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/chatgpt.md — one-page brief with managed sections (placeholders)
 - docs/00-meta/{glossary.md,conventions.md}
 - docs/00-meta/templates/{README-template.md,story-template.md,epic-template.md,adr-template.md,agent-profile-template.md,comms-note-template.md,research-template.md}
+- docs/00-meta/guides/worktrees.md — copy from templates/worktrees-guide.md (comprehensive git worktrees guide for context preservation)
+- docs/00-meta/scripts/worktree-create.sh — copy from templates/worktree-create.sh (helper script, make executable with chmod +x)
 - docs/02-practices/{README.md,testing.md,git-branching.md,releasing.md,security.md,ci.md}
 - docs/02-practices/prompts/agents/{agent-ui.md,agent-api.md,agent-ci.md}
 - docs/03-decisions/README.md
@@ -190,10 +192,10 @@ cp .mcp.json.example .mcp.json
 **Step 5: Run Initial Sync**:
 ```bash
 # Preview what will happen
-/github-sync DRY_RUN=true
+/AgileFlow:github-sync DRY_RUN=true
 
 # Perform sync
-/github-sync
+/AgileFlow:github-sync
 ```
 
 **Print Next Steps**:
@@ -284,7 +286,7 @@ Run `/notion-export MODE=setup` which will:
 # Look for mcp__notion__* tools in Claude Code
 
 # Test by running
-/notion-export DRY_RUN=true
+/AgileFlow:notion-export DRY_RUN=true
 ```
 
 **Advantages of MCP Approach**:
