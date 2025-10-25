@@ -87,6 +87,17 @@ INPUTS (ask only about missing/incomplete features)
 Based on detection results above, ask ONLY about features that aren't fully configured:
 
 - IF core system missing: "Initialize core AgileFlow structure? yes/no"
+
+- **CRITICAL - Git Attribution Preference** (ALWAYS ask on first setup):
+  - "Disable Claude Code attribution in git commits? (Removes '🤖 Generated with Claude Code' and 'Co-Authored-By: Claude' from commit messages) yes/no"
+  - **Why ask**: Many users prefer not to disclose AI usage in their git history due to:
+    - Professional reputation concerns
+    - Company policies against AI disclosure
+    - Client perception issues
+    - Personal preference for ownership
+  - **If yes**: Add to CLAUDE.md a CRITICAL section instructing Claude to NEVER add attribution
+  - **If no**: Claude will continue adding attribution as normal
+
 - IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for GitHub, Notion, etc.) yes/no"
   - IF yes: Ask which servers to enable: "Enable GitHub? yes/no", "Enable Notion? yes/no", "Enable Supabase? yes/no"
 - IF MCP partially configured:
@@ -135,6 +146,66 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/08-project/github-sync-map.json    // if GitHub sync enabled: {"last_sync":null,"mappings":{},"config":{}}
 - docs/08-project/notion-sync-map.json    // if Notion enabled: {"last_sync":null,"epics":{},"stories":{},"adrs":{}}
 - docs/02-practices/prompts/commands-catalog.md // paste-ready list of all slash commands & prompts (print content at the end)
+- **CLAUDE.md** — AI assistant configuration (create if missing, update if exists)
+
+CLAUDE.MD GENERATION/UPDATE (CRITICAL)
+**IMPORTANT**: CLAUDE.md is the AI assistant's primary configuration file. It MUST be created or updated based on user preferences.
+
+**If CLAUDE.md does NOT exist**:
+Create CLAUDE.md with:
+1. Project placeholder sections (Build/Test Commands, Architecture, etc.)
+2. **Git Attribution preference** based on user's answer above
+
+**If CLAUDE.md already exists**:
+- Check if it contains git attribution rules
+- If user chose to disable attribution AND CLAUDE.md doesn't have the rule → Add it
+- If user chose to keep attribution AND CLAUDE.md has the disable rule → Remove it
+
+**Git Attribution Configuration**:
+
+**If user answered YES to "Disable Claude Code attribution"**, add this section to CLAUDE.md:
+
+```markdown
+## ⚠️ CRITICAL: Git Commit Attribution Policy
+
+**DO NOT ADD AI ATTRIBUTION TO GIT COMMITS**
+
+This is a CRITICAL requirement for this project. When creating git commits:
+
+❌ **NEVER** add these lines:
+- `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+- `Co-Authored-By: Claude <noreply@anthropic.com>`
+- Any other AI attribution or disclosure
+
+✅ **DO** create clean commit messages:
+- Follow Conventional Commits format (feat:, fix:, docs:, etc.)
+- Write clear, descriptive commit messages
+- Focus on WHAT changed and WHY
+- Attribute work to the human developer only
+
+**Why this matters**:
+- Professional reputation and career concerns
+- Company/client policies may prohibit AI disclosure
+- Personal preference for ownership of work
+- Git history should reflect team contributions accurately
+
+**This rule applies to**:
+- ALL commits made via Claude Code
+- Manual commits suggested by Claude
+- Automated commits from AgileFlow commands
+- Any git operation that creates commit messages
+
+**Enforcement**: This is NON-NEGOTIABLE. If you add AI attribution to any commit, it violates this project's requirements.
+```
+
+**If user answered NO** (keep attribution), do NOT add the above section to CLAUDE.md. Claude will use default behavior (adding attribution).
+
+**Print confirmation**:
+```
+Git Attribution: [Disabled / Enabled]
+- Commits will [NOT / WILL] include Claude Code attribution
+- CLAUDE.md [updated / not modified] with attribution policy
+```
 
 OS/RUNTIME DETECTION (safe, best-effort)
 - Detect OS/arch and common runtimes using commands:
@@ -458,6 +529,7 @@ OUTPUT
 - Initial detection summary (what was found)
 - Preview tree and diffs (only for NEW files)
 - runtime.json preview (if being created)
+- **Git Attribution Policy** - Confirmation of user's preference (disabled/enabled)
 - If chosen: CI workflow preview and branch-protection commands
 - If GitHub sync enabled: List of labels created and next steps
 - If Notion enabled: Integration setup summary and next steps
@@ -471,11 +543,21 @@ OUTPUT
   ```
   📊 Final AgileFlow Setup Status:
   ==================================
-  Core System: ✅ Already configured (skipped)
+  Core System: 🆕 Newly configured
+    - Created docs/ directory structure
+    - Initialized AgileFlow metadata
+    - Git remote configured: git@github.com:user/repo.git
+
+  Git Attribution: 🆕 Disabled
+    - ✅ CLAUDE.md updated with NO ATTRIBUTION policy
+    - ✅ Commits will NOT include Claude Code attribution
+    - ✅ Clean git history (no AI disclosure)
+
   GitHub Issues Sync: 🆕 Newly configured
     - Created docs/08-project/github-sync-map.json
     - Created 12 labels in repository
     - Next: Run /AgileFlow:github-sync DRY_RUN=true
+
   MCP Integrations:
     Notion: ⚠️ Partially configured
       - ✅ .mcp.json has Notion server configured
@@ -486,6 +568,7 @@ OUTPUT
       - ✅ .mcp.json has Supabase server configured
       - ✅ Token configured
       - Ready to use mcp__supabase__* tools
+
   CI Workflow: ✅ Already configured (skipped)
 
   Next steps:
