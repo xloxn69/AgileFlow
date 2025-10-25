@@ -16,7 +16,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 - ✅ Durable memory and decision history
 - ✅ Effortless multi-agent collaboration via message bus
 - ✅ 8 specialized subagents for focused work (UI, API, CI, DevOps, planning, ADRs, research, mentor)
-- ✅ 44 slash commands for complete workflow automation
+- ✅ 36 slash commands for complete workflow automation
 - ✅ System validation with JSON schemas
 - ✅ Intelligent blocker tracking and resolution
 - ✅ Data-driven sprint planning with velocity forecasting
@@ -102,8 +102,8 @@ docs/
 - `/agent-new` - Onboard a new agent
 
 ### Task Management
-- `/assign` - Assign/reassign a story
-- `/status` - Update story status
+- `/story-assign` - Assign/reassign a story
+- `/story-status` - Update story status
 - `/handoff` - Document handoff between agents
 
 ### Quality & CI
@@ -114,9 +114,8 @@ docs/
 - `/ai-code-review` - AI-powered code review
 
 ### Automation & DevOps 🆕
-- `/dependency-update` - Track and update dependencies
-- `/dependencies-dashboard` - Visual dependency overview
-- `/docs-sync` - Synchronize docs with code changes
+- `/packages` - Manage dependencies (dashboard, updates, security audits)
+- `/doc-coverage` - Synchronize docs with code changes
 - `/impact-analysis` - Analyze change impact on codebase
 - `/tech-debt` - Track and prioritize technical debt
 - `/setup-deployment` - Automated deployment pipeline setup
@@ -139,11 +138,7 @@ docs/
 - `/notion-export` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
 
 ### ChatGPT Integration
-- `/chatgpt` - Generate ChatGPT context brief
-- `/chatgpt-refresh` - Refresh context
-- `/chatgpt-note` - Add note to context
-- `/chatgpt-export` - Export concise excerpt
-- `/chatgpt-research` - Build research prompt
+- `/chatgpt` - Generate/export/manage ChatGPT context (MODE=full|export|note|research)
 - `/research-init` - Save research notes
 
 ### Specialized Agents (Commands)
@@ -275,7 +270,7 @@ User: "Use the agileflow-adr-writer subagent to document why we chose JWT"
 1. **Pick a story**: Use `agileflow-mentor` subagent or check `docs/09-agents/status.json`
 2. **Implement to AC**: Follow acceptance criteria from the story
 3. **Write tests**: Reference `docs/07-testing/test-cases/<STORY_ID>.md`
-4. **Update status**: Use `/status` to track progress
+4. **Update status**: Use `/story-status` to track progress
 5. **Create PR**: Use `/pr-template` to generate description
 6. **Mark done**: Update status after merge
 
@@ -479,10 +474,10 @@ See `/github-sync` command for full documentation.
 
 AgileFlow maintains a single source of truth context file (`docs/chatgpt.md`) that can be shared with ChatGPT for research and planning:
 
-1. Run `/chatgpt` to generate or refresh the context
-2. Use `/chatgpt-export` to get a concise excerpt
+1. Run `/chatgpt` to generate or refresh the context (default MODE=full)
+2. Use `/chatgpt MODE=export` to get a concise excerpt
 3. Paste into ChatGPT for research or ideation
-4. Use `/chatgpt-research` to build structured research prompts
+4. Use `/chatgpt MODE=research TOPIC="..."` to build structured research prompts
 5. Save results with `/research-init`
 
 ## Examples
@@ -496,9 +491,9 @@ AgileFlow maintains a single source of truth context file (`docs/chatgpt.md`) th
 ### Working on a Story
 
 ```
-/AgileFlow:assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
+/AgileFlow:story-assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
 # ... do the work ...
-/AgileFlow:status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
+/AgileFlow:story-status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
 ```
 
 ### Recording a Decision
