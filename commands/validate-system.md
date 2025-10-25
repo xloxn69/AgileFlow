@@ -217,6 +217,112 @@ if [ -f docs/08-project/notion-sync-map.json ]; then
 fi
 ```
 
+## 9. MCP Security Validation (CRITICAL)
+
+**⚠️ CRITICAL SECURITY CHECKS - Prevent Token Leaks**
+
+**Check .gitignore contains MCP secrets**:
+```bash
+# CRITICAL: Check if .mcp.json is gitignored
+if [ -f .gitignore ]; then
+  grep -E '^\\.mcp\\.json$' .gitignore >/dev/null 2>&1 || echo "❌ CRITICAL: .mcp.json NOT in .gitignore - tokens will leak to git!"
+  grep -E '^\\.env$' .gitignore >/dev/null 2>&1 || echo "❌ CRITICAL: .env NOT in .gitignore - tokens will leak to git!"
+else
+  echo "❌ CRITICAL: .gitignore missing - create it and add .mcp.json and .env!"
+fi
+```
+
+**Check if .mcp.json or .env are staged/committed** (CRITICAL):
+```bash
+# Check if secrets are in git (CRITICAL ERROR)
+if [ -d .git ]; then
+  # Check if .mcp.json is tracked
+  git ls-files | grep -E '^\\.mcp\\.json$' >/dev/null 2>&1 && echo "❌ CRITICAL: .mcp.json IS COMMITTED TO GIT - TOKENS ARE LEAKED! Run: git rm --cached .mcp.json && git commit -m 'Remove leaked secrets' && git push --force"
+
+  # Check if .env is tracked
+  git ls-files | grep -E '^\\.env$' >/dev/null 2>&1 && echo "❌ CRITICAL: .env IS COMMITTED TO GIT - TOKENS ARE LEAKED! Run: git rm --cached .env && git commit -m 'Remove leaked secrets' && git push --force"
+
+  # Check if staged (not yet committed)
+  git diff --cached --name-only | grep -E '^\\.mcp\\.json$' >/dev/null 2>&1 && echo "❌ CRITICAL: .mcp.json is STAGED - DO NOT COMMIT! Run: git reset HEAD .mcp.json"
+  git diff --cached --name-only | grep -E '^\\.env$' >/dev/null 2>&1 && echo "❌ CRITICAL: .env is STAGED - DO NOT COMMIT! Run: git reset HEAD .env"
+fi
+```
+
+**Check .mcp.json uses ${VAR} syntax (not hardcoded tokens)**:
+```bash
+if [ -f .mcp.json ]; then
+  # Check if using ${VAR} syntax (correct)
+  if grep -q '\${[A-Z_]*}' .mcp.json; then
+    echo "✅ .mcp.json uses ${VAR} environment variable substitution"
+  else
+    # Check if has hardcoded tokens (WRONG - old approach)
+    if grep -qE 'ghp_[A-Za-z0-9]{36}|ntn_[A-Za-z0-9]{50}' .mcp.json; then
+      echo "❌ CRITICAL: .mcp.json contains HARDCODED TOKENS - Use ${VAR} syntax and store tokens in .env!"
+    else
+      echo "⚠️  .mcp.json exists but doesn't use ${VAR} syntax - verify it's correct"
+    fi
+  fi
+else
+  [ -f .mcp.json.example ] && echo "⚠️  .mcp.json.example exists but not copied to .mcp.json - run: cp .mcp.json.example .mcp.json"
+fi
+```
+
+**Check .env exists with required tokens**:
+```bash
+if [ -f .env ]; then
+  # Check for required tokens based on .mcp.json config
+  if [ -f .mcp.json ]; then
+    # Check for GitHub token if GitHub MCP is configured
+    grep -q '"github"' .mcp.json && {
+      grep -q 'GITHUB_PERSONAL_ACCESS_TOKEN=' .env || echo "⚠️  GitHub MCP configured but GITHUB_PERSONAL_ACCESS_TOKEN not in .env"
+    }
+
+    # Check for Notion token if Notion MCP is configured
+    grep -q '"notion"' .mcp.json && {
+      grep -q 'NOTION_TOKEN=' .env || echo "⚠️  Notion MCP configured but NOTION_TOKEN not in .env"
+    }
+  fi
+else
+  [ -f .env.example ] && echo "⚠️  .env.example exists but not copied to .env - run: cp .env.example .env && edit with your tokens"
+fi
+```
+
+**Check AgileFlow version metadata**:
+```bash
+if [ -f docs/00-meta/agileflow-metadata.json ]; then
+  # Check version
+  version=$(jq -r '.agileflow.version' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  [ "$version" != "null" ] && echo "✅ AgileFlow version: $version" || echo "⚠️  AgileFlow version not set in metadata"
+
+  # Check security flags
+  mcp_gitignored=$(jq -r '.security.mcpJsonGitignored' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  [ "$mcp_gitignored" == "true" ] || echo "⚠️  Metadata indicates .mcp.json may not be gitignored - verify .gitignore"
+
+  env_gitignored=$(jq -r '.security.envGitignored' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  [ "$env_gitignored" == "true" ] || echo "⚠️  Metadata indicates .env may not be gitignored - verify .gitignore"
+
+  # Check git remote
+  git_remote=$(jq -r '.git.remoteConfigured' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  [ "$git_remote" == "true" ] && echo "✅ Git remote configured" || echo "⚠️  Git remote not configured - run /AgileFlow:setup-system to add remote"
+else
+  echo "⚠️  AgileFlow metadata missing (docs/00-meta/agileflow-metadata.json) - may be outdated setup"
+fi
+```
+
+**Check git repository health**:
+```bash
+if [ -d .git ]; then
+  # Check if remote is configured
+  git remote -v 2>/dev/null | grep -q origin && echo "✅ Git remote configured" || echo "⚠️  Git remote not configured - run /AgileFlow:setup-system"
+
+  # Check for unpushed commits (user may have local work)
+  unpushed=$(git log @{u}.. --oneline 2>/dev/null | wc -l)
+  [ "$unpushed" -gt 0 ] && echo "⚠️  $unpushed unpushed commits - run: git push"
+else
+  echo "⚠️  Not a git repository - run: git init && run /AgileFlow:setup-system"
+fi
+```
+
 ## OUTPUT FORMAT
 
 Display results grouped by severity:
@@ -232,17 +338,34 @@ Display results grouped by severity:
 - WIP Limits: All agents within limits
 - Dependencies: No circular dependencies detected
 - Epic References: All valid
+- Security: .mcp.json and .env are gitignored
+- Security: No secrets committed to git
+- MCP: Using ${VAR} environment variable substitution
+- Git: Remote configured
+- Metadata: AgileFlow version X.X.X
 
 ❌ CRITICAL ERRORS (X issues)
 -----------------------------
 [List any critical errors that must be fixed immediately]
 
+SECURITY CRITICAL ERRORS (if any):
+- ❌ .mcp.json committed to git - TOKENS LEAKED
+- ❌ .env committed to git - TOKENS LEAKED
+- ❌ .mcp.json not in .gitignore
+- ❌ .mcp.json contains hardcoded tokens
+
 ⚠️  WARNINGS (X issues)
 ------------------------
 [List warnings that should be addressed]
 
+SECURITY WARNINGS (if any):
+- ⚠️  .mcp.json not copied from .mcp.json.example
+- ⚠️  .env not copied from .env.example
+- ⚠️  Git remote not configured
+
 📊 STATISTICS
 -------------
+- AgileFlow Version: X.X.X
 - Total stories: X
 - Active (in-progress): X
 - Blocked: X
@@ -251,15 +374,29 @@ Display results grouped by severity:
 - Orphaned story files: X
 - Missing test stubs: X
 - WIP violations: X
+- Git remote: configured/not configured
+- MCP integrations: GitHub (yes/no), Notion (yes/no)
 
 💡 RECOMMENDATIONS
 ------------------
 [Actionable suggestions to fix issues]
 
+🔒 SECURITY NEXT STEPS (if issues found):
+1. If .mcp.json or .env committed: Remove from git IMMEDIATELY
+   - git rm --cached .mcp.json .env
+   - Add to .gitignore
+   - git commit -m "Remove leaked secrets"
+   - REVOKE AND REGENERATE ALL TOKENS (GitHub, Notion, etc.)
+   - git push --force
+2. Ensure .mcp.json uses ${VAR} syntax (not hardcoded tokens)
+3. Store tokens in .env (not .mcp.json)
+4. Verify .gitignore has .mcp.json and .env
+
 Next steps:
-1. Fix critical errors first
-2. Address warnings
-3. Run /AgileFlow:validate-system again to confirm fixes
+1. Fix SECURITY CRITICAL errors IMMEDIATELY
+2. Fix other critical errors
+3. Address warnings
+4. Run /AgileFlow:validate-system again to confirm fixes
 ```
 
 RULES
