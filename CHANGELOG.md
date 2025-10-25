@@ -5,6 +5,129 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.0] - 2025-10-25
+
+### 🎯 Command Consolidation (41 → 36 commands)
+
+This release streamlines AgileFlow by consolidating redundant commands into unified commands with MODE/ACTION parameters, improving discoverability and user experience.
+
+### Removed
+
+**ChatGPT Commands (5 → 1)** - Consolidated into single `/chatgpt` command:
+- **Removed**: `/chatgpt-refresh` (complete duplicate of `/chatgpt`)
+- **Removed**: `/chatgpt-export` (now `/chatgpt MODE=export`)
+- **Removed**: `/chatgpt-note` (now `/chatgpt MODE=note NOTE="..."`)
+- **Removed**: `/chatgpt-research` (now `/chatgpt MODE=research TOPIC="..."`)
+
+**Package Dependency Commands (2 → 1)** - Consolidated into single `/packages` command:
+- **Removed**: `/dependencies-dashboard` (now `/packages ACTION=dashboard`)
+- **Removed**: `/dependency-update` (now `/packages ACTION=update`)
+
+**Why Consolidate?**
+- ✅ Easier to discover - One command with modes vs 5+ separate commands
+- ✅ Cleaner namespace - Reduced command clutter from 41 to 36
+- ✅ Better UX - Related functionality grouped together
+- ✅ Consistent patterns - MODE/ACTION parameters make capabilities obvious
+
+### Changed
+
+**ChatGPT Command** - Now unified with 4 modes:
+```bash
+# Generate/refresh full context (default)
+/AgileFlow:chatgpt
+/AgileFlow:chatgpt MODE=full
+
+# Export concise excerpt for ChatGPT
+/AgileFlow:chatgpt MODE=export
+
+# Append timestamped note
+/AgileFlow:chatgpt MODE=note NOTE="User reported auth bug"
+
+# Build research prompt
+/AgileFlow:chatgpt MODE=research TOPIC="Implement OAuth 2.0"
+```
+
+**Package Management Command** - Now unified with 3 actions:
+```bash
+# Show dependency dashboard (default)
+/AgileFlow:packages
+/AgileFlow:packages ACTION=dashboard OUTPUT=html
+
+# Update dependencies with security audit
+/AgileFlow:packages ACTION=update SCOPE=security
+/AgileFlow:packages ACTION=update SCOPE=all AUTO_PR=yes
+
+# Security audit only
+/AgileFlow:packages ACTION=audit
+```
+
+**Renamed for Clarity**:
+- `/status` → `/story-status` (clearer that it updates story status)
+- `/assign` → `/story-assign` (clearer that it assigns stories)
+- `/docs-sync` → `/doc-coverage` (clearer purpose: documentation coverage analysis)
+
+### Improved
+
+**Better Command Organization**:
+- **ChatGPT workflows** - All ChatGPT operations in one place
+- **Package management** - Dashboard, updates, and audits unified
+- **Story operations** - Clearer naming (story-status, story-assign)
+
+**Enhanced Discoverability**:
+- MODE/ACTION parameters self-document capabilities
+- Users discover all options from single command help
+- Reduced cognitive load (fewer top-level commands to remember)
+
+**Backward Compatibility**:
+- All functionality preserved - nothing removed, just reorganized
+- Existing usage patterns still work (same underlying behavior)
+- Plugin.json updated with new command paths
+
+### Technical
+
+**Command Count Changes**:
+- ChatGPT: 5 commands → 1 command (4 modes)
+- Package deps: 2 commands → 1 command (3 actions)
+- Renames: 3 commands (status, assign, docs-sync)
+- **Total**: 41 commands → 36 commands (-5 commands)
+
+**Files Modified**:
+- Created: `commands/chatgpt.md` (combined from 5 files)
+- Created: `commands/packages.md` (combined from 2 files)
+- Renamed: `commands/status.md` → `commands/story-status.md`
+- Renamed: `commands/assign.md` → `commands/story-assign.md`
+- Renamed: `commands/docs-sync.md` → `commands/doc-coverage.md`
+- Deleted: 6 redundant command files
+
+**Registry Updates**:
+- `.claude-plugin/plugin.json` - Updated commands array (41 → 36 entries)
+- `.claude-plugin/marketplace.json` - Updated description ("36 commands")
+
+### Migration Guide
+
+**If you used ChatGPT commands**:
+- `/chatgpt-refresh` → `/chatgpt` (or `/chatgpt MODE=full`)
+- `/chatgpt-export` → `/chatgpt MODE=export`
+- `/chatgpt-note NOTE="..."` → `/chatgpt MODE=note NOTE="..."`
+- `/chatgpt-research TOPIC="..."` → `/chatgpt MODE=research TOPIC="..."`
+
+**If you used dependency commands**:
+- `/dependencies-dashboard` → `/packages` (or `/packages ACTION=dashboard`)
+- `/dependency-update SCOPE=security` → `/packages ACTION=update SCOPE=security`
+
+**If you used renamed commands**:
+- `/status STORY=US-001 STATUS=done` → `/story-status STORY=US-001 STATUS=done`
+- `/assign STORY=US-001 OWNER=AG-UI` → `/story-assign STORY=US-001 OWNER=AG-UI`
+- `/docs-sync` → `/doc-coverage`
+
+**No breaking changes** - All functionality preserved, just reorganized for better UX!
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.12.0, updated commands registry (41 → 36)
+- **marketplace.json**: Updated description ("36 commands", v2.12.0 features)
+- **CHANGELOG.md**: Added comprehensive v2.12.0 entry
+
 ## [2.11.0] - 2025-10-25
 
 ### 🚨 CRITICAL SECURITY FIX - MCP Token Management
