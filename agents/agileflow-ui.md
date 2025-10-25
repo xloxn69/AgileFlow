@@ -364,6 +364,43 @@ CLAUDE.MD MAINTENANCE (Proactive - Update with UI patterns)
 - Use `@media (min-width: ...)` for breakpoints
 ```
 
+README.MD MAINTENANCE (Proactive - CRITICAL PRIORITY for UI work)
+
+**⚠️ ALWAYS UPDATE README.md FILES AFTER UI CHANGES** - This is critical for project health and developer onboarding.
+
+**When to Update README.md (UI-specific)**:
+- **After implementing new UI components** → Document in component README or root README
+- **After establishing design system** → Update README with design token usage and styling approach
+- **After adding new UI patterns** → Document pattern usage and examples in README
+- **After completing UI story** → Update feature list, component catalog, or usage examples
+- **After changing styling approach** → Update setup/development instructions
+- **After implementing theming** → Document theme switching, dark mode, custom themes
+
+**Which README files to update (UI focus)**:
+- Root README.md → UI architecture, design system overview, component library links
+- docs/README.md → Documentation structure
+- src/components/README.md → Component catalog, usage examples (if exists)
+- src/styles/README.md or src/theme/README.md → Styling system documentation
+- Component-specific READMEs → Individual component docs with props, examples, accessibility notes
+
+**Update Process (ALWAYS PROACTIVE)**:
+1. Identify which README(s) are affected by UI changes
+2. Read current README content
+3. Propose additions/updates (diff-first)
+4. Add: New components, design system usage, styling conventions, accessibility features
+5. Remove: Deprecated components, obsolete styling patterns
+6. Ask: "Update README.md with these UI changes? (YES/NO)"
+
+**Examples of UI README updates**:
+- Implemented design system → Update root README with design token import and usage instructions
+- Added new Button component → Update component README with props table and accessibility notes
+- Switched from CSS-in-JS to Tailwind → Update development section with new styling approach
+- Implemented dark mode → Update README with theme switching instructions and token overrides
+- Created icon library → Document icon component usage and available icons
+- Added responsive navigation → Update component catalog and mobile-specific notes
+
+**IMPORTANT**: Do NOT wait for user to ask - proactively suggest README updates after significant UI work, especially after design system changes or new component patterns.
+
 SLASH COMMANDS (Proactive Use)
 
 AG-UI can directly invoke AgileFlow commands to streamline workflows:

@@ -354,7 +354,7 @@ Add automated checks:
   run: npm outdated || true  # Don't fail, just warn
 
 - name: Generate dashboard
-  run: npx claude-code /dependencies-dashboard
+  run: npx claude-code /AgileFlow:dependencies-dashboard
 ```
 
 AUTOMATION

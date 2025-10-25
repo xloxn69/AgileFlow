@@ -5,6 +5,130 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.0] - 2025-10-25
+
+### Removed
+
+**Command Cleanup: Removed 4 Redundant Commands (44 → 41 commands)**
+
+Since 99% of users only use `/AgileFlow:babysit`, which can orchestrate everything, we removed redundant command shortcuts:
+
+- **`/AgileFlow:agent-ui`** - Redundant (just invoked agileflow-ui subagent, which `/babysit` can do directly)
+- **`/AgileFlow:agent-api`** - Redundant (just invoked agileflow-api subagent, which `/babysit` can do directly)
+- **`/AgileFlow:agent-ci`** - Redundant (just invoked agileflow-ci subagent, which `/babysit` can do directly)
+- **`/AgileFlow:readme-sync`** - Redundant (narrow scope, superseded by `/docs-sync` and `/babysit`)
+
+**Why remove them?**
+- The `/babysit` command already has full access to all 8 subagents via the Task tool
+- These were just thin wrappers with no additional functionality
+- Simplifies the command surface area
+- **All 8 subagents remain** - they're the real power (agileflow-ui, agileflow-api, agileflow-ci, agileflow-mentor, agileflow-epic-planner, agileflow-adr-writer, agileflow-research, agileflow-devops)
+
+### Changed
+
+**Standardized Command References: ALL Commands Now Use `/AgileFlow:` Prefix**
+
+Fixed command references across **all 65 markdown files** to use proper `/AgileFlow:` prefix:
+- ❌ Before: `/epic-new`, `/story-new`, `/board`, `/github-sync`, `/notion-export`, etc.
+- ✅ After: `/AgileFlow:epic-new`, `/AgileFlow:story-new`, `/AgileFlow:board`, `/AgileFlow:github-sync`, `/AgileFlow:notion-export`, etc.
+
+**Files Updated** (65 total):
+- All `commands/*.md` files (41 commands)
+- All `agents/*.md` files (8 subagents)
+- `README.md`, `SUBAGENTS.md`, `CHANGELOG.md`
+- Template files in `templates/` directory
+
+**Benefits**:
+- ✅ Consistent command references throughout all documentation
+- ✅ Proper namespace indication (commands belong to AgileFlow plugin)
+- ✅ No confusion with built-in CLI commands
+- ✅ Better discoverability in Claude Code command palette
+
+### Improved
+
+**Enhanced `/AgileFlow:babysit` - README.md Files Now Prioritized in Knowledge Loading**
+
+The `/babysit` command now explicitly prioritizes README.md files at startup:
+
+**New Knowledge Loading Order**:
+1. **README.md Files (READ FIRST)** - Now the top priority
+   - Root `README.md` - Project overview, setup, getting started, architecture
+   - `docs/README.md` - Documentation structure
+   - ALL `docs/**/README.md` - Folder-specific docs with TODOs, open questions, risks
+   - `src/README.md` and module READMEs - Code organization docs
+   - Extracts critical info: TODOs, open questions, planned features, known risks
+
+2. **Core Context Files** - CLAUDE.md, docs/chatgpt.md
+3. **AgileFlow Command Files** - All 41 command capabilities
+4. **AgileFlow State & Planning** - status.json, bus/log.jsonl, epics, stories, ADRs, research
+
+**Why This Matters**:
+- README files contain the most important project context for starting work
+- AI assistant now understands project setup, architecture, and open questions immediately
+- Better informed decision-making from the start
+- Reduces "what is this project?" questions
+
+**README.md Maintenance Emphasis Added**
+
+Added **README.MD MAINTENANCE** sections to proactively update documentation:
+
+**In `/AgileFlow:babysit` command**:
+- Added "README.MD MAINTENANCE (proactive, CRITICAL PRIORITY)" section
+- Lists when to update README (after features, architectural changes, dependencies, scripts, patterns)
+- Specifies which READMEs to update (root, docs, modules, components)
+- Includes examples of README updates for common scenarios
+- **CRITICAL**: "Do NOT wait for user to ask - proactively suggest README updates after significant work"
+
+**In `agileflow-ui` subagent**:
+- Added "README.MD MAINTENANCE (Proactive - CRITICAL PRIORITY for UI work)" section
+- UI-specific guidance: design system docs, component catalogs, styling conventions
+- Emphasizes documenting theming, dark mode, component props, accessibility
+- Examples: design token usage, component README updates, styling approach changes
+
+**Benefits**:
+- ✅ READMEs stay current with actual codebase
+- ✅ Onboarding friction reduced for new developers
+- ✅ AI assistant has accurate context for all future work
+- ✅ Documentation rot prevented
+
+**Clarified `docs/02-practices` Purpose**
+
+Updated `/AgileFlow:setup-system` and `/babysit` to clarify that **docs/02-practices is for USER'S CODEBASE practices**, NOT AgileFlow system practices:
+
+**Added to `/setup-system`**:
+```
+**IMPORTANT - docs/02-practices Purpose**:
+- docs/02-practices is for **USER'S CODEBASE practices** (NOT AgileFlow system practices)
+- Examples: Styling conventions, typography standards, CSS architecture, component patterns, API design patterns
+- AgileFlow system documentation goes in docs/00-meta/ (guides, templates, scripts)
+- This distinction ensures clarity between "how we build the product" vs "how we use AgileFlow"
+```
+
+**Added to `/babysit` KNOWLEDGE INDEX**:
+- Full directory structure explanation with docs/02-practices clearly labeled as "USER'S CODEBASE practices"
+- Examples: styling, typography, component patterns, API conventions
+- Clear separation from AgileFlow system docs (docs/00-meta/)
+
+**Why This Matters**:
+- Prevents mixing of project-specific practices with AgileFlow system documentation
+- Clear separation of concerns: "how we build our product" vs "how we use AgileFlow"
+- Better organization for teams using AgileFlow
+- Reduces confusion about where to put different types of documentation
+
+### Technical
+
+- **Command Count**: Reduced from 44 to 41 commands (removed 4 redundant shortcuts)
+- **Files Modified**: 65 markdown files updated with `/AgileFlow:` prefix standardization
+- **Documentation Enhancement**: README.md maintenance protocols added to 2 key commands
+- **Clarity Improvement**: docs/02-practices purpose clarified in 2 command files
+- **Knowledge Loading**: /babysit now prioritizes README.md files (4-phase loading sequence)
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.10.0, removed 4 commands from registry (44 → 41)
+- **marketplace.json**: Updated description with "41 commands" and v2.10.0 features
+- **CHANGELOG.md**: Added comprehensive v2.10.0 entry
+
 ## [2.9.0] - 2025-10-24
 
 ### Added
@@ -73,7 +197,7 @@ This release adds comprehensive documentation and tooling for using git worktree
   - Links to comprehensive documentation
   - All active worktrees listing
 
-#### 🔧 **Enhanced /setup-system Command**
+#### 🔧 **Enhanced /AgileFlow:setup-system Command**
 - **New Directories Created**:
   - `docs/00-meta/guides/` - AgileFlow system guides
   - `docs/00-meta/scripts/` - Helper scripts
@@ -533,7 +657,7 @@ The `agileflow-ui` subagent now automatically detects and creates design systems
 
 ### Improved
 
-**Command: /babysit - GitHub MCP Integration**
+**Command: /AgileFlow:babysit - GitHub MCP Integration**
 
 Updated `/babysit` command to reference GitHub MCP configuration (migrated from legacy approach):
 
@@ -564,8 +688,8 @@ Updated `/babysit` command to reference GitHub MCP configuration (migrated from 
 - Updated UI agent WORKFLOW to check design system proactively
 - Updated UI agent QUALITY CHECKLIST to enforce design token usage
 - Updated UI agent FIRST ACTION to check design system before stories
-- Removed legacy GitHub CLI references from /babysit command
-- Added GitHub MCP sync automation to /babysit implementation flow
+- Removed legacy GitHub CLI references from /AgileFlow:babysit command
+- Added GitHub MCP sync automation to /AgileFlow:babysit implementation flow
 
 ## [2.4.0] - 2025-10-19
 
@@ -635,7 +759,7 @@ If you were using GitHub CLI (`gh`) for `/github-sync`:
 
 3. **Restart Claude Code** (to load GitHub MCP server)
 
-4. **Continue using /github-sync as before** - All existing `docs/08-project/github-sync-map.json` files remain compatible
+4. **Continue using /AgileFlow:github-sync as before** - All existing `docs/08-project/github-sync-map.json` files remain compatible
 
 5. **Optional: Uninstall GitHub CLI** if you only used it for AgileFlow
 
@@ -870,7 +994,7 @@ For users of AgileFlow v2.2.0 or earlier with existing Notion integration:
 3. Set up MCP: Run `/setup-system` and select "yes" for Notion
 4. This creates .mcp.json.example and copies to .mcp.json
 5. Restart Claude Code (to load MCP server)
-6. Verify: Run `/notion-export DRY_RUN=true`
+6. Verify: Run `/AgileFlow:notion-export DRY_RUN=true`
 7. Resume syncing: Run `/notion-export`
 
 **IF STARTING FRESH**:
@@ -878,7 +1002,7 @@ For users of AgileFlow v2.2.0 or earlier with existing Notion integration:
 2. Add NOTION_TOKEN to .env
 3. Run `/setup-system` and select "yes" for Notion
 4. Restart Claude Code
-5. Run `/notion-export MODE=setup` to create databases
+5. Run `/AgileFlow:notion-export MODE=setup` to create databases
 6. Start syncing!
 
 Your existing database IDs are preserved - no need to recreate databases!
@@ -927,7 +1051,7 @@ Your existing database IDs are preserved - no need to recreate databases!
   - Story size efficiency analysis
   - Forward-looking predictions for next sprint
   - Saved to docs/08-project/retrospectives/
-  - Integration with /metrics for data-driven insights
+  - Integration with /AgileFlow:metrics for data-driven insights
 
 - `/dependencies` - Dependency graph visualization and analysis
   - ASCII dependency graph with status indicators
@@ -942,7 +1066,7 @@ Your existing database IDs are preserved - no need to recreate databases!
   - Story-level and epic-level dependency tracking
   - Actionable recommendations for optimal work ordering
 
-**Enhanced /babysit and agileflow-mentor**:
+**Enhanced /AgileFlow:babysit and agileflow-mentor**:
 - Added full command catalog to knowledge index (all 41 commands)
 - Explicit SlashCommand tool usage instructions
 - Autonomous command execution capabilities

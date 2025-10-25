@@ -423,9 +423,9 @@ DASHBOARD OUTPUT
 ║                                                                 ║
 ╚════════════════════════════════════════════════════════════════╝
 
-Run `/velocity` for forecasting
-Run `/board` for current kanban view
-Run `/retro` for retrospective insights
+Run `/AgileFlow:velocity` for forecasting
+Run `/AgileFlow:board` for current kanban view
+Run `/AgileFlow:retro` for retrospective insights
 ```
 
 EXPORT FORMATS
@@ -480,35 +480,35 @@ USAGE EXAMPLES
 
 ### View all metrics for last 30 days
 ```bash
-/metrics
+/AgileFlow:metrics
 ```
 
 ### Last 90 days, specific epic
 ```bash
-/metrics TIMEFRAME=90d EPIC=EP-0010
+/AgileFlow:metrics TIMEFRAME=90d EPIC=EP-0010
 ```
 
 ### Only cycle time, export as JSON
 ```bash
-/metrics METRIC=cycle-time FORMAT=json
+/AgileFlow:metrics METRIC=cycle-time FORMAT=json
 ```
 
 ### Agent-specific metrics
 ```bash
-/metrics OWNER=AG-API TIMEFRAME=7d
+/AgileFlow:metrics OWNER=AG-API TIMEFRAME=7d
 ```
 
 ### Export to CSV for spreadsheet analysis
 ```bash
-/metrics FORMAT=csv > metrics.csv
+/AgileFlow:metrics FORMAT=csv > metrics.csv
 ```
 
 INTEGRATION WITH OTHER COMMANDS
 
-- After `/velocity`: Run `/metrics` to see detailed trends
-- After `/board`: Run `/metrics` to understand bottlenecks
-- Before `/retro`: Run `/metrics` to gather data for retrospective
-- In `/babysit`: Auto-run `/metrics` when velocity drops
+- After `/AgileFlow:velocity`: Run `/AgileFlow:metrics` to see detailed trends
+- After `/AgileFlow:board`: Run `/AgileFlow:metrics` to understand bottlenecks
+- Before `/AgileFlow:retro`: Run `/AgileFlow:metrics` to gather data for retrospective
+- In `/AgileFlow:babysit`: Auto-run `/AgileFlow:metrics` when velocity drops
 
 RULES
 - Always calculate from raw data (bus/log.jsonl, status.json)

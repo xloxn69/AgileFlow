@@ -33,7 +33,7 @@ if [ -f .mcp.json ]; then
     else
       echo "    ✅ Token configured in .mcp.json"
     fi
-    [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /notion-export MODE=setup"
+    [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /AgileFlow:notion-export MODE=setup"
   else
     echo "  ⚠️  Notion not configured in .mcp.json"
   fi
@@ -101,6 +101,12 @@ CREATE DIRECTORIES (if missing)
 docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
 .github/workflows
 
+**IMPORTANT - docs/02-practices Purpose**:
+- docs/02-practices is for **USER'S CODEBASE practices** (NOT AgileFlow system practices)
+- Examples: Styling conventions, typography standards, CSS architecture, component patterns, API design patterns
+- AgileFlow system documentation goes in docs/00-meta/ (guides, templates, scripts)
+- This distinction ensures clarity between "how we build the product" vs "how we use AgileFlow"
+
 CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/README.md — map of all folders
 - docs/chatgpt.md — one-page brief with managed sections (placeholders)
@@ -108,8 +114,8 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/00-meta/templates/{README-template.md,story-template.md,epic-template.md,adr-template.md,agent-profile-template.md,comms-note-template.md,research-template.md}
 - docs/00-meta/guides/worktrees.md — copy from templates/worktrees-guide.md (comprehensive git worktrees guide for context preservation)
 - docs/00-meta/scripts/worktree-create.sh — copy from templates/worktree-create.sh (helper script, make executable with chmod +x)
-- docs/02-practices/{README.md,testing.md,git-branching.md,releasing.md,security.md,ci.md}
-- docs/02-practices/prompts/agents/{agent-ui.md,agent-api.md,agent-ci.md}
+- docs/02-practices/{README.md,testing.md,git-branching.md,releasing.md,security.md,ci.md} — **USER CODEBASE practices** (styling, typography, component patterns, API conventions, etc.) NOT AgileFlow practices
+- docs/02-practices/prompts/agents/{agent-ui.md,agent-api.md,agent-ci.md} — Project-specific agent customization prompts
 - docs/03-decisions/README.md
 - docs/04-architecture/README.md
 - docs/05-epics/README.md
@@ -211,8 +217,8 @@ Next steps for you:
 3. Edit .mcp.json and replace placeholder with your real token
 4. Verify .mcp.json is in .gitignore (NEVER commit it!)
 5. Restart Claude Code (to load MCP server)
-6. Preview sync: /github-sync DRY_RUN=true
-7. Perform sync: /github-sync
+6. Preview sync: /AgileFlow:github-sync DRY_RUN=true
+7. Perform sync: /AgileFlow:github-sync
 
 Next steps for team members:
 1. Pull latest code (includes .mcp.json.example)
@@ -276,7 +282,7 @@ cp .mcp.json.example .mcp.json
 ```
 
 **Step 5: Create AgileFlow Databases**
-Run `/notion-export MODE=setup` which will:
+Run `/AgileFlow:notion-export MODE=setup` which will:
 - Use MCP tools to create 3 databases (Epics, Stories, ADRs)
 - Store database IDs in `docs/08-project/notion-sync-map.json`
 
@@ -327,9 +333,9 @@ Next steps for you:
 3. Edit .mcp.json and replace placeholder with your real token
 4. Verify .mcp.json is in .gitignore (NEVER commit it!)
 5. Restart Claude Code (to load MCP server)
-6. Create databases: /notion-export MODE=setup
-7. Preview sync: /notion-export DRY_RUN=true
-8. Perform initial sync: /notion-export
+6. Create databases: /AgileFlow:notion-export MODE=setup
+7. Preview sync: /AgileFlow:notion-export DRY_RUN=true
+8. Perform initial sync: /AgileFlow:notion-export
 
 Next steps for team members:
 1. Pull latest code (includes .mcp.json.example)
@@ -373,13 +379,13 @@ OUTPUT
   GitHub Issues Sync: 🆕 Newly configured
     - Created docs/08-project/github-sync-map.json
     - Created 12 labels in repository
-    - Next: Run /github-sync DRY_RUN=true
+    - Next: Run /AgileFlow:github-sync DRY_RUN=true
   MCP Integrations:
     Notion: ⚠️ Partially configured
       - ✅ .mcp.json has Notion server configured
       - ⚠️ Token is still placeholder - edit .mcp.json with your real token
       - ⚠️ Restart Claude Code after updating token
-      - Next: /notion-export MODE=setup
+      - Next: /AgileFlow:notion-export MODE=setup
     Supabase: ✅ Fully configured
       - ✅ .mcp.json has Supabase server configured
       - ✅ Token configured
@@ -387,14 +393,14 @@ OUTPUT
   CI Workflow: ✅ Already configured (skipped)
 
   Next steps:
-  - Create your first epic: /epic-new
-  - Create your first story: /story-new
-  - View your board: /board
-  - Sync to GitHub: /github-sync (newly enabled)
+  - Create your first epic: /AgileFlow:epic-new
+  - Create your first story: /AgileFlow:story-new
+  - View your board: /AgileFlow:board
+  - Sync to GitHub: /AgileFlow:github-sync (newly enabled)
   - Complete Notion setup:
     1. Create integration: https://www.notion.so/my-integrations
     2. Edit .mcp.json: Replace placeholder with your real token
     3. Verify .mcp.json is in .gitignore (NEVER commit it!)
     4. Restart Claude Code
-    5. Run: /notion-export MODE=setup
+    5. Run: /AgileFlow:notion-export MODE=setup
   ```

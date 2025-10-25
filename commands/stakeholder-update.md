@@ -330,7 +330,7 @@ Suggest adding to CI:
       runs-on: ubuntu-latest
       steps:
         - name: Generate update
-          run: npx claude-code /stakeholder-update PERIOD=week
+          run: npx claude-code /AgileFlow:stakeholder-update PERIOD=week
 
         - name: Email stakeholders
           uses: dawidd6/action-send-mail@v3
