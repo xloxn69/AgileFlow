@@ -5,6 +5,215 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.0] - 2025-10-25
+
+### 🚨 CRITICAL SECURITY FIX - MCP Token Management
+
+**⚠️ URGENT**: This release fixes a critical security vulnerability that could cause MCP tokens (GitHub, Notion) to be leaked to git repositories.
+
+#### What Was Wrong (v2.10.0 and earlier):
+- `/AgileFlow:setup-system` did NOT ensure `.mcp.json` and `.env` were in user's `.gitignore`
+- `.mcp.json.example` instructed users to HARDCODE tokens directly in `.mcp.json`
+- No validation to detect if secrets were committed to git
+- Users could accidentally commit tokens, exposing GitHub/Notion/database credentials
+
+**This affected one of our users** - their `.mcp.json` wasn't gitignored and ALL TOKENS LEAKED (GitHub, Notion, everything). This release prevents that from happening again.
+
+#### What's Fixed (v2.11.0):
+✅ **Environment Variable Substitution** - `.mcp.json` now uses `${VAR}` syntax (reads from `.env`)
+✅ **Actual tokens in `.env`** - NOT in `.mcp.json`
+✅ **Both `.mcp.json` AND `.env` are gitignored** - `/setup-system` ensures this
+✅ **Validation command** - `/AgileFlow:validate-system` detects leaked secrets
+✅ **Updated documentation** - All MCP docs corrected across 6 files
+
+### Fixed
+
+**MCP Security** - Environment Variable Approach (CORRECT):
+
+**Updated Files**:
+- `.mcp.json.example` - Now uses `${GITHUB_PERSONAL_ACCESS_TOKEN}` and `${NOTION_TOKEN}` syntax
+- `.env.example` - Comprehensive token documentation with security warnings
+- `commands/setup-system.md` - Ensures `.mcp.json` and `.env` are in user's `.gitignore` (CRITICAL)
+- `commands/validate-system.md` - New security validation checks (section 9)
+- `CLAUDE.md` - Updated MCP Integration section with correct approach
+- All other MCP documentation corrected
+
+**New Security Checks in `/AgileFlow:validate-system`**:
+- ❌ CRITICAL: Detects if `.mcp.json` or `.env` are committed to git
+- ❌ CRITICAL: Detects if `.mcp.json` or `.env` are staged (not yet committed)
+- ❌ CRITICAL: Detects hardcoded tokens in `.mcp.json`
+- ⚠️  Warns if `.mcp.json` or `.env` not in `.gitignore`
+- ⚠️  Warns if `.env` missing required tokens
+- ✅ Validates `${VAR}` syntax is used in `.mcp.json`
+
+**Wrapper Scripts** (for MCP servers without `${VAR}` support):
+- Created `templates/mcp-wrapper-postgres.sh` - Example wrapper for Postgres MCP
+- Created `templates/MCP-WRAPPER-SCRIPTS.md` - Comprehensive guide
+- Documents when to use wrapper scripts vs direct `${VAR}` substitution
+- GitHub MCP and Notion MCP support `${VAR}` (no wrapper needed)
+- Postgres MCP requires wrapper (example provided)
+
+### Added
+
+**Metadata Tracking** - AgileFlow Version and Setup Health:
+
+- **`templates/agileflow-metadata.json`** - Tracks AgileFlow setup version and health
+  - AgileFlow version number (2.11.0)
+  - Setup timestamp and last validation
+  - Feature flags (epics, stories, ADRs, research, MCP integrations)
+  - Directory structure validation
+  - Git repository status (initialized, remote configured, remote URL)
+  - Security status (`.mcp.json` gitignored, `.env` gitignored)
+
+- **Deployed by `/AgileFlow:setup-system`** - Automatically created at `docs/00-meta/agileflow-metadata.json`
+- **Validated by `/AgileFlow:validate-system`** - Checks version compatibility and setup health
+
+**Git Remote Setup** - Every Project Needs Version Control:
+
+- **Enhanced `/AgileFlow:setup-system`** with git repository setup
+  - Detects if git is initialized
+  - Asks for git remote URL if not configured
+  - Configures `git remote add origin <url>`
+  - Updates `agileflow-metadata.json` with remote URL
+  - Provides next steps (first commit, push to remote)
+
+**Why This Matters**:
+- Version control for all AgileFlow docs (epics, stories, ADRs)
+- Team collaboration via GitHub/GitLab
+- Backup and disaster recovery
+- Enables proper `.gitignore` for MCP secrets
+
+### Improved
+
+**Enhanced `/AgileFlow:validate-system`** - Comprehensive Security Validation:
+
+Added **Section 9: MCP Security Validation (CRITICAL)** with 6 new checks:
+1. `.gitignore` contains `.mcp.json` and `.env`
+2. `.mcp.json` and `.env` NOT committed to git (detects leaked secrets)
+3. `.mcp.json` and `.env` NOT staged (prevents committing)
+4. `.mcp.json` uses `${VAR}` syntax (not hardcoded tokens)
+5. `.env` exists with required tokens
+6. AgileFlow metadata version and security flags
+7. Git repository health (remote configured, unpushed commits)
+
+**Output includes**:
+- Security critical errors section (leaked secrets)
+- Security warnings section (setup issues)
+- Security next steps with remediation commands
+- If secrets leaked: IMMEDIATE token revocation instructions
+
+**Updated `/AgileFlow:setup-system`** - MCP Security Enforcement:
+
+- **Step 3** (NEW): Ensures `.mcp.json` and `.env` in user's `.gitignore`
+  ```bash
+  grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
+  grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
+  ```
+
+- **GitHub MCP Setup** - Updated instructions:
+  - ✅ Use `${VAR}` in `.mcp.json`
+  - ✅ Store tokens in `.env`
+  - ✅ Both files MUST be gitignored
+  - ❌ NEVER hardcode tokens
+  - ❌ NEVER commit `.mcp.json` or `.env`
+
+- **Notion MCP Setup** - Updated instructions (same pattern as GitHub)
+
+- **Next Steps Printouts** - Updated to reflect env var approach
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.11.0
+- **marketplace.json**: Updated description with "v2.11.0 - CRITICAL: MCP security fix, metadata tracking, git remote setup"
+- **CHANGELOG.md**: Added comprehensive v2.11.0 entry
+
+### Technical
+
+- **Security Model Change**: Hardcoded tokens → `${VAR}` environment variable substitution
+- **Template Files Added**: 3 new templates (agileflow-metadata.json, mcp-wrapper-postgres.sh, MCP-WRAPPER-SCRIPTS.md)
+- **Documentation Update**: 6 files updated with correct MCP security approach
+- **Validation Enhancement**: 7 new security checks in `/validate-system`
+- **Setup Enhancement**: Git remote configuration added to `/setup-system`
+- **Gitignore Enforcement**: `/setup-system` ALWAYS adds `.mcp.json` and `.env` to user's `.gitignore`
+
+### Migration Guide
+
+**If you're upgrading from v2.10.0 or earlier:**
+
+1. **CRITICAL**: Check if your tokens leaked to git
+   ```bash
+   # Check if .mcp.json or .env are tracked
+   git ls-files | grep -E '^\\.mcp\\.json$|^\\.env$'
+   ```
+
+   **If output is NOT empty** (files are tracked):
+   ```bash
+   # YOUR TOKENS ARE LEAKED - Follow these steps IMMEDIATELY:
+
+   # 1. Remove from git
+   git rm --cached .mcp.json .env
+
+   # 2. Add to .gitignore
+   echo ".mcp.json" >> .gitignore
+   echo ".env" >> .gitignore
+
+   # 3. Commit removal
+   git commit -m "Remove leaked secrets from git"
+
+   # 4. REVOKE AND REGENERATE ALL TOKENS IMMEDIATELY:
+   #    - GitHub: https://github.com/settings/tokens (revoke old, create new)
+   #    - Notion: https://www.notion.so/my-integrations (regenerate secret)
+
+   # 5. Force push (ONLY if you haven't shared this branch publicly)
+   git push --force
+
+   # 6. If branch is public, assume tokens are compromised - revoke ASAP
+   ```
+
+2. **Update `.mcp.json.example`** to use `${VAR}` syntax:
+   ```bash
+   # Backup current
+   cp .mcp.json.example .mcp.json.example.backup
+
+   # Get updated template from AgileFlow v2.11.0
+   # (copy from AgileFlow plugin templates/.mcp.json.example)
+   ```
+
+3. **Update `.env.example`** with new format:
+   ```bash
+   # Get updated template from AgileFlow v2.11.0
+   # (copy from AgileFlow plugin templates/.env.example)
+   ```
+
+4. **Update your `.mcp.json`** to use `${VAR}`:
+   ```bash
+   # Edit .mcp.json
+   # Change: "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_actual_token"
+   # To:     "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+   ```
+
+5. **Move tokens to `.env`**:
+   ```bash
+   # Create/edit .env
+   echo "GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here" >> .env
+   echo "NOTION_TOKEN=ntn_your_actual_token_here" >> .env
+   ```
+
+6. **Verify gitignore**:
+   ```bash
+   grep -E '\\.mcp\\.json|\\.env' .gitignore
+   ```
+
+7. **Restart Claude Code** (to reload MCP with env vars)
+
+8. **Run validation**:
+   ```bash
+   /AgileFlow:validate-system
+   ```
+
+**If starting fresh with v2.11.0**:
+- Just follow `/AgileFlow:setup-system` - it now does everything correctly!
+
 ## [2.10.0] - 2025-10-25
 
 ### Removed
