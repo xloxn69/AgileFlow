@@ -46,7 +46,7 @@ grep -q "^\.env$" .gitignore || echo ".env" >> .gitignore
 cat .mcp.json 2>/dev/null || echo "MCP not configured"
 
 # If missing, run setup
-/setup-system
+/AgileFlow:setup-system
 # Select "yes" for Notion integration
 ```
 
@@ -86,7 +86,7 @@ Your `.mcp.json` should contain:
 Run this command with `MODE=setup` to create the three required databases:
 
 ```bash
-/notion-export MODE=setup
+/AgileFlow:notion-export MODE=setup
 ```
 
 This will:
@@ -101,30 +101,30 @@ This will:
 
 ```bash
 # Initial setup (create databases)
-/notion-export MODE=setup
+/AgileFlow:notion-export MODE=setup
 
 # Preview export without writing to Notion
-/notion-export DRY_RUN=true
+/AgileFlow:notion-export DRY_RUN=true
 
 # Export all docs to Notion
-/notion-export
+/AgileFlow:notion-export
 
 # Export specific type only
-/notion-export TYPE=epics
-/notion-export TYPE=stories
-/notion-export TYPE=adrs
+/AgileFlow:notion-export TYPE=epics
+/AgileFlow:notion-export TYPE=stories
+/AgileFlow:notion-export TYPE=adrs
 
 # Import from Notion back to markdown
-/notion-export MODE=import
+/AgileFlow:notion-export MODE=import
 
 # Bidirectional sync (smart merge)
-/notion-export MODE=sync
+/AgileFlow:notion-export MODE=sync
 
 # Force overwrite (export wins)
-/notion-export MODE=export FORCE=true
+/AgileFlow:notion-export MODE=export FORCE=true
 
 # Force overwrite (import wins)
-/notion-export MODE=import FORCE=true
+/AgileFlow:notion-export MODE=import FORCE=true
 ```
 
 ### Environment Variables
@@ -217,7 +217,7 @@ docs/08-project/
 echo "NOTION_TOKEN=secret_your_token_here" >> .env
 
 # 3. Run system setup
-/setup-system
+/AgileFlow:setup-system
 # Select "yes" for Notion integration
 # This creates .mcp.json.example and copies to .mcp.json
 
@@ -225,16 +225,16 @@ echo "NOTION_TOKEN=secret_your_token_here" >> .env
 # MCP server loads on startup
 
 # 5. Create databases
-/notion-export MODE=setup
+/AgileFlow:notion-export MODE=setup
 
 # 6. Share databases with integration
 # In Notion: Click "..." → "Add connections" → Select your integration
 
 # 7. Preview export
-/notion-export DRY_RUN=true
+/AgileFlow:notion-export DRY_RUN=true
 
 # 8. Perform initial export
-/notion-export
+/AgileFlow:notion-export
 
 # 9. Visit Notion to verify
 # Open https://notion.so/your-workspace
@@ -244,16 +244,16 @@ echo "NOTION_TOKEN=secret_your_token_here" >> .env
 
 ```bash
 # Export new/changed docs to Notion
-/notion-export
+/AgileFlow:notion-export
 
 # Or just export stories
-/notion-export TYPE=stories
+/AgileFlow:notion-export TYPE=stories
 
 # Import changes from Notion (team members edited in Notion)
-/notion-export MODE=import
+/AgileFlow:notion-export MODE=import
 
 # Bidirectional sync (smart merge)
-/notion-export MODE=sync
+/AgileFlow:notion-export MODE=sync
 ```
 
 ### Team Member Onboarding
@@ -277,23 +277,23 @@ echo "NOTION_TOKEN=secret_their_token_here" >> .env
 # In Notion: Click "..." → "Add connections" → Select their integration
 
 # 7. Start syncing!
-/notion-export
+/AgileFlow:notion-export
 ```
 
 ### Conflict Resolution
 
 ```bash
 # Check for conflicts first
-/notion-export MODE=sync DRY_RUN=true
+/AgileFlow:notion-export MODE=sync DRY_RUN=true
 
 # Manual conflict resolution (default)
 # Script will list conflicts and prompt for each
 
 # Or force local version to win
-/notion-export MODE=export FORCE=true
+/AgileFlow:notion-export MODE=export FORCE=true
 
 # Or force Notion version to win
-/notion-export MODE=import FORCE=true
+/AgileFlow:notion-export MODE=import FORCE=true
 ```
 
 ---
@@ -341,7 +341,7 @@ cp docs/08-project/notion-sync-map.json docs/08-project/notion-sync-map.json.bac
 # Your NOTION_TOKEN can stay in .env (no change needed!)
 
 # Run setup to create .mcp.json
-/setup-system
+/AgileFlow:setup-system
 # Select "yes" for Notion integration
 
 # This creates .mcp.json with:
@@ -372,10 +372,10 @@ cp docs/08-project/notion-sync-map.json docs/08-project/notion-sync-map.json.bac
 # No need to recreate databases
 
 # Verify connection
-/notion-export DRY_RUN=true
+/AgileFlow:notion-export DRY_RUN=true
 
 # Resume syncing
-/notion-export
+/AgileFlow:notion-export
 ```
 
 ---
@@ -389,7 +389,7 @@ cp docs/08-project/notion-sync-map.json docs/08-project/notion-sync-map.json.bac
 **Fix**:
 ```bash
 # Run setup
-/setup-system
+/AgileFlow:setup-system
 
 # Or manually create .mcp.json in project root:
 cat > .mcp.json <<'EOF'
@@ -459,7 +459,7 @@ ls -la .mcp.json  # Should exist in current directory
 
 **Fix**:
 ```bash
-/notion-export MODE=setup
+/AgileFlow:notion-export MODE=setup
 ```
 
 ### Rate Limiting
@@ -475,14 +475,14 @@ ls -la .mcp.json  # Should exist in current directory
 **Fix**:
 ```bash
 # Review conflict details
-/notion-export MODE=sync DRY_RUN=true
+/AgileFlow:notion-export MODE=sync DRY_RUN=true
 
 # Choose resolution strategy
-/notion-export MODE=sync  # Manual prompts
+/AgileFlow:notion-export MODE=sync  # Manual prompts
 # or
-/notion-export MODE=export FORCE=true  # Local wins
+/AgileFlow:notion-export MODE=export FORCE=true  # Local wins
 # or
-/notion-export MODE=import FORCE=true  # Notion wins
+/AgileFlow:notion-export MODE=import FORCE=true  # Notion wins
 ```
 
 ### Database Not Shared With Integration
@@ -515,12 +515,12 @@ ls -la .mcp.json  # Should exist in current directory
 
 ## RELATED COMMANDS
 
-- `/setup-system` - Initial AgileFlow + MCP configuration
-- `/github-sync` - Sync with GitHub Issues (uses GitHub CLI)
-- `/story-new` - Create new story (auto-exports if Notion enabled)
-- `/epic-new` - Create new epic (auto-exports if Notion enabled)
-- `/adr-new` - Create new ADR (auto-exports if Notion enabled)
-- `/board` - Visualize status (can pull from Notion)
+- `/AgileFlow:setup-system` - Initial AgileFlow + MCP configuration
+- `/AgileFlow:github-sync` - Sync with GitHub Issues (uses GitHub CLI)
+- `/AgileFlow:story-new` - Create new story (auto-exports if Notion enabled)
+- `/AgileFlow:epic-new` - Create new epic (auto-exports if Notion enabled)
+- `/AgileFlow:adr-new` - Create new ADR (auto-exports if Notion enabled)
+- `/AgileFlow:board` - Visualize status (can pull from Notion)
 
 ---
 

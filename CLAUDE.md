@@ -56,7 +56,7 @@ AgileFlow/
 - Have specialized expertise (UI, API, CI, DevOps, planning, research, mentoring)
 - Registered in `.claude-plugin/plugin.json` under `"agents"` array
 
-**AgileFlow System** (created by `/setup-system` command):
+**AgileFlow System** (created by `/AgileFlow:setup-system` command):
 - **Not part of this repository** - created in user's project repos
 - Scaffolds `docs/` directory structure (00-meta through 10-research)
 - Manages epics, stories, ADRs, agent status, message bus
@@ -71,7 +71,7 @@ AgileFlow/
 
 **`.claude-plugin/marketplace.json`** - Marketplace metadata:
 - Plugin name and owner
-- Version description (shown in `/plugin` UI)
+- Version description (shown in `/AgileFlow:plugin` UI)
 - Must stay in sync with `plugin.json` version
 
 **`CHANGELOG.md`** - Version history:
@@ -192,12 +192,12 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
   - No sudo required (uses npx)
   - Token: GitHub Personal Access Token (ghp_*)
   - Permissions: `repo`, `read:org`
-  - Command: `/github-sync`
+  - Command: `/AgileFlow:github-sync`
 
 - **Notion MCP** (`@notionhq/notion-mcp-server`):
   - Bidirectional Notion database sync
   - Token: Notion Integration Token (ntn_*)
-  - Command: `/notion-export`
+  - Command: `/AgileFlow:notion-export`
 
 - **Supabase MCP** (if configured):
   - Configured via environment variables in `.env`
@@ -209,11 +209,11 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - Never contains actual secrets
 
 **Setup Flow**:
-1. User runs `/setup-system` → Creates `.mcp.json.example` with placeholders
+1. User runs `/AgileFlow:setup-system` → Creates `.mcp.json.example` with placeholders
 2. User copies: `cp .mcp.json.example .mcp.json`
 3. User edits `.mcp.json` and hardcodes their real tokens
 4. User restarts Claude Code (to load MCP servers)
-5. User runs `/github-sync` or `/notion-export` to sync
+5. User runs `/AgileFlow:github-sync` or `/AgileFlow:notion-export` to sync
 
 **Key principle**: Template (`.mcp.json.example`) is committed with placeholders, actual config (`.mcp.json`) with hardcoded tokens is gitignored.
 
@@ -253,7 +253,7 @@ When updating CHANGELOG.md:
 
 **Commits**:
 - Use Conventional Commits format
-- Example: `feat: add /new-command for X`, `fix: correct version in marketplace.json`
+- Example: `feat: add /AgileFlow:new-command for X`, `fix: correct version in marketplace.json`
 - Include co-authorship: `Co-Authored-By: Claude <noreply@anthropic.com>`
 - **ALWAYS PUSH AFTER COMMITTING**: `git push origin main` (marketplace reads from GitHub)
 

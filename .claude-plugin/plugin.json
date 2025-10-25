@@ -1,6 +1,6 @@
 {
   "name": "AgileFlow",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "description": "Universal agile/docs-as-code system combining Scrum, Kanban, ADRs, and docs-as-code. Framework-agnostic command pack for managing epics, stories, decisions, research, and multi-agent collaboration with automation features.",
   "author": {
     "name": "AgileFlow Contributors"
@@ -17,7 +17,6 @@
     "./commands/status.md",
     "./commands/handoff.md",
     "./commands/pr-template.md",
-    "./commands/readme-sync.md",
     "./commands/ci-setup.md",
     "./commands/babysit.md",
     "./commands/chatgpt.md",
@@ -26,9 +25,6 @@
     "./commands/chatgpt-export.md",
     "./commands/chatgpt-research.md",
     "./commands/research-init.md",
-    "./commands/agent-ui.md",
-    "./commands/agent-api.md",
-    "./commands/agent-ci.md",
     "./commands/dependency-update.md",
     "./commands/docs-sync.md",
     "./commands/impact-analysis.md",

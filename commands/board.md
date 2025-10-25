@@ -210,7 +210,7 @@ INTEGRATION
 
 - Save board snapshot to docs/08-project/boards/board-<YYYYMMDD>.md
 - Track board states over time for velocity analysis
-- Optionally update /velocity with latest data
+- Optionally update /AgileFlow:velocity with latest data
 
 WORKFLOW
 

@@ -41,7 +41,7 @@ WORKFLOW
 3. Create feature branch
 4. Implement to AC with tests
 5. Update status.json and bus/log.jsonl
-6. Prepare PR with /pr-template
+6. Prepare PR with /AgileFlow:pr-template
 ```
 
 ## Examples
