@@ -317,7 +317,7 @@ After sync completes, generate report:
 
 Updated `docs/08-project/github-sync-map.json` with 5 new mappings.
 
-**Next sync**: Run `/github-sync` again to keep in sync, or set up GitHub Actions webhook.
+**Next sync**: Run `/AgileFlow:github-sync` again to keep in sync, or set up GitHub Actions webhook.
 
 ---
 
@@ -339,7 +339,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: /github-sync MODE=sync
+      - run: /AgileFlow:github-sync MODE=sync
 ```
 ```
 
@@ -379,18 +379,18 @@ issue_number=$(echo $payload | jq -r '.issue.number')
 case $action in
   opened|edited)
     # Import/update story
-    /github-sync MODE=import ISSUE=$issue_number
+    /AgileFlow:github-sync MODE=import ISSUE=$issue_number
     ;;
   closed)
     # Mark story done
     story_id=$(get_story_from_mapping $issue_number)
-    /status STORY=$story_id STATUS=done
+    /AgileFlow:status STORY=$story_id STATUS=done
     ;;
   labeled)
     # Sync status if status label changed
     new_label=$(echo $payload | jq -r '.label.name')
     if [[ $new_label =~ ^Status: ]]; then
-      /github-sync MODE=import ISSUE=$issue_number
+      /AgileFlow:github-sync MODE=import ISSUE=$issue_number
     fi
     ;;
 esac
@@ -418,7 +418,7 @@ DRY RUN MODE
 Preview changes before applying:
 
 ```bash
-/github-sync DRY_RUN=true
+/AgileFlow:github-sync DRY_RUN=true
 ```
 
 Output:
@@ -482,45 +482,45 @@ USAGE EXAMPLES
 
 ### Full bidirectional sync
 ```bash
-/github-sync
+/AgileFlow:github-sync
 ```
 
 ### Export all stories to GitHub
 ```bash
-/github-sync MODE=export
+/AgileFlow:github-sync MODE=export
 ```
 
 ### Import GitHub issues to AgileFlow
 ```bash
-/github-sync MODE=import
+/AgileFlow:github-sync MODE=import
 ```
 
 ### Sync single story
 ```bash
-/github-sync STORY=US-0030
+/AgileFlow:github-sync STORY=US-0030
 ```
 
 ### Sync specific epic
 ```bash
-/github-sync EPIC=EP-0010
+/AgileFlow:github-sync EPIC=EP-0010
 ```
 
 ### Preview changes (dry run)
 ```bash
-/github-sync DRY_RUN=true
+/AgileFlow:github-sync DRY_RUN=true
 ```
 
 ### One-way sync (AgileFlow → GitHub only)
 ```bash
-/github-sync DIRECTION=agileflow-to-github
+/AgileFlow:github-sync DIRECTION=agileflow-to-github
 ```
 
 INTEGRATION WITH OTHER COMMANDS
 
-- After `/story-new`: Optionally prompt to create GitHub issue
-- After `/status`: Auto-sync status to GitHub
-- In `/board`: Show GitHub issue links
-- In `/velocity`: Include GitHub activity metrics
+- After `/AgileFlow:story-new`: Optionally prompt to create GitHub issue
+- After `/AgileFlow:status`: Auto-sync status to GitHub
+- In `/AgileFlow:board`: Show GitHub issue links
+- In `/AgileFlow:velocity`: Include GitHub activity metrics
 
 RULES
 - Never create duplicate issues (check mapping first)
@@ -566,7 +566,7 @@ If you previously used GitHub CLI (`gh`):
 1. Remove `gh` CLI (no longer needed)
 2. Add GitHub MCP to `.mcp.json` (see Prerequisites above)
 3. Restart Claude Code to load MCP server
-4. Run `/github-sync` - it now uses MCP automatically
+4. Run `/AgileFlow:github-sync` - it now uses MCP automatically
 
 ### Why We Switched
 - Removes sudo/installation barrier
@@ -578,7 +578,7 @@ If you previously used GitHub CLI (`gh`):
 
 ## RELATED COMMANDS
 
-- `/notion-export` - Sync with Notion (uses MCP)
-- `/story-new` - Create new story (can auto-create GitHub issue)
-- `/board` - Visualize stories with GitHub links
-- `/velocity` - Track velocity including GitHub activity
+- `/AgileFlow:notion-export` - Sync with Notion (uses MCP)
+- `/AgileFlow:story-new` - Create new story (can auto-create GitHub issue)
+- `/AgileFlow:board` - Visualize stories with GitHub links
+- `/AgileFlow:velocity` - Track velocity including GitHub activity
