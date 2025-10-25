@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.10.0 - Command cleanup + README emphasis + proper /AgileFlow: prefixes)",
+  "description": "Universal agile/docs-as-code system with 41 commands and 8 specialized subagents (v2.11.0 - CRITICAL: MCP security fix, metadata tracking, git remote setup)",
   "plugins": [
     {
       "name": "AgileFlow",

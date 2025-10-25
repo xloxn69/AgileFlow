@@ -172,50 +172,77 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 
 **`.mcp.json.example`** - Template committed to git:
 - Configures MCP servers for GitHub, Notion, and Supabase integrations
-- Contains placeholder tokens:
-  - GitHub: `"ghp_YOUR_GITHUB_TOKEN_HERE"` (Personal Access Token)
-  - Notion: `"ntn_YOUR_NOTION_TOKEN_HERE"` (Integration Token)
-  - Supabase: Configured via environment variables
-- Users copy to `.mcp.json` (gitignored) and replace placeholders with real tokens
+- Uses `${VAR}` syntax for environment variable substitution
+- Example: `"GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"`
+- Users copy to `.mcp.json` (gitignored) - do NOT modify, it reads from .env
 - **Why MCP?** Standardized tool interface, no sudo required, better portability
 
-**CRITICAL: Token Hardcoding Required**:
-- ⚠️ Environment variable substitution (`${GITHUB_TOKEN}`, `${NOTION_TOKEN}`) does NOT work in `.mcp.json`
-- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
-- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks (already in .gitignore)
-- ⚠️ `.mcp.json.example` is committed with placeholder text, never real tokens
-- ⚠️ Each team member needs their own tokens (no sharing)
+**⚠️ CRITICAL: Environment Variable Security (NOT Hardcoded Tokens)**:
+- ✅ `.mcp.json` uses `${VAR}` syntax to read from `.env`
+- ✅ Actual tokens stored in `.env` (NOT in `.mcp.json`)
+- ✅ BOTH `.mcp.json` AND `.env` MUST be gitignored
+- ✅ Commit `.mcp.json.example` and `.env.example` (templates with `${VAR}` syntax)
+- ❌ NEVER hardcode tokens in `.mcp.json`
+- ❌ NEVER commit `.mcp.json` or `.env` to git
+- ⚠️ Each team member needs their own tokens (NO SHARING)
 
 **Supported MCP Servers**:
 - **GitHub MCP** (`@modelcontextprotocol/server-github`):
   - Bidirectional GitHub Issues sync
   - No sudo required (uses npx)
-  - Token: GitHub Personal Access Token (ghp_*)
+  - Token: GitHub Personal Access Token (ghp_*) in `.env`
   - Permissions: `repo`, `read:org`
   - Command: `/AgileFlow:github-sync`
+  - Supports `${VAR}` substitution: ✅
 
 - **Notion MCP** (`@notionhq/notion-mcp-server`):
   - Bidirectional Notion database sync
-  - Token: Notion Integration Token (ntn_*)
+  - Token: Notion Integration Token (ntn_*) in `.env`
   - Command: `/AgileFlow:notion-export`
+  - Supports `${VAR}` substitution: ✅
 
-- **Supabase MCP** (if configured):
-  - Configured via environment variables in `.env`
+- **Postgres MCP** (example of server WITHOUT `${VAR}` support):
+  - Requires wrapper script (see `templates/mcp-wrapper-postgres.sh`)
+  - Wrapper loads `.env` and passes credentials as CLI args
+  - See `templates/MCP-WRAPPER-SCRIPTS.md` for guide
 
-**`.env.example`** - Environment variable template (optional):
-- Documents other environment variables (SUPABASE_*, legacy references)
-- GITHUB_TOKEN and NOTION_TOKEN documented here for reference only
-- Actual tokens for MCP must be hardcoded in `.mcp.json`, not read from .env
-- Never contains actual secrets
+**`.env.example`** - Environment variable template:
+- Documents ALL MCP tokens with placeholders
+- CRITICAL: `GITHUB_PERSONAL_ACCESS_TOKEN`, `NOTION_TOKEN`, etc.
+- Users copy to `.env` and replace placeholders with real tokens
+- `.env` MUST be gitignored (contains actual secrets)
 
-**Setup Flow**:
-1. User runs `/AgileFlow:setup-system` → Creates `.mcp.json.example` with placeholders
-2. User copies: `cp .mcp.json.example .mcp.json`
-3. User edits `.mcp.json` and hardcodes their real tokens
-4. User restarts Claude Code (to load MCP servers)
-5. User runs `/AgileFlow:github-sync` or `/AgileFlow:notion-export` to sync
+**Setup Flow (NEW - Secure Approach)**:
+1. User runs `/AgileFlow:setup-system` → Creates `.mcp.json.example` and `.env.example` with `${VAR}` syntax
+2. User copies templates:
+   ```bash
+   cp .mcp.json.example .mcp.json
+   cp .env.example .env
+   ```
+3. User edits `.env` (NOT `.mcp.json`) and adds real tokens:
+   ```bash
+   GITHUB_PERSONAL_ACCESS_TOKEN=ghp_actual_token_here
+   NOTION_TOKEN=ntn_actual_token_here
+   ```
+4. User verifies `.mcp.json` and `.env` are in `.gitignore`:
+   ```bash
+   grep -E '\\.mcp\\.json|\\.env' .gitignore
+   ```
+5. User restarts Claude Code (to load MCP servers with env vars)
+6. User runs `/AgileFlow:github-sync` or `/AgileFlow:notion-export` to sync
 
-**Key principle**: Template (`.mcp.json.example`) is committed with placeholders, actual config (`.mcp.json`) with hardcoded tokens is gitignored.
+**Key principles**:
+- `.mcp.json.example` (template with `${VAR}`) → committed to git
+- `.mcp.json` (copy of template, unchanged) → gitignored
+- `.env.example` (template with placeholders) → committed to git
+- `.env` (actual tokens) → gitignored (CRITICAL)
+- Tokens ONLY in `.env`, NEVER in `.mcp.json`
+
+**Wrapper Scripts (for servers without `${VAR}` support)**:
+- Some MCP servers don't support `${VAR}` substitution
+- Use bash wrapper scripts that load `.env` and pass credentials
+- See `templates/mcp-wrapper-postgres.sh` for example
+- See `templates/MCP-WRAPPER-SCRIPTS.md` for full guide
 
 ## Documentation Standards
 
@@ -258,11 +285,11 @@ When updating CHANGELOG.md:
 - **ALWAYS PUSH AFTER COMMITTING**: `git push origin main` (marketplace reads from GitHub)
 
 **Never commit**:
-- `.mcp.json` (gitignored - contains hardcoded tokens)
-- `.env` (gitignored - contains other secrets if used)
+- `.mcp.json` (gitignored - even though it uses `${VAR}`, keep gitignored as safety measure)
+- `.env` (gitignored - contains actual secrets/tokens)
 
 **Always commit**:
-- `.mcp.json.example` (template for team)
+- `.mcp.json.example` (template with `${VAR}` syntax for team)
 - `.env.example` (template with placeholder values)
 
 **Critical reminder**: The plugin marketplace fetches from GitHub, not local files. If you don't push, users won't see your changes!

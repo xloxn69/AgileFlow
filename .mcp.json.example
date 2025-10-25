@@ -4,28 +4,44 @@
       "command": "npx",
       "args": ["-y", "@notionhq/notion-mcp-server"],
       "env": {
-        "NOTION_TOKEN": "ntn_YOUR_NOTION_TOKEN_HERE"
+        "NOTION_TOKEN": "${NOTION_TOKEN}"
       }
     },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_YOUR_GITHUB_TOKEN_HERE"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     }
   }
 }
 
-// INSTRUCTIONS:
-// 1. Copy this file to .mcp.json (NOT committed to git)
-// 2. Replace placeholder tokens with your actual tokens:
-//    - Notion: Get from https://www.notion.so/my-integrations (starts with "ntn_")
-//    - GitHub: Get from https://github.com/settings/tokens (starts with "ghp_")
-// 3. CRITICAL: Tokens must be hardcoded (env var substitution doesn't work)
-// 4. NEVER commit .mcp.json to git (it's in .gitignore)
-// 5. Each team member needs their own copy with their own tokens
+// ⚠️ CRITICAL SECURITY INSTRUCTIONS ⚠️
+//
+// 1. Copy this file to .mcp.json:
+//    cp .mcp.json.example .mcp.json
+//
+// 2. NEVER EDIT .mcp.json - it uses environment variable substitution!
+//    The ${VAR} syntax automatically reads from your .env file.
+//
+// 3. Add your tokens to .env file (NOT .mcp.json):
+//    NOTION_TOKEN=ntn_your_actual_notion_token_here
+//    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_github_token_here
+//
+// 4. VERIFY .mcp.json and .env are in .gitignore:
+//    grep -E '\.mcp\.json|\.env' .gitignore
+//    If missing, run /AgileFlow:setup-system or add manually!
+//
+// 5. NEVER commit .mcp.json or .env to git (contains secrets!)
+//
+// Token sources:
+// - Notion: https://www.notion.so/my-integrations (starts with "ntn_")
+// - GitHub: https://github.com/settings/tokens (starts with "ghp_")
 //
 // GitHub token permissions needed:
 // - repo (full control) - for issues, PRs, labels
 // - read:org - for organization access (if needed)
+//
+// NOTE: Some MCP servers don't support ${VAR} substitution (e.g., Postgres).
+// For those, see docs/00-meta/mcp-wrapper-scripts/ for wrapper script examples.
