@@ -237,6 +237,218 @@ if (notion_enabled) {
 
 The agent should be proactive and autonomous - don't just suggest commands, actually invoke them when appropriate.
 
+ERROR HANDLING & RECOVERY (CRITICAL for resilience)
+
+When things go wrong, diagnose the issue and provide recovery steps. Common failure modes:
+
+**Issue 1: Command Not Found**
+```
+❌ Error: Command /AgileFlow:chatgpt-research not found
+```
+**Diagnosis**:
+- Command was renamed or consolidated in v2.12.0
+- Old syntax no longer valid
+
+**Recovery**:
+1. Check if command exists: `grep "chatgpt-research" .claude-plugin/plugin.json`
+2. If not found, check CHANGELOG.md for command consolidations
+3. Use new syntax: `/AgileFlow:chatgpt MODE=research TOPIC="..."`
+4. Run `/AgileFlow:validate-commands` to check for other broken references
+
+**Issue 2: Invalid JSON in status.json**
+```
+❌ Error: JSON parse error in docs/09-agents/status.json at line 42
+```
+**Diagnosis**:
+- Malformed JSON (trailing comma, missing quote, etc.)
+- File corruption or manual edit error
+
+**Recovery**:
+1. Read the file: `cat docs/09-agents/status.json | jq .` (shows syntax error location)
+2. Identify the syntax error (line number from error message)
+3. Fix the JSON (remove trailing comma, add missing quote, etc.)
+4. Validate: `jq . docs/09-agents/status.json` (should print formatted JSON)
+5. Explain to user what was fixed and why
+
+**Issue 3: MCP Integration Fails**
+```
+❌ Error: GitHub MCP server not responding
+❌ Error: Notion integration unavailable
+```
+**Diagnosis**:
+- MCP server not configured or tokens missing
+- Claude Code not restarted after adding tokens
+- Tokens expired or invalid
+
+**Recovery**:
+1. Check if `.mcp.json` exists: `ls -la .mcp.json`
+2. If not exists: Suggest `/AgileFlow:setup-system` to create it
+3. If exists, check for ${VAR} substitution: `grep '\${' .mcp.json`
+4. If using ${VAR}, check `.env` file: `grep -E 'GITHUB_TOKEN|NOTION_TOKEN' .env`
+5. If tokens missing: Guide user to add tokens to `.env`
+6. Remind: "You must restart Claude Code after adding tokens to .env for MCP servers to load"
+7. If tokens exist, check format:
+   - GitHub: Should start with `ghp_` and be 40+ chars
+   - Notion: Should start with `secret_` or `ntn_`
+8. If still failing: Run `/AgileFlow:setup-system` again to regenerate config
+
+**Issue 4: Test Execution Fails**
+```
+❌ Error: npm test failed with 5 errors
+```
+**Diagnosis**:
+- Code changes broke existing tests
+- Missing dependencies or setup
+- Test environment misconfigured
+
+**Recovery**:
+1. Read test output carefully to identify failing tests
+2. For each failure:
+   - Show the failing test code
+   - Explain what assertion failed and why
+   - Propose minimal fix (diff-first)
+3. If dependency issue: Run `/AgileFlow:packages ACTION=update`
+4. If setup issue: Check if test setup instructions in README are followed
+5. After fixing: Re-run tests and confirm all pass
+6. Update test stub at `docs/07-testing/test-cases/<US_ID>.md` if test cases changed
+
+**Issue 5: Build Fails**
+```
+❌ Error: npm run build failed - TypeScript errors
+```
+**Diagnosis**:
+- Type errors in new code
+- Missing type definitions
+- Incompatible dependency versions
+
+**Recovery**:
+1. Parse build output for specific errors
+2. For each TypeScript error:
+   - Show the file and line number
+   - Explain the type mismatch
+   - Propose fix (add type annotation, import type, fix inference)
+3. If missing types: Install @types/* package via `/AgileFlow:packages ACTION=update`
+4. After fixing: Re-run build and confirm success
+5. Update `docs/02-practices/` if new patterns established
+
+**Issue 6: Git Conflicts**
+```
+❌ Error: git merge conflict in src/components/Button.tsx
+```
+**Diagnosis**:
+- Branch diverged from main
+- Same lines modified in both branches
+
+**Recovery**:
+1. Show conflict markers: `git diff --name-only --diff-filter=U`
+2. For each conflicting file:
+   - Read the file to see conflict markers (<<<<<<, =======, >>>>>>>)
+   - Explain what each side changed
+   - Propose resolution based on intent
+3. After resolving: `git add <file>` and `git commit`
+4. Verify no more conflicts: `git status`
+
+**Issue 7: Missing Prerequisites**
+```
+❌ Error: docs/ directory not found
+❌ Error: Story US-0042 not found
+```
+**Diagnosis**:
+- AgileFlow system not initialized
+- Requested resource doesn't exist
+
+**Recovery**:
+1. Check if `docs/` structure exists: `ls -la docs/`
+2. If not exists: Run `/AgileFlow:setup-system` to initialize
+3. If story missing: List available stories `ls docs/06-stories/*/US-*.md`
+4. Offer to create missing story via `/AgileFlow:story-new`
+5. Check if epic exists first: `ls docs/05-epics/*.md`
+
+**Issue 8: Permission Denied**
+```
+❌ Error: EACCES: permission denied, open '/path/to/file'
+```
+**Diagnosis**:
+- File permissions issue
+- Trying to write to read-only location
+- SELinux or AppArmor blocking access
+
+**Recovery**:
+1. Check file permissions: `ls -la /path/to/file`
+2. If permissions issue: Suggest `chmod +w /path/to/file` (but confirm first!)
+3. If directory issue: Check parent directory permissions
+4. If system protection: Explain the security restriction and suggest alternative location
+5. Never suggest `sudo` unless explicitly required and user-approved
+
+**Issue 9: Command Execution Timeout**
+```
+❌ Error: Command timed out after 120 seconds
+```
+**Diagnosis**:
+- Long-running operation (build, test suite, large file processing)
+- Infinite loop or hung process
+
+**Recovery**:
+1. Explain what likely caused timeout
+2. Suggest running with longer timeout if appropriate
+3. For builds: Suggest incremental approach or checking for errors
+4. For tests: Suggest running subset of tests
+5. For hung process: Check for infinite loops in recent code changes
+
+**Issue 10: Dependency Version Conflicts**
+```
+❌ Error: npm ERR! ERESOLVE unable to resolve dependency tree
+```
+**Diagnosis**:
+- Incompatible package versions
+- Peer dependency mismatch
+
+**Recovery**:
+1. Run `/AgileFlow:packages ACTION=dashboard` to see dependency tree
+2. Identify conflicting packages from error message
+3. Check if packages need version bumps
+4. Suggest resolution strategy:
+   - Update packages: `/AgileFlow:packages ACTION=update`
+   - Use --legacy-peer-deps if appropriate
+   - Downgrade conflicting package if needed
+5. After resolution: Verify build still works
+
+**General Recovery Pattern**:
+```
+1. Capture the full error message
+2. Identify the error type (JSON, command, test, build, git, etc.)
+3. Explain in plain English what went wrong and why
+4. Provide 2-3 specific recovery steps (commands or file changes)
+5. Execute recovery (with user confirmation for file changes)
+6. Verify the issue is resolved
+7. Document the fix if it reveals a pattern (update CLAUDE.md or practices)
+8. Continue with original task
+```
+
+**Proactive Error Prevention**:
+- **Before file operations**: Validate JSON syntax before writing
+- **Before git operations**: Check working directory is clean (`git status`)
+- **Before running commands**: Validate command exists in plugin.json
+- **Before making changes**: Run `/AgileFlow:validate-commands` if command structure changed
+- **Before releasing**: Run `/AgileFlow:release` which includes validation
+- **After making changes**: Run tests and build to catch issues early
+
+**Error Recovery Checklist**:
+- [ ] Read and understand the full error message
+- [ ] Identify root cause (don't just treat symptoms)
+- [ ] Propose specific fix with reasoning
+- [ ] Show exact commands or diffs for recovery
+- [ ] Verify fix worked (re-run failed operation)
+- [ ] Document pattern if it's a common issue
+- [ ] Continue with original workflow
+
+**When to Escalate to User**:
+- Security-related issues (permissions, tokens, credentials)
+- Data loss scenarios (destructive git operations, file deletions)
+- Unknown errors that don't match common patterns
+- System-level issues (disk space, network, OS errors)
+- Business logic decisions (which version to keep in merge conflict)
+
 CI INTEGRATION
 - If CI workflow missing/weak, offer to create/update (diff-first).
 - On request, run tests/build/lint and summarize.
