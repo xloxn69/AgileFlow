@@ -21,15 +21,26 @@ KNOWLEDGE INDEX (run first, CRITICAL for context)
 **1. README.md Files (READ THESE FIRST)**:
 - **README.md** (root) - Project overview, setup instructions, getting started, architecture summary
 - **docs/README.md** - Documentation structure and navigation
+- **docs/02-practices/README.md** - Index of codebase practices (CRITICAL for implementation)
 - **ALL docs/**/README.md** - Folder-specific docs; map "Next steps/TODO/Open Questions/Planned/Risks"
 - **src/README.md** or module READMEs (if exist) - Code organization, module-specific docs
 - Extract critical info: TODOs, open questions, planned features, known risks, setup requirements
 
-**2. Core Context Files**:
+**2. Codebase Practices (READ BEFORE IMPLEMENTING)**:
+After reading docs/02-practices/README.md, crawl to relevant practice docs based on task:
+- **For UI work** → Read docs/02-practices/{styling.md,typography.md,component-patterns.md,accessibility.md}
+- **For API work** → Read docs/02-practices/{api-design.md,validation.md,error-handling.md,security.md}
+- **For testing** → Read docs/02-practices/testing.md
+- **For git workflow** → Read docs/02-practices/git-branching.md
+- **For CI/CD** → Read docs/02-practices/ci.md
+- **For deployment** → Read docs/02-practices/releasing.md
+- **Important**: These are the project's actual conventions - ALWAYS follow them during implementation
+
+**3. Core Context Files**:
 - **CLAUDE.md** (if exists) - AI assistant's system prompt with codebase practices and architecture
 - **docs/chatgpt.md** (if exists) - One-page project brief for research context
 
-**3. AgileFlow Command Files** (understand capabilities, 36 total):
+**4. AgileFlow Command Files** (understand capabilities, 36 total):
   - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,story-assign,story-status,handoff}.md
   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
   - Research: commands/{chatgpt,research-init}.md (chatgpt has 4 modes: full, export, note, research)
@@ -40,7 +51,7 @@ KNOWLEDGE INDEX (run first, CRITICAL for context)
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
   - Docs: commands/system-help.md
 
-**4. AgileFlow State & Planning**:
+**5. AgileFlow State & Planning**:
 - docs/09-agents/status.json - Story statuses, assignees, dependencies
 - docs/09-agents/bus/log.jsonl (last 10 messages) - Agent coordination messages
 - docs/08-project/{roadmap.md,backlog.md,milestones.md} - Project planning
@@ -310,17 +321,23 @@ README.MD MAINTENANCE (proactive, CRITICAL PRIORITY)
 **IMPORTANT**: Do NOT wait for user to ask - proactively suggest README updates after significant work.
 
 IMPLEMENTATION FLOW
-1) Validate readiness; fill gaps (create AC/test stub).
-2) Propose branch: feature/<US_ID>-<slug>.
-3) Plan ≤4 steps with exact file paths.
-4) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
-5) Update status.json → in-progress; append bus line.
-6) **[CRITICAL]** Immediately sync to GitHub/Notion if enabled:
+1) **[CRITICAL]** Read relevant practices docs based on task type:
+   - Start with docs/02-practices/README.md to see what practice docs exist
+   - For UI: Read styling.md, typography.md, component-patterns.md
+   - For API: Read api-design.md, validation.md, error-handling.md
+   - For any work: Read testing.md, git-branching.md as needed
+   - These define the project's actual conventions - ALWAYS follow them
+2) Validate readiness; fill gaps (create AC/test stub).
+3) Propose branch: feature/<US_ID>-<slug>.
+4) Plan ≤4 steps with exact file paths.
+5) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
+6) Update status.json → in-progress; append bus line.
+7) **[CRITICAL]** Immediately sync to GitHub/Notion if enabled:
    - SlashCommand("/AgileFlow:github-sync") if `.mcp.json` has github MCP server configured
    - SlashCommand("/AgileFlow:notion-export DATABASE=stories") if `.mcp.json` has notion MCP server configured
-7) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
-8) Update status.json → in-review; sync to Notion/GitHub again.
-9) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
+8) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
+9) Update status.json → in-review; sync to Notion/GitHub again.
+10) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
 
 FIRST MESSAGE
 - One-line reminder of the system.
