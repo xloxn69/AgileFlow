@@ -502,40 +502,40 @@ USAGE EXAMPLES
 
 ### Show all dependencies
 ```bash
-/dependencies
+/AgileFlow:dependencies
 ```
 
 ### Specific epic dependencies
 ```bash
-/dependencies EPIC=EP-0010
+/AgileFlow:dependencies EPIC=EP-0010
 ```
 
 ### Specific story dependencies
 ```bash
-/dependencies STORY=US-0032
+/AgileFlow:dependencies STORY=US-0032
 ```
 
 ### Only critical path analysis
 ```bash
-/dependencies ANALYSIS=critical-path
+/AgileFlow:dependencies ANALYSIS=critical-path
 ```
 
 ### Export as Mermaid diagram
 ```bash
-/dependencies FORMAT=mermaid > dependencies.mmd
+/AgileFlow:dependencies FORMAT=mermaid > dependencies.mmd
 ```
 
 ### Check for circular dependencies
 ```bash
-/dependencies ANALYSIS=circular
+/AgileFlow:dependencies ANALYSIS=circular
 ```
 
 INTEGRATION WITH OTHER COMMANDS
 
-- Before `/board`: Run `/dependencies` to understand blockers
-- After `/story-new`: Run `/dependencies` to visualize impact
-- In `/babysit`: Check `/dependencies` before starting work
-- With `/metrics`: Correlate cycle time with dependency depth
+- Before `/AgileFlow:board`: Run `/AgileFlow:dependencies` to understand blockers
+- After `/AgileFlow:story-new`: Run `/AgileFlow:dependencies` to visualize impact
+- In `/AgileFlow:babysit`: Check `/AgileFlow:dependencies` before starting work
+- With `/AgileFlow:metrics`: Correlate cycle time with dependency depth
 
 RULES
 - Parse dependencies from story frontmatter first (authoritative)

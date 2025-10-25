@@ -91,7 +91,7 @@ ACTIONS (after user review)
    - Run update commands
    - Run tests (if available)
    - Commit with message: "chore(deps): update dependencies (<scope>)"
-   - Push and create PR using /pr-template
+   - Push and create PR using /AgileFlow:pr-template
 
 INTEGRATION
 - Save report to docs/08-project/dependency-report-<YYYYMMDD>.md

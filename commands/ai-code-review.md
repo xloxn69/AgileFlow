@@ -310,7 +310,7 @@ INTEGRATION
 Suggest adding to .github/workflows/pr.yml:
 \`\`\`yaml
 - name: AI Code Review
-  run: npx claude-code /ai-code-review BRANCH=${{ github.head_ref }}
+  run: npx claude-code /AgileFlow:ai-code-review BRANCH=${{ github.head_ref }}
 
 - name: Check for critical issues
   run: |

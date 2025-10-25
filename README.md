@@ -43,7 +43,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 1. **Initialize the system**:
    ```
-   /setup-system
+   /AgileFlow:setup-system
    ```
    This scaffolds the entire docs structure, templates, and optional CI.
 
@@ -53,7 +53,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 2. **Get help**:
    ```
-   /system-help
+   /AgileFlow:system-help
    ```
    View the system overview, folder structure, and available commands.
 
@@ -298,7 +298,7 @@ For advanced users who need to handle urgent hotfixes during feature work or com
 
 # Open in new window and start babysit
 code ../myapp-auth-hotfix
-/babysit
+/AgileFlow:babysit
 ```
 
 **Important:** Use worktrees for **ISOLATION** (separate features/experiments), not **PARALLEL EXECUTION** (concurrent edits to same epic).
@@ -333,7 +333,7 @@ AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for stan
 
 2. **Enable during system setup**:
    ```
-   /setup-system
+   /AgileFlow:setup-system
    # Select "yes" for Notion integration
    ```
 
@@ -352,12 +352,12 @@ AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for stan
 
 5. **Create Notion databases**:
    ```
-   /notion-export MODE=setup
+   /AgileFlow:notion-export MODE=setup
    ```
 
 6. **Start syncing**:
    ```
-   /notion-export
+   /AgileFlow:notion-export
    ```
 
 ### Team Onboarding
@@ -409,7 +409,7 @@ AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for stan
 
 2. **Enable during system setup**:
    ```
-   /setup-system
+   /AgileFlow:setup-system
    # Select "yes" for GitHub integration
    ```
 
@@ -435,10 +435,10 @@ AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for stan
 6. **Start syncing**:
    ```
    # Preview first
-   /github-sync DRY_RUN=true
+   /AgileFlow:github-sync DRY_RUN=true
 
    # Perform sync
-   /github-sync
+   /AgileFlow:github-sync
    ```
 
 ### Team Onboarding
@@ -490,21 +490,21 @@ AgileFlow maintains a single source of truth context file (`docs/chatgpt.md`) th
 ### Creating an Epic with Stories
 
 ```
-/epic-new EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API,US-0003|Session management|AG-API"
+/AgileFlow:epic-new EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API,US-0003|Session management|AG-API"
 ```
 
 ### Working on a Story
 
 ```
-/assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
+/AgileFlow:assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
 # ... do the work ...
-/status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
+/AgileFlow:status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
 ```
 
 ### Recording a Decision
 
 ```
-/adr-new NUMBER=0001 TITLE="Use JWT for authentication" CONTEXT="Need stateless auth for API" DECISION="JWT with 15min access + refresh tokens" CONSEQUENCES="Simpler scaling but requires token refresh flow"
+/AgileFlow:adr-new NUMBER=0001 TITLE="Use JWT for authentication" CONTEXT="Need stateless auth for API" DECISION="JWT with 15min access + refresh tokens" CONSEQUENCES="Simpler scaling but requires token refresh flow"
 ```
 
 ## Templates

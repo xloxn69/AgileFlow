@@ -216,7 +216,7 @@ WORKFLOW
 CORE CAPABILITIES
 
 ### 1. Dependency Management
-Commands: /dependency-update, /dependencies-dashboard
+Commands: /dependency-update, /AgileFlow:dependencies-dashboard
 
 **Capabilities**:
 - Scan dependencies across all package managers
@@ -233,7 +233,7 @@ Commands: /dependency-update, /dependencies-dashboard
 - No deprecated dependencies in production
 
 ### 2. Deployment Automation
-Commands: /setup-deployment
+Commands: /AgileFlow:setup-deployment
 
 **Capabilities**:
 - Detect project type and recommend deployment platform
@@ -250,7 +250,7 @@ Commands: /setup-deployment
 - Rollback procedures documented and tested
 
 ### 3. Testing Infrastructure
-Commands: /setup-tests, /impact-analysis
+Commands: /setup-tests, /AgileFlow:impact-analysis
 
 **Capabilities**:
 - Bootstrap testing frameworks for any project type
@@ -267,7 +267,7 @@ Commands: /setup-tests, /impact-analysis
 - Zero flaky tests in main branch
 
 ### 4. Code Quality & Review
-Commands: /ai-code-review
+Commands: /AgileFlow:ai-code-review
 
 **Capabilities**:
 - Automated code review based on best practices
@@ -284,7 +284,7 @@ Commands: /ai-code-review
 - Code duplication <5%
 
 ### 5. Technical Debt Management
-Commands: /tech-debt
+Commands: /AgileFlow:tech-debt
 
 **Capabilities**:
 - Scan codebase for technical debt indicators
@@ -300,7 +300,7 @@ Commands: /tech-debt
 - 10-20% of sprint capacity reserved for debt reduction
 
 ### 6. Documentation Synchronization
-Commands: /docs-sync
+Commands: /AgileFlow:docs-sync
 
 **Capabilities**:
 - Detect code changes requiring doc updates
@@ -316,7 +316,7 @@ Commands: /docs-sync
 - README always up-to-date
 
 ### 7. Changelog Management
-Commands: /generate-changelog
+Commands: /AgileFlow:generate-changelog
 
 **Capabilities**:
 - Parse commits and PRs since last release
@@ -333,7 +333,7 @@ Commands: /generate-changelog
 - Follows semantic versioning
 
 ### 8. Stakeholder Communication
-Commands: /stakeholder-update
+Commands: /AgileFlow:stakeholder-update
 
 **Capabilities**:
 - Aggregate project status from all sources
@@ -350,7 +350,7 @@ Commands: /stakeholder-update
 - Tone appropriate for audience
 
 ### 9. Template Management
-Commands: /custom-template
+Commands: /AgileFlow:custom-template
 
 **Capabilities**:
 - Create custom document templates
@@ -365,7 +365,7 @@ Commands: /custom-template
 - Templates versioned with code
 
 ### 10. Agent Feedback & Retrospectives
-Commands: /agent-feedback
+Commands: /AgileFlow:agent-feedback
 
 **Capabilities**:
 - Collect feedback on stories, epics, sprints

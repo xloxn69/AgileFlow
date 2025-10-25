@@ -21,7 +21,7 @@ Git worktrees let you check out multiple branches into separate physical directo
 ```bash
 # You're 2 hours into building a dashboard, Claude has full context
 ~/myapp/
-/babysit "Build analytics dashboard with charts and filters"
+/AgileFlow:babysit "Build analytics dashboard with charts and filters"
 
 # URGENT: Production authentication is broken!
 # Create hotfix worktree in 10 seconds
@@ -30,7 +30,7 @@ code ../myapp-hotfix    # Opens in NEW window
 
 # In hotfix window - fresh babysit session
 cd ../myapp-hotfix
-/babysit "Fix authentication 500 error in src/auth/login.ts"
+/AgileFlow:babysit "Fix authentication 500 error in src/auth/login.ts"
 
 # Babysit reads CLAUDE.md, understands architecture, fixes bug
 # Creates PR, merges to main
@@ -53,12 +53,12 @@ git worktree remove ../myapp-hotfix
 # Test GraphQL implementation
 git worktree add ../myapp-graphql experiment/graphql-api
 cd ../myapp-graphql
-/babysit "Implement user API using GraphQL with Apollo Server"
+/AgileFlow:babysit "Implement user API using GraphQL with Apollo Server"
 
 # Test REST implementation
 git worktree add ../myapp-rest experiment/rest-api
 cd ../myapp-rest
-/babysit "Implement user API using Express REST endpoints"
+/AgileFlow:babysit "Implement user API using Express REST endpoints"
 
 # Compare: Performance, DX, bundle size, complexity
 # Merge the winner, delete the loser
@@ -72,12 +72,12 @@ git worktree remove ../myapp-graphql ../myapp-rest
 
 ```bash
 # Keep main work safe
-~/myapp/ → /babysit "Continue building features on stable codebase"
+~/myapp/ → /AgileFlow:babysit "Continue building features on stable codebase"
 
 # Test risky migration in isolation
 git worktree add ../myapp-ts-migration experiment/typescript
 cd ../myapp-ts-migration
-/babysit "Migrate entire codebase from JavaScript to TypeScript"
+/AgileFlow:babysit "Migrate entire codebase from JavaScript to TypeScript"
 
 # If migration succeeds → merge
 # If it fails catastrophically → delete worktree (no git history pollution)
@@ -97,12 +97,12 @@ AgileFlow's status.json and bus/log.jsonl are **file-based** (docs-as-code philo
 ```bash
 # Worktree 1
 cd ~/myapp-feature-a
-/babysit "Work on EP-001: User Authentication"
+/AgileFlow:babysit "Work on EP-001: User Authentication"
 # Updates status.json: US-001 → in-progress
 
 # Worktree 2 (SIMULTANEOUSLY)
 cd ~/myapp-feature-b
-/babysit "Work on EP-001: User Authentication"
+/AgileFlow:babysit "Work on EP-001: User Authentication"
 # Updates status.json: US-002 → in-progress
 
 # RESULT: Race condition! One update may be lost! ❌
@@ -112,11 +112,11 @@ cd ~/myapp-feature-b
 ```bash
 # Worktree 1: Epic isolation
 cd ~/myapp-auth
-/babysit "Work on EP-001: User Authentication"
+/AgileFlow:babysit "Work on EP-001: User Authentication"
 
 # Worktree 2: DIFFERENT epic
 cd ~/myapp-payment
-/babysit "Work on EP-002: Payment System"
+/AgileFlow:babysit "Work on EP-002: Payment System"
 
 # Different epics → different story files → no conflicts ✅
 ```
@@ -147,7 +147,7 @@ code ../myapp-new-feature
 
 # Start babysit
 cd ../myapp-new-feature
-/babysit
+/AgileFlow:babysit
 ```
 
 ### Cleaning Up a Worktree

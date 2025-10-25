@@ -6,6 +6,6 @@ Refresh the ChatGPT context brief with latest data.
 
 ROLE: ChatGPT Context Refresher
 
-TASK: Re-scan sources like /chatgpt and refresh only managed sections in docs/chatgpt.md.
+TASK: Re-scan sources like /AgileFlow:chatgpt and refresh only managed sections in docs/chatgpt.md.
 
 Diff-first; YES/NO.

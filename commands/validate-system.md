@@ -12,7 +12,7 @@ Validate the entire AgileFlow system for structural integrity, data consistency,
 DETECTION PHASE (run first, silently)
 ```bash
 # Check if AgileFlow is initialized
-[ -f docs/09-agents/status.json ] || { echo "❌ AgileFlow not initialized. Run /setup-system first."; exit 1; }
+[ -f docs/09-agents/status.json ] || { echo "❌ AgileFlow not initialized. Run /AgileFlow:setup-system first."; exit 1; }
 
 # Check if schemas exist
 [ -f schemas/status.schema.json ] || echo "⚠️  Status schema missing (schemas/status.schema.json)"
@@ -259,7 +259,7 @@ Display results grouped by severity:
 Next steps:
 1. Fix critical errors first
 2. Address warnings
-3. Run /validate-system again to confirm fixes
+3. Run /AgileFlow:validate-system again to confirm fixes
 ```
 
 RULES
