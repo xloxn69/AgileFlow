@@ -1,0 +1,41 @@
+{
+  "agileflow": {
+    "version": "2.10.0",
+    "setupDate": "TIMESTAMP_PLACEHOLDER",
+    "lastValidated": null,
+    "features": {
+      "epics": true,
+      "stories": true,
+      "adr": true,
+      "research": true,
+      "messagebus": true,
+      "mcp": {
+        "github": false,
+        "notion": false
+      }
+    },
+    "structure": {
+      "docs": true,
+      "00-meta": true,
+      "01-epics": true,
+      "02-practices": true,
+      "03-stories": true,
+      "04-decisions": true,
+      "05-agents": true,
+      "06-handoffs": true,
+      "07-infrastructure": true,
+      "08-templates": true,
+      "09-comms": true,
+      "10-research": true
+    }
+  },
+  "git": {
+    "initialized": false,
+    "remoteConfigured": false,
+    "remoteUrl": null
+  },
+  "security": {
+    "mcpJsonGitignored": false,
+    "envGitignored": false
+  }
+}
