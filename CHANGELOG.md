@@ -5,6 +5,133 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0] - 2025-10-25
+
+### 🎯 Quality Assurance & Developer Experience (36 → 38 commands)
+
+This release adds powerful automation for validation, releases, and error recovery, significantly improving plugin quality and development workflows.
+
+### Added
+
+**Automated Validation** - `/validate-commands`:
+- **Command Registry Validation** - Ensures all commands in plugin.json exist as files
+- **Subagent Registry Validation** - Verifies all agents in plugin.json exist
+- **Command Reference Validation** - Finds all /AgileFlow: references across 44 files
+  - Detects broken command references (e.g., /chatgpt-research after v2.12.0 consolidation)
+  - Reports exact file and line number for each broken reference
+  - Validates that referenced commands actually exist
+- **Version Sync Validation** - Checks plugin.json, marketplace.json, CHANGELOG.md match
+- **Template Path Validation** - Verifies template references in commands exist
+- **MCP Configuration Validation** - Checks for common token/config issues
+- **Comprehensive Reporting** - Groups issues by severity with action items
+- **Catches "Everything is Connected" Issues** - Prevents broken references after command changes
+
+**Release Automation** - `/release VERSION=X.Y.Z`:
+- **Automated Version Management** - Updates all 3 version files in sync
+- **Pre-Release Validation** - Runs /validate-commands before proceeding
+- **Interactive CHANGELOG Prompting** - Guides user through release notes
+- **Git Workflow Automation** - Commit, push reminders, branch checks
+- **Semantic Versioning Guide** - Explains when to bump MAJOR/MINOR/PATCH
+- **Conventional Commit Format** - Generates properly formatted commit messages
+- **Version Consistency Enforcement** - Prevents partial version updates
+- **Critical Push Reminder** - Marketplace reads from GitHub (must push!)
+- **Prevents Common Mistakes** - Version mismatches, forgotten CHANGELOG, unpushed commits
+
+**Error Handling & Recovery** - Enhanced `/babysit`:
+- **10 Common Failure Modes** documented with diagnosis and recovery:
+  1. Command Not Found (after consolidations)
+  2. Invalid JSON in status.json
+  3. MCP Integration Failures
+  4. Test Execution Failures
+  5. Build Failures (TypeScript, npm)
+  6. Git Conflicts
+  7. Missing Prerequisites (docs/, stories)
+  8. Permission Denied
+  9. Command Execution Timeouts
+  10. Dependency Version Conflicts
+- **General Recovery Pattern** - 8-step systematic approach to errors
+- **Proactive Error Prevention** - Validation before risky operations
+- **Error Recovery Checklist** - Structured approach to diagnosing issues
+- **Escalation Guidelines** - When to involve user (security, data loss, unknown errors)
+
+### Improved
+
+**Enhanced /babysit** - Comprehensive error handling section:
+- Specific recovery steps for each error type
+- Command references for resolution (e.g., /validate-commands, /packages)
+- Proactive validation before file operations
+- Clear explanation of what went wrong and why
+- Links to relevant commands for fixing issues
+
+**Release Process** - Streamlined and automated:
+- Single command replaces manual 6-step process
+- Validation catches issues before release
+- No more version mismatches across files
+- Automatic changelog prompting
+- Git workflow integrated
+
+**Quality Assurance** - Built-in validation:
+- Run /validate-commands before every release
+- Catches broken references immediately
+- Ensures "everything is connected" principle
+- Prevents shipping broken command references
+
+### Technical
+
+**Command Count**: 36 → 38 commands (+2):
+- Added: `/validate-commands` (command integrity validation)
+- Added: `/release` (automated version management)
+
+**Files Modified**:
+- Created: `commands/validate-commands.md` (command validation logic)
+- Created: `commands/release.md` (release automation workflow)
+- Enhanced: `commands/babysit.md` (added 210-line error handling section)
+- Updated: `.claude-plugin/plugin.json` (added 2 commands, version 2.12.0 → 2.13.0)
+- Updated: `.claude-plugin/marketplace.json` (description updated: 36 → 38 commands, v2.13.0)
+
+**Validation Coverage**:
+- 6 validation categories (registry, references, versions, templates, MCP)
+- Scans all 44 plugin files (36 commands + 8 agents)
+- Reports detailed statistics with action items
+
+**Release Workflow**:
+- 6-step automated process (validation → version update → changelog → diff → commit → push)
+- Pre-release checks (format, git status, branch, remote)
+- Semantic versioning guidance with examples
+- Conventional commit message generation
+
+**Error Handling**:
+- 10 documented failure modes with recovery
+- General recovery pattern (8 steps)
+- Proactive prevention checklist
+- Escalation guidelines for critical issues
+
+### Benefits
+
+**For Plugin Developers**:
+- ✅ Catch broken references before users see them
+- ✅ Automated version management (no manual file editing)
+- ✅ Consistent releases with validation
+- ✅ Better error messages and recovery guidance
+
+**For Plugin Users**:
+- ✅ Fewer broken command references
+- ✅ Comprehensive error recovery documentation
+- ✅ Clear guidance when things go wrong
+- ✅ Better quality releases with validation
+
+**For "Everything is Connected" Principle**:
+- ✅ Validation ensures all connections intact
+- ✅ Release automation prevents partial updates
+- ✅ Error handling covers common disconnection scenarios
+- ✅ Quality gates before every release
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.13.0, added 2 commands (38 total)
+- **marketplace.json**: Updated description ("38 commands", v2.13.0 features)
+- **CHANGELOG.md**: Added comprehensive v2.13.0 entry
+
 ## [2.12.0] - 2025-10-25
 
 ### 🎯 Command Consolidation (41 → 36 commands)
