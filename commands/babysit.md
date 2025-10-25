@@ -13,7 +13,7 @@ GOAL
   3) Plan small steps; propose file changes; write code & tests safely.
   4) Update docs/09-agents/status.json and bus/log.jsonl (valid JSON).
   5) Prepare PR description and next actions.
-  6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:chatgpt-research and save results.
+  6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:chatgpt MODE=research and save results.
   7) Ensure minimal CI exists; offer to create/update .github/workflows/ci.yml or fix it if failing.
 
 KNOWLEDGE INDEX (run first, CRITICAL for context)
@@ -29,15 +29,16 @@ KNOWLEDGE INDEX (run first, CRITICAL for context)
 - **CLAUDE.md** (if exists) - AI assistant's system prompt with codebase practices and architecture
 - **docs/chatgpt.md** (if exists) - One-page project brief for research context
 
-**3. AgileFlow Command Files** (understand capabilities, 41 total):
-  - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
+**3. AgileFlow Command Files** (understand capabilities, 36 total):
+  - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,story-assign,story-status,handoff}.md
   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
-  - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
-  - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
+  - Research: commands/{chatgpt,research-init}.md (chatgpt has 4 modes: full, export, note, research)
+  - Package management: commands/packages.md (3 actions: dashboard, update, audit)
+  - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
   - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
-  - Integration: commands/{github-sync,notion-export}.md (both use MCP with token-based auth)
+  - Integration: commands/{github-sync,notion-export}.md (both use MCP with ${VAR} env substitution from .env)
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
-  - Docs: commands/{readme-sync,system-help}.md
+  - Docs: commands/system-help.md
 
 **4. AgileFlow State & Planning**:
 - docs/09-agents/status.json - Story statuses, assignees, dependencies
@@ -66,11 +67,11 @@ KNOWLEDGE INDEX (run first, CRITICAL for context)
 SUGGESTIONS ENGINE
 - Propose 3–7 next items ranked by READY; blocked-but-clear next step; roadmap priority; README TODOs; near-complete epics; research gaps.
 - Format: [Type: Story/Epic/Spike/Research] • ID/title • why-now • expected impact • link.
-- If research is missing/outdated → add: Tip: run /AgileFlow:chatgpt-research TOPIC: …
+- If research is missing/outdated → add: Tip: run /AgileFlow:chatgpt MODE=research TOPIC="…"
 
 RESEARCH INTEGRATION
 - If a relevant note exists in docs/10-research: summarize 5–8 bullets + path; apply caveats to the plan.
-- If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt-research; after the user pastes results, offer to save:
+- If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
 DEFINITION OF READY
@@ -86,13 +87,15 @@ COMMAND EXECUTION (allowed, guarded)
 - Capture and summarize output/errors.
 
 AGILEFLOW COMMAND ORCHESTRATION
-You have access to ALL 41 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
+You have access to ALL 36 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
 
 **IMPORTANT**: You can directly invoke these commands using the SlashCommand tool without manual input.
 - Example: `SlashCommand("/AgileFlow:board")`
 - Example: `SlashCommand("/AgileFlow:velocity")`
-- Example: `SlashCommand("/AgileFlow:status STORY=US-0042 STATUS=in-progress")`
+- Example: `SlashCommand("/AgileFlow:story-status STORY=US-0042 STATUS=in-progress")`
 - Example: `SlashCommand("/AgileFlow:github-sync DRY_RUN=true")`
+- Example: `SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"authentication\"")`
+- Example: `SlashCommand("/AgileFlow:packages ACTION=update SCOPE=security")`
 
 An agent can autonomously decide that invoking a specific slash command is the best way to accomplish a task and execute it directly. You do NOT need to ask the user to run the command - you can run it yourself.
 
@@ -100,17 +103,21 @@ An agent can autonomously decide that invoking a specific slash command is the b
 - `/AgileFlow:epic-new` - When user wants to start a new feature (create epic first)
 - `/AgileFlow:story-new` - Break down epics into implementable stories
 - `/AgileFlow:adr-new` - Document architectural decisions made during implementation
-- `/AgileFlow:status` - Update story status as work progresses
+- `/AgileFlow:story-status` - Update story status as work progresses
+- `/AgileFlow:story-assign` - Assign stories to agents/team members
 - `/AgileFlow:board` - Show visual progress to user
 - `/AgileFlow:velocity` - Check team capacity and forecast completion
 - `/AgileFlow:github-sync` - Sync stories to GitHub Issues (if enabled)
 - `/AgileFlow:notion-export` - Share progress with stakeholders via Notion (if enabled)
 - `/AgileFlow:impact-analysis` - Before making changes, analyze impact
 - `/AgileFlow:tech-debt` - Document technical debt discovered
-- `/AgileFlow:dependency-update` - Check for security vulnerabilities
+- `/AgileFlow:packages ACTION=update` - Check for security vulnerabilities and update dependencies
+- `/AgileFlow:packages ACTION=dashboard` - Show dependency dashboard
 - `/AgileFlow:ai-code-review` - Run AI review on code before PR
 - `/AgileFlow:generate-changelog` - Auto-generate changelog from commits
-- `/AgileFlow:chatgpt-research` - Generate research prompts for complex topics
+- `/AgileFlow:chatgpt MODE=research TOPIC="..."` - Generate research prompts for complex topics
+- `/AgileFlow:chatgpt MODE=export` - Export concise project brief for ChatGPT
+- `/AgileFlow:chatgpt MODE=note NOTE="..."` - Append timestamped note to docs/chatgpt.md
 - `/AgileFlow:stakeholder-update` - Generate executive summary
 
 **Example workflow orchestration** (autonomously executed):
@@ -120,11 +127,11 @@ User: "I want to implement user authentication"
 /AgileFlow:babysit orchestration (runs commands automatically):
 1. Check if epic exists for authentication → SlashCommand("/AgileFlow:epic-new") if missing
 2. Break down into stories → SlashCommand("/AgileFlow:story-new") for each component
-3. Check dependencies → SlashCommand("/AgileFlow:dependency-update")
+3. Check dependencies → SlashCommand("/AgileFlow:packages ACTION=update SCOPE=security")
 4. Analyze impact → SlashCommand("/AgileFlow:impact-analysis")
-5. Research best practices → SlashCommand("/AgileFlow:chatgpt-research TOPIC=authentication")
+5. Research best practices → SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"authentication best practices\"")
 6. Implement step-by-step (guide user with code)
-7. Update status → SlashCommand("/AgileFlow:status STORY=US-XXXX STATUS=in-progress")
+7. Update status → SlashCommand("/AgileFlow:story-status STORY=US-XXXX STATUS=in-progress")
 8. Run AI review → SlashCommand("/AgileFlow:ai-code-review")
 9. Document decision → SlashCommand("/AgileFlow:adr-new")
 10. Show progress → SlashCommand("/AgileFlow:board")
@@ -136,19 +143,21 @@ All commands are invoked directly by the agent - no manual user intervention req
 ```
 
 **Command chaining examples** (autonomous execution):
-- After `/AgileFlow:story-new`: Automatically invoke SlashCommand("/AgileFlow:assign STORY=US-XXX OWNER=AG-API")
-- After code implementation: Chain SlashCommand("/AgileFlow:ai-code-review") → SlashCommand("/AgileFlow:status ...") → SlashCommand("/AgileFlow:board")
+- After `/AgileFlow:story-new`: Automatically invoke SlashCommand("/AgileFlow:story-assign STORY=US-XXX OWNER=AG-API")
+- After code implementation: Chain SlashCommand("/AgileFlow:ai-code-review") → SlashCommand("/AgileFlow:story-status ...") → SlashCommand("/AgileFlow:board")
 - Before major refactor: Invoke SlashCommand("/AgileFlow:impact-analysis") and SlashCommand("/AgileFlow:tech-debt")
 - After feature complete: Chain SlashCommand("/AgileFlow:generate-changelog"), SlashCommand("/AgileFlow:stakeholder-update"), SlashCommand("/AgileFlow:velocity")
 - When blocked: Invoke SlashCommand("/AgileFlow:board") to check WIP limits
+- After research session: Chain SlashCommand("/AgileFlow:chatgpt MODE=note NOTE=\"Research findings...\"") → SlashCommand("/AgileFlow:adr-new")
 
 **Proactive command execution** (run without asking):
 - If velocity is low: Automatically run SlashCommand("/AgileFlow:velocity") and show results
 - If many stories in-review: Run SlashCommand("/AgileFlow:board") and highlight bottlenecks
-- If dependencies outdated: Run SlashCommand("/AgileFlow:dependency-update") and report vulnerabilities
+- If dependencies outdated: Run SlashCommand("/AgileFlow:packages ACTION=update SCOPE=security") and report vulnerabilities
 - If major decision made: Automatically run SlashCommand("/AgileFlow:adr-new") with decision context
 - If GitHub enabled and story done: Automatically run SlashCommand("/AgileFlow:github-sync")
 - After significant changes: Run SlashCommand("/AgileFlow:impact-analysis") to show affected areas
+- If research needed: Run SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"...\"") to generate research prompt
 
 **CRITICAL - GitHub & Notion Integration (if enabled via MCP)**:
 Check if integrations are enabled by looking for `.mcp.json` (MCP configuration).
@@ -157,16 +166,17 @@ Check if integrations are enabled by looking for `.mcp.json` (MCP configuration)
 - If `.mcp.json` exists with "github" MCP server → GitHub integration is configured
 - If `.mcp.json` exists with "notion" MCP server → Notion integration is configured
 - If `docs/08-project/notion-sync-map.json` exists with database IDs → Notion databases are set up
-- Tokens are HARDCODED directly in `.mcp.json` (not read from .env)
-- User must restart Claude Code after adding tokens to `.mcp.json`
+- `.mcp.json` uses `${VAR}` environment variable substitution to read from `.env`
+- Actual tokens stored in `.env` (NOT in `.mcp.json`)
+- User must restart Claude Code after adding tokens to `.env`
 
 **If GitHub NOT configured**:
-- Suggest: "Run /AgileFlow:setup-system to enable GitHub integration (token-based via MCP)"
-- Explain: "Need GitHub PAT hardcoded in .mcp.json + restart Claude Code"
+- Suggest: "Run /AgileFlow:setup-system to enable GitHub integration (MCP with ${VAR} from .env)"
+- Explain: "Need GitHub PAT in .env (GITHUB_PERSONAL_ACCESS_TOKEN=ghp_...) + restart Claude Code"
 
 **If Notion NOT configured**:
-- Suggest: "Run /AgileFlow:setup-system to enable Notion integration (token-based via MCP)"
-- Explain: "Need Notion token hardcoded in .mcp.json + restart Claude Code"
+- Suggest: "Run /AgileFlow:setup-system to enable Notion integration (MCP with ${VAR} from .env)"
+- Explain: "Need Notion token in .env (NOTION_TOKEN=ntn_...) + restart Claude Code"
 
 **When GitHub is enabled, ALWAYS sync after these events**:
 - After creating story → SlashCommand("/AgileFlow:github-sync")
