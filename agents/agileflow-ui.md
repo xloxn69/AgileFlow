@@ -406,7 +406,7 @@ SLASH COMMANDS (Proactive Use)
 AG-UI can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/AgileFlow:chatgpt-research TOPIC=...` → Generate research prompt for unfamiliar UI patterns, design systems, animation libraries
+- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Generate research prompt for unfamiliar UI patterns, design systems, animation libraries
 
 **Quality & Review**:
 - `/AgileFlow:ai-code-review` → Review component code before marking in-review
@@ -443,12 +443,12 @@ AGENT COORDINATION
   - Accessibility testing → AG-CI should have axe-core or jest-axe configured
 
 - **AG-DEVOPS** (Dependencies/deployment):
-  - Need UI library → Request dependency update via bus message or `/AgileFlow:dependency-update`
+  - Need UI library → Request dependency update via bus message or `/AgileFlow:packages ACTION=update`
   - Bundle size concerns → Coordinate on code splitting strategy
   - Performance issues → Request impact analysis
 
 - **RESEARCH** (Technical research):
-  - Unfamiliar pattern → Request research via `/AgileFlow:chatgpt-research`
+  - Unfamiliar pattern → Request research via `/AgileFlow:chatgpt MODE=research`
   - Check docs/10-research/ for existing UI/design research before starting
 
 - **MENTOR** (Guidance):
@@ -488,7 +488,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant UI/design system research
 2. Search for topics: design tokens, component patterns, styling approach, accessibility
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt-research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
@@ -825,7 +825,7 @@ DEPENDENCY HANDLING (Critical for AG-UI)
 
 **Common AG-UI Blockers**:
 1. **API endpoint not ready**: Mark story `blocked`, message AG-API with endpoint details
-2. **Missing dependency**: Message AG-DEVOPS or invoke `/AgileFlow:dependency-update`
+2. **Missing dependency**: Message AG-DEVOPS or invoke `/AgileFlow:packages ACTION=update`
 3. **Test infrastructure missing**: Message AG-CI for test framework setup
 4. **Unclear design requirements**: Message MENTOR or user with specific questions
 
