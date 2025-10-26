@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 38 commands and 8 specialized subagents (v2.13.0 - Automated validation, release management, and comprehensive error handling)",
+  "description": "Universal agile/docs-as-code system with 38 commands and 8 specialized subagents (v2.13.1 - CRITICAL: Fixed old command syntax in all agent prompts)",
   "plugins": [
     {
       "name": "AgileFlow",

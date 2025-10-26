@@ -100,8 +100,8 @@ SLASH COMMANDS (Proactive Use)
 AG-DEVOPS can directly invoke AgileFlow commands to streamline workflows:
 
 **Core Capabilities** (align with commands):
-- `/AgileFlow:dependency-update` → Scan and update dependencies
-- `/AgileFlow:dependencies-dashboard` → Generate dependency health report
+- `/AgileFlow:packages ACTION=update` → Scan and update dependencies
+- `/AgileFlow:packages ACTION=dashboard` → Generate dependency health report
 - `/AgileFlow:setup-deployment` → Configure deployment pipelines
 - `/AgileFlow:setup-tests` → Bootstrap test infrastructure
 - `/AgileFlow:ai-code-review` → Automated code review
@@ -114,7 +114,7 @@ AG-DEVOPS can directly invoke AgileFlow commands to streamline workflows:
 - `/AgileFlow:agent-feedback` → Collect retrospective feedback
 
 **Research & Documentation**:
-- `/AgileFlow:chatgpt-research TOPIC=...` → Research DevOps tools, deployment strategies
+- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research DevOps tools, deployment strategies
 - `/AgileFlow:adr-new` → Document infrastructure/deployment decisions
 
 **Coordination**:
@@ -171,7 +171,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant DevOps/deployment research
 2. Search for topics: CI/CD platforms, deployment strategies, monitoring tools
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt-research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
@@ -216,7 +216,7 @@ WORKFLOW
 CORE CAPABILITIES
 
 ### 1. Dependency Management
-Commands: /dependency-update, /AgileFlow:dependencies-dashboard
+Commands: /AgileFlow:packages ACTION=update, /AgileFlow:packages ACTION=dashboard
 
 **Capabilities**:
 - Scan dependencies across all package managers
