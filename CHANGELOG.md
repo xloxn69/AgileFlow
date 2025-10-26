@@ -5,6 +5,83 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.1] - 2025-10-25
+
+### 🚨 CRITICAL FIX - Old Command Syntax in Agent Prompts
+
+**Problem**: After v2.12.0 consolidated commands (41 → 36), all 8 agent prompts still contained OLD command syntax. This caused Claude to use incorrect commands like `/AgileFlow:chatgpt-research` instead of `/AgileFlow:chatgpt MODE=research`.
+
+**User Impact**:
+- ❌ Commands would fail (old command names don't exist)
+- ❌ Agents would use wrong SlashCommand() syntax
+- ❌ Frustrating user experience with broken references
+- ❌ "/AgileFlow:" prefix missing in some examples
+
+**Root Cause**: v2.12.0 updated command consolidation but forgot to update agent prompt files (the "everything is connected" lesson).
+
+### Fixed
+
+**Updated All Agent Prompts** (8 files):
+- `agents/agileflow-mentor.md` - 8 old command references fixed
+- `agents/agileflow-devops.md` - 7 old command references fixed
+- `agents/agileflow-adr-writer.md` - 6 old command references fixed
+- `agents/agileflow-epic-planner.md` - 4 old command references fixed
+- `agents/agileflow-ci.md` - 3 old command references fixed
+- `agents/agileflow-api.md` - 3 old command references fixed
+- `agents/agileflow-ui.md` - 3 old command references fixed
+- `commands/blockers.md` - 3 old command references fixed
+
+**All Instances Fixed**:
+```bash
+# ChatGPT commands (5 → 1 with MODE parameter)
+❌ /AgileFlow:chatgpt-research
+❌ /AgileFlow:chatgpt-export
+❌ /AgileFlow:chatgpt-note
+✅ /AgileFlow:chatgpt MODE=research TOPIC="..."
+✅ /AgileFlow:chatgpt MODE=export
+✅ /AgileFlow:chatgpt MODE=note NOTE="..."
+
+# Package commands (2 → 1 with ACTION parameter)
+❌ /AgileFlow:dependency-update
+❌ /AgileFlow:dependencies-dashboard
+✅ /AgileFlow:packages ACTION=update
+✅ /AgileFlow:packages ACTION=dashboard
+
+# SlashCommand examples
+❌ SlashCommand("/AgileFlow:chatgpt-research TOPIC=...")
+✅ SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"...\"")
+```
+
+**Verification**:
+- ✅ All agent files now use correct v2.12.0 syntax
+- ✅ All SlashCommand() examples use /AgileFlow: prefix
+- ✅ No more references to old command names
+- ✅ MODE/ACTION parameters used correctly
+
+### Technical
+
+**Files Modified**: 8 agent files + 1 command file
+- Bulk replacement with sed: `chatgpt-research → chatgpt MODE=research`
+- Bulk replacement with sed: `dependency-update → packages ACTION=update`
+- Bulk replacement with sed: `dependencies-dashboard → packages ACTION=dashboard`
+- Manual fix: agileflow-devops.md line 219 (documentation comment)
+
+**Validation**: Grepped entire codebase to confirm no old syntax remains outside CHANGELOG.md.
+
+**Version Bump**: Patch release (2.13.0 → 2.13.1) - critical bug fix, no new features.
+
+### Why This Matters
+
+This is why we built `/validate-commands` in v2.13.0 - to catch exactly this kind of issue! The command consolidation in v2.12.0 broke agent prompts, and without validation, users experienced broken commands.
+
+**Lesson**: When commands change, ALL references must update (plugin.json, marketplace.json, CHANGELOG.md, README.md, commands/*.md, **agents/*.md**). "Everything is connected."
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.13.1
+- **marketplace.json**: Updated description with v2.13.1 and CRITICAL fix notice
+- **CHANGELOG.md**: Added v2.13.1 section
+
 ## [2.13.0] - 2025-10-25
 
 ### 🎯 Quality Assurance & Developer Experience (36 → 38 commands)
