@@ -66,7 +66,7 @@ SLASH COMMANDS (Proactive Use)
 EPIC-PLANNER can directly invoke AgileFlow commands:
 
 **Research**:
-- `/AgileFlow:chatgpt-research TOPIC=...` → Research unfamiliar technologies before planning
+- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research unfamiliar technologies before planning
 
 **Documentation**:
 - `/AgileFlow:adr-new` → Create ADR if epic involves architectural decision
@@ -97,7 +97,7 @@ RESEARCH INTEGRATION
 
 **Before Planning**:
 1. Check docs/10-research/ for relevant research on the feature
-2. If technology is unfamiliar, invoke `/AgileFlow:chatgpt-research TOPIC=...`
+2. If technology is unfamiliar, invoke `/AgileFlow:chatgpt MODE=research TOPIC=...`
 3. Check docs/03-decisions/ for architectural constraints
 4. Check docs/08-project/roadmap.md for priority context
 
@@ -119,7 +119,7 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before planning:
    - Read CLAUDE.md for project architecture and conventions
-   - Check docs/10-research/ for relevant research (or invoke `/AgileFlow:chatgpt-research`)
+   - Check docs/10-research/ for relevant research (or invoke `/AgileFlow:chatgpt MODE=research`)
    - Check docs/03-decisions/ for relevant ADRs and constraints
    - Check docs/08-project/roadmap.md for priorities
    - Review docs/09-agents/status.json for current team capacity
@@ -205,7 +205,7 @@ FIRST ACTION
 **After User Describes Feature**:
 1. Clarify scope and constraints
 2. Check docs/03-decisions/ for relevant ADRs (architectural constraints)
-3. Check docs/10-research/ for relevant research (or suggest `/AgileFlow:chatgpt-research`)
+3. Check docs/10-research/ for relevant research (or suggest `/AgileFlow:chatgpt MODE=research`)
 4. Propose epic structure:
    - Epic goal + success metrics
    - 3-8 stories with clear AC, estimates, owners, dependencies

@@ -69,7 +69,7 @@ Create an ADR when deciding:
 SLASH COMMANDS (Proactive Use)
 
 **Research**:
-- `/AgileFlow:chatgpt-research TOPIC=...` → Generate research for alternatives before writing ADR
+- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Generate research for alternatives before writing ADR
 
 **External Sync** (if enabled):
 - `/AgileFlow:notion-export DATABASE=adrs` → Sync new ADR to Notion
@@ -79,7 +79,7 @@ RESEARCH INTEGRATION
 
 **Before Writing ADR**:
 1. Check docs/10-research/ for existing research on the decision topic
-2. If research is missing or stale, invoke `/AgileFlow:chatgpt-research TOPIC=...`
+2. If research is missing or stale, invoke `/AgileFlow:chatgpt MODE=research TOPIC=...`
 3. Research should cover all alternatives with pros/cons, benchmarks, trade-offs
 
 **After User Provides Research**:
@@ -97,7 +97,7 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before writing:
-   - Check docs/10-research/ for relevant research (or invoke `/AgileFlow:chatgpt-research`)
+   - Check docs/10-research/ for relevant research (or invoke `/AgileFlow:chatgpt MODE=research`)
    - Check existing ADRs in docs/03-decisions/ for related decisions
    - Check CLAUDE.md for current architecture context
 2. Ask for decision context (what's being decided and why now?)
@@ -202,13 +202,13 @@ FIRST ACTION
 **Then Output**:
 1. ADR context: "Next ADR: ADR-<NUMBER>, recent decisions: <list of last 3 ADRs>"
 2. If research exists: "Found research: <topic> (docs/10-research/<file>)"
-3. If no research: "No research found. I can invoke `/AgileFlow:chatgpt-research` to gather alternatives."
+3. If no research: "No research found. I can invoke `/AgileFlow:chatgpt MODE=research` to gather alternatives."
 4. Ask: "What technical decision would you like to document?"
 5. Clarify: "I'll document context, alternatives considered, decision, and consequences. Syncs to Notion/GitHub."
 
 **After User Describes Decision**:
 1. Clarify context (why now? what forces?)
-2. Check docs/10-research/ for supporting research (or invoke `/AgileFlow:chatgpt-research`)
+2. Check docs/10-research/ for supporting research (or invoke `/AgileFlow:chatgpt MODE=research`)
 3. Identify 2-5 alternatives with pros/cons
 4. Propose ADR structure (show preview)
 5. Get approval (YES/NO)

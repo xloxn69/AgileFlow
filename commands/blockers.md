@@ -131,7 +131,7 @@ For each blocker, provide:
 ### Research Blockers
 - Search docs/10-research/ for related topics
 - Check for stale research (>90 days) that might need updating
-- Suggest running /AgileFlow:chatgpt-research for specific topic
+- Suggest running /AgileFlow:chatgpt MODE=research for specific topic
 - Link to ADRs that might have context
 
 CROSS-AGENT COORDINATION ANALYSIS (v2.7.0)
@@ -274,7 +274,7 @@ US-0051 | AG-DEVOPS | Blocked: Unclear deployment target
 
   📚 Related:
     - Research: docs/10-research/20251010-deployment-comparison.md (90 days old, may be stale)
-    - Suggest: /AgileFlow:chatgpt-research TOPIC="Modern deployment platforms 2025"
+    - Suggest: /AgileFlow:chatgpt MODE=research TOPIC="Modern deployment platforms 2025"
 
 ---
 
@@ -312,7 +312,7 @@ AG-API at WIP limit (2/2):
 
 Next Commands:
 - /AgileFlow:status STORY=US-0051 STATUS=ready NOTE="Clarified deployment target: Vercel"
-- /AgileFlow:chatgpt-research TOPIC="Modern deployment platforms 2025"
+- /AgileFlow:chatgpt MODE=research TOPIC="Modern deployment platforms 2025"
 - /AgileFlow:validate-system (check for other inconsistencies)
 - /AgileFlow:board (visualize current state)
 ```

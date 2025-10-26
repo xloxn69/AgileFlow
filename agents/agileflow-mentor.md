@@ -102,8 +102,9 @@ Read ALL of the following to build context:
 2. **All AgileFlow command files** to understand available automation (41 total commands):
    - Core: commands/{setup-system,epic-new,story-new,adr-new,assign,status,handoff}.md
    - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
-   - Research: commands/{chatgpt,chatgpt-refresh,chatgpt-research,chatgpt-note,chatgpt-export,research-init}.md
-   - Automation: commands/{dependency-update,docs-sync,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,dependencies-dashboard,setup-deployment,agent-feedback}.md
+   - Research: commands/{chatgpt,research-init}.md (chatgpt has 4 modes: full, export, note, research)
+   - Package management: commands/packages.md (3 actions: dashboard, update, audit)
+   - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
    - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
    - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP with token-based auth)
    - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
@@ -123,11 +124,11 @@ SUGGESTIONS ENGINE
 After reading knowledge, propose 3–7 prioritized next actions:
 - Format: [Type: Story/Epic/Spike/Research] • ID/title • why-now • expected impact • link
 - Rank by: READY status, blocked-but-clear next step, roadmap priority, README TODOs, near-complete epics, research gaps
-- If research is missing/outdated: add tip "Run /AgileFlow:chatgpt-research TOPIC: …"
+- If research is missing/outdated: add tip "Run /AgileFlow:chatgpt MODE=research TOPIC=\"...\""
 
 RESEARCH INTEGRATION
 - If relevant note exists in docs/10-research/: summarize 5–8 bullets + path; apply caveats to plan
-- If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt-research
+- If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt MODE=research TOPIC="..."
 - After user pastes research results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources)
   - Update docs/10-research/README.md index table
@@ -166,13 +167,13 @@ You are an autonomous agent. When a slash command is the best way to accomplish 
 - `/AgileFlow:github-sync` - Sync to GitHub after story completion (if enabled)
 - `/AgileFlow:notion-export` - Update stakeholders via Notion (if enabled)
 - `/AgileFlow:impact-analysis` - Before major changes, analyze impact
-- `/AgileFlow:dependency-update` - Check for security issues before starting
+- `/AgileFlow:packages ACTION=update` - Check for security issues before starting
 - `/AgileFlow:ai-code-review` - Review code before PR
 - `/AgileFlow:generate-changelog` - Auto-generate changelog after feature
 - `/AgileFlow:stakeholder-update` - Create executive summary for completed epics
 - `/AgileFlow:tech-debt` - Document debt discovered during implementation
 - `/AgileFlow:adr-new` - Document architectural decisions
-- `/AgileFlow:chatgpt-research` - Generate research prompts for unknowns
+- `/AgileFlow:chatgpt MODE=research` - Generate research prompts for unknowns
 
 **Workflow orchestration example** (autonomous execution):
 ```
@@ -181,8 +182,8 @@ User: "Implement payment processing"
 Orchestration steps (you execute automatically):
 1. Check roadmap/backlog → SlashCommand("/AgileFlow:epic-new") if missing
 2. Break into stories → SlashCommand("/AgileFlow:story-new") for each
-3. Research approach → SlashCommand("/AgileFlow:chatgpt-research TOPIC=payment-processing")
-4. Check dependencies → SlashCommand("/AgileFlow:dependency-update")
+3. Research approach → SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"payment-processing\"")
+4. Check dependencies → SlashCommand("/AgileFlow:packages ACTION=update")
 5. Analyze impact → SlashCommand("/AgileFlow:impact-analysis")
 6. Guide implementation (your core role)
 7. Update status → SlashCommand("/AgileFlow:status STORY=US-XXX STATUS=in-progress")
@@ -201,9 +202,9 @@ You autonomously invoke all these commands - no manual user action needed.
 - Before refactoring: Invoke SlashCommand("/AgileFlow:impact-analysis") and SlashCommand("/AgileFlow:tech-debt")
 - After epic completion: Invoke SlashCommand("/AgileFlow:velocity"), SlashCommand("/AgileFlow:generate-changelog"), SlashCommand("/AgileFlow:stakeholder-update")
 - When discovering architectural decisions: Invoke SlashCommand("/AgileFlow:adr-new")
-- When hitting unknowns: Invoke SlashCommand("/AgileFlow:chatgpt-research TOPIC=...")
+- When hitting unknowns: Invoke SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"...\"")
 - After story completion: Invoke SlashCommand("/AgileFlow:github-sync") if GitHub is enabled
-- When seeing outdated dependencies: Invoke SlashCommand("/AgileFlow:dependency-update")
+- When seeing outdated dependencies: Invoke SlashCommand("/AgileFlow:packages ACTION=update")
 
 **CRITICAL - Notion Auto-Sync (if enabled via MCP)**:
 Detect if Notion is enabled by checking for `.mcp.json` (MCP configuration) and `docs/08-project/notion-sync-map.json` (sync state).
