@@ -26,54 +26,36 @@ if [ -f .mcp.json ]; then
 
   # Check Notion
   if grep -q '"notion"' .mcp.json 2>/dev/null; then
-    echo "  ✅ Notion MCP configured in .mcp.json"
-    # Check if token is still placeholder
-    if grep -q "ntn_YOUR_NOTION_TOKEN_HERE" .mcp.json 2>/dev/null; then
-      echo "    ⚠️  Token is still placeholder - edit .mcp.json with your real token"
-    else
-      echo "    ✅ Token configured in .mcp.json"
-    fi
-    [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /AgileFlow:notion-export MODE=setup"
+    echo "  ✅ Notion MCP configured"
+    [ -f docs/08-project/notion-sync-map.json ] && echo "    ✅ Notion databases configured" || echo "    ⚠️  Notion databases not set up - run /AgileFlow:notion MODE=setup"
   else
-    echo "  ⚠️  Notion not configured in .mcp.json"
+    echo "  ⚠️  Notion not configured"
   fi
 
   # Check GitHub
   if grep -q '"github"' .mcp.json 2>/dev/null; then
-    echo "  ✅ GitHub MCP configured in .mcp.json"
-    # Check if token is still placeholder
-    if grep -q "ghp_YOUR_GITHUB_TOKEN_HERE" .mcp.json 2>/dev/null; then
-      echo "    ⚠️  Token is still placeholder - edit .mcp.json with your real token"
-    else
-      echo "    ✅ Token configured in .mcp.json"
-    fi
+    echo "  ✅ GitHub MCP configured"
   else
-    echo "  ⚠️  GitHub not configured in .mcp.json"
+    echo "  ⚠️  GitHub not configured"
   fi
 
   # Check Supabase
   if grep -q '"supabase"' .mcp.json 2>/dev/null; then
     echo "  ✅ Supabase MCP configured"
-    grep -q "SUPABASE_URL" .env.example 2>/dev/null && echo "    ✅ Supabase vars in .env.example" || echo "    ⚠️  Supabase vars not in .env.example"
   fi
 
   # Check Context7
   if grep -q '"context7"' .mcp.json 2>/dev/null; then
     echo "  ✅ Context7 MCP configured (latest framework/library documentation)"
-    # API key is optional for Context7
-    if grep -q "CONTEXT7_API_KEY" .env 2>/dev/null && ! grep -q "your_context7_api_key_here" .env 2>/dev/null; then
-      echo "    ✅ API key configured (higher rate limits)"
-    else
-      echo "    ℹ️  Using without API key (standard rate limits)"
-    fi
   else
     echo "  ℹ️  Context7 not configured (optional - provides latest docs)"
   fi
-elif [ -f .mcp.json.example ]; then
-  echo "⚠️  MCP template exists (.mcp.json.example) but not copied to .mcp.json"
-  echo "   Run: cp .mcp.json.example .mcp.json"
+
+  # Remind user to check .env
+  echo "  ℹ️  Remember: Add your real tokens to .env (not .mcp.json!)"
+  echo "  ℹ️  Then restart Claude Code for MCP servers to load"
 else
-  echo "❌ MCP not configured (no .mcp.json or .mcp.json.example)"
+  echo "❌ MCP not configured (.mcp.json not found)"
 fi
 
 # Check CI
@@ -156,7 +138,7 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - .github/workflows/ci.yml                // minimal, language-agnostic CI (lint/type/test placeholders)
 - .gitignore                              // CRITICAL: MUST include .mcp.json AND .env (for MCP security), plus generic: .env*, .DS_Store, .idea/, .vscode/, node_modules/, dist/, build/, coverage/
 - .env.example                            // copy from AgileFlow templates/.env.example with all MCP tokens documented
-- .mcp.json.example                       // copy from AgileFlow templates/.mcp.json.example with ${VAR} syntax
+- .mcp.json                               // AI-generated with ${VAR} syntax for configured MCP servers (gitignored)
 - docs/08-project/github-sync-map.json    // if GitHub sync enabled: {"last_sync":null,"mappings":{},"config":{}}
 - docs/08-project/notion-sync-map.json    // if Notion enabled: {"last_sync":null,"epics":{},"stories":{},"adrs":{}}
 - docs/02-practices/prompts/commands-catalog.md // paste-ready list of all slash commands & prompts (print content at the end)
@@ -287,10 +269,16 @@ GITHUB MCP INTEGRATION SETUP (if enabled)
 2. Get your token (starts with `ghp_`)
 3. Token permissions needed: `repo` (full control), `read:org` (if using organization repos)
 
-**Step 1: Copy MCP templates to project root**:
-Copy `.mcp.json.example` and `.env.example` from AgileFlow plugin templates to project root.
+**Step 1: Create .mcp.json directly**:
+The AI will create `.mcp.json` in your project root with all configured MCP servers.
 
-**Step 2: Verify .mcp.json uses environment variable substitution**:
+**Step 2: Add your GitHub token to .env**:
+Create or update `.env` file with your real GitHub PAT:
+```bash
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
+```
+
+**Step 3: Verify .mcp.json uses environment variable substitution**:
 ```json
 {
   "mcpServers": {
@@ -325,7 +313,7 @@ Create `docs/08-project/github-sync-map.json`:
 }
 ```
 
-**Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 4: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
 ```bash
 # Check if already present
 grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
@@ -335,24 +323,19 @@ grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**Step 4: Copy templates and add real tokens**:
-```bash
-# Copy templates (each developer does this locally - not committed)
-cp .mcp.json.example .mcp.json
-cp .env.example .env
-
-# Edit .env and add your real GitHub token
-# GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
-# GitHub PATs start with "ghp_"
-
-# DO NOT edit .mcp.json - it uses ${VAR} to read from .env!
-# NEVER commit .mcp.json or .env - they're in .gitignore!
+**⚠️ CRITICAL Step 5: RESTART CLAUDE CODE**:
 ```
+🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
 
-**Step 5: Restart Claude Code**:
-```bash
-# MCP servers load on startup and read .env via ${VAR} substitution
-# After restart, GitHub tools available as mcp__github__*
+MCP servers initialize on startup and read .env via ${VAR} substitution.
+If you don't restart, the GitHub MCP tools will NOT be available.
+
+How to restart:
+1. Save all work
+2. Exit Claude Code completely
+3. Restart Claude Code
+4. Wait for MCP servers to initialize (2-5 seconds)
+5. GitHub tools will now be available as mcp__github__*
 ```
 
 **Step 6: Run Initial Sync**:
@@ -366,7 +349,7 @@ cp .env.example .env
 
 **Print Next Steps**:
 ```
-✅ GitHub MCP template created (.mcp.json.example with ${VAR} syntax)
+✅ GitHub MCP configured (.mcp.json created with ${VAR} syntax)
 ✅ .env template created (.env.example)
 ✅ .gitignore updated (.mcp.json AND .env excluded)
 ✅ GitHub sync mapping created
@@ -374,25 +357,23 @@ cp .env.example .env
 
 Next steps for you:
 1. Create GitHub PAT: https://github.com/settings/tokens (permissions: repo, read:org)
-2. Copy templates:
-   cp .mcp.json.example .mcp.json
-   cp .env.example .env
-3. Edit .env and add your real token (GITHUB_PERSONAL_ACCESS_TOKEN=ghp_...)
-4. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
-5. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
-6. NEVER commit .mcp.json or .env (contain secrets!)
-7. Restart Claude Code (to load MCP server)
-8. Preview sync: /AgileFlow:github-sync DRY_RUN=true
-9. Perform sync: /AgileFlow:github-sync
+2. Edit .env and add your real token:
+   GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
+3. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
+4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
+5. NEVER commit .mcp.json or .env (contain secrets!)
+6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
+7. Preview sync: /AgileFlow:github DRY_RUN=true
+8. Perform sync: /AgileFlow:github
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json.example and .env.example)
+1. Pull latest code (includes .mcp.json and .env.example)
 2. Create their own GitHub PAT
-3. Copy templates: cp .mcp.json.example .mcp.json && cp .env.example .env
+3. Copy template: cp .env.example .env
 4. Edit .env with their real token
 5. Verify .gitignore has .mcp.json and .env
-6. Restart Claude Code
-7. Start syncing!
+6. 🔴 RESTART CLAUDE CODE
+7. Start syncing: /AgileFlow:github
 ```
 
 NOTION INTEGRATION SETUP VIA MCP (if enabled)
@@ -403,30 +384,16 @@ NOTION INTEGRATION SETUP VIA MCP (if enabled)
 2. Get your Integration Token (starts with `ntn_`)
 3. Share your Notion databases with the integration
 
-**Step 1: Verify .mcp.json.example uses environment variable substitution**:
-```json
-{
-  "mcpServers": {
-    "notion": {
-      "command": "npx",
-      "args": ["-y", "@notionhq/notion-mcp-server"],
-      "env": {
-        "NOTION_TOKEN": "${NOTION_TOKEN}"
-      }
-    }
-  }
-}
+**Step 1: Create .mcp.json with Notion server**:
+The AI will create `.mcp.json` with Notion MCP server configured using environment variable substitution.
+
+**Step 2: Add your Notion token to .env**:
+Create or update `.env` file with your real Notion token:
+```bash
+NOTION_TOKEN=ntn_your_actual_token_here
 ```
 
-**⚠️ CRITICAL SECURITY - Environment Variables (NOT Hardcoded Tokens)**:
-- ✅ USE ${VAR} syntax in .mcp.json (reads from .env)
-- ✅ Store actual tokens in .env (NOT .mcp.json)
-- ✅ BOTH .mcp.json AND .env MUST be in .gitignore
-- ✅ Commit .mcp.json.example and .env.example (with ${VAR} syntax and placeholders)
-- ❌ NEVER hardcode tokens in .mcp.json
-- ❌ NEVER commit .mcp.json or .env to git
-
-**Step 2: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
 ```bash
 # Check if already present
 grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
@@ -436,24 +403,19 @@ grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**Step 3: Copy templates and add real tokens**:
-```bash
-# Copy templates (each developer does this locally - not committed)
-cp .mcp.json.example .mcp.json
-cp .env.example .env
-
-# Edit .env and add your real Notion token
-# NOTION_TOKEN=ntn_your_actual_token_here
-# Notion tokens start with "ntn_"
-
-# DO NOT edit .mcp.json - it uses ${VAR} to read from .env!
-# NEVER commit .mcp.json or .env - they're in .gitignore!
+**⚠️ CRITICAL Step 4: RESTART CLAUDE CODE**
 ```
+🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
 
-**Step 4: Restart Claude Code**
-```bash
-# MCP servers load on startup
-# After restart, Notion tools available as mcp__notion__*
+MCP servers initialize on startup and read .env via ${VAR} substitution.
+If you don't restart, the Notion MCP tools will NOT be available.
+
+How to restart:
+1. Save all work
+2. Exit Claude Code completely
+3. Restart Claude Code
+4. Wait for MCP servers to initialize (2-5 seconds)
+5. Notion tools will now be available as mcp__notion__*
 ```
 
 **Step 5: Create AgileFlow Databases**
@@ -499,34 +461,32 @@ Run `/AgileFlow:notion-export MODE=setup` which will:
 
 **Print Next Steps**:
 ```
-✅ Notion MCP template created (.mcp.json.example with ${VAR} syntax)
+✅ Notion MCP configured (.mcp.json created with ${VAR} syntax)
 ✅ .env template created (.env.example)
 ✅ .gitignore updated (.mcp.json AND .env excluded)
 ⚠️  You still need to configure YOUR Notion token
 
 Next steps for you:
 1. Create Notion integration: https://www.notion.so/my-integrations
-2. Copy templates:
-   cp .mcp.json.example .mcp.json
-   cp .env.example .env
-3. Edit .env and add your real token (NOTION_TOKEN=ntn_...)
-4. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
-5. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
-6. NEVER commit .mcp.json or .env (contain secrets!)
-7. Restart Claude Code (to load MCP server)
-8. Create databases: /AgileFlow:notion-export MODE=setup
-9. Preview sync: /AgileFlow:notion-export DRY_RUN=true
-10. Perform initial sync: /AgileFlow:notion-export
+2. Edit .env and add your real token:
+   NOTION_TOKEN=ntn_your_actual_token_here
+3. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
+4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
+5. NEVER commit .mcp.json or .env (contain secrets!)
+6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
+7. Create databases: /AgileFlow:notion MODE=setup
+8. Preview sync: /AgileFlow:notion DRY_RUN=true
+9. Perform initial sync: /AgileFlow:notion
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json.example and .env.example)
+1. Pull latest code (includes .mcp.json and .env.example)
 2. Create their own Notion integration
-3. Copy templates: cp .mcp.json.example .mcp.json && cp .env.example .env
+3. Copy template: cp .env.example .env
 4. Edit .env with their real token
 5. Verify .gitignore has .mcp.json and .env
-6. Restart Claude Code
+6. 🔴 RESTART CLAUDE CODE
 7. Share databases with their integration
-8. Start syncing!
+8. Start syncing: /AgileFlow:notion
 ```
 
 CONTEXT7 INTEGRATION SETUP VIA MCP (if enabled)
@@ -545,28 +505,17 @@ CONTEXT7 INTEGRATION SETUP VIA MCP (if enabled)
   - Private repository access
   - Priority support
 
-**Step 1: Verify .mcp.json.example includes Context7**:
-```json
-{
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
-    }
-  }
-}
+**Step 1: Create .mcp.json with Context7 server**:
+The AI will create `.mcp.json` with Context7 MCP server configured.
+
+**Step 2: (Optional) Add your Context7 API key to .env**:
+Context7 works WITHOUT an API key (standard rate limits). For higher limits, add to `.env`:
+```bash
+CONTEXT7_API_KEY=your_actual_api_key_here
 ```
+Get key at: https://context7.com/dashboard
 
-**⚠️ SECURITY NOTE - API Key is Optional**:
-- ✅ Context7 works WITHOUT an API key (standard rate limits, public repos only)
-- ✅ If using API key: Use ${VAR} syntax in .mcp.json (reads from .env)
-- ✅ Store actual key in .env (NOT .mcp.json)
-- ✅ BOTH .mcp.json AND .env MUST be in .gitignore
-- ✅ Commit .mcp.json.example and .env.example (with ${VAR} syntax)
-- ❌ NEVER hardcode API key in .mcp.json
-- ❌ NEVER commit .mcp.json or .env to git
-
-**Step 2: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
 ```bash
 # Check if already present
 grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
@@ -576,21 +525,22 @@ grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**Step 3: Copy templates (optional API key setup)**:
-```bash
-# Copy templates
-cp .mcp.json.example .mcp.json
-cp .env.example .env
+**⚠️ CRITICAL Step 4: RESTART CLAUDE CODE**:
+```
+🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
 
-# OPTIONAL: Add API key to .env for higher rate limits
-# Edit .env and add: CONTEXT7_API_KEY=your_actual_api_key_here
-# Get key at: https://context7.com/dashboard
+MCP servers initialize on startup and read .env.
+If you don't restart, Context7 will NOT provide current documentation.
 
-# If NOT using API key, Context7 still works with standard rate limits!
-# DO NOT edit .mcp.json - it uses ${VAR} to read from .env!
+How to restart:
+1. Save all work
+2. Exit Claude Code completely
+3. Restart Claude Code
+4. Wait for MCP servers to initialize (2-5 seconds)
+5. Context7 will now provide current docs transparently!
 ```
 
-**Step 4: Update CLAUDE.md with Context7 usage instructions**:
+**Step 5: Update CLAUDE.md with Context7 usage instructions**:
 Add this section to CLAUDE.md:
 ```markdown
 ## Context7 MCP Integration
@@ -627,20 +577,8 @@ Examples:
 - With API key (CONTEXT7_API_KEY in .env): Higher limits + private repos
 ```
 
-**Step 5: Restart Claude Code**:
-```bash
-# MCP servers load on startup
-# After restart, Context7 will provide current documentation when needed
-```
-
 **Step 6: Verify Setup**:
-```bash
-# Check if Context7 MCP is loaded
-# Look for mcp__context7__* tools in Claude Code
-
-# Context7 will automatically provide docs when you work with frameworks/libraries
-# No manual commands needed - it works transparently
-```
+Context7 will automatically provide docs when you work with frameworks/libraries. No manual commands needed - it works transparently when you mention library names or versions.
 
 **Advantages of Context7**:
 - ✅ Overcomes Claude's training data cutoff (January 2025)
@@ -666,28 +604,25 @@ Examples:
 
 **Print Next Steps**:
 ```
-✅ Context7 MCP template created (.mcp.json.example)
+✅ Context7 MCP configured (.mcp.json created)
 ✅ CLAUDE.md updated with Context7 usage instructions
 ✅ .gitignore verified (.mcp.json AND .env excluded)
 ℹ️  Context7 works WITHOUT an API key (standard rate limits)
 
 Next steps for you:
-1. Copy templates:
-   cp .mcp.json.example .mcp.json
-   cp .env.example .env
-2. OPTIONAL: Get API key for higher limits: https://context7.com/dashboard
-3. OPTIONAL: Add to .env: CONTEXT7_API_KEY=your_key_here
-4. Verify .gitignore has .mcp.json and .env: grep -E '\\.mcp\\.json|\\.env' .gitignore
-5. Restart Claude Code (to load Context7 MCP server)
-6. Context7 will now provide current docs automatically!
+1. OPTIONAL: Get API key for higher limits: https://context7.com/dashboard
+2. OPTIONAL: Edit .env and add: CONTEXT7_API_KEY=your_key_here
+3. Verify .gitignore has .mcp.json and .env: grep -E '\\.mcp\\.json|\\.env' .gitignore
+4. 🔴 RESTART CLAUDE CODE (to load Context7 MCP server)
+5. Context7 will now provide current docs automatically!
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json.example and .env.example)
-2. Copy templates: cp .mcp.json.example .mcp.json && cp .env.example .env
+1. Pull latest code (includes .mcp.json and .env.example)
+2. Copy template: cp .env.example .env
 3. OPTIONAL: Get their own API key and add to .env
 4. Verify .gitignore has .mcp.json and .env
-5. Restart Claude Code
-6. Start getting current docs!
+5. 🔴 RESTART CLAUDE CODE
+6. Start getting current docs automatically!
 
 Note: Context7 works transparently - no manual commands needed. Claude will automatically access current documentation when working with frameworks/libraries.
 ```

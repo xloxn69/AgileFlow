@@ -235,30 +235,27 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - `.env` MUST be gitignored (contains actual secrets)
 
 **Setup Flow (NEW - Secure Approach)**:
-1. User runs `/AgileFlow:setup-system` → Creates `.mcp.json.example` and `.env.example` with `${VAR}` syntax
-2. User copies templates:
-   ```bash
-   cp .mcp.json.example .mcp.json
-   cp .env.example .env
-   ```
+1. User runs `/AgileFlow:setup` and selects which MCPs to enable
+2. AI creates `.mcp.json` directly with `${VAR}` syntax and `.env.example`
 3. User edits `.env` (NOT `.mcp.json`) and adds real tokens:
    ```bash
    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_actual_token_here
    NOTION_TOKEN=ntn_actual_token_here
+   CONTEXT7_API_KEY=optional_key_here
    ```
 4. User verifies `.mcp.json` and `.env` are in `.gitignore`:
    ```bash
    grep -E '\\.mcp\\.json|\\.env' .gitignore
    ```
-5. User restarts Claude Code (to load MCP servers with env vars)
-6. User runs `/AgileFlow:github-sync` or `/AgileFlow:notion-export` to sync
+5. **🔴 User RESTARTS Claude Code** (critical - MCPs won't load without restart!)
+6. User runs commands to sync: `/AgileFlow:github`, `/AgileFlow:notion`, etc.
 
 **Key principles**:
-- `.mcp.json.example` (template with `${VAR}`) → committed to git
-- `.mcp.json` (copy of template, unchanged) → gitignored
+- `.mcp.json` (generated with `${VAR}` syntax) → gitignored (CRITICAL)
 - `.env.example` (template with placeholders) → committed to git
-- `.env` (actual tokens) → gitignored (CRITICAL)
+- `.env` (actual tokens) → gitignored (CRITICAL - user creates locally)
 - Tokens ONLY in `.env`, NEVER in `.mcp.json`
+- AI creates `.mcp.json` during setup, users only edit `.env`
 
 **Wrapper Scripts (for servers without `${VAR}` support)**:
 - Some MCP servers don't support `${VAR}` substitution
