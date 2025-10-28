@@ -107,6 +107,63 @@ RESEARCH INTEGRATION
 - Testing approaches
 - Integration requirements
 
+ARCHITECTURE CONTEXT EXTRACTION (for Stories)
+
+**Purpose**: When creating stories, extract relevant architecture context from `docs/04-architecture/` so dev agents have focused, self-contained context without reading massive docs.
+
+**Process** (follows BMAD-METHOD pattern):
+
+1. **Identify Relevant Architecture Sections**:
+   - Read story title and acceptance criteria
+   - Determine story type: Backend/API, Frontend/UI, or Full-Stack
+   - Check `docs/04-architecture/` for relevant files:
+     - **For ALL stories**: tech-stack.md, coding-standards.md, project-structure.md
+     - **For Backend/API**: data-models.md, api-spec.md, database.md
+     - **For Frontend/UI**: components.md, styling.md, state-management.md
+     - **For Full-Stack**: Both backend and frontend sections
+
+2. **Extract Only Relevant Details** (CRITICAL):
+   - Do NOT copy entire docs - extract only what this story needs
+   - Include: data models, API endpoints, component specs, file paths, testing patterns
+   - Exclude: unrelated architecture sections, general context
+   - Never invent technical details - only extract from actual docs
+
+3. **Cite All Sources** (CRITICAL):
+   - Every technical detail must have source: `[Source: architecture/api-spec.md#endpoints]`
+   - Format: `[Source: docs/04-architecture/{filename}.md#{section}]`
+   - Users can click through to verify and understand full context
+
+4. **Populate Story's Architecture Context Section**:
+   - Add subsections: Data Models, API Specs, Components, File Locations, Testing, Constraints
+   - Include source citations in each subsection
+   - If no info found: "No specific guidance found in architecture docs"
+
+5. **Extract Previous Story Insights** (if applicable):
+   - If previous story exists in epic: read its Dev Agent Record
+   - Extract: Lessons Learned, Architectural Patterns, Technical Debt Found
+   - Add to new story's "Previous Story Insights" section
+
+**Example Architecture Context**:
+```
+### Data Models & Schemas
+User model structure with fields and validation [Source: architecture/data-models.md#user-model]
+Relationship to Post model via foreign key [Source: architecture/data-models.md#relationships]
+
+### API Specifications
+POST /api/users endpoint: request/response formats [Source: architecture/api-spec.md#create-user]
+Authentication via JWT in Authorization header [Source: architecture/api-spec.md#authentication]
+
+### File Locations & Naming
+Backend models: `src/models/user.ts` following naming convention [Source: architecture/project-structure.md#models]
+Tests: `src/models/__tests__/user.test.ts` [Source: architecture/testing-strategy.md#test-location]
+```
+
+**Benefits**:
+- Dev agents have focused context, not overwhelming docs
+- Source citations enable verification
+- Reduced token overhead
+- Knowledge transfer between stories via Previous Story Insights
+
 NOTION/GITHUB AUTO-SYNC (if enabled)
 
 **Critical**: After creating epics/stories, immediately sync to external systems.
@@ -137,17 +194,22 @@ WORKFLOW
    - Acceptance criteria (Given/When/Then format, 2–5 bullets)
    - Dependencies (if any)
 6. Show preview (diff-first, YES/NO)
-7. Create files:
+7. **[ARCHITECTURE CONTEXT EXTRACTION]** For each story:
+   - Follow "ARCHITECTURE CONTEXT EXTRACTION" section above
+   - Extract relevant sections from docs/04-architecture/
+   - Add to story's Architecture Context section with source citations
+   - Extract previous story insights (if applicable)
+8. Create files:
    - docs/05-epics/<EPIC>.md
-   - docs/06-stories/<EPIC>/<US_ID>-<slug>.md (one per story)
+   - docs/06-stories/<EPIC>/<US_ID>-<slug>.md (one per story, with Architecture Context populated)
    - docs/07-testing/test-cases/<US_ID>.md (test stub per story)
-8. Update docs/09-agents/status.json (merge new stories with status=ready)
-9. Append to docs/09-agents/bus/log.jsonl (one "assign" line per story)
-10. **[CRITICAL]** Immediately sync to external systems:
+9. Update docs/09-agents/status.json (merge new stories with status=ready)
+10. Append to docs/09-agents/bus/log.jsonl (one "assign" line per story)
+11. **[CRITICAL]** Immediately sync to external systems:
     - Invoke `/AgileFlow:notion-export DATABASE=epics` (if Notion enabled)
     - Invoke `/AgileFlow:notion-export DATABASE=stories` (if Notion enabled)
     - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
-11. Notify user: "Created <N> stories assigned to AG-UI/AG-API/AG-CI/AG-DEVOPS. Synced to Notion/GitHub."
+12. Notify user: "Created <N> stories assigned to AG-UI/AG-API/AG-CI/AG-DEVOPS. Synced to Notion/GitHub."
 
 ACCEPTANCE CRITERIA FORMAT
 Use Given/When/Then for clarity:

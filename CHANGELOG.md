@@ -5,6 +5,104 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.16.0] - 2025-10-28
+
+### Added - BMAD-METHOD Architecture Context Extraction
+
+Implemented key patterns from BMAD-METHOD framework for improved dev agent context awareness and knowledge transfer between stories.
+
+**Architecture Context Extraction** (in Story Template):
+- New `Architecture Context` section in story template with auto-filled subsections:
+  - **Data Models & Schemas**: Specific data structures and validation rules relevant to the story
+  - **API Specifications**: Endpoint details, request/response formats, auth requirements
+  - **Component Specifications**: UI component details and state management
+  - **File Locations & Naming**: Exact paths where new code should be created
+  - **Testing Requirements**: Specific test cases and testing patterns for the story
+  - **Technical Constraints**: Version requirements, performance, security rules
+- **Source Citations** (CRITICAL): Every technical detail includes `[Source: architecture/{filename}.md#{section}]`
+- **Strategy**: Extract ONLY relevant architecture sections, never invent details
+- **Benefit**: Dev agents have focused, self-contained context without reading massive docs
+
+**Dev Agent Record** (in Story Template):
+- New structured section populated during implementation:
+  - **Agent Model & Version**: Which AI model was used (e.g., claude-sonnet, gpt-4o)
+  - **Completion Notes**: What was actually built vs. what was planned
+  - **Issues Encountered**: Challenges faced and how they were resolved
+  - **Lessons Learned**: Key insights and patterns for next story in epic
+  - **Files Modified**: List of all files created, modified, or deleted
+  - **Debug References**: Links to debug logs, test runs, or decision traces
+- **Benefit**: Captures implementation wisdom for knowledge transfer to next stories
+
+**Previous Story Insights** (in Story Template):
+- New section for flowing insights between stories in same epic
+- Populated from previous story's Dev Agent Record:
+  - Key learnings from previous story
+  - Architectural patterns that worked/didn't work
+  - Technical debt discovered
+- **Benefit**: Knowledge transfers between agent implementations
+
+### Changed - Epic Planner Agent Enhanced
+
+Updated `agileflow-epic-planner` agent with new Architecture Context Extraction workflow:
+
+**New ARCHITECTURE CONTEXT EXTRACTION Section** (for story creation):
+- Documents BMAD-METHOD pattern for extracting architecture context
+- Specifies which architecture files to read based on story type:
+  - **All stories**: tech-stack.md, coding-standards.md, project-structure.md
+  - **Backend/API stories**: data-models.md, api-spec.md, database.md
+  - **Frontend/UI stories**: components.md, styling.md, state-management.md
+  - **Full-Stack stories**: All of the above
+- Requires source citations for every technical detail
+- Never invents details - only extracts from actual docs
+
+**Updated Workflow Steps** (Step 7):
+- New explicit step `[ARCHITECTURE CONTEXT EXTRACTION]` in story creation workflow
+- Integrates context extraction into planning process
+- Extracts previous story insights when applicable
+
+### Added - New Story Validation Command
+
+**New Command**: `/AgileFlow:validate-story` (validates individual story completeness)
+
+Validates that a story is complete, well-structured, and ready for implementation:
+
+**Validation Checks**:
+1. **Required Sections**: All template sections present (frontmatter, AC, Architecture Context, Dev Agent Record, etc.)
+2. **Architecture Context**: Populated with source citations, files exist, no invented details
+3. **Acceptance Criteria**: Clear, testable, uses Given/When/Then format, 2-5 criteria
+4. **Story Completeness**: Realistic estimate (0.5-2d), dependencies documented, owner assigned
+5. **Dev Agent Record**: Structure present (content may be empty at ready/draft stage)
+6. **Previous Story Insights**: Present and relevant to epic sequence
+7. **Cross-Story Consistency**: Aligns with epic goals and team capacity
+
+**Output**: Comprehensive validation report with passed/failed/warnings grouped by severity
+
+**Example Story**: `docs/06-stories/EP-0001/US-0001-user-login-api.md`
+- Demonstrates all new sections in action
+- Shows proper Architecture Context with source citations
+- Shows populated Dev Agent Record with real-world implementation notes
+- Includes Previous Story Insights example for follow-on stories
+
+### Improved - Story Template Enhancement
+
+Enhanced `templates/story-template.md` with BMAD-inspired sections:
+- Architecture Context section with clear subsections and source citation requirements
+- Dev Agent Record section with structured subsections for implementation tracking
+- Previous Story Insights section for inter-story knowledge transfer
+- Detailed comments explaining when/how sections are populated
+
+### Why This Matters
+
+**Before**: Dev agents had to read entire architecture docs, losing context in token overhead. Dev insights were lost when implementation finished.
+
+**After**:
+- Dev agents get focused, self-contained context (reduced token overhead)
+- Architecture decisions are traced to their source (verifiable and auditable)
+- Implementation wisdom flows between stories in an epic (knowledge transfer)
+- Stories are validated before assignment (higher quality work)
+
+**Pattern Origins**: These patterns are proven in BMAD-METHOD framework, now adapted for AgileFlow's command-based architecture.
+
 ## [2.15.2] - 2025-10-28
 
 ### Changed - Official Claude Code Plugin Format with Auto-Discovery
