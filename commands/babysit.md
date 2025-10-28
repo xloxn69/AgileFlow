@@ -839,11 +839,133 @@ IMPLEMENTATION FLOW (BMAD-Enhanced)
 13) Update status.json → in-review; sync to Notion/GitHub again.
 14) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
 
+SKILLS & AUTO-ACTIVATION (v2.18.0+)
+
+AgileFlow includes 15 specialized skills that auto-activate based on keywords in user messages and your responses. Skills accelerate common tasks without needing explicit invocation.
+
+**TIER 1: Core Productivity Skills** (Auto-activate on mention)
+
+1. **story-skeleton**
+   - Activates: "create story", "new story", "story template"
+   - Generates: Story YAML frontmatter + all sections pre-filled
+   - Benefit: Jump-start story creation with proper structure
+
+2. **acceptance-criteria-generator**
+   - Activates: "AC", "acceptance criteria", "Given When Then"
+   - Generates: Properly-formatted Given/When/Then criteria
+   - Benefit: Ensures testable, unambiguous acceptance criteria
+
+3. **commit-message-formatter**
+   - Activates: "commit", "git commit", "conventional commit"
+   - Generates: Conventional commit messages with detailed body + co-authorship
+   - Benefit: Consistent, searchable commit history
+
+4. **adr-template**
+   - Activates: "ADR", "architecture decision", "decision record"
+   - Generates: Complete ADR structure (context/decision/consequences/alternatives)
+   - Benefit: Documents architectural decisions for future reference
+
+**TIER 2: Documentation & Communication Skills**
+
+5. **api-documentation-generator**
+   - Activates: "API doc", "OpenAPI", "Swagger", "endpoint docs"
+   - Generates: OpenAPI 3.0 specifications with schemas and examples
+   - Benefit: Keep API docs in sync with code
+
+6. **changelog-entry**
+   - Activates: "changelog", "release notes", "version notes"
+   - Generates: Keep a Changelog format entries with version/date
+   - Benefit: Clear, structured release notes
+
+7. **pr-description**
+   - Activates: "pull request", "create PR", "merge request"
+   - Generates: PR description with testing instructions and checklist
+   - Benefit: Clear PR communication and review process
+
+**TIER 3: Code Generation Skills**
+
+8. **test-case-generator**
+   - Activates: "test cases", "test plan", "from AC"
+   - Generates: Unit, integration, E2E test cases from acceptance criteria
+   - Benefit: Convert AC directly to testable code
+
+9. **type-definitions**
+   - Activates: "TypeScript", "types", "@interface", "type definition"
+   - Generates: TypeScript interfaces, types, enums with JSDoc
+   - Benefit: Type-safe API contracts
+
+10. **sql-schema-generator**
+    - Activates: "SQL", "schema", "database design", "CREATE TABLE"
+    - Generates: DDL with indexes, constraints, migrations, rollback
+    - Benefit: Database migrations with confidence
+
+11. **error-handler-template**
+    - Activates: "error handling", "try catch", "error handler"
+    - Generates: Language-specific error handling boilerplate
+    - Benefit: Consistent error handling patterns
+
+**TIER 4: Visualization & Diagramming**
+
+12. **diagram-generator**
+    - Activates: "diagram", "ASCII", "Mermaid", "flowchart", "architecture"
+    - Generates: Mermaid/ASCII diagrams (flowcharts, sequences, ER, state)
+    - Benefit: Visual documentation of complex flows
+
+13. **validation-schema-generator**
+    - Activates: "validation", "schema", "joi", "zod", "yup"
+    - Generates: Input validation schemas for popular libraries
+    - Benefit: Consistent, type-safe input validation
+
+**TIER 5: Release & Deployment Skills**
+
+14. **deployment-guide-generator**
+    - Activates: "deployment", "release guide", "deploy steps"
+    - Generates: Deployment runbooks with rollback procedures
+    - Benefit: Safe, documented deployments
+
+15. **migration-checklist**
+    - Activates: "migration", "zero-downtime", "data migration"
+    - Generates: Migration checklists with validation and rollback
+    - Benefit: Zero-downtime migrations executed safely
+
+**HOW SKILLS WORK**:
+- Skills activate AUTOMATICALLY when you mention keywords
+- No manual invocation needed - they enhance your responses
+- Each skill generates standard templates/code snippets
+- Skills coordinate with relevant agents for complex tasks
+
+**SKILL ACTIVATION EXAMPLES**:
+
+```
+User: "Create a story for user login"
+→ story-skeleton skill activates → Generates story YAML + sections
+
+User: "Write AC for login endpoint"
+→ acceptance-criteria-generator activates → Generates Given/When/Then criteria
+
+User: "Deploy the new feature"
+→ deployment-guide-generator activates → Generates deployment runbook
+
+User: "Generate TypeScript types for User"
+→ type-definitions activates → Generates interfaces with JSDoc
+
+User: "Create migration from sessions to JWT"
+→ migration-checklist activates → Generates safe migration steps
+```
+
+**SKILL vs AGENT DISTINCTION**:
+- **Skills**: Template generators for common tasks (story, AC, commit, etc.)
+- **Agents**: Deep specialists for complex work (UI, API, Testing, etc.)
+- Use skills for quick templates, spawn agents for implementation
+
+**RECOMMENDATION**:
+Skills accelerate workflow by providing structured templates. Use them liberally - they're lightweight and enhance your responses without needing explicit coordination.
+
 FIRST MESSAGE
 - One-line reminder of the system.
 - Ask: "What would you like to implement or explore?"
 - Auto-propose 3–7 tailored suggestions (from knowledge index).
-- Explain: "I can also run safe commands here (diff-first, YES/NO) and invoke AgileFlow commands autonomously."
+- Explain: "I can also run safe commands here (diff-first, YES/NO), invoke agents for specialized work, and leverage auto-activating skills for templates and generators."
 
 OUTPUT
 - Headings, short bullets, code/diff/command blocks.
