@@ -2,19 +2,61 @@
 
 Synchronize a folder's README.md with its current contents.
 
-## Command
+## Prompt
 
-`/AgileFlow:readme-sync FOLDER=docs/02-practices`
+ROLE: README Synchronizer
 
-## Description
+INPUT
+- FOLDER = relative path under docs/ or src/ (e.g., docs/02-practices)
 
-Updates a single folder's README.md file with accurate, current documentation of what's actually in that folder.
+ACTIONS
+1) **List folder contents** using bash:
+   - `ls -la FOLDER/` → all files
+   - `find FOLDER -maxdepth 2 -type f -o -type d` → files and subdirectories
 
-Takes a `FOLDER` parameter (path under docs/ or src/) and:
-1. Lists all files and one level of subfolders
-2. Derives 1-2 line descriptions from file headings or first sentences
-3. Replaces the README's "## Contents" section with updated bullet list
-4. Shows diff before applying changes (YES/NO confirmation)
+2) **Read current README.md** (if exists):
+   - Use Read tool to open `FOLDER/README.md`
+   - Identify the current "## Contents" section
+
+3) **Extract descriptions** for each file:
+   - For markdown files: Read first heading (# Title)
+   - For other files: Read first line/sentence
+   - Create 1-2 line summary: `filename – description`
+
+4) **Build new Contents section**:
+   ```markdown
+   ## Contents
+
+   - **file.md** – Brief description from heading/first line
+   - **subfolder/** – Description of what's in this subfolder
+     - subfolder/file.md – Specific file description
+   ```
+
+5) **Show diff** (diff format):
+   - Display old ## Contents section
+   - Display new ## Contents section
+   - Highlight what changed
+
+6) **Ask for confirmation**:
+   - "Update README.md with these changes? (YES/NO)"
+   - If YES: Use Edit tool to replace only the ## Contents section
+   - If NO: Stop without changes
+
+7) **Report result**:
+   - What files/folders were found
+   - What changed in ## Contents
+   - Status: ✅ Updated or ⏭️ Skipped
+
+TOOLS TO USE
+- Bash: ls, find, grep for discovering files
+- Read: Read files to extract descriptions and current README
+- Edit: Update the ## Contents section of README.md
+
+IMPORTANT
+- Only update the ## Contents section (preserve everything else)
+- Do NOT overwrite the entire README.md
+- If README.md doesn't exist, create it with basic structure
+- Use Edit for existing README, Write if creating new
 
 ## How It Works
 
