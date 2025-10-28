@@ -13,6 +13,10 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
     }
   }
 }
@@ -28,6 +32,7 @@
 // 3. Add your tokens to .env file (NOT .mcp.json):
 //    NOTION_TOKEN=ntn_your_actual_notion_token_here
 //    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_github_token_here
+//    CONTEXT7_API_KEY=your_context7_api_key_here  # OPTIONAL - see note below
 //
 // 4. VERIFY .mcp.json and .env are in .gitignore:
 //    grep -E '\.mcp\.json|\.env' .gitignore
@@ -38,10 +43,18 @@
 // Token sources:
 // - Notion: https://www.notion.so/my-integrations (starts with "ntn_")
 // - GitHub: https://github.com/settings/tokens (starts with "ghp_")
+// - Context7: https://context7.com/dashboard (OPTIONAL - see note below)
 //
 // GitHub token permissions needed:
 // - repo (full control) - for issues, PRs, labels
 // - read:org - for organization access (if needed)
+//
+// Context7 (OPTIONAL API key):
+// - Context7 works WITHOUT an API key (standard rate limits, public repos only)
+// - API key provides: higher rate limits, private repo access, priority support
+// - If NOT using API key: Leave CONTEXT7_API_KEY blank or remove from .env
+// - Context7 provides Claude with up-to-date framework/library documentation
+//   (overcomes January 2025 training data cutoff)
 //
 // NOTE: Some MCP servers don't support ${VAR} substitution (e.g., Postgres).
 // For those, see docs/00-meta/mcp-wrapper-scripts/ for wrapper script examples.

@@ -5,6 +5,156 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.3] - 2025-10-28
+
+### Added - Context7 MCP Integration
+
+**Problem**: Claude's training data is frozen at January 2025, causing hallucinated/outdated APIs when working with frameworks/libraries released or updated after that date.
+
+**Solution**: Added Context7 MCP integration to provide Claude with up-to-date, version-specific documentation from npm, PyPI, and GitHub repositories.
+
+**What is Context7?**
+- MCP server that fetches latest framework/library documentation on-demand
+- Overcomes Claude's training data cutoff by accessing current docs
+- Prevents hallucinated APIs and outdated code generation
+- Optional API key for higher rate limits and private repository access
+- Works WITHOUT an API key (standard rate limits, public repos only)
+
+**What Changed**:
+
+**`/AgileFlow:setup-system` Command**:
+- Added Context7 to MCP integration question: "Enable Context7? (Latest framework/library documentation) yes/no"
+- Added Context7 detection in status reporting
+- Added comprehensive Context7 setup section (after Notion section)
+- Creates CLAUDE.md with Context7 usage instructions
+- Shows Context7 as optional (works without API key)
+
+**Context7 Setup Flow**:
+1. Ask user if they want Context7 during MCP setup
+2. If yes:
+   - Add Context7 server to .mcp.json.example
+   - Document CONTEXT7_API_KEY in .env.example (marked as OPTIONAL)
+   - Add Context7 usage instructions to CLAUDE.md
+   - Explain API key is optional (standard rate limits without key)
+3. User copies templates: `cp .mcp.json.example .mcp.json && cp .env.example .env`
+4. OPTIONAL: User adds CONTEXT7_API_KEY to .env for higher rate limits
+5. Restart Claude Code to load Context7 MCP server
+6. Claude now has access to current documentation automatically!
+
+**CLAUDE.md Context7 Section** (added to user projects):
+```markdown
+## Context7 MCP Integration
+
+**Purpose**: Access up-to-date framework/library documentation to overcome Claude's training data cutoff (January 2025).
+
+**When to use Context7**:
+- ✅ When working with frameworks/libraries where API may have changed since January 2025
+- ✅ When implementing features using newer package versions
+- ✅ When user mentions specific library versions (e.g., "React 19", "Next.js 15")
+- ✅ When encountering deprecation warnings or outdated patterns
+- ✅ When you're uncertain about current best practices for a library
+
+**How to use Context7**:
+Before generating code for modern frameworks/libraries, mentally note: "Should I check latest docs via Context7?"
+
+**Available tools** (via MCP):
+- Context7 tools are available as mcp__context7__* when you need them
+- The system automatically fetches relevant documentation when you reference it
+
+**Rate limits**:
+- Without API key: Standard rate limits (sufficient for most projects)
+- With API key (CONTEXT7_API_KEY in .env): Higher limits + private repos
+```
+
+**Configuration Files**:
+
+**`.mcp.json.example`** (template):
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
+    }
+  }
+}
+```
+
+**`.env.example`** (template):
+```bash
+# Context7 API Key (OPTIONAL - for latest framework/library documentation)
+# Get from: https://context7.com/dashboard
+# IMPORTANT: Context7 works WITHOUT an API key (standard rate limits, public repos)
+# API key provides: higher rate limits, private repo access, priority support
+# If NOT using: Leave blank or remove this line
+# Purpose: Provides Claude with up-to-date docs (overcomes January 2025 training cutoff)
+CONTEXT7_API_KEY=your_context7_api_key_here
+```
+
+**Security Notes**:
+- ✅ Context7 works WITHOUT an API key (standard rate limits, public repos only)
+- ✅ If using API key: Use ${VAR} syntax in .mcp.json (reads from .env)
+- ✅ Store actual key in .env (NOT .mcp.json)
+- ✅ BOTH .mcp.json AND .env MUST be gitignored
+- ✅ Commit .mcp.json.example and .env.example (templates with ${VAR} syntax)
+- ❌ NEVER hardcode API key in .mcp.json
+- ❌ NEVER commit .mcp.json or .env to git
+
+**Benefits**:
+- ✅ Overcomes Claude's training data cutoff (January 2025)
+- ✅ Provides version-specific documentation (React 19, Next.js 15, etc.)
+- ✅ Prevents hallucinated/outdated APIs
+- ✅ Supports npm, PyPI, GitHub docs
+- ✅ Works without API key for public repos (no friction)
+- ✅ Optional API key for higher limits + private repos
+
+### Fixed - Attribution Toggle Formatting
+
+**Problem**: User feedback indicated "CRITICAL" should appear in generated CLAUDE.md (correct), but NOT in the /setup-system prompt itself.
+
+**What Changed**:
+- Removed "**CRITICAL - Git Attribution Preference**" from /setup-system prompt (line 91)
+- Changed to: "**Git Attribution Preference** (ALWAYS ask on first setup):"
+- The prompt now asks the question normally, without the "CRITICAL" emphasis
+- The generated CLAUDE.md section (lines 169-199) still has "⚠️ CRITICAL: Git Commit Attribution Policy" (correct behavior)
+
+**Why This Matters**:
+- Setup prompt should be calm and professional
+- CLAUDE.md is where the CRITICAL enforcement happens (for Claude's attention)
+- Separates user-facing prompts from AI instructions
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.13.3
+- **marketplace.json**: Updated description with "v2.13.3 - Added Context7 MCP for latest framework/library documentation"
+- **CHANGELOG.md**: Added v2.13.3 section
+- **commands/setup-system.md**: Fixed attribution toggle, added Context7 integration
+- **.mcp.json.example**: Added Context7 server configuration
+- **.env.example**: Added CONTEXT7_API_KEY documentation (marked as OPTIONAL)
+
+### Technical
+
+**Files Modified**:
+- `commands/setup-system.md` - 2 changes:
+  1. Removed "CRITICAL" from attribution question prompt (still in generated CLAUDE.md)
+  2. Added full Context7 setup section (175 lines) with detection, configuration, usage instructions
+- `.mcp.json.example` - Added Context7 server (npx @upstash/context7-mcp with ${CONTEXT7_API_KEY})
+- `.env.example` - Added CONTEXT7_API_KEY with comprehensive documentation
+- `.claude-plugin/plugin.json` - Version 2.13.2 → 2.13.3
+- `.claude-plugin/marketplace.json` - Description updated with v2.13.3 and Context7
+
+**Setup Flow Enhancement**:
+- Detection phase now checks for Context7 in .mcp.json
+- MCP question now includes Context7: "Enable Context7? (Latest framework/library documentation) yes/no"
+- Status summary includes Context7: "Context7: ✅ Configured / ❌ Not configured / ℹ️ Optional"
+- Full setup section with security notes, team onboarding, and usage instructions
+
+**Why Patch Release (v2.13.3)**:
+- Enhancement to existing /setup-system command
+- No breaking changes (all changes are additive)
+- Improves user experience (attribution question, Context7 access to current docs)
+- Template files updated (.mcp.json.example, .env.example)
+
 ## [2.13.2] - 2025-10-25
 
 ### Fixed - Misplaced Commands (Scope Correction)
