@@ -5,6 +5,41 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.2] - 2025-10-28
+
+### Changed - Official Claude Code Plugin Format with Auto-Discovery
+
+Adopted the official Claude Code plugin format used by Anthropic's official plugins for better maintainability and consistency.
+
+**Key Changes**:
+1. **plugin.json Simplification**:
+   - Removed explicit command/agent/skills lists (now uses auto-discovery from directory structure)
+   - Added `"homepage": "https://github.com/xloxn69/AgileFlow"` field
+   - Version bumped to 2.15.2
+
+2. **Agent Model Specifications**:
+   - Added `model: sonnet` to complex agents (mentor, epic-planner) for better reasoning
+   - Added `model: haiku` to all other agents for efficiency
+   - Replaces previous `model: inherit` declarations
+
+3. **Auto-Discovery**:
+   - Commands auto-discovered from `commands/` directory
+   - Agents auto-discovered from `agents/` directory
+   - Skills auto-discovered from `skills/` directory
+   - No need to manually register in plugin.json anymore
+
+**Benefits**:
+- ✅ Simpler maintenance (add new commands/agents without editing plugin.json)
+- ✅ Cleaner plugin.json (follows official Anthropic plugin format)
+- ✅ Better agent performance tuning via explicit model specs
+- ✅ Consistent with official plugins (backend-architect, feature-dev, agent-sdk-dev)
+- ✅ Easier for community to contribute
+
+**Migration Notes**:
+- Users don't need to do anything - auto-discovery is transparent
+- Install command remains the same: `/plugin install AgileFlow`
+- All 36 commands, 9 agents, and 8 skills work exactly as before
+
 ## [2.15.1] - 2025-10-28
 
 ### Added
