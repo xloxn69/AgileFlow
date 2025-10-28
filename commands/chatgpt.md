@@ -1,3 +1,8 @@
+---
+description: chatgpt
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # chatgpt
 
 Generate, export, or manage the ChatGPT context brief.

@@ -1,3 +1,8 @@
+---
+description: agent-new
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # agent-new
 
 Onboard a new agent with profile and system prompt.

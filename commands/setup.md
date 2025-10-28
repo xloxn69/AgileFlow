@@ -1,3 +1,8 @@
+---
+description: setup-system
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # setup-system
 
 Scaffold the universal agile/docs-as-code system for this repository.

@@ -1,3 +1,8 @@
+---
+description: docs-sync
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # docs-sync
 
 Synchronize documentation with codebase changes.

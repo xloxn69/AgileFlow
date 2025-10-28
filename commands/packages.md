@@ -1,3 +1,8 @@
+---
+description: packages
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # packages
 
 Manage project package dependencies (npm, pip, cargo, etc.) with dashboard, updates, and security audits.

@@ -1,3 +1,8 @@
+---
+description: auto-story
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # auto-story
 
 Automatically generate user stories from product artifacts like PRDs, mockups, or API docs.

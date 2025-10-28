@@ -1,3 +1,8 @@
+---
+description: setup-tests
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # setup-tests
 
 Automatically set up testing infrastructure for projects without existing tests.
