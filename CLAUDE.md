@@ -21,7 +21,9 @@ See "Updating Plugin Version" section below for detailed steps.
 
 ## Repository Overview
 
-**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (41 slash commands + 8 subagents), not a traditional application codebase. There is no build step, runtime, or deployment process.
+**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (42 slash commands + 8 subagents), not a traditional application codebase. There is no build step, runtime, or deployment process.
+
+**Current Version**: v2.16.0 (BMAD-METHOD patterns for architecture context extraction and knowledge transfer)
 
 ## Architecture
 
@@ -233,6 +235,109 @@ The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
 **Step 5 - Populate Architecture Context Section**:
 - Add all 6 subsections to story template
 - Include source citations in each subsection
+
+## v2.16.0 Quick Reference
+
+### New Features (BMAD Integration)
+- ✅ **Architecture Context Extraction**: Stories now include auto-filled Architecture Context with source citations
+- ✅ **Dev Agent Record**: Capture implementation model, issues, lessons learned for knowledge transfer
+- ✅ **Previous Story Insights**: Flow lessons between stories in same epic
+- ✅ **Story Validation Command**: `/AgileFlow:validate-story US-XXXX` for completeness checking
+- ✅ **Enhanced /babysit**: Integrated BMAD workflow guidance (validate → read context → implement → record lessons)
+
+### New Files Created
+- `commands/validate-story.md` - Story validation command
+- `docs/06-stories/EP-0001/US-0001-user-login-api.md` - Example story with all new sections
+
+### Modified Files
+- `templates/story-template.md` - Added Architecture Context, Dev Agent Record, Previous Story Insights
+- `agents/agileflow-epic-planner.md` - Added Architecture Context Extraction workflow
+- `commands/babysit.md` - Enhanced with BMAD guidance sections
+- `CHANGELOG.md` - v2.16.0 entry with full details
+- `.claude-plugin/plugin.json` - Version bumped to 2.16.0
+
+## Common Workflows
+
+### Workflow 1: Create Epic with Architecture Context
+
+```
+User: "I want to build user authentication system"
+  ↓
+/AgileFlow:epic-new → Epic Planner creates EP-XXXX
+  ↓
+Epic Planner breaks down into stories:
+  - US-0001: User Login API
+  - US-0002: Password Reset
+  - US-0003: Token Refresh
+  ↓
+For each story:
+  - Extract architecture context from docs/04-architecture/
+  - Cite all sources: [Source: architecture/api-spec.md#endpoints]
+  - Populate Architecture Context section
+  - Create test stub at docs/07-testing/test-cases/US-XXXX.md
+  ↓
+Stories status = "ready" (Definition of Ready met)
+```
+
+### Workflow 2: Implement Story with BMAD Patterns
+
+```
+Dev Agent receives: US-XXXX (Story with Architecture Context populated)
+  ↓
+1. Validate: /AgileFlow:validate-story US-XXXX
+   - Check Architecture Context populated
+   - Check AC clear and testable
+   - Check all sections present
+  ↓
+2. Read: Story's Architecture Context section (NOT full docs)
+   - File paths from Architecture Context
+   - Testing patterns from Testing Requirements
+   - API specs already extracted with citations
+  ↓
+3. Check: Previous Story Insights (if not first in epic)
+   - Apply successful patterns from previous story
+   - Avoid pitfalls documented in previous story
+  ↓
+4. Implement: Use Architecture Context as single source of truth
+   - No need to read full architecture docs
+   - All context is self-contained in story
+  ↓
+5. Record: Populate Dev Agent Record as you work
+   - Agent Model & Version: Which model was used
+   - Completion Notes: What was built vs. planned
+   - Issues Encountered: Challenges and solutions
+   - Lessons Learned: Insights for NEXT story in epic
+   - Files Modified: List all files touched
+  ↓
+6. Next Story: When epic planner creates US-XXXX+1
+   - Automatically includes your Lessons Learned
+   - Next dev agent applies your patterns
+   - Knowledge flows through epic: US-0001 → US-0002 → US-0003
+```
+
+### Workflow 3: Validate Story Before Assignment
+
+```
+Epic Planner finishes creating story:
+  ↓
+Run: /AgileFlow:validate-story US-XXXX
+  ↓
+If PASSED (all checks green):
+  - Story is ready for development
+  - Assign to dev agent
+  - Dev agent can focus on implementation
+  ↓
+If FAILED (issues found):
+  - Fix Architecture Context citations (must be real files)
+  - Fix Acceptance Criteria (must be Given/When/Then)
+  - Add missing sections
+  - Update status to "draft"
+  - Re-run validation
+  ↓
+Once all checks pass:
+  - Status = "ready"
+  - Safe to assign for implementation
+```
 
 ## Common Development Tasks
 
@@ -568,6 +673,38 @@ When updating CHANGELOG.md:
 - `.env.example` (template with placeholder values)
 
 **Critical reminder**: The plugin marketplace fetches from GitHub, not local files. If you don't push, users won't see your changes!
+
+## Key Principles for v2.16.0+
+
+### Architecture Context is Self-Contained
+- **Dev agents should NEVER need to read full architecture docs**
+- Everything needed is extracted into the story's Architecture Context section
+- If something is missing, it means the story wasn't properly prepared (run `/validate-story`)
+- This reduces token overhead and speeds up implementation
+
+### Source Citations are Mandatory
+- Every technical detail must cite its source: `[Source: architecture/api-spec.md#endpoints]`
+- Sources must be real files in `docs/04-architecture/`
+- Citations are verifiable - users can click through and understand decisions
+- Never invent technical details - only extract from actual docs
+
+### Knowledge Flows Through Epics
+- Story US-0001 completes → populates Dev Agent Record with lessons
+- Story US-0002 created → automatically includes US-0001's lessons in Previous Story Insights
+- Story US-0003 learns from both US-0001 and US-0002
+- This creates a learning loop: each story builds on previous implementation wisdom
+
+### Story Validation is Essential
+- Always run `/validate-story` before assigning story to dev agent
+- Catches issues early (missing Architecture Context, unclear AC, structure problems)
+- Prevents dev agent from starting work on incomplete story
+- If validation fails, fix the story (not the dev agent's job)
+
+### Dev Agent Record is for Knowledge Transfer
+- Populated DURING implementation, not after
+- Lessons Learned section specifically for NEXT story in epic (not just documentation)
+- Example: "Middleware pattern works well for auth - recommend same for logging"
+- Next story automatically benefits from this wisdom
 
 ## Important Notes
 
