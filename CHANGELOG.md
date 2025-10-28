@@ -157,66 +157,29 @@ CONTEXT7_API_KEY=your_context7_api_key_here
 
 ## [2.13.2] - 2025-10-25
 
-### Fixed - Misplaced Commands (Scope Correction)
+### ⚠️ REVERTED (Same Day)
 
-**Problem**: v2.13.0 added `/validate-commands` and `/release` as PLUGIN commands, but these are actually for USER PROJECTS, not for the AgileFlow plugin itself.
+**This release was reverted the same day** - The .example template approach was solving a non-existent problem.
 
-**Issue**:
-- `/validate-commands` was validating AgileFlow plugin structure (wrong scope)
-- `/release` was for releasing AgileFlow plugin versions (wrong scope)
-- These should be in user's `.claude/commands/` directory, not in plugin
+**Why reverted**: Claude Code automatically syncs all commands from `plugin.json` when users install/update the plugin. There's no need for template files - the commands are already available to users through the plugin system.
 
-**What Changed**:
-- **Moved to templates**: `templates/validate-commands.md.example` and `templates/release.md.example`
-- **Updated for user projects**: Commands now validate/release USER's codebase
-- **Added to .gitignore**: Added `.claude/` to .gitignore (user-specific commands)
-- **Removed from plugin**: Removed from plugin.json commands registry
+**What was removed**:
+- `templates/validate-commands.md.example` - Deleted (unnecessary)
+- `templates/release.md.example` - Deleted (unnecessary)
+- `.claude/` from .gitignore - Removed (not needed in plugin repo)
 
-**New Approach** (User Projects):
+**Original intent** (misguided): v2.13.0 added `/validate-commands` and `/release` as PLUGIN commands, but these were for the AgileFlow plugin itself (correct scope). v2.13.2 mistakenly tried to move them to user projects via templates, but this was unnecessary complexity.
 
-**`/validate-commands`** - For YOUR project's custom commands:
-- Copy `templates/validate-commands.md.example` to `.claude/commands/validate-commands.md`
-- Validates custom commands in YOUR `.claude/commands/` directory
-- Checks for broken command references in YOUR codebase
-- Finds missing `/` prefix in SlashCommand() calls
+**Correct understanding**:
+- Plugin commands in `plugin.json` are automatically available to all users
+- No need for .example templates or .claude/ directories in user projects
+- Commands work via the plugin system - users just run `/AgileFlow:validate-commands`
 
-**`/release`** - For YOUR project releases:
-- Copy `templates/release.md.example` to `.claude/commands/release.md`
-- Bumps version in YOUR package.json
-- Updates YOUR CHANGELOG.md
-- Creates git tags for YOUR releases
-- Runs YOUR tests and build
-- Customizable for Node.js, Python, Rust, Go, Maven, Docker
+### Removed (Reverted)
 
-**Usage**:
-```bash
-# In YOUR project
-cp /path/to/AgileFlow/templates/validate-commands.md.example .claude/commands/validate-commands.md
-cp /path/to/AgileFlow/templates/release.md.example .claude/commands/release.md
-
-# Then use them
-/validate-commands  # validates YOUR custom commands
-/release VERSION=1.2.3  # releases YOUR project
-```
-
-**Why .gitignore .claude/**:
-- Each user has their own custom commands
-- Commands are project-specific
-- Prevents committing personal workflows
-- Template files (*.example) are committed for sharing
-
-### Changed (Version Files)
-
-- **plugin.json**: Updated version to 2.13.2, removed 2 commands (38 → 36 commands)
-- **marketplace.json**: Updated description with v2.13.2 and scope fix
-- **CHANGELOG.md**: Added v2.13.2 section
-- **.gitignore**: Added `.claude/` directory
-
-### Technical
-
-- **Command Count**: Back to 36 commands (removed 2 that were misplaced)
-- **Template Files**: 2 new templates for user projects
-- **Scope Clarification**: Plugin commands vs user project commands now clearly separated
+- **templates/validate-commands.md.example** - Deleted (plugin commands auto-sync)
+- **templates/release.md.example** - Deleted (plugin commands auto-sync)
+- **.gitignore** - Removed `.claude/` entry (not needed in plugin)
 
 ## [2.13.1] - 2025-10-25
 
