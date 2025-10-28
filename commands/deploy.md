@@ -1,3 +1,8 @@
+---
+description: setup-deployment
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # setup-deployment
 
 Automatically set up deployment pipeline for the project.

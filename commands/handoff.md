@@ -1,3 +1,8 @@
+---
+description: handoff
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # handoff
 
 Document handoff between agents with summary and blockers.

@@ -1,3 +1,8 @@
+---
+description: ai-code-review
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # ai-code-review
 
 Perform AI-powered code review based on coding standards and best practices.

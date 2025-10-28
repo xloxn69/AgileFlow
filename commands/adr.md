@@ -1,3 +1,8 @@
+---
+description: adr-new
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # adr-new
 
 Create a new Architecture Decision Record.

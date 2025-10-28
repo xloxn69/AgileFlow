@@ -1,3 +1,8 @@
+---
+description: impact-analysis
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # impact-analysis
 
 Analyze the impact of code changes on other parts of the codebase.

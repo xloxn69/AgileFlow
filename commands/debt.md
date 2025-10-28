@@ -1,3 +1,8 @@
+---
+description: tech-debt
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # tech-debt
 
 Track and visualize technical debt across the codebase.

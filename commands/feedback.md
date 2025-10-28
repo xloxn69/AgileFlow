@@ -1,3 +1,8 @@
+---
+description: agent-feedback
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # agent-feedback
 
 Collect feedback from agents and humans for continuous process improvement.

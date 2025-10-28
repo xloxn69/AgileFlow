@@ -1,3 +1,8 @@
+---
+description: validate-story
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # validate-story
 
 Validate a specific story for completeness, architecture context, and readiness for development.
