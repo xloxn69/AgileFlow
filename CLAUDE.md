@@ -48,13 +48,19 @@ AgileFlow/
 - Defined in `commands/*.md` files
 - Each file contains a prompt executed when user runs the command
 - Commands are stateless, single-purpose actions
-- Registered in `.claude-plugin/plugin.json` under `"commands"` array
+- **Auto-discovered** from `commands/` directory (no manual registration needed)
 
 **Subagents** (invoked via "Use the X subagent to..."):
-- Defined in `agents/*.md` files with YAML frontmatter
+- Defined in `agents/*.md` files with YAML frontmatter (name, description, tools, model, color)
 - Run in separate context windows for focused work
-- Have specialized expertise (UI, API, CI, DevOps, planning, research, mentoring)
-- Registered in `.claude-plugin/plugin.json` under `"agents"` array
+- Have specialized expertise (UI, API, CI, DevOps, planning, research, mentoring, documentation)
+- **Auto-discovered** from `agents/` directory (no manual registration needed)
+
+**Skills** (auto-loaded based on context):
+- Defined in `skills/*/SKILL.md` files
+- Activate automatically based on keywords in user messages
+- Provide specialized capabilities (story writing, commit messages, ADRs, acceptance criteria, etc.)
+- **Auto-discovered** from `skills/` directory (no manual registration needed)
 
 **AgileFlow System** (created by `/AgileFlow:setup-system` command):
 - **Not part of this repository** - created in user's project repos
@@ -64,14 +70,23 @@ AgileFlow/
 
 ### Critical Files
 
-**`.claude-plugin/plugin.json`** - Source of truth for:
-- Plugin version number (semantic versioning)
-- Command registry (file paths to `commands/*.md`)
-- Subagent registry (file paths to `agents/*.md`)
+**`.claude-plugin/plugin.json`** - Plugin metadata (minimal, clean format):
+```json
+{
+  "name": "AgileFlow",
+  "version": "X.Y.Z",
+  "description": "...",
+  "author": { "name": "AgileFlow Contributors" },
+  "homepage": "https://github.com/xloxn69/AgileFlow"
+}
+```
+- Commands, agents, and skills are **auto-discovered** from directory structure
+- Version number is the single source of truth for releases
+- No manual registry maintenance needed
 
 **`.claude-plugin/marketplace.json`** - Marketplace metadata:
 - Plugin name and owner
-- Version description (shown in `/AgileFlow:plugin` UI)
+- Version description (shown in plugin UI)
 - Must stay in sync with `plugin.json` version
 
 **`CHANGELOG.md`** - Version history:
@@ -112,52 +127,59 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
 
 ### Adding a New Command
 
-1. **Create command file**:
+1. **Create command file** (auto-discovered):
    ```bash
-   # Add to commands/ directory
+   # Add to commands/ directory with descriptive name
    commands/new-command.md
    ```
 
-2. **Register in plugin.json**:
-   ```json
-   {
-     "commands": [
-       "./commands/existing-command.md",
-       "./commands/new-command.md"  // Add here
-     ]
-   }
+   **Frontmatter format** (optional but recommended):
+   ```yaml
+   ---
+   description: Brief description of what command does
+   argument-hint: Optional description of arguments
+   ---
    ```
 
-3. **Update README.md** - Add command to appropriate section
+2. **Update README.md** - Add command to appropriate section with `/AgileFlow:` prefix
 
-4. **Bump version and update changelog**:
-   - Update `.claude-plugin/plugin.json` version (e.g., 2.3.1 → 2.3.2)
+3. **Bump version and update changelog**:
+   - Update `.claude-plugin/plugin.json` version (e.g., 2.15.1 → 2.15.2)
    - Update `.claude-plugin/marketplace.json` description with new version
    - Add new section to `CHANGELOG.md` documenting the new command under "Added"
 
+4. **No need to edit plugin.json** - Auto-discovery handles registration
+
 ### Adding a New Subagent
 
-1. **Create subagent file** with YAML frontmatter:
+1. **Create subagent file** (auto-discovered):
    ```bash
    agents/agileflow-newagent.md
    ```
 
-2. **Register in plugin.json**:
-   ```json
-   {
-     "agents": [
-       "./agents/agileflow-ui.md",
-       "./agents/agileflow-newagent.md"  // Add here
-     ]
-   }
+2. **Frontmatter requirements**:
+   ```yaml
+   ---
+   name: agileflow-newagent
+   description: What this agent does and when to use it
+   tools: Read, Write, Edit, Bash, Glob, Grep
+   model: haiku  # or sonnet for complex agents
+   color: blue   # Choose a color (optional)
+   ---
    ```
 
 3. **Update README.md** and **SUBAGENTS.md** - Document new subagent
 
 4. **Bump version and update changelog**:
-   - Update `.claude-plugin/plugin.json` version (e.g., 2.3.1 → 2.3.2)
+   - Update `.claude-plugin/plugin.json` version (e.g., 2.15.1 → 2.15.2)
    - Update `.claude-plugin/marketplace.json` description with new version
    - Add new section to `CHANGELOG.md` documenting the new subagent under "Added"
+
+5. **No need to edit plugin.json** - Auto-discovery handles registration
+
+**Model Selection Guide**:
+- `model: sonnet` - For complex agents requiring reasoning (mentor, epic-planner)
+- `model: haiku` - For specialized but straightforward agents (UI, API, CI, DevOps, research)
 
 ### Modifying Commands or Subagents
 
