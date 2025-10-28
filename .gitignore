@@ -23,6 +23,3 @@ logs/
 
 # Environment
 .env
-
-# User custom commands (project-specific)
-.claude/
