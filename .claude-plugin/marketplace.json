@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 commands, 8 subagents, and 8 autonomous skills (v2.14.1 - Claude Skills for automatic story writing, commit formatting, ADRs, epics, sprints, retros, and tech debt)",
+  "description": "Universal agile/docs-as-code system with 36 simplified commands, 8 subagents, and 8 autonomous skills (v2.15.0 - Shorter command names: /setup, /story, /epic, /sprint, /validate, /help, etc.)",
   "plugins": [
     {
       "name": "AgileFlow",
