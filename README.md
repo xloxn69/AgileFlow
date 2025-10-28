@@ -15,8 +15,9 @@ AgileFlow combines three proven methodologies into one cohesive system:
 - ✅ Clear priorities and testable increments
 - ✅ Durable memory and decision history
 - ✅ Effortless multi-agent collaboration via message bus
-- ✅ 8 specialized subagents for focused work (UI, API, CI, DevOps, planning, ADRs, research, mentor)
-- ✅ 36 slash commands for complete workflow automation
+- ✅ **25 specialized subagents** for focused work (UI, API, CI, DevOps, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, QA, and more)
+- ✅ **36 slash commands** for complete workflow automation
+- ✅ **Hooks system** for event-driven automation (v2.19.0+)
 - ✅ System validation with JSON schemas
 - ✅ Intelligent blocker tracking and resolution
 - ✅ Data-driven sprint planning with velocity forecasting
@@ -86,6 +87,87 @@ docs/
   chatgpt.md           # One-page context brief for ChatGPT
 ```
 
+## Hooks System (v2.19.0+) 🎯
+
+AgileFlow now supports **event-driven automation** through a hooks system. Hooks allow you to automatically run commands when Claude Code lifecycle events occur.
+
+### What Are Hooks?
+
+Hooks are automatic triggers that execute commands in response to events:
+- **SessionStart**: Runs when Claude Code session starts (welcome messages, context preloading)
+- **UserPromptSubmit**: Runs after you submit a prompt (logging, analytics)
+- **Stop**: Runs when Claude stops responding (cleanup, notifications)
+
+### Quick Setup
+
+1. **Copy the template**:
+   ```bash
+   cp templates/hooks.example.json hooks/hooks.json
+   ```
+
+2. **Customize your hooks** (edit `hooks/hooks.json`):
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [{
+         "hooks": [{
+           "type": "command",
+           "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help'"
+         }]
+       }]
+     }
+   }
+   ```
+
+3. **Restart Claude Code** to load hooks
+
+### Example Use Cases
+
+**Welcome message on startup**:
+```json
+{
+  "SessionStart": [{
+    "hooks": [{
+      "command": "echo '👋 Welcome to AgileFlow! Current sprint: $(cat docs/08-project/current-sprint.txt)'"
+    }]
+  }]
+}
+```
+
+**Activity logging**:
+```json
+{
+  "UserPromptSubmit": [{
+    "hooks": [{
+      "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+    }]
+  }]
+}
+```
+
+**Dynamic environment variables**:
+Use the `get-env.js` helper to load configuration without restart:
+```json
+{
+  "SessionStart": [{
+    "hooks": [{
+      "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
+    }]
+  }]
+}
+```
+
+### Templates Provided
+
+- `templates/hooks.example.json` - Basic hooks template
+- `templates/hooks.advanced.example.json` - Advanced with matchers and logging
+
+### Security Note
+
+Hooks files (`hooks/hooks.json`, `hooks/hooks.local.json`) are **gitignored** - each user creates their own custom hooks.
+
+See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
+
 ## Commands
 
 ### Core Workflow
@@ -148,7 +230,7 @@ docs/
 
 ## Subagents
 
-AgileFlow includes 8 specialized subagents that operate in separate context windows for focused work:
+AgileFlow includes **25 specialized subagents** that operate in separate context windows for focused work. Here are the core agents (see `SUBAGENTS.md` for complete list):
 
 ### Core Implementation Agents
 
