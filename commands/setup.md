@@ -66,6 +66,13 @@ fi
 # Check CI
 [ -f .github/workflows/ci.yml ] && echo "✅ CI workflow exists" || echo "❌ CI workflow missing"
 
+# Check hooks system (v2.19.0+)
+if [ -d hooks ] && [ -f hooks/hooks.json ]; then
+  echo "✅ Hooks system configured"
+else
+  echo "❌ Hooks system not configured"
+fi
+
 # Check runtime detection
 [ -f docs/00-meta/runtime.json ] && echo "✅ Runtime detected" || echo "❌ Runtime not detected"
 ```
@@ -82,6 +89,7 @@ MCP Integrations:
   - Supabase: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
   - Context7: ✅ Configured / ❌ Not configured / ℹ️ Optional
 CI Workflow: ✅ Configured / ❌ Not configured
+Hooks System: ✅ Configured / ❌ Not configured (v2.19.0+)
 ```
 
 INPUTS (ask only about missing/incomplete features)
@@ -106,12 +114,15 @@ Based on detection results above, ask ONLY about features that aren't fully conf
   - Print next steps: "To complete setup: 1) Edit .mcp.json with your real tokens, 2) Restart Claude Code"
 - IF GitHub sync missing: "Create GitHub sync mapping? (requires GitHub MCP) yes/no"
 - IF CI missing: "Create minimal CI workflow? yes/no"
+- IF hooks not configured: "Set up hooks system? (event-driven automation) yes/no"
 
 Skip asking about features that are already fully configured (just report them as ✅).
 
 CREATE DIRECTORIES (if missing)
 docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
 .github/workflows
+hooks/
+scripts/
 
 **IMPORTANT - docs/02-practices Purpose**:
 - docs/02-practices is for **USER'S CODEBASE practices** (NOT AgileFlow system practices)
@@ -632,6 +643,213 @@ Next steps for team members:
 Note: Context7 works transparently - no manual commands needed. Claude will automatically access current documentation when working with frameworks/libraries.
 ```
 
+HOOKS SYSTEM SETUP (v2.19.0+) - If Enabled
+**IMPORTANT**: Hooks allow event-driven automation in Claude Code. When Claude Code lifecycle events occur (SessionStart, UserPromptSubmit, Stop), hooks automatically execute shell commands.
+
+**What Are Hooks?**
+- **SessionStart**: Runs when Claude Code session starts (welcome messages, context preloading)
+- **UserPromptSubmit**: Runs after user submits a prompt (logging, analytics)
+- **Stop**: Runs when Claude stops responding (cleanup, notifications)
+
+**Step 1: Create hooks directory and scripts directory**:
+```bash
+mkdir -p hooks scripts
+```
+
+**Step 2: Copy get-env.js helper script**:
+Copy from AgileFlow plugin's `scripts/get-env.js` to `scripts/get-env.js`:
+```javascript
+#!/usr/bin/env node
+/**
+ * get-env.js - Dynamic environment variable helper for hooks
+ * Usage: node scripts/get-env.js VARIABLE_NAME [default_value]
+ */
+const fs = require('fs');
+const path = require('path');
+
+const varName = process.argv[2];
+const defaultValue = process.argv[3] || '';
+
+if (!varName) {
+  console.error('Usage: node scripts/get-env.js VARIABLE_NAME [default_value]');
+  process.exit(1);
+}
+
+const projectDir = process.cwd();
+const claudePath = path.join(projectDir, '.claude');
+let env = {};
+
+// Read settings.json (base configuration)
+try {
+  const settingsPath = path.join(claudePath, 'settings.json');
+  const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+  if (settings.env) {
+    env = { ...env, ...settings.env };
+  }
+} catch (e) {}
+
+// Read settings.local.json (local overrides - gitignored)
+try {
+  const localSettingsPath = path.join(claudePath, 'settings.local.json');
+  const localSettings = JSON.parse(fs.readFileSync(localSettingsPath, 'utf8'));
+  if (localSettings.env) {
+    env = { ...env, ...localSettings.env };
+  }
+} catch (e) {}
+
+const finalValue = env[varName] !== undefined ? env[varName] : defaultValue;
+console.log(finalValue);
+```
+Make executable: `chmod +x scripts/get-env.js`
+
+**Step 3: Create basic hooks.json**:
+Create `hooks/hooks.json` with welcome message:
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help to see available commands'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [],
+    "Stop": []
+  }
+}
+```
+
+**Step 4: Ensure .gitignore has hooks and .claude directories**:
+```bash
+grep -E '^hooks/hooks\\.json$' .gitignore || echo "hooks/hooks.json" >> .gitignore
+grep -E '^hooks/hooks\\.local\\.json$' .gitignore || echo "hooks/hooks.local.json" >> .gitignore
+grep -E '^\\.claude/' .gitignore || echo ".claude/" >> .gitignore
+```
+
+**Step 5: Create .claude directory structure** (for settings):
+```bash
+mkdir -p .claude
+```
+
+**Step 6: Create example settings.json template**:
+Create `.claude/settings.example.json` (commit to git):
+```json
+{
+  "env": {
+    "USER_NAME": "Your Name",
+    "PROJECT_NAME": "Your Project"
+  }
+}
+```
+
+**Step 7: Update CLAUDE.md with hooks documentation**:
+Add this section to project's CLAUDE.md:
+```markdown
+## Hooks System (AgileFlow v2.19.0+)
+
+AgileFlow supports event-driven automation through hooks. Hooks are automatically triggered when Claude Code lifecycle events occur.
+
+### Configured Hooks
+
+**SessionStart Hook**:
+- Displays welcome message when Claude Code starts
+- Current hook: Shows "🚀 AgileFlow loaded" message
+- Located in: hooks/hooks.json
+
+### Customizing Hooks
+
+**To customize hooks**:
+1. Edit `hooks/hooks.json`
+2. Add commands to SessionStart, UserPromptSubmit, or Stop events
+3. Restart Claude Code to apply changes
+
+**Example - Add project context loading**:
+```json
+{
+  "SessionStart": [{
+    "hooks": [
+      {
+        "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
+      }
+    ]
+  }]
+}
+```
+
+**Example - Activity logging**:
+```json
+{
+  "UserPromptSubmit": [{
+    "hooks": [{
+      "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+    }]
+  }]
+}
+```
+
+### Dynamic Environment Variables
+
+Use `scripts/get-env.js` to load environment variables from `.claude/settings.json`:
+
+**Create .claude/settings.json** (gitignored - your local config):
+```json
+{
+  "env": {
+    "USER_NAME": "Alice",
+    "PROJECT_NAME": "MyApp"
+  }
+}
+```
+
+**Use in hooks**:
+```json
+{
+  "command": "echo 'Welcome $(node scripts/get-env.js USER_NAME)!'"
+}
+```
+
+Changes to `.claude/settings.json` take effect immediately (no restart needed).
+
+### Security
+
+- `hooks/hooks.json` is gitignored (user-specific)
+- `.claude/settings.json` is gitignored (local overrides)
+- `.claude/settings.example.json` is committed (template for team)
+
+See AgileFlow plugin documentation for advanced hooks patterns.
+```
+
+**Print Next Steps**:
+```
+✅ Hooks system configured
+✅ hooks/hooks.json created with SessionStart welcome message
+✅ scripts/get-env.js helper created
+✅ .gitignore updated (hooks and .claude directories protected)
+✅ .claude/ directory created for settings
+✅ .claude/settings.example.json template created
+✅ CLAUDE.md updated with hooks documentation
+
+Next steps for you:
+1. Customize hooks: Edit hooks/hooks.json
+2. OPTIONAL: Create .claude/settings.json for dynamic environment variables
+3. 🔴 RESTART CLAUDE CODE (to load hooks system)
+4. Hooks will run automatically on SessionStart, UserPromptSubmit, Stop events
+
+Next steps for team members:
+1. Pull latest code (includes hooks/hooks.json and .claude/settings.example.json)
+2. Customize their own hooks: Edit hooks/hooks.json locally
+3. OPTIONAL: Create .claude/settings.json with their own values
+4. 🔴 RESTART CLAUDE CODE
+5. Hooks will run automatically!
+
+Note: Each team member can have different hooks - hooks/hooks.json is gitignored for personalization.
+```
+
 TOKEN VALIDATION (SECURE - Does NOT expose tokens)
 
 **IMPORTANT**: Before or after MCP setup, validate that required tokens are present in .env WITHOUT exposing them.
@@ -814,6 +1032,13 @@ OUTPUT
       - Ready to use mcp__supabase__* tools
 
   CI Workflow: ✅ Already configured (skipped)
+
+  Hooks System: 🆕 Newly configured (v2.19.0+)
+    - Created hooks/hooks.json with SessionStart welcome message
+    - Created scripts/get-env.js for dynamic environment variables
+    - .gitignore updated (hooks and .claude directories protected)
+    - CLAUDE.md updated with hooks documentation
+    - Next: Restart Claude Code to load hooks
 
   Next steps:
   - Create your first epic: /AgileFlow:epic-new
