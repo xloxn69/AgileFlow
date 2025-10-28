@@ -8,55 +8,86 @@ Audit and update all README.md files across /docs in parallel using specialized 
 
 ## Description
 
-Spawns specialized agents in PARALLEL - one per /docs folder - to audit and update all README.md files simultaneously. Each agent:
+Audits and updates all README.md files across /docs folders in PARALLEL. Each agent:
 1. Reads the folder's current README.md (if exists)
-2. Scans folder contents to understand what's there
-3. Identifies gaps, outdated info, missing documentation
-4. Proposes updates (improved structure, new content, removed obsolete info)
-5. Updates README.md with improvements
+2. Scans folder contents using bash (ls, find, grep)
+3. Identifies documentation gaps, outdated info, missing files
+4. Proposes updates with improved structure and content
+5. Updates README.md with improvements using the Edit tool
+6. Reports changes made
 
-Results are coordinated and reported back to the user.
+## How It Works (Implementation)
 
-## How It Works
-
+### Step 1: Discover Folders (Using Bash)
+```bash
+# Find all numbered doc folders (00-meta through 10-research)
+ls -d docs/[0-9][0-9]-* 2>/dev/null | sort
 ```
-/AgileFlow:readme-sync
-  ↓
-Scan /docs structure
-  ├── docs/00-meta/
-  ├── docs/01-brainstorming/
-  ├── docs/02-practices/
-  ├── docs/03-decisions/
-  ├── docs/04-architecture/
-  ├── docs/05-epics/
-  ├── docs/06-stories/
-  ├── docs/07-testing/
-  ├── docs/08-project/
-  ├── docs/09-agents/
-  └── docs/10-research/
-  ↓
-Spawn agileflow-readme-updater agent IN PARALLEL (one per folder):
-  Task(
-    description: "Update docs/00-meta/README.md",
-    prompt: "Audit folder and update README.md with current contents",
-    subagent_type: "agileflow-readme-updater"
-  )
-  Task(
-    description: "Update docs/01-brainstorming/README.md",
-    prompt: "Audit folder and update README.md with current contents",
-    subagent_type: "agileflow-readme-updater"
-  )
-  ... (11 agents running simultaneously)
-  ↓
-Each agent:
-  1. Reads current README
-  2. Audits folder contents
-  3. Identifies gaps/outdated info
-  4. Identifies improvements
-  5. Updates README.md
-  6. Reports what was changed
-  ↓
-Coordinate results and generate summary report
+
+### Step 2: Spawn Agents in Parallel (Using Task Tool)
+For each discovered folder, spawn agileflow-readme-updater agent with the folder path:
+
+```javascript
+// Example for docs/00-meta/
+Task(
+  description: "Update docs/00-meta/README.md",
+  prompt: `You are updating README.md for the docs/00-meta/ folder.
+
+FOLDER PATH: docs/00-meta/
+
+TASK:
+1. Use bash to list folder contents: ls -la docs/00-meta/
+2. Check if README.md exists: [ -f docs/00-meta/README.md ] && echo exists
+3. If exists, READ the current README.md to understand current structure
+4. If not exists, create a new README.md
+5. Identify all files/subfolders in docs/00-meta/
+6. Update README.md with:
+   - Clear folder purpose
+   - List of key files with descriptions
+   - Links to related folders
+   - How to navigate this folder
+   - Open questions or TODOs
+   - Next steps/planned work
+7. EDIT or WRITE the README.md file
+8. Report what was changed or created
+
+Use these tools:
+- Bash: ls, find, grep to explore folder
+- Read: Read files to understand current content
+- Edit: Update existing README.md
+- Write: Create new README.md if missing
+`,
+  subagent_type: "agileflow-readme-updater"
+)
+
+// Repeat for each folder: 01-brainstorming, 02-practices, etc.
+```
+
+### Step 3: Parallel Execution
+- All Task calls are made in a single message block
+- Claude Code executes them in parallel (not sequentially)
+- Each agent works independently on their folder
+- Results come back from each agent
+
+### Step 4: Collect & Report Results
+```
+README Sync Report
+==================
+
+✅ docs/00-meta/README.md (UPDATED)
+   - Created folder purpose section
+   - Added navigation links
+   - Listed key directories
+
+✅ docs/01-brainstorming/README.md (UPDATED)
+   - Added quick reference for all ideas
+   - Organized by priority
+   - Updated next steps
+
+... (all 11 folders)
+
+Total Updated: 11 README files
+Success Rate: 11/11 (100%)
 ```
 
 ## Example Output
