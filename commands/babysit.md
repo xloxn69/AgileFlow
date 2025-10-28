@@ -85,8 +85,98 @@ RESEARCH INTEGRATION
 - If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
-DEFINITION OF READY
-- AC written; tests stub at docs/07-testing/test-cases/<US_ID>.md; deps resolved.
+DEFINITION OF READY (BMAD-Enhanced)
+- ✓ Acceptance Criteria written (Given/When/Then format)
+- ✓ Architecture Context populated with source citations (Data Models, API Specs, Components, File Locations, Testing, Constraints)
+- ✓ Test stub at docs/07-testing/test-cases/<US_ID>.md
+- ✓ Dependencies resolved and documented
+- ✓ Previous Story Insights included (if applicable to epic)
+- ✓ Story validated via `/AgileFlow:validate-story` (all checks passing)
+
+ARCHITECTURE CONTEXT GUIDANCE (for implementation)
+
+When implementing a story, guide the dev agent to **use the story's Architecture Context section** instead of reading docs:
+
+**Reinforce this workflow**:
+1. **Read story's Architecture Context section FIRST** - all relevant architecture extracted with citations
+2. **Follow file paths from Architecture Context** - exact locations where code should go
+3. **Check Testing Requirements subsection** - testing patterns and coverage requirements
+4. **Never read entire architecture docs** - story has extracted only what's needed
+5. **Cite sources if adding new context** - if you discover something not in Architecture Context, add it with [Source: ...]
+
+**If Architecture Context is incomplete**:
+- Story status should be "draft" not "ready"
+- Ask: "Should I run `/AgileFlow:validate-story` to check completeness before implementing?"
+- If issues found: Fix Architecture Context extraction before starting implementation
+
+**Benefits for dev agents**:
+- Focused context without token overhead
+- All decisions traced to sources (verifiable)
+- Faster implementation (no doc reading)
+- Easier knowledge transfer (citations enable lookup)
+
+POPULATING DEV AGENT RECORD (during implementation)
+
+Guide the dev agent to populate the new Dev Agent Record section as they work:
+
+**Agent Model & Version**: Record which AI model was used
+- Example: "Claude Sonnet (claude-3-5-sonnet-20241022)"
+- Helps future stories understand which model solved similar problems
+
+**Completion Notes**: Document what was actually built vs. planned
+- Example: "Implemented JWT login + rate limiting as planned. JWT middleware added as bonus for consistency."
+- Note any deviations from AC and explain why
+- Compare actual time vs. estimate
+
+**Issues Encountered**: Capture challenges and solutions
+- Format: "Challenge X: [problem] → Solution: [how you fixed it]"
+- Example: "Challenge: Redis rate limiting keys causing memory leak → Solution: Added explicit TTL to prevent accumulation"
+- Include any bugs discovered and fixed
+
+**Lessons Learned**: Extract insights for next story in epic
+- What patterns worked well?
+- What should next story avoid?
+- Technical debt discovered?
+- Example: "Middleware pattern works great for cross-cutting concerns. Recommend for logging, auth, error handling."
+
+**Files Modified**: List all files created/modified/deleted
+- Helps future agents understand scope
+- Enables impact analysis
+
+**Debug References**: Link to test runs, logs, decision traces
+- CI run URLs, test output links
+- Helps if issues arise in follow-on stories
+
+STORY VALIDATION BEFORE ASSIGNMENT
+
+When a story is created or before assigning to dev agent:
+
+**Suggest validation check**:
+- "Let me validate story completeness: `/AgileFlow:validate-story US-XXXX`"
+- **If validation fails**:
+  - Fix Architecture Context citations (must cite real files)
+  - Ensure AC uses Given/When/Then format
+  - Add missing sections to story template
+  - Update status to "draft" if significant fixes needed
+- **If validation passes**:
+  - Story is ready for development
+  - Safe to assign to dev agent
+  - Dev agent can focus on implementation, not filling gaps
+
+PREVIOUS STORY INSIGHTS INTEGRATION
+
+When implementing a story that's not the first in an epic:
+
+**Extract insights from previous story**:
+1. Read previous story's Dev Agent Record
+2. Pull out: Lessons Learned, Architectural Patterns, Technical Debt
+3. Remind dev agent: "Check Previous Story Insights section - includes learnings from US-XXXX"
+4. Apply patterns that worked: "Previous story used middleware pattern, recommend same for this story"
+
+**After implementation**:
+1. Populate Dev Agent Record with lessons
+2. Next story in epic will automatically include these insights
+3. Knowledge flows through epic: US-0001 → US-0002 → US-0003
 
 SAFE FILE OPS
 - Always show diffs; require YES/NO before writing. Keep JSON valid; repair if needed (explain fix).
@@ -532,24 +622,43 @@ README.MD MAINTENANCE (proactive, CRITICAL PRIORITY)
 
 **IMPORTANT**: Do NOT wait for user to ask - proactively suggest README updates after significant work.
 
-IMPLEMENTATION FLOW
-1) **[CRITICAL]** Read relevant practices docs based on task type:
+IMPLEMENTATION FLOW (BMAD-Enhanced)
+1) **[CRITICAL]** Validate story readiness:
+   - Run: `/AgileFlow:validate-story <STORY_ID>`
+   - Check: Architecture Context populated with source citations, AC clear, structure complete
+   - If issues: Fix before proceeding (set status to "draft" if significant)
+2) **[CRITICAL]** Read relevant practices docs based on task type:
    - Start with docs/02-practices/README.md to see what practice docs exist
    - For UI: Read styling.md, typography.md, component-patterns.md
    - For API: Read api-design.md, validation.md, error-handling.md
    - For any work: Read testing.md, git-branching.md as needed
    - These define the project's actual conventions - ALWAYS follow them
-2) Validate readiness; fill gaps (create AC/test stub).
-3) Propose branch: feature/<US_ID>-<slug>.
-4) Plan ≤4 steps with exact file paths.
-5) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
-6) Update status.json → in-progress; append bus line.
-7) **[CRITICAL]** Immediately sync to GitHub/Notion if enabled:
-   - SlashCommand("/AgileFlow:github-sync") if `.mcp.json` has github MCP server configured
-   - SlashCommand("/AgileFlow:notion-export DATABASE=stories") if `.mcp.json` has notion MCP server configured
-8) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
-9) Update status.json → in-review; sync to Notion/GitHub again.
-10) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
+3) **[NEW]** Read story's Architecture Context section FIRST:
+   - Don't read entire architecture docs - story has extracted only relevant parts
+   - Follow file locations from Architecture Context
+   - Verify all sources cited: [Source: architecture/{file}.md#{section}]
+4) **[NEW]** Check Previous Story Insights (if not first in epic):
+   - Apply Lessons Learned from previous story
+   - Use Architectural Patterns that worked
+   - Avoid pitfalls noted in previous story
+5) Propose branch: feature/<US_ID>-<slug>.
+6) Plan ≤4 steps with exact file paths from Architecture Context.
+7) Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands).
+8) **[NEW]** Populate Dev Agent Record as you work:
+   - After finishing: Add Agent Model & Version, Completion Notes, Issues Encountered
+   - Extract Lessons Learned for next story in epic
+   - List all Files Modified
+9) Update status.json → in-progress; append bus line.
+10) **[CRITICAL]** Immediately sync to GitHub/Notion if enabled:
+    - SlashCommand("/AgileFlow:github-sync") if `.mcp.json` has github MCP server configured
+    - SlashCommand("/AgileFlow:notion-export DATABASE=stories") if `.mcp.json` has notion MCP server configured
+11) After completing significant work, check if CLAUDE.md should be updated with new architectural patterns or practices discovered.
+12) **[NEW]** Before PR: Ensure Dev Agent Record is populated
+    - Agent Model & Version recorded
+    - Lessons Learned documented for next story
+    - Files Modified listed
+13) Update status.json → in-review; sync to Notion/GitHub again.
+14) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
 
 FIRST MESSAGE
 - One-line reminder of the system.
