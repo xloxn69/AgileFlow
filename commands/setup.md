@@ -627,6 +627,133 @@ Next steps for team members:
 Note: Context7 works transparently - no manual commands needed. Claude will automatically access current documentation when working with frameworks/libraries.
 ```
 
+TOKEN VALIDATION (SECURE - Does NOT expose tokens)
+
+**IMPORTANT**: Before or after MCP setup, validate that required tokens are present in .env WITHOUT exposing them.
+
+**Validation Script** (safe, reads .env without displaying values):
+```bash
+#!/bin/bash
+
+echo "🔐 Token Validation (Secure Check - No Tokens Exposed)"
+echo "========================================================="
+
+# Check if .env exists
+if [ ! -f .env ]; then
+  echo "❌ .env file NOT found"
+  echo ""
+  echo "To create .env, copy from template:"
+  echo "  cp .env.example .env"
+  echo "Then edit .env and add your real tokens (DO NOT COMMIT)"
+  exit 1
+fi
+
+echo "✅ .env file found"
+echo ""
+
+# Check GitHub token (secure - doesn't print value)
+if grep -q "^GITHUB_PERSONAL_ACCESS_TOKEN=" .env && ! grep -q "GITHUB_PERSONAL_ACCESS_TOKEN=$" .env; then
+  TOKEN_VALUE=$(grep "^GITHUB_PERSONAL_ACCESS_TOKEN=" .env | cut -d'=' -f2)
+  if [ -z "$TOKEN_VALUE" ] || [ "$TOKEN_VALUE" = "your_token_here" ] || [ "$TOKEN_VALUE" = "ghp_placeholder" ]; then
+    echo "⚠️  GITHUB_PERSONAL_ACCESS_TOKEN is set but appears to be placeholder"
+    echo "    → Replace with real token (starts with ghp_)"
+  else
+    echo "✅ GITHUB_PERSONAL_ACCESS_TOKEN is set (length: ${#TOKEN_VALUE})"
+  fi
+else
+  echo "⚠️  GITHUB_PERSONAL_ACCESS_TOKEN not found in .env"
+fi
+
+echo ""
+
+# Check Notion token (secure - doesn't print value)
+if grep -q "^NOTION_TOKEN=" .env && ! grep -q "NOTION_TOKEN=$" .env; then
+  TOKEN_VALUE=$(grep "^NOTION_TOKEN=" .env | cut -d'=' -f2)
+  if [ -z "$TOKEN_VALUE" ] || [ "$TOKEN_VALUE" = "your_token_here" ] || [[ "$TOKEN_VALUE" == *"placeholder"* ]]; then
+    echo "⚠️  NOTION_TOKEN is set but appears to be placeholder"
+    echo "    → Replace with real token (starts with ntn_ or secret_)"
+  else
+    echo "✅ NOTION_TOKEN is set (length: ${#TOKEN_VALUE})"
+  fi
+else
+  echo "ℹ️  NOTION_TOKEN not found in .env (optional if Notion not enabled)"
+fi
+
+echo ""
+
+# Check Context7 token (secure - doesn't print value)
+if grep -q "^CONTEXT7_API_KEY=" .env && ! grep -q "CONTEXT7_API_KEY=$" .env; then
+  TOKEN_VALUE=$(grep "^CONTEXT7_API_KEY=" .env | cut -d'=' -f2)
+  if [ -z "$TOKEN_VALUE" ] || [ "$TOKEN_VALUE" = "your_key_here" ] || [[ "$TOKEN_VALUE" == *"placeholder"* ]]; then
+    echo "⚠️  CONTEXT7_API_KEY is set but appears to be placeholder"
+    echo "    → Replace with real key (optional for higher rate limits)"
+  else
+    echo "✅ CONTEXT7_API_KEY is set (length: ${#TOKEN_VALUE})"
+  fi
+else
+  echo "ℹ️  CONTEXT7_API_KEY not found in .env (optional)"
+fi
+
+echo ""
+echo "🔒 Security Check:"
+echo "✅ .mcp.json is in .gitignore: $(grep -q '^\\.mcp\\.json$' .gitignore && echo 'YES' || echo 'NO')"
+echo "✅ .env is in .gitignore: $(grep -q '^\\.env$' .gitignore && echo 'YES' || echo 'NO')"
+```
+
+**When to Run Token Validation**:
+1. **After Initial Setup**: Verify tokens are in place before using MCP features
+2. **Before Running MCP Commands**: Check tokens before `/AgileFlow:github-sync`, `/AgileFlow:notion-export`, etc.
+3. **Troubleshooting**: If MCP tools aren't working, validate tokens are present
+
+**How to Use**:
+1. Copy script to `docs/00-meta/scripts/validate-tokens.sh`
+2. Make executable: `chmod +x docs/00-meta/scripts/validate-tokens.sh`
+3. Run anytime: `bash docs/00-meta/scripts/validate-tokens.sh`
+
+**Output Example** (secure - no tokens exposed):
+```
+🔐 Token Validation (Secure Check - No Tokens Exposed)
+=========================================================
+✅ .env file found
+
+✅ GITHUB_PERSONAL_ACCESS_TOKEN is set (length: 40)
+✅ NOTION_TOKEN is set (length: 28)
+ℹ️  CONTEXT7_API_KEY not found in .env (optional)
+
+🔒 Security Check:
+✅ .mcp.json is in .gitignore: YES
+✅ .env is in .gitignore: YES
+```
+
+**What This Does** (Security-First):
+- ✅ Checks if .env exists (without reading it)
+- ✅ Verifies tokens are present (without displaying values)
+- ✅ Detects placeholder tokens (warns user to replace)
+- ✅ Shows token length only (not actual value)
+- ✅ Verifies .gitignore protection (.mcp.json and .env excluded)
+- ❌ NEVER displays actual token values
+- ❌ NEVER logs token contents
+- ❌ NEVER prints tokens anywhere
+
+**If Tokens Missing**:
+```
+⚠️  GITHUB_PERSONAL_ACCESS_TOKEN not found in .env
+
+To fix:
+1. Copy template: cp .env.example .env
+2. Edit .env and add your real tokens
+3. NEVER commit .env to git (must be in .gitignore)
+4. RESTART Claude Code for MCP servers to reload
+5. Run token validation again to confirm
+```
+
+**Integration with Setup**:
+The setup command should call this validation script and prompt:
+- "Would you like to validate MCP tokens now? (yes/no)"
+- If yes: Run token validation and report results
+- If any tokens missing/invalid: Show next steps
+- Remind: "RESTART Claude Code after updating .env for changes to take effect"
+
 COMMAND EXECUTION
 - Allowed after explicit YES with full preview. Good examples: `ls`, `tree`, `cat`, `grep`, formatters, running tests, creating files.
 - Disallowed by default: destructive ops (`rm -rf`, force pushes) unless separately confirmed.
