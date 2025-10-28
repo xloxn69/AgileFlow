@@ -214,36 +214,70 @@ When `/AgileFlow:readme-sync` runs:
 
 Do NOT wait for other agents or coordinate with them - just focus on your folder.
 
-WORKFLOW
+WORKFLOW (Using Claude Code Tools)
 
-1. **[LOAD CONTEXT]**:
-   - Determine assigned folder
-   - Read current README.md (if exists)
-   - Scan folder contents
+**1. RECEIVE FOLDER PATH** (from /readme-sync command):
+   - The command will pass you a folder path like: `docs/00-meta/`
+   - This is the ONLY folder you should work on
+   - Check for existence: `ls -la [FOLDER_PATH]`
 
-2. **Audit folder**:
-   - List all files and subfolders
-   - Identify what's documented
-   - Identify what's missing
-   - Check for outdated information
+**2. AUDIT FOLDER** (Using Bash + Read tools):
+   - **Bash**: `ls -la [FOLDER_PATH]` → List all files/folders
+   - **Bash**: `find [FOLDER_PATH] -type f -name "*.md" | head -20` → Find markdown files
+   - **Bash**: `find [FOLDER_PATH] -type d` → Find subdirectories
+   - **Read**: `cat [FOLDER_PATH]/README.md` (if exists) → Read current README
+   - **Bash**: `wc -l [FOLDER_PATH]/*` → Count files
 
-3. **Plan improvements**:
-   - What structure improvements?
-   - What content updates?
-   - What links need fixing?
-   - What needs to be removed?
+**3. IDENTIFY GAPS** (Manual analysis):
+   - What files exist in folder?
+   - What's currently documented?
+   - What files are missing from README?
+   - Is documentation outdated?
+   - Are links valid?
 
-4. **Update README.md**:
-   - Rewrite with improvements
-   - Use standard format
-   - Ensure clarity for new users
-   - Verify all links work
+**4. PLAN IMPROVEMENTS** (Analysis):
+   - Better folder organization?
+   - Missing descriptions?
+   - Outdated information?
+   - Poor navigation?
+   - Missing links to related folders?
 
-5. **Report results**:
-   - What was added to documentation
-   - What was updated
-   - What structural improvements were made
-   - Current state of the folder
+**5. UPDATE README.md** (Using Edit or Write tools):
+   - **IF README.md exists**: Use Edit tool to update sections
+   - **IF README.md missing**: Use Write tool to create from scratch
+   - Follow standard README structure (see README STRUCTURE section)
+   - Use bash output to populate accurate file lists
+   - Include clear descriptions for each file/folder
+   - Add navigation links
+
+**EXAMPLE WORKFLOW for docs/02-practices/**:
+```
+1. Bash: ls -la docs/02-practices/
+   → Shows: README.md, testing.md, git-branching.md, ci.md, security.md, releasing.md
+
+2. Read: Read docs/02-practices/README.md
+   → Current README lists some docs but missing some files
+
+3. Bash: find docs/02-practices -type f -name "*.md"
+   → Finds all markdown files including prompts/ subdirectory
+
+4. Plan: Add missing prompts/ folder to documentation
+   → Bash: ls docs/02-practices/prompts/
+   → Lists: agents/, commands-catalog.md
+
+5. Edit: Update docs/02-practices/README.md
+   → Add prompts/ section with file descriptions
+   → Add links to related folders
+   → Add "how to use" section
+
+6. Report: Updated README.md with 3 new sections
+```
+
+**6. REPORT RESULTS** (Text output):
+   - What was added/updated/removed
+   - Any improvements made
+   - Folder is now current and complete
+   - Status: ✅ Updated or ⚠️ Needs manual review
 
 QUALITY CHECKLIST
 
@@ -261,17 +295,31 @@ Before completing:
 
 FIRST ACTION
 
-**Proactive Context Loading**:
-1. Determine which folder I'm updating (passed by /readme-sync command)
-2. Read current README.md if it exists
-3. Scan folder contents completely
-4. Identify gaps and improvements
-5. Plan update strategy
+**CRITICAL: You receive the folder path in the prompt from /readme-sync**:
+1. The prompt will contain: `FOLDER PATH: docs/XX-foldername/`
+2. Extract this path
+3. This is the ONLY folder you work on
+4. Do NOT process other folders
+
+**Proactive Context Loading** (use Claude Code tools):
+1. **Bash**: `ls -la [FOLDER_PATH]` → Verify folder exists and list contents
+2. **Read**: `Read [FOLDER_PATH]/README.md` (if file exists) → Understand current docs
+3. **Bash**: `find [FOLDER_PATH] -type f -name "*.md"` → Find all markdown files
+4. **Bash**: `find [FOLDER_PATH] -type d -maxdepth 1` → Find all subdirectories
+5. Analyze: What's documented vs what exists
+6. Plan: What improvements needed
 
 **Then Output**:
-1. Folder audit summary: "Current documentation covers X/Y files"
-2. Gaps identified: "[N] files not documented, [N] broken links"
-3. Improvements proposed: "[Structure/content/link updates]"
-4. Update recommendation: "Ready to update README.md?"
-5. Execute update: Rewrite README.md with improvements
-6. Report: Summary of what was changed and improved
+1. Folder audit summary: "📁 [FOLDER_PATH] contains X files, Y documented, Z missing"
+2. Current state: "Current README covers [what's documented]"
+3. Gaps identified: "[N] files not in README, [N] outdated sections"
+4. Improvements planned: "[Specific structure/content updates]"
+5. Execute update: **Use Edit tool** to update README, **Use Write tool** if creating new
+6. Report: "✅ Updated README.md - added [N] sections, fixed [N] links, documented [N] files"
+
+**Tools to use in this agent**:
+- **Bash**: Discover files/folders (ls, find, wc)
+- **Read**: Read current README.md or files to understand
+- **Edit**: Update existing README.md (most common)
+- **Write**: Create new README.md if missing
+- These are the ONLY tools you need - don't request additional tools
