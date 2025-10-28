@@ -5,6 +5,54 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.0] - 2025-10-28
+
+### Added - Hooks System (Event-Driven Automation)
+
+Implemented first-class hooks system following dotai's pattern for event-driven automation and dynamic configuration. This enables users to execute custom commands in response to Claude Code lifecycle events without requiring plugin code changes.
+
+**Hooks System Components**:
+1. **hooks/hooks.json** - Main hook configuration file (gitignored - user-specific)
+2. **scripts/get-env.js** - Dynamic environment variable helper for runtime config
+3. **templates/hooks.example.json** - Basic example template for users to copy
+4. **templates/hooks.advanced.example.json** - Advanced example with matchers and logging
+
+**Supported Events**:
+- **SessionStart**: Runs when Claude Code session starts (welcome messages, context setup)
+- **UserPromptSubmit**: Runs after user submits a prompt (logging, analytics)
+- **Stop**: Runs when Claude stops responding (cleanup, notifications)
+
+**Key Features**:
+- **Separate hooks.json**: First-class citizen pattern (not embedded in plugin.json)
+- **Dynamic environment variables**: get-env.js helper loads from .claude/settings.json without restart
+- **Conditional execution**: Matcher patterns for context-aware hooks
+- **User-specific config**: All hooks files gitignored, users copy templates
+
+**Why This Matters**:
+- **Event-driven automation**: Users can automate workflows (logging, notifications, context loading)
+- **No restart needed**: Dynamic config via get-env.js changes without Claude Code restart
+- **Modular pattern**: Following successful dotai plugin architecture (1k+ stars)
+- **Privacy-first**: User-specific hooks.json not committed to git
+
+**Documentation**:
+- Added comprehensive Hooks System section to CLAUDE.md (200+ lines)
+- Covers setup, examples, security, best practices, comparison with MCP
+- Includes advanced matchers, logging patterns, performance tips
+
+**Files Modified**:
+- `.gitignore` - Added hooks/, .claude/ log files
+- `CLAUDE.md` - Added Hooks System section with full documentation
+- `hooks/hooks.json` - Created basic SessionStart welcome hook
+- `scripts/get-env.js` - Created dynamic environment variable helper
+- `templates/hooks.example.json` - Created basic example template
+- `templates/hooks.advanced.example.json` - Created advanced example with matchers
+
+**Impact**:
+- Users can now customize AgileFlow behavior without forking
+- Session automation (welcome messages, context preloading)
+- Activity tracking (prompt logging, analytics)
+- Follows industry best practice (dotai pattern with 1k+ GitHub stars)
+
 ## [2.18.0] - 2025-10-28
 
 ### Added - 8 Additional Specialized Agents (Documentation, Monitoring, Compliance, Design, Accessibility, Analytics, Data Migration, QA)

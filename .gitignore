@@ -23,3 +23,16 @@ logs/
 
 # Environment
 .env
+
+# Hooks (user-specific configuration)
+hooks/hooks.json
+hooks/hooks.local.json
+
+# Claude Settings (user-specific configuration)
+.claude/settings.json
+.claude/settings.local.json
+.claude/prompt-log.txt
+.claude/session.log
+.claude/activity.log
+.claude/context.log
+.claude/hook.log

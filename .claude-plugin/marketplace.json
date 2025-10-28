@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 commands, 25 specialized subagents, and BMAD-METHOD integration (v2.18.0 - Comprehensive agent ecosystem for enterprise agile teams)",
+  "description": "Universal agile/docs-as-code system with 36 commands, 25 specialized subagents, BMAD-METHOD integration, and hooks system (v2.19.0 - Event-driven automation for enterprise agile teams)",
   "plugins": [
     {
       "name": "AgileFlow",
