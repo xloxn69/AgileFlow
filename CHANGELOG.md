@@ -5,6 +5,18 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.1] - 2025-10-28
+
+### Removed
+
+**agileflow-changelog skill** - Removed same day
+
+**Why**: User feedback indicated that nobody uses project changelogs. The skill was confusing because users thought it was for AgileFlow's own changelog, not their projects. Removing it to reduce bloat.
+
+**Impact**: 9 skills → 8 skills. All other skills remain unchanged and fully functional.
+
+**Alternative**: Users can still use the `/AgileFlow:generate-changelog` command if needed for their projects.
+
 ## [2.14.0] - 2025-10-28
 
 ### Added - Claude Skills (9 Autonomous Workflow Enhancers)
@@ -13,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Why This Matters**: Skills make AgileFlow "just work" without needing to remember specific commands. When you discuss features, Claude automatically formats them as user stories. When you commit code, Claude respects your attribution preferences. When you plan sprints, Claude helps with capacity calculations.
 
-**9 Skills Added (3 Phases)**:
+**8 Skills Added (3 Phases)**:
 
 #### Phase 1: High-ROI Workflow Skills
 
@@ -31,16 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Example**: You commit changes → Claude suggests "feat(auth): add 2FA" with proper body/footer
 - **Security**: Checks CLAUDE.md for "DO NOT ADD AI ATTRIBUTION" policy before adding footer
 
-**3. agileflow-changelog** 📋
-- **Auto-activates when**: User discusses releases, versions, or summarizes changes
-- **What it does**: Generates CHANGELOG.md entries following Keep a Changelog format
-- **Files**: SKILL.md, templates/changelog-examples.md
-- **Example**: You say "we fixed the login bug and added dark mode" → Claude formats proper changelog entry
-- **Categories**: Auto-categorizes as Added/Changed/Fixed/Deprecated/Removed/Security/Improved
-
 #### Phase 2: Quality & Planning Skills
 
-**4. agileflow-adr** 🏛️
+**4. agileflow-acceptance-criteria** ✅
 - **Auto-activates when**: Discussing architecture, technology choices, or trade-offs
 - **What it does**: Captures decisions as Architecture Decision Records (ADRs) with pros/cons/alternatives
 - **Files**: SKILL.md, templates/adr-template.md, examples/database-choice-example.md
@@ -63,21 +68,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Phase 3: Team Process Skills
 
-**7. agileflow-sprint-planner** 🏃
+**6. agileflow-sprint-planner** 🏃
 - **Auto-activates when**: User mentions sprint planning or iteration planning
 - **What it does**: Helps plan sprints with capacity calculations, story grouping, risk identification
 - **Files**: SKILL.md, templates/
 - **Example**: "Plan next sprint" → Capacity calculation, story selection, sprint goal, schedule
 - **Metrics**: Tracks velocity, calculates realistic capacity, identifies dependencies/blockers
 
-**8. agileflow-retro-facilitator** 🔄
+**7. agileflow-retro-facilitator** 🔄
 - **Auto-activates when**: Discussing retrospectives or sprint reviews
 - **What it does**: Structures retro feedback using Start/Stop/Continue format with action items
 - **Files**: SKILL.md, templates/
 - **Example**: "Let's do a retro" → Structured feedback collection, action items with owners
 - **Formats**: Supports multiple formats (Start/Stop/Continue, Glad/Sad/Mad, 4Ls, Sailboat)
 
-**9. agileflow-tech-debt** 🔧
+**8. agileflow-tech-debt** 🔧
 - **Auto-activates when**: Discussing code quality, refactoring, or maintenance
 - **What it does**: Documents tech debt with impact/effort matrix and prioritization
 - **Files**: SKILL.md, templates/
@@ -121,9 +126,9 @@ skills/
     └── templates/
 ```
 
-**Registration**:
+**Registration** (at time of v2.14.0):
 - Added `"skills"` array to `.claude-plugin/plugin.json`
-- 9 skills paths: `"./skills/agileflow-*"`
+- 9 skills paths: `"./skills/agileflow-*"` (later reduced to 8 in v2.14.1)
 - Skills load automatically when Claude detects relevance
 
 **Skill Format** (YAML frontmatter + Markdown):
@@ -172,7 +177,7 @@ Skills can coordinate automatically:
 
 ### Why Minor Version (2.13 → 2.14)?
 
-- Major new functionality (9 skills)
+- Major new functionality (8 skills - changelog removed in v2.14.1)
 - Backwards compatible (all existing features work)
 - Non-breaking (skills enhance, don't replace commands)
 - Significant user experience improvement
