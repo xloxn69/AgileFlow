@@ -1,6 +1,6 @@
 {
   "name": "AgileFlow",
-  "version": "2.13.3",
+  "version": "2.14.0",
   "description": "Universal agile/docs-as-code system combining Scrum, Kanban, ADRs, and docs-as-code. Framework-agnostic command pack for managing epics, stories, decisions, research, and multi-agent collaboration with automation features.",
   "author": {
     "name": "AgileFlow Contributors"
@@ -52,5 +52,16 @@
     "./agents/agileflow-adr-writer.md",
     "./agents/agileflow-research.md",
     "./agents/agileflow-devops.md"
+  ],
+  "skills": [
+    "./skills/agileflow-story-writer",
+    "./skills/agileflow-commit-messages",
+    "./skills/agileflow-changelog",
+    "./skills/agileflow-adr",
+    "./skills/agileflow-acceptance-criteria",
+    "./skills/agileflow-epic-planner",
+    "./skills/agileflow-sprint-planner",
+    "./skills/agileflow-retro-facilitator",
+    "./skills/agileflow-tech-debt"
   ]
 }

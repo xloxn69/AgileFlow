@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 commands and 8 specialized subagents (v2.13.3 - Added Context7 MCP for latest framework/library documentation)",
+  "description": "Universal agile/docs-as-code system with 36 commands, 8 subagents, and 9 autonomous skills (v2.14.0 - Claude Skills for automatic story writing, commit formatting, changelog generation, ADRs, and more)",
   "plugins": [
     {
       "name": "AgileFlow",
