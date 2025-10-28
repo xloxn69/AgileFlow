@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 simplified commands, 9 subagents, and 8 autonomous skills (v2.15.1 - Context7 documentation specialist agent added for isolated doc lookups)",
+  "description": "Universal agile/docs-as-code system with 36 simplified commands, 9 subagents, and 8 autonomous skills (v2.15.2 - Official plugin format with auto-discovery)",
   "plugins": [
     {
       "name": "AgileFlow",
