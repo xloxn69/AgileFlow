@@ -56,6 +56,19 @@ if [ -f .mcp.json ]; then
     echo "  ✅ Supabase MCP configured"
     grep -q "SUPABASE_URL" .env.example 2>/dev/null && echo "    ✅ Supabase vars in .env.example" || echo "    ⚠️  Supabase vars not in .env.example"
   fi
+
+  # Check Context7
+  if grep -q '"context7"' .mcp.json 2>/dev/null; then
+    echo "  ✅ Context7 MCP configured (latest framework/library documentation)"
+    # API key is optional for Context7
+    if grep -q "CONTEXT7_API_KEY" .env 2>/dev/null && ! grep -q "your_context7_api_key_here" .env 2>/dev/null; then
+      echo "    ✅ API key configured (higher rate limits)"
+    else
+      echo "    ℹ️  Using without API key (standard rate limits)"
+    fi
+  else
+    echo "  ℹ️  Context7 not configured (optional - provides latest docs)"
+  fi
 elif [ -f .mcp.json.example ]; then
   echo "⚠️  MCP template exists (.mcp.json.example) but not copied to .mcp.json"
   echo "   Run: cp .mcp.json.example .mcp.json"
@@ -80,6 +93,7 @@ MCP Integrations:
   - Notion: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
   - GitHub: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
   - Supabase: ✅ Configured / ❌ Not configured / ⚠️ Partially configured
+  - Context7: ✅ Configured / ❌ Not configured / ℹ️ Optional
 CI Workflow: ✅ Configured / ❌ Not configured
 ```
 
@@ -88,7 +102,7 @@ Based on detection results above, ask ONLY about features that aren't fully conf
 
 - IF core system missing: "Initialize core AgileFlow structure? yes/no"
 
-- **CRITICAL - Git Attribution Preference** (ALWAYS ask on first setup):
+- **Git Attribution Preference** (ALWAYS ask on first setup):
   - "Disable Claude Code attribution in git commits? (Removes '🤖 Generated with Claude Code' and 'Co-Authored-By: Claude' from commit messages) yes/no"
   - **Why ask**: Many users prefer not to disclose AI usage in their git history due to:
     - Professional reputation concerns
@@ -98,8 +112,8 @@ Based on detection results above, ask ONLY about features that aren't fully conf
   - **If yes**: Add to CLAUDE.md a CRITICAL section instructing Claude to NEVER add attribution
   - **If no**: Claude will continue adding attribution as normal
 
-- IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for GitHub, Notion, etc.) yes/no"
-  - IF yes: Ask which servers to enable: "Enable GitHub? yes/no", "Enable Notion? yes/no", "Enable Supabase? yes/no"
+- IF MCP not configured: "Enable MCP integrations? (Model Context Protocol for GitHub, Notion, Context7, etc.) yes/no"
+  - IF yes: Ask which servers to enable: "Enable GitHub? yes/no", "Enable Notion? yes/no", "Enable Supabase? yes/no", "Enable Context7? (Latest framework/library documentation) yes/no"
 - IF MCP partially configured:
   - IF .mcp.json has servers with placeholder tokens: Report what's missing (e.g., "GitHub token is still placeholder")
   - Print next steps: "To complete setup: 1) Edit .mcp.json with your real tokens, 2) Restart Claude Code"
@@ -513,6 +527,169 @@ Next steps for team members:
 6. Restart Claude Code
 7. Share databases with their integration
 8. Start syncing!
+```
+
+CONTEXT7 INTEGRATION SETUP VIA MCP (if enabled)
+**IMPORTANT**: Context7 provides Claude with up-to-date, version-specific documentation and code examples from the source. This overcomes Claude's training data cutoff (January 2025) by fetching current framework/library documentation on-demand.
+
+**What is Context7?**
+- MCP server that fetches latest documentation for frameworks/libraries (React, Next.js, Vue, Python packages, etc.)
+- Prevents hallucinated APIs and outdated code generation
+- Works by pulling docs from npm, PyPI, and GitHub repositories
+- Optional API key for higher rate limits and private repositories
+
+**Prerequisites**:
+- None required for basic usage (works with public repositories)
+- Optional: Get API key at https://context7.com/dashboard for:
+  - Higher rate limits
+  - Private repository access
+  - Priority support
+
+**Step 1: Verify .mcp.json.example includes Context7**:
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
+    }
+  }
+}
+```
+
+**⚠️ SECURITY NOTE - API Key is Optional**:
+- ✅ Context7 works WITHOUT an API key (standard rate limits, public repos only)
+- ✅ If using API key: Use ${VAR} syntax in .mcp.json (reads from .env)
+- ✅ Store actual key in .env (NOT .mcp.json)
+- ✅ BOTH .mcp.json AND .env MUST be in .gitignore
+- ✅ Commit .mcp.json.example and .env.example (with ${VAR} syntax)
+- ❌ NEVER hardcode API key in .mcp.json
+- ❌ NEVER commit .mcp.json or .env to git
+
+**Step 2: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+```bash
+# Check if already present
+grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
+grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
+
+# Verify (should show both)
+grep -E '\\.mcp\\.json|\\.env' .gitignore
+```
+
+**Step 3: Copy templates (optional API key setup)**:
+```bash
+# Copy templates
+cp .mcp.json.example .mcp.json
+cp .env.example .env
+
+# OPTIONAL: Add API key to .env for higher rate limits
+# Edit .env and add: CONTEXT7_API_KEY=your_actual_api_key_here
+# Get key at: https://context7.com/dashboard
+
+# If NOT using API key, Context7 still works with standard rate limits!
+# DO NOT edit .mcp.json - it uses ${VAR} to read from .env!
+```
+
+**Step 4: Update CLAUDE.md with Context7 usage instructions**:
+Add this section to CLAUDE.md:
+```markdown
+## Context7 MCP Integration
+
+**Purpose**: Access up-to-date framework/library documentation to overcome Claude's training data cutoff (January 2025).
+
+**When to use Context7**:
+- ✅ When working with frameworks/libraries where API may have changed since January 2025
+- ✅ When implementing features using newer package versions
+- ✅ When user mentions specific library versions (e.g., "React 19", "Next.js 15")
+- ✅ When encountering deprecation warnings or outdated patterns
+- ✅ When you're uncertain about current best practices for a library
+
+**How to use Context7**:
+Before generating code for modern frameworks/libraries, mentally note: "Should I check latest docs via Context7?"
+
+Examples:
+- "Let me check the latest React 19 documentation for the new `use()` hook"
+- "I'll verify the current Next.js 15 App Router patterns"
+- "Let me fetch the latest Tailwind CSS utility classes"
+
+**Available tools** (via MCP):
+- Context7 tools are available as mcp__context7__* when you need them
+- The system automatically fetches relevant documentation when you reference it
+
+**Best practices**:
+1. Use Context7 when working with packages released/updated after January 2025
+2. Verify current API signatures before generating code
+3. Check for deprecated patterns that may have been current in your training data
+4. Mention to users when you've verified current documentation: "I've checked the latest docs and..."
+
+**Rate limits**:
+- Without API key: Standard rate limits (sufficient for most projects)
+- With API key (CONTEXT7_API_KEY in .env): Higher limits + private repos
+```
+
+**Step 5: Restart Claude Code**:
+```bash
+# MCP servers load on startup
+# After restart, Context7 will provide current documentation when needed
+```
+
+**Step 6: Verify Setup**:
+```bash
+# Check if Context7 MCP is loaded
+# Look for mcp__context7__* tools in Claude Code
+
+# Context7 will automatically provide docs when you work with frameworks/libraries
+# No manual commands needed - it works transparently
+```
+
+**Advantages of Context7**:
+- ✅ Overcomes Claude's training data cutoff (January 2025)
+- ✅ Provides version-specific documentation
+- ✅ Prevents hallucinated/outdated APIs
+- ✅ Supports npm, PyPI, GitHub docs
+- ✅ Works without API key for public repos
+- ✅ Optional API key for higher limits + private repos
+
+**For Team Setup**:
+1. One person adds Context7 to .mcp.json.example
+2. Commit .mcp.json.example to git (with ${VAR} syntax)
+3. Ensure .mcp.json and .env are in .gitignore
+4. Update CLAUDE.md with Context7 usage instructions
+5. Team members:
+   - Pull latest code
+   - Copy templates: cp .mcp.json.example .mcp.json && cp .env.example .env
+   - OPTIONAL: Get API key from https://context7.com/dashboard
+   - OPTIONAL: Add CONTEXT7_API_KEY to .env (skip if using standard rate limits)
+   - Verify .gitignore has .mcp.json and .env
+   - Restart Claude Code
+   - Start getting current docs automatically!
+
+**Print Next Steps**:
+```
+✅ Context7 MCP template created (.mcp.json.example)
+✅ CLAUDE.md updated with Context7 usage instructions
+✅ .gitignore verified (.mcp.json AND .env excluded)
+ℹ️  Context7 works WITHOUT an API key (standard rate limits)
+
+Next steps for you:
+1. Copy templates:
+   cp .mcp.json.example .mcp.json
+   cp .env.example .env
+2. OPTIONAL: Get API key for higher limits: https://context7.com/dashboard
+3. OPTIONAL: Add to .env: CONTEXT7_API_KEY=your_key_here
+4. Verify .gitignore has .mcp.json and .env: grep -E '\\.mcp\\.json|\\.env' .gitignore
+5. Restart Claude Code (to load Context7 MCP server)
+6. Context7 will now provide current docs automatically!
+
+Next steps for team members:
+1. Pull latest code (includes .mcp.json.example and .env.example)
+2. Copy templates: cp .mcp.json.example .mcp.json && cp .env.example .env
+3. OPTIONAL: Get their own API key and add to .env
+4. Verify .gitignore has .mcp.json and .env
+5. Restart Claude Code
+6. Start getting current docs!
+
+Note: Context7 works transparently - no manual commands needed. Claude will automatically access current documentation when working with frameworks/libraries.
 ```
 
 COMMAND EXECUTION
