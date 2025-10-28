@@ -5,6 +5,45 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.18.0] - 2025-10-28
+
+### Added - 8 Additional Specialized Agents (Documentation, Monitoring, Compliance, Design, Accessibility, Analytics, Data Migration, QA)
+
+Continued expansion of agent ecosystem from 17 to 25 specialized agents. This release adds critical domain coverage for production operations, quality assurance, and organizational compliance.
+
+**New Agents (8 total)**:
+1. **agileflow-documentation** - Technical docs, API documentation, user guides, README maintenance, documentation architecture
+2. **agileflow-monitoring** - Logging, metrics, alerting, dashboards, observability, SLOs, incident response
+3. **agileflow-compliance** - GDPR, HIPAA, SOC2, PCI-DSS, CCPA, audit trails, regulatory compliance
+4. **agileflow-design** - Design systems, component design, design tokens, visual design, accessibility-first design
+5. **agileflow-accessibility** - WCAG compliance, inclusive design, a11y testing, assistive technology support
+6. **agileflow-analytics** - Event tracking, product analytics, user behavior analysis, metrics dashboards, A/B testing
+7. **agileflow-datamigration** - Zero-downtime migrations, data validation, rollback strategies, schema evolution
+8. **agileflow-qa** - Test strategy, quality metrics, regression testing, release readiness, UAT coordination
+
+**Why These Agents**:
+- **Documentation**: Knowledge transfer critical - users need guides, examples, API docs
+- **Monitoring**: Production visibility essential - metrics, logs, alerts prevent surprises
+- **Compliance**: Legal/regulatory mandatory - GDPR, HIPAA, SOC2 non-negotiable
+- **Design**: Design systems at scale (design tokens, component specs, consistency)
+- **Accessibility**: WCAG AA minimum legal requirement (AA/AAA best practice)
+- **Analytics**: Product insights drive decisions (user behavior, conversion funnels, A/B tests)
+- **Data Migration**: Zero-downtime migrations complex (dual-write, rollback, validation)
+- **QA**: Quality gates protect releases (test strategy, release readiness, regression testing)
+
+**Agent Ecosystem**:
+- Total agents: 17 → 25 (47% increase)
+- All agents maintain haiku model for efficiency
+- Comprehensive domain coverage: Engineering (9), Operations (5), Quality (3), Legal/Compliance (2), Analytics (2), Design (2), Support (1)
+- Deep specialization in every critical domain
+
+### Improved - Agent Coverage Completeness
+
+- Documentation: Full lifecycle from API docs to user guides to changelog
+- Operations: Observability + compliance creates audit trail and incident response
+- Quality: Test strategy, release gates, and UAT coordination ensure production readiness
+- Enterprise features: GDPR/HIPAA compliance, zero-downtime migrations, analytics privacy
+
 ## [2.17.0] - 2025-10-28
 
 ### Added - 8 New Specialized Agents (Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring)
