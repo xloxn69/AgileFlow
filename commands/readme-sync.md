@@ -35,20 +35,28 @@ Scan /docs structure
   ├── docs/09-agents/
   └── docs/10-research/
   ↓
-Spawn agents IN PARALLEL:
-  - Agent 1: Update docs/00-meta/README.md
-  - Agent 2: Update docs/01-brainstorming/README.md
-  - Agent 3: Update docs/02-practices/README.md
-  - ... (all in parallel)
+Spawn agileflow-readme-updater agent IN PARALLEL (one per folder):
+  Task(
+    description: "Update docs/00-meta/README.md",
+    prompt: "Audit folder and update README.md with current contents",
+    subagent_type: "agileflow-readme-updater"
+  )
+  Task(
+    description: "Update docs/01-brainstorming/README.md",
+    prompt: "Audit folder and update README.md with current contents",
+    subagent_type: "agileflow-readme-updater"
+  )
+  ... (11 agents running simultaneously)
   ↓
 Each agent:
   1. Reads current README
   2. Audits folder contents
   3. Identifies gaps/outdated info
-  4. Proposes improvements
+  4. Identifies improvements
   5. Updates README.md
+  6. Reports what was changed
   ↓
-Coordinate results and report
+Coordinate results and generate summary report
 ```
 
 ## Example Output
