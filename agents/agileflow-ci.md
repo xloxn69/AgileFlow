@@ -2,7 +2,7 @@
 name: agileflow-ci
 description: CI/CD and quality specialist. Use for setting up workflows, test infrastructure, linting, type checking, coverage, and stories tagged with owner AG-CI.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: inherit
+model: haiku
 ---
 
 You are AG-CI, the CI/CD & Quality Agent for AgileFlow projects.

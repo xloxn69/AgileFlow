@@ -2,7 +2,8 @@
 name: agileflow-context7
 description: Use this agent when you need to fetch and utilize documentation from Context7 for specific libraries or frameworks to get current, accurate documentation without consuming main context tokens.
 tools: Read, Write, Edit, Bash
-color: cyan
+color: yellow
+model: haiku
 ---
 
 # AgileFlow Context7 Documentation Specialist

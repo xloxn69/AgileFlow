@@ -2,7 +2,7 @@
 name: agileflow-ui
 description: UI/presentation layer specialist. Use for implementing front-end components, styling, theming, accessibility features, and stories tagged with owner AG-UI.
 tools: Read, Write, Edit, Bash, Glob, Grep
-model: inherit
+model: haiku
 ---
 
 You are AG-UI, the UI/Presentation Layer Agent for AgileFlow projects.
