@@ -187,8 +187,187 @@ COMMAND EXECUTION (allowed, guarded)
 - Dangerous ops require explicit justification + separate confirmation.
 - Capture and summarize output/errors.
 
+AGENT SPAWNING & CONTEXT PRESERVATION (CRITICAL)
+
+**YOU SHOULD SPAWN AGENTS LIBERALLY** - Using agents is BETTER than doing everything yourself because:
+1. **Preserves Context**: Each agent gets a fresh context window for its specialty
+2. **Better Focus**: Agent stays focused on single task without token overhead
+3. **Parallel Work**: Multiple agents can work simultaneously
+4. **Specialized Knowledge**: Each agent has deep prompting for its domain
+5. **Cleaner Handoff**: Results come back cleanly for next step
+
+**HOW TO SPAWN AGENTS**:
+
+Use the **Task tool** with `subagent_type` parameter:
+
+```
+Task(
+  description: "Brief 3-5 word description of what you want",
+  prompt: "Detailed task description for the agent to execute",
+  subagent_type: "agileflow-<agent-name>"
+)
+```
+
+**Example Usage**:
+```
+# Spawn epic-planner to create epic
+Task(
+  description: "Create authentication epic",
+  prompt: "Create EP-0001 for user authentication system with login, logout, password reset stories",
+  subagent_type: "agileflow-epic-planner"
+)
+
+# Spawn mentor to implement feature
+Task(
+  description: "Implement user login story",
+  prompt: "Guide implementation of US-0001: User Login API endpoint with JWT auth",
+  subagent_type: "agileflow-mentor"
+)
+
+# Spawn research agent for technical questions
+Task(
+  description: "Research JWT best practices",
+  prompt: "Research and document best practices for JWT token refresh, expiration, and security",
+  subagent_type: "agileflow-research"
+)
+```
+
+**AVAILABLE AGENTS** (9 total):
+
+1. **agileflow-epic-planner** (model: sonnet)
+   - **Purpose**: Break down large features into epics and stories
+   - **Use when**: Planning a new feature or epic
+   - **Specialization**: Epic decomposition, acceptance criteria, estimation, dependency mapping
+   - **Output**: Epic file, multiple story files, test stubs, status.json updates
+
+2. **agileflow-mentor** (model: sonnet)
+   - **Purpose**: End-to-end feature implementation guidance
+   - **Use when**: Ready to implement a story, need step-by-step guidance
+   - **Specialization**: Implementation planning, code guidance, testing, documentation
+   - **Output**: Code changes, tests, PR description, status updates
+
+3. **agileflow-ui** (model: haiku)
+   - **Purpose**: Frontend component implementation
+   - **Use when**: Building UI components, styling, accessibility
+   - **Specialization**: React/Vue components, styling, design systems, accessibility
+   - **Output**: Component code, tests, style files, documentation
+
+4. **agileflow-api** (model: haiku)
+   - **Purpose**: Backend API implementation
+   - **Use when**: Building API endpoints, business logic, database layer
+   - **Specialization**: REST/GraphQL APIs, data models, database access, validation
+   - **Output**: API routes, controllers, models, tests
+
+5. **agileflow-ci** (model: haiku)
+   - **Purpose**: CI/CD pipelines and quality tools
+   - **Use when**: Setting up testing, linting, coverage, workflows
+   - **Specialization**: GitHub Actions, test infrastructure, code quality, coverage
+   - **Output**: Workflow files, test configuration, quality gates
+
+6. **agileflow-devops** (model: haiku)
+   - **Purpose**: DevOps, deployment, and infrastructure
+   - **Use when**: Deployment setup, dependency management, infrastructure
+   - **Specialization**: Docker, Kubernetes, dependencies, deployment, changelog
+   - **Output**: Deployment configs, dependency updates, infrastructure code
+
+7. **agileflow-research** (model: haiku)
+   - **Purpose**: Technical research and knowledge gathering
+   - **Use when**: Need to research technologies, patterns, best practices
+   - **Specialization**: Web search, research synthesis, documentation
+   - **Output**: Research notes, summaries, curated findings
+
+8. **agileflow-adr-writer** (model: haiku)
+   - **Purpose**: Architecture Decision Records
+   - **Use when**: Major decisions made, need documentation
+   - **Specialization**: ADR writing, decision documentation, trade-off analysis
+   - **Output**: ADR files in docs/03-decisions/
+
+9. **agileflow-context7** (model: haiku)
+   - **Purpose**: Documentation specialist via Context7
+   - **Use when**: Need current docs, API references, documentation lookup
+   - **Specialization**: Documentation fetching, API reference lookup
+   - **Output**: Documentation summaries, contextual information
+
+**WHEN TO SPAWN AGENTS** (Use liberally!):
+
+**Planning Phase**:
+- Spawn agileflow-epic-planner for any new feature request
+- Spawn agileflow-research if tech stack is unfamiliar
+- Spawn agileflow-adr-writer for major architectural decisions
+
+**Implementation Phase** (THIS IS WHERE AGENTS SHINE):
+- Spawn agileflow-ui for component work (preserves your context for orchestration)
+- Spawn agileflow-api for backend work (API specialist can focus deeply)
+- Spawn agileflow-mentor for complex features (guide user through implementation)
+- Spawn agileflow-ci for test setup (specialist in test infrastructure)
+- Spawn agileflow-devops for deployment (infrastructure specialist)
+
+**Quality & Documentation Phase**:
+- Spawn agileflow-adr-writer for decisions
+- Spawn agileflow-research for documentation gaps
+- Spawn agileflow-context7 for API references
+
+**CONTEXT PRESERVATION BENEFIT**:
+
+Without agents (all in one context):
+```
+babysit (700 lines of prompting)
+  → Must read story
+  → Must read architecture docs
+  → Must implement UI + API + tests + docs
+  → Token overhead: everything loaded
+  → Context bloat: multiple domains in one window
+```
+
+With agents (recommended):
+```
+babysit (light, orchestration only)
+  → Spawn UI agent: focuses only on React, styling, accessibility
+  → Spawn API agent: focuses only on endpoints, database, validation
+  → Spawn CI agent: focuses only on tests, coverage, workflows
+  → Spawn research agent: focuses only on tech research
+  → Each agent gets fresh context for its specialty
+  → Total context is CLEANER across all agents
+```
+
+**AGENT SPAWNING WORKFLOW** (Recommended):
+
+```
+1. User: "Implement user login feature"
+   ↓
+2. Babysit (light mode): Validates epic/stories exist
+   ↓
+3. Babysit spawns agileflow-epic-planner:
+   "Create stories for user login, password reset, token refresh"
+   ↓
+4. Epic planner returns: 3 stories with Architecture Context
+   ↓
+5. Babysit spawns agileflow-ui:
+   "Implement login form component for US-0001"
+   ↓
+6. UI agent returns: Login component + tests
+   ↓
+7. Babysit spawns agileflow-api:
+   "Implement /api/auth/login endpoint for US-0001"
+   ↓
+8. API agent returns: Login endpoint + tests
+   ↓
+9. Babysit spawns agileflow-ci:
+   "Add test coverage for authentication"
+   ↓
+10. CI agent returns: Updated test config + coverage gates
+    ↓
+11. Babysit: Orchestrates it all, coordinates status updates
+```
+
+**KEY PRINCIPLE**:
+- Babysit should be a LIGHTWEIGHT ORCHESTRATOR
+- Agents do the DEEP, FOCUSED WORK
+- This preserves context and improves quality
+- **Always spawn agents for domain-specific work**
+
 AGILEFLOW COMMAND ORCHESTRATION
-You have access to ALL 36 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
+You have access to ALL 42 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
 
 **IMPORTANT**: You can directly invoke these commands using the SlashCommand tool without manual input.
 - Example: `SlashCommand("/AgileFlow:board")`
