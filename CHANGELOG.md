@@ -5,6 +5,81 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.0] - 2025-10-28
+
+### Changed - Simplified Command Names (Breaking Change)
+
+**Why**: Command names are easier to remember and faster to type when they're short. `/setup` is faster than `/setup-system`, `/epic` vs `/epic-new`, etc.
+
+**All 28 Command Renames**:
+
+| Old Name | New Name | Purpose |
+|----------|----------|---------|
+| `/setup-system` | `/setup` | Bootstrap the entire system |
+| `/validate-system` | `/validate` | Validate system integrity |
+| `/system-help` | `/help` | Display system overview |
+| `/epic-new` | `/epic` | Create a new epic |
+| `/story-new` | `/story` | Create a user story with AC |
+| `/adr-new` | `/adr` | Create Architecture Decision Record |
+| `/agent-new` | `/agent` | Onboard a new agent |
+| `/story-assign` | `/assign` | Assign/reassign a story |
+| `/story-status` | `/status` | Update story status |
+| `/pr-template` | `/pr` | Generate PR description |
+| `/ci-setup` | `/ci` | Bootstrap CI workflow |
+| `/research-init` | `/research` | Save research notes |
+| `/doc-coverage` | `/docs` | Synchronize docs with code changes |
+| `/impact-analysis` | `/impact` | Analyze change impact on codebase |
+| `/tech-debt` | `/debt` | Track and prioritize technical debt |
+| `/agent-feedback` | `/feedback` | Collect feedback for continuous improvement |
+| `/setup-tests` | `/tests` | Automated testing infrastructure setup |
+| `/ai-code-review` | `/review` | AI-powered code review |
+| `/auto-story` | `/auto` | Generate stories from PRDs/mockups/specs |
+| `/generate-changelog` | `/changelog` | Auto-generate changelog from commits |
+| `/setup-deployment` | `/deploy` | Automated deployment pipeline setup |
+| `/custom-template` | `/template` | Create and manage custom templates |
+| `/stakeholder-update` | `/update` | Generate stakeholder reports |
+| `/sprint-plan` | `/sprint` | Data-driven sprint planning |
+| `/github-sync` | `/github` | Bidirectional GitHub Issues sync |
+| `/notion-export` | `/notion` | Bidirectional Notion database sync |
+| `/dependencies` | `/deps` | Dependency graph visualization |
+
+**Commands That Stayed the Same** (already simple):
+- `/babysit` - Interactive mentor for end-to-end implementation
+- `/chatgpt` - Generate/export/manage ChatGPT context
+- `/packages` - Manage dependencies
+- `/board` - Visual kanban board
+- `/blockers` - Blocker tracking
+- `/velocity` - Velocity tracking and forecasting
+- `/metrics` - Comprehensive analytics dashboard
+- `/retro` - Automated retrospective generator
+- `/handoff` - Document handoff between agents
+
+**Migration Guide**:
+
+This is a breaking change if you have scripts or documentation referencing old command names.
+
+**Update your workflows:**
+- Change `/setup-system` → `/setup`
+- Change `/validate-system` → `/validate`
+- Change `/story-new STORY=...` → `/story STORY=...`
+- etc. (see table above)
+
+**Why Minor Version (2.14 → 2.15)?**
+- Backwards incompatible (old command names no longer work)
+- Users need to update scripts and documentation
+- Still non-breaking for plugin functionality (same commands, just renamed)
+- Users updating to v2.15+ will need to adjust their workflows
+
+**Files Changed**:
+- `plugin.json`: Updated all 36 command paths to new names
+- `marketplace.json`: Updated description with v2.15.0
+- `README.md`: Updated all command references to new names
+- 28 command files: Renamed in `commands/` directory
+
+**Testing**:
+- All commands should work with new names immediately after plugin reload
+- Old command names will no longer work (hence breaking change)
+
 ## [2.14.1] - 2025-10-28
 
 ### Removed
