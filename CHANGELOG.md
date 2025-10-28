@@ -5,6 +5,61 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17.0] - 2025-10-28
+
+### Added - 8 New Specialized Agents (Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring)
+
+Expanded agent team from 9 to 17 specialized agents. Each agent focuses deeply on their domain and can be spawned independently while preserving context.
+
+**New Agents (8 total)**:
+1. **agileflow-security** - Vulnerability analysis, threat modeling, compliance, authentication patterns
+2. **agileflow-database** - Schema design, migrations, query optimization, data integrity
+3. **agileflow-testing** - Test strategy, patterns, coverage, anti-pattern elimination (different from CI)
+4. **agileflow-product** - Requirements analysis, user stories, acceptance criteria (upstream of epic-planner)
+5. **agileflow-performance** - Profiling, benchmarking, optimization, scalability analysis
+6. **agileflow-mobile** - React Native, Flutter, native modules, mobile UX patterns
+7. **agileflow-integrations** - Third-party APIs, webhooks, payment processors, authentication providers
+8. **agileflow-refactor** - Technical debt cleanup, code quality, legacy modernization
+
+**Agent Spawning Documentation**:
+- Updated `/babysit` with comprehensive agent spawning guidance
+- All 17 agents documented with: Purpose, When to use, Specialization, Output
+- Key messaging: "YOU SHOULD SPAWN AGENTS LIBERALLY"
+- Demonstrated benefits: context preservation, focus, parallelization
+- Showed workflow: babysit orchestrates, agents do focused work
+
+**Why These Agents**:
+- **Security**: Mandatory pre-release gate (enterprise requirement)
+- **Database**: Complex data layer deserves specialization (schema, migrations, optimization)
+- **Testing**: Different from CI infrastructure (test design vs infrastructure setup)
+- **Product**: Upstream of epic-planner (clarify requirements FIRST)
+- **Performance**: Spans all layers (profiling, benchmarking, optimization)
+- **Mobile**: Growing importance (React Native, Flutter, native modules)
+- **Integrations**: Third-party services common and complex (Stripe, Twilio, etc)
+- **Refactor**: Proactive technical debt management (legacy modernization, code quality)
+
+**Agent Architecture Benefits**:
+- ✅ Deep specialization (expert in domain, not generalist)
+- ✅ Parallel execution (agents work simultaneously)
+- ✅ Fresh context windows (each agent uncluttered)
+- ✅ Clear coordination (bus messages, dependencies)
+- ✅ Token efficiency (focused, not sprawling)
+- ✅ Quality improvement (specialist > generalist)
+
+### Changed - Agent Team Expansion
+
+- Total agents: 9 → 17 (88% increase)
+- Agent model assignment: All new agents use haiku for efficiency
+- Babysit role: Now lightweight orchestrator (spawns specialized agents)
+
+### Improved - Babysit Command Documentation
+
+- Agent spawning section with Task tool usage
+- All 17 agents listed with purpose and specifications
+- Context preservation benefit explained
+- Recommended workflow: orchestrator + specialized agents
+- Examples of parallel agent execution
+
 ## [2.16.0] - 2025-10-28
 
 ### Added - BMAD-METHOD Architecture Context Extraction
