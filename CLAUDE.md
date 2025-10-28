@@ -23,7 +23,7 @@ See "Updating Plugin Version" section below for detailed steps.
 
 **AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (36 slash commands + 25 specialized subagents), not a traditional application codebase. There is no build step, runtime, or deployment process.
 
-**Current Version**: v2.18.0 (25 specialized agents covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA)
+**Current Version**: v2.19.0 (25 specialized agents + hooks system for event-driven automation covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA)
 
 ## Architecture
 
@@ -35,8 +35,15 @@ AgileFlow/
 │   ├── plugin.json           # Plugin metadata (version, command/subagent registry)
 │   └── marketplace.json      # Marketplace listing
 ├── commands/                 # 41 slash command definitions (*.md files)
-├── agents/                   # 8 subagent definitions (*.md files)
-├── templates/                # Document templates for epics, stories, ADRs
+├── agents/                   # 25 subagent definitions (*.md files)
+├── hooks/                    # Hooks system (gitignored - user creates)
+│   ├── hooks.json           # Hook configuration (user-specific)
+│   └── hooks.local.json     # Local overrides (optional)
+├── scripts/                  # Helper scripts
+│   └── get-env.js           # Dynamic environment variable loader
+├── templates/                # Document templates for epics, stories, ADRs, hooks
+│   ├── hooks.example.json   # Basic hooks template
+│   └── hooks.advanced.example.json  # Advanced hooks template
 ├── CHANGELOG.md             # Version history (Keep a Changelog format)
 ├── README.md                # Plugin documentation
 ├── SUBAGENTS.md             # Subagent usage guide
@@ -507,6 +514,311 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - Use bash wrapper scripts that load `.env` and pass credentials
 - See `templates/mcp-wrapper-postgres.sh` for example
 - See `templates/MCP-WRAPPER-SCRIPTS.md` for full guide
+
+## Hooks System (v2.19.0+)
+
+AgileFlow now supports first-class hooks following dotai's pattern for event-driven automation and dynamic configuration.
+
+### Overview
+
+**Hooks** allow you to execute commands in response to Claude Code lifecycle events:
+- **SessionStart**: Runs when Claude Code session starts (welcome messages, context setup)
+- **UserPromptSubmit**: Runs after user submits a prompt (logging, analytics)
+- **Stop**: Runs when Claude stops responding (cleanup, notifications)
+
+### File Structure
+
+```
+AgileFlow/
+├── hooks/
+│   ├── hooks.json           # Hook definitions (gitignored - user creates)
+│   └── hooks.local.json     # Local overrides (gitignored - optional)
+├── scripts/
+│   └── get-env.js          # Dynamic environment variable helper
+└── templates/
+    └── hooks.example.json  # Template for users to copy
+```
+
+### hooks.json Format
+
+**Location**: `hooks/hooks.json` (separate from plugin.json - first-class citizen pattern)
+
+**Structure**:
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 AgileFlow loaded - Use /AgileFlow:help to see available commands'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [],
+    "Stop": []
+  }
+}
+```
+
+**Fields**:
+- `matcher`: Regex pattern to match against event data (empty = always run)
+- `type`: Always "command" for shell commands
+- `command`: Shell command to execute (can use environment variables)
+
+### Dynamic Environment Variables
+
+**Helper Script**: `scripts/get-env.js`
+
+**Purpose**: Load environment variables from `.claude/settings.json` and `.claude/settings.local.json` without requiring Claude Code restart.
+
+**Usage in hooks**:
+```json
+{
+  "type": "command",
+  "command": "echo Welcome $(node scripts/get-env.js USER_NAME 'Developer')"
+}
+```
+
+**How it works**:
+1. Reads `.claude/settings.json` (base config)
+2. Reads `.claude/settings.local.json` (local overrides - gitignored)
+3. Returns variable value or default if not found
+4. No restart needed when config changes
+
+**Example settings.json**:
+```json
+{
+  "env": {
+    "USER_NAME": "Alice",
+    "PROJECT_NAME": "MyProject"
+  }
+}
+```
+
+**Example settings.local.json** (overrides):
+```json
+{
+  "env": {
+    "USER_NAME": "Bob"
+  }
+}
+```
+
+Result: `$(node scripts/get-env.js USER_NAME 'Developer')` returns "Bob"
+
+### Hook Examples
+
+**SessionStart - Welcome Message**:
+```json
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '🚀 AgileFlow v2.19.0 loaded - Use /AgileFlow:help to see available commands'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**SessionStart - Context Loading**:
+```json
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '📁 Loading project context from docs/...'"
+        },
+        {
+          "type": "command",
+          "command": "ls -la docs/"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Stop - Cleanup Notification**:
+```json
+{
+  "Stop": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '✅ Claude finished responding'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**UserPromptSubmit - Logging**:
+```json
+{
+  "UserPromptSubmit": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[LOG] User submitted prompt at $(date)' >> .claude/prompt-log.txt"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Setup Instructions
+
+1. **Copy template**:
+   ```bash
+   cp templates/hooks.example.json hooks/hooks.json
+   ```
+
+2. **Edit hooks.json** to add your desired hooks
+
+3. **Create settings.json** (optional - for dynamic vars):
+   ```bash
+   mkdir -p .claude
+   cat > .claude/settings.json << 'EOF'
+   {
+     "env": {
+       "USER_NAME": "YourName",
+       "PROJECT_NAME": "YourProject"
+     }
+   }
+   EOF
+   ```
+
+4. **Restart Claude Code** - Hooks won't load without restart
+
+5. **Test hooks**:
+   - SessionStart: Start new Claude Code session
+   - Stop: Wait for Claude to finish responding
+   - UserPromptSubmit: Submit any prompt
+
+### Security Considerations
+
+**hooks.json should be gitignored**:
+- May contain user-specific configuration
+- May reference local paths or environment variables
+- Each team member should have their own hooks.json
+
+**Recommended .gitignore entries**:
+```
+hooks/hooks.json
+hooks/hooks.local.json
+.claude/settings.json
+.claude/settings.local.json
+```
+
+**Template files (committed to git)**:
+- `templates/hooks.example.json` - Example hooks for users to copy
+- Users copy to `hooks/hooks.json` and customize
+
+### Comparison: Hooks vs MCP
+
+| Feature | Hooks | MCP |
+|---------|-------|-----|
+| Purpose | Event-driven automation | External service integration |
+| Trigger | Claude Code lifecycle events | User commands, tool calls |
+| Setup | hooks.json + shell commands | .mcp.json + MCP servers |
+| Restart Required | Yes (on hooks.json changes) | Yes (on .mcp.json changes) |
+| Use Cases | Welcome messages, logging, cleanup | GitHub sync, Notion export, DB queries |
+| Configuration | hooks/hooks.json (gitignored) | .mcp.json (gitignored) |
+| Environment Variables | scripts/get-env.js helper | ${VAR} substitution |
+
+**When to use hooks**: Welcome messages, session setup, logging, notifications
+**When to use MCP**: External API integration, database access, third-party services
+
+### Advanced: Conditional Hooks with Matchers
+
+**Matcher Pattern**: Regex to match event data
+
+**Example - Only run hook for specific transcripts**:
+```json
+{
+  "SessionStart": [
+    {
+      "matcher": ".*epic.*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'Epic planning session detected'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Example - Run different hooks based on context**:
+```json
+{
+  "UserPromptSubmit": [
+    {
+      "matcher": ".*create story.*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'Story creation detected - loading story template context'"
+        }
+      ]
+    },
+    {
+      "matcher": ".*epic.*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'Epic planning detected - loading epic context'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Hooks Best Practices
+
+1. **Keep hooks fast** - Slow hooks delay Claude Code startup/response
+2. **Use background jobs** - For long-running tasks: `command &`
+3. **Log to files** - Capture output for debugging: `command >> .claude/hook.log 2>&1`
+4. **Test incrementally** - Add one hook at a time, restart, verify
+5. **Use get-env.js for config** - Avoid hardcoding values in hooks.json
+6. **Document custom hooks** - Add comments in hooks.json explaining purpose
+
+**Example - Efficient SessionStart hook**:
+```json
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '🚀 AgileFlow loaded' && (node scripts/load-context.js >> .claude/context.log 2>&1 &)"
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## Story Template Structure (v2.16.0+)
 
