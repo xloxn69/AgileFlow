@@ -1,3 +1,8 @@
+---
+description: custom-template
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # custom-template
 
 Create and manage custom templates for stories, epics, ADRs, and other documents.

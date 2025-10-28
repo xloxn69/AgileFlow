@@ -1,3 +1,8 @@
+---
+description: metrics
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # metrics
 
 Comprehensive project analytics dashboard with cycle time, lead time, throughput, and trend analysis.

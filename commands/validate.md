@@ -1,3 +1,8 @@
+---
+description: validate-system
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # validate-system
 
 Validate AgileFlow system integrity: JSON schemas, orphaned stories, WIP limits, and consistency checks.

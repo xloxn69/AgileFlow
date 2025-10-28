@@ -1,3 +1,8 @@
+---
+description: ci-setup
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # ci-setup
 
 Bootstrap minimal CI workflow and CODEOWNERS.

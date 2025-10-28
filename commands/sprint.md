@@ -1,3 +1,8 @@
+---
+description: sprint-plan
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # sprint-plan
 
 Intelligent sprint planning with capacity-based story selection, dependency validation, and velocity forecasting.

@@ -1,3 +1,8 @@
+---
+description: notion-export
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # notion-export
 
 Export AgileFlow epics, stories, and ADRs to Notion via Model Context Protocol (MCP).

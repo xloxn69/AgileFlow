@@ -1,3 +1,8 @@
+---
+description: velocity
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # velocity
 
 Track team velocity, calculate trends, and forecast completion dates.

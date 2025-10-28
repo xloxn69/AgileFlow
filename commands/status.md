@@ -1,3 +1,8 @@
+---
+description: status
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # status
 
 Update story status and broadcast to agents via message bus.

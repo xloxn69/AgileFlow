@@ -1,3 +1,8 @@
+---
+description: babysit
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # babysit
 
 End-to-end mentor for implementing features (search stories, consult/create research, create missing pieces, guide implementation; can run commands).
