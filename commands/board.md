@@ -1,3 +1,8 @@
+---
+description: board
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # board
 
 Generate a visual kanban board from current story statuses.

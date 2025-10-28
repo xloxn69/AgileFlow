@@ -1,3 +1,8 @@
+---
+description: retro
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # retro
 
 Automated retrospective generator that analyzes patterns and surfaces insights from AgileFlow data.

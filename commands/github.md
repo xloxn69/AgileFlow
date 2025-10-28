@@ -1,3 +1,8 @@
+---
+description: github-sync
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # github-sync
 
 Two-way sync between AgileFlow stories and GitHub Issues with automatic status updates.

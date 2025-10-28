@@ -1,3 +1,8 @@
+---
+description: assign
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # assign
 
 Assign or reassign a story to an owner with status update.

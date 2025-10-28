@@ -1,3 +1,8 @@
+---
+description: system-help
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # system-help
 
 Display a concise overview of the AgileFlow system.

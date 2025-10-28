@@ -1,3 +1,8 @@
+---
+description: research-init
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # research-init
 
 Initialize or save research notes to the research folder.

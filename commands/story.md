@@ -1,3 +1,8 @@
+---
+description: story-new
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # story-new
 
 Create a new user story with acceptance criteria and test stubs.

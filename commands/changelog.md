@@ -1,3 +1,8 @@
+---
+description: generate-changelog
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # generate-changelog
 
 Automatically generate changelog from PR titles, commits, and tags.

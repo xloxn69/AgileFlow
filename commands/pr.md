@@ -1,3 +1,8 @@
+---
+description: pr-template
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # pr-template
 
 Generate a complete PR description from story and test evidence.

@@ -1,3 +1,8 @@
+---
+description: epic-new
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # epic-new
 
 Create a new epic with optional child stories.

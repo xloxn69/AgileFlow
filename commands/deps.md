@@ -1,3 +1,8 @@
+---
+description: dependencies
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # dependencies
 
 Visualize and analyze story/epic dependency graphs with critical path analysis and circular dependency detection.

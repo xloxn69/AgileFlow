@@ -1,3 +1,8 @@
+---
+description: blockers
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # blockers
 
 Comprehensive blocker tracking, resolution suggestions, and cross-agent coordination (leverages v2.7.0 AG-API unblocking capabilities).

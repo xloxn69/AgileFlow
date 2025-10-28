@@ -1,3 +1,8 @@
+---
+description: Synchronize a folder's README.md with its current contents
+allowed-tools: Bash, Read, Edit, Write
+---
+
 # readme-sync
 
 Synchronize a folder's README.md with its current contents.

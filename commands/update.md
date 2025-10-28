@@ -1,3 +1,8 @@
+---
+description: stakeholder-update
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+---
+
 # stakeholder-update
 
 Generate stakeholder communication updates from project status.
