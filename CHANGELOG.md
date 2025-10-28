@@ -5,6 +5,69 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.2] - 2025-10-25
+
+### Fixed - Misplaced Commands (Scope Correction)
+
+**Problem**: v2.13.0 added `/validate-commands` and `/release` as PLUGIN commands, but these are actually for USER PROJECTS, not for the AgileFlow plugin itself.
+
+**Issue**:
+- `/validate-commands` was validating AgileFlow plugin structure (wrong scope)
+- `/release` was for releasing AgileFlow plugin versions (wrong scope)
+- These should be in user's `.claude/commands/` directory, not in plugin
+
+**What Changed**:
+- **Moved to templates**: `templates/validate-commands.md.example` and `templates/release.md.example`
+- **Updated for user projects**: Commands now validate/release USER's codebase
+- **Added to .gitignore**: Added `.claude/` to .gitignore (user-specific commands)
+- **Removed from plugin**: Removed from plugin.json commands registry
+
+**New Approach** (User Projects):
+
+**`/validate-commands`** - For YOUR project's custom commands:
+- Copy `templates/validate-commands.md.example` to `.claude/commands/validate-commands.md`
+- Validates custom commands in YOUR `.claude/commands/` directory
+- Checks for broken command references in YOUR codebase
+- Finds missing `/` prefix in SlashCommand() calls
+
+**`/release`** - For YOUR project releases:
+- Copy `templates/release.md.example` to `.claude/commands/release.md`
+- Bumps version in YOUR package.json
+- Updates YOUR CHANGELOG.md
+- Creates git tags for YOUR releases
+- Runs YOUR tests and build
+- Customizable for Node.js, Python, Rust, Go, Maven, Docker
+
+**Usage**:
+```bash
+# In YOUR project
+cp /path/to/AgileFlow/templates/validate-commands.md.example .claude/commands/validate-commands.md
+cp /path/to/AgileFlow/templates/release.md.example .claude/commands/release.md
+
+# Then use them
+/validate-commands  # validates YOUR custom commands
+/release VERSION=1.2.3  # releases YOUR project
+```
+
+**Why .gitignore .claude/**:
+- Each user has their own custom commands
+- Commands are project-specific
+- Prevents committing personal workflows
+- Template files (*.example) are committed for sharing
+
+### Changed (Version Files)
+
+- **plugin.json**: Updated version to 2.13.2, removed 2 commands (38 → 36 commands)
+- **marketplace.json**: Updated description with v2.13.2 and scope fix
+- **CHANGELOG.md**: Added v2.13.2 section
+- **.gitignore**: Added `.claude/` directory
+
+### Technical
+
+- **Command Count**: Back to 36 commands (removed 2 that were misplaced)
+- **Template Files**: 2 new templates for user projects
+- **Scope Clarification**: Plugin commands vs user project commands now clearly separated
+
 ## [2.13.1] - 2025-10-25
 
 ### 🚨 CRITICAL FIX - Old Command Syntax in Agent Prompts
