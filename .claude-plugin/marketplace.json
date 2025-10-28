@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 simplified commands, 9 subagents, and 8 autonomous skills (v2.15.2 - Official plugin format with auto-discovery)",
+  "description": "Universal agile/docs-as-code system with 36 commands, 25 specialized subagents, and BMAD-METHOD integration (v2.18.0 - Comprehensive agent ecosystem for enterprise agile teams)",
   "plugins": [
     {
       "name": "AgileFlow",
