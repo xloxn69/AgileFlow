@@ -1,164 +1,117 @@
 # readme-sync
 
-Audit and update all README.md files across /docs in parallel using specialized agents.
+Synchronize a folder's README.md with its current contents.
 
 ## Command
 
-`/AgileFlow:readme-sync`
+`/AgileFlow:readme-sync FOLDER=docs/02-practices`
 
 ## Description
 
-Audits and updates all README.md files across /docs folders in PARALLEL. Each agent:
-1. Reads the folder's current README.md (if exists)
-2. Scans folder contents using bash (ls, find, grep)
-3. Identifies documentation gaps, outdated info, missing files
-4. Proposes updates with improved structure and content
-5. Updates README.md with improvements using the Edit tool
-6. Reports changes made
+Updates a single folder's README.md file with accurate, current documentation of what's actually in that folder.
 
-## How It Works (Implementation)
+Takes a `FOLDER` parameter (path under docs/ or src/) and:
+1. Lists all files and one level of subfolders
+2. Derives 1-2 line descriptions from file headings or first sentences
+3. Replaces the README's "## Contents" section with updated bullet list
+4. Shows diff before applying changes (YES/NO confirmation)
 
-### Step 1: Discover Folders (Using Bash)
+## How It Works
+
+### Step 1: List Folder Contents
 ```bash
-# Find all numbered doc folders (00-meta through 10-research)
-ls -d docs/[0-9][0-9]-* 2>/dev/null | sort
+ls -la FOLDER/           # All files + one sublevel
+ls -1 FOLDER/*/          # Subdirectories and their contents
 ```
 
-### Step 2: Spawn Agents in Parallel (Using Task Tool)
-For each discovered folder, spawn agileflow-readme-updater agent with the folder path:
+### Step 2: Extract Descriptions
+For each file found:
+- Read first heading (# Heading) from markdown files
+- OR first sentence from file
+- Extract 1-2 line summary
 
-```javascript
-// Example for docs/00-meta/
-Task(
-  description: "Update docs/00-meta/README.md",
-  prompt: `You are updating README.md for the docs/00-meta/ folder.
+### Step 3: Build Contents Section
+Generate markdown bullet list:
+```markdown
+## Contents
 
-FOLDER PATH: docs/00-meta/
-
-TASK:
-1. Use bash to list folder contents: ls -la docs/00-meta/
-2. Check if README.md exists: [ -f docs/00-meta/README.md ] && echo exists
-3. If exists, READ the current README.md to understand current structure
-4. If not exists, create a new README.md
-5. Identify all files/subfolders in docs/00-meta/
-6. Update README.md with:
-   - Clear folder purpose
-   - List of key files with descriptions
-   - Links to related folders
-   - How to navigate this folder
-   - Open questions or TODOs
-   - Next steps/planned work
-7. EDIT or WRITE the README.md file
-8. Report what was changed or created
-
-Use these tools:
-- Bash: ls, find, grep to explore folder
-- Read: Read files to understand current content
-- Edit: Update existing README.md
-- Write: Create new README.md if missing
-`,
-  subagent_type: "agileflow-readme-updater"
-)
-
-// Repeat for each folder: 01-brainstorming, 02-practices, etc.
+- **filename.md** – Brief description of what this file is
+- **subfolder/** – Description of what's in this subfolder
+  - subfolder/file.md – Specific file description
 ```
 
-### Step 3: Parallel Execution
-- All Task calls are made in a single message block
-- Claude Code executes them in parallel (not sequentially)
-- Each agent works independently on their folder
-- Results come back from each agent
-
-### Step 4: Collect & Report Results
-```
-README Sync Report
-==================
-
-✅ docs/00-meta/README.md (UPDATED)
-   - Created folder purpose section
-   - Added navigation links
-   - Listed key directories
-
-✅ docs/01-brainstorming/README.md (UPDATED)
-   - Added quick reference for all ideas
-   - Organized by priority
-   - Updated next steps
-
-... (all 11 folders)
-
-Total Updated: 11 README files
-Success Rate: 11/11 (100%)
-```
+### Step 4: Show Diff & Apply
+- Display the proposed changes (diff format)
+- Ask user: "Update README.md? (YES/NO)"
+- If YES: Use Edit tool to update "## Contents" section
+- If NO: Abort without changes
 
 ## Example Output
 
 ```
-README Sync Report
-==================
+📁 Syncing docs/02-practices/README.md
+=====================================
 
-✅ docs/00-meta/README.md
-   - Updated navigation links
-   - Added quick reference section
-   - Clarified folder purpose
+Found 7 files:
+  • README.md (existing)
+  • testing.md – Test strategy, patterns, test infrastructure
+  • git-branching.md – Git workflow, branching strategy, commit conventions
+  • ci.md – CI/CD pipeline configuration, testing gates
+  • security.md – Security practices, input validation, authentication
+  • releasing.md – Release procedures, versioning, changelog
+  • prompts/ (directory) – Agent customization prompts
 
-✅ docs/01-brainstorming/README.md
-   - Added new brainstorming ideas summary
-   - Updated "Next Steps" section
-   - Reorganized by feature area
+Proposed Changes to ## Contents Section:
+─────────────────────────────────────────
+- testing.md – Test strategy, patterns, test infrastructure
+- git-branching.md – Git workflow, branching strategy, commit conventions
+- ci.md – CI/CD pipeline configuration, testing gates
+- security.md – Security practices, input validation, authentication
+- releasing.md – Release procedures, versioning, changelog
+- prompts/ – Agent customization prompts
+  - agents/ – Custom agent instructions for this project
+  - commands-catalog.md – Reference list of slash commands
 
-⚠️  docs/02-practices/README.md
-   - Found 3 outdated practice docs
-   - Suggest removing deprecated patterns
-   - Ready for update
-
-✅ docs/03-decisions/README.md
-   - Added latest ADRs to index
-   - Updated decision timeline
-   - Cross-referenced related decisions
-
-... (all 11 folders processed in parallel)
-
-Total Updated: 11 READMEs
-Time: ~30 seconds (parallel execution)
+Update README.md with these changes? (YES/NO)
 ```
 
 ## When to Use
 
-- After major feature implementation (update all relevant READMEs)
-- After completing an epic (document in multiple folders)
-- During documentation audit (quarterly refresh)
-- Before releases (ensure all docs current)
-- After organizational changes (update practices/structure)
+- After adding new files to a folder (keep README current)
+- Before major releases (ensure docs match code)
+- During documentation cleanup (quarterly maintenance)
+- After reorganizing folder structure (update navigation)
+- When README "Contents" section is out of date
 
-## What Gets Updated
+## Usage Examples
 
-**Each folder's README.md includes**:
-- Folder purpose and contents
-- Key files and their purpose
-- How to navigate folder
-- Links to related folders
-- Open questions / TODOs
-- Risks or important notes
-- Next steps / planned work
+```bash
+# Sync docs/02-practices folder
+/AgileFlow:readme-sync FOLDER=docs/02-practices
 
-## Parallel Execution
+# Sync docs/04-architecture folder
+/AgileFlow:readme-sync FOLDER=docs/04-architecture
 
-All README.md updates happen simultaneously:
-- 11 folders = 11 agents running at once
-- Much faster than sequential updates
-- Each agent focused on one folder
-- Results coordinated automatically
+# Sync src/components folder (if it has README)
+/AgileFlow:readme-sync FOLDER=src/components
+```
 
-## No Manual Input Needed
+## What It Updates
 
-The command:
-1. Automatically discovers folders
-2. Spawns agents without prompting
-3. Coordinates parallel execution
-4. Reports results
-5. Saves all updates
+Only the `## Contents` section of README.md:
+- Removes old file listings
+- Adds all current files with descriptions
+- Maintains all other sections unchanged
+- Preserves custom notes and links
 
-Just run the command and wait for the report!
+## How to Sync Multiple Folders
+
+Run the command for each folder one at a time, or create a script:
+```bash
+for folder in docs/0[0-9]-*; do
+  /AgileFlow:readme-sync FOLDER="$folder"
+done
+```
 
 ## Related Commands
 
