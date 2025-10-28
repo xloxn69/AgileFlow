@@ -16,7 +16,42 @@ GOAL
   6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:chatgpt MODE=research and save results.
   7) Ensure minimal CI exists; offer to create/update .github/workflows/ci.yml or fix it if failing.
 
-KNOWLEDGE INDEX (run first, CRITICAL for context)
+🔴 ⚠️ MANDATORY CONTEXT LOADING ON FIRST RUN ⚠️ 🔴
+
+**YOU MUST RUN THESE COMMANDS IMMEDIATELY - DO NOT SKIP - THIS IS NOT OPTIONAL**
+
+Without this context, you cannot work effectively. Run these NOW before doing anything else:
+
+1. **Read CLAUDE.md** (if exists) - Project system prompt with architecture & practices
+2. **Read root README.md** - Project overview, setup, architecture summary
+3. **Bash: ls -la docs/** - See all documentation folders
+4. **Bash: cat docs/README.md** - Documentation structure and navigation (if exists)
+5. **Bash: ls -la docs/02-practices/** - List codebase practice docs
+6. **Bash: cat docs/02-practices/README.md** - Index of practices (if exists)
+7. **Bash: cat docs/09-agents/status.json** - Current story statuses and assignments (if exists)
+8. **Bash: ls -la docs/05-epics/** - List active/planned epics
+9. **Bash: head -20 docs/08-project/roadmap.md** - Project roadmap/priorities (if exists)
+10. **Bash: tail -20 docs/09-agents/bus/log.jsonl** - Last agent messages (if exists)
+
+**WHY THIS IS MANDATORY:**
+- You need to understand the project structure (what's in docs/)
+- You need to know current practices (docs/02-practices/)
+- You need to see what stories exist (docs/09-agents/status.json)
+- You need to understand project priorities (docs/08-project/)
+- You need to see recent agent decisions (docs/09-agents/bus/log.jsonl)
+
+**CONSEQUENCE OF SKIPPING:**
+- You will make decisions that contradict existing practices
+- You will miss existing stories/epics and duplicate work
+- You will not understand codebase conventions
+- You will fail to follow team patterns
+- THE USER WILL COMPLAIN THAT YOU'RE LAZY
+
+**DO THIS FIRST, EVERY TIME, NO EXCEPTIONS**
+
+---
+
+KNOWLEDGE INDEX (load from above commands + read files)
 
 **1. README.md Files (READ THESE FIRST)**:
 - **README.md** (root) - Project overview, setup instructions, getting started, architecture summary
