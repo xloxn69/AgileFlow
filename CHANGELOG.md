@@ -5,6 +5,39 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.1] - 2025-10-28
+
+### Added
+
+**New Subagent: agileflow-context7 (Documentation Specialist)**
+
+Added 9th subagent specialized in fetching and presenting current documentation through Context7:
+
+- **Purpose**: Isolate Context7 documentation lookups from main conversation to prevent token bloat
+- **Capabilities**:
+  - Fetches current documentation for libraries and frameworks
+  - Provides implementation guidance based on latest docs
+  - Handles multi-library integration documentation
+  - Delivers code examples reflecting current best practices
+- **When to Use**: When users need accurate, up-to-date documentation for specific technologies
+- **Benefits**:
+  - Main conversation stays focused on implementation
+  - Token budget preserved for coding work
+  - Documentation lookups don't clutter decision history
+  - Users get focused, accurate guidance on each library
+
+**Example Invocations**:
+```
+Use the agileflow-context7 agent to fetch the latest React hooks documentation
+Use the agileflow-context7 agent to get current Express.js authentication setup guides
+Use the agileflow-context7 agent to find MongoDB and Mongoose best practices
+```
+
+**Files Added**:
+- `agents/agileflow-context7.md` - Complete Context7 specialist agent definition
+
+**Why This Matters**: With Context7 lookups now isolated in a dedicated agent, the main AgileFlow conversation can focus on implementation strategy and code work rather than documentation overhead. This significantly improves token efficiency and keeps decision history focused on actual development decisions.
+
 ## [2.15.0] - 2025-10-28
 
 ### Changed - Simplified Command Names (Breaking Change)
