@@ -5,6 +5,210 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.0] - 2025-10-28
+
+### Added - Claude Skills (9 Autonomous Workflow Enhancers)
+
+**What Are Skills?**: Skills are model-invoked enhancements that Claude autonomously loads when relevant to your task. Unlike slash commands (which you manually type), skills activate automatically based on conversation context.
+
+**Why This Matters**: Skills make AgileFlow "just work" without needing to remember specific commands. When you discuss features, Claude automatically formats them as user stories. When you commit code, Claude respects your attribution preferences. When you plan sprints, Claude helps with capacity calculations.
+
+**9 Skills Added (3 Phases)**:
+
+#### Phase 1: High-ROI Workflow Skills
+
+**1. agileflow-story-writer** 📝
+- **Auto-activates when**: User describes features, requirements, or tasks to implement
+- **What it does**: Automatically formats discussions into proper user stories with Given/When/Then acceptance criteria
+- **Files**: SKILL.md, templates/, examples/
+- **Example**: You say "I need a login feature" → Claude creates STORY-042.md with full AC
+- **Quality**: Ensures owner assignment, priority, estimates, and DoD checklist
+
+**2. agileflow-commit-messages** 💬
+- **Auto-activates when**: User creates git commits or discusses code changes
+- **What it does**: Formats commits following Conventional Commits spec + respects CLAUDE.md attribution toggle
+- **Files**: SKILL.md, scripts/check-attribution.sh, reference/{good,bad}-examples.md
+- **Example**: You commit changes → Claude suggests "feat(auth): add 2FA" with proper body/footer
+- **Security**: Checks CLAUDE.md for "DO NOT ADD AI ATTRIBUTION" policy before adding footer
+
+**3. agileflow-changelog** 📋
+- **Auto-activates when**: User discusses releases, versions, or summarizes changes
+- **What it does**: Generates CHANGELOG.md entries following Keep a Changelog format
+- **Files**: SKILL.md, templates/changelog-examples.md
+- **Example**: You say "we fixed the login bug and added dark mode" → Claude formats proper changelog entry
+- **Categories**: Auto-categorizes as Added/Changed/Fixed/Deprecated/Removed/Security/Improved
+
+#### Phase 2: Quality & Planning Skills
+
+**4. agileflow-adr** 🏛️
+- **Auto-activates when**: Discussing architecture, technology choices, or trade-offs
+- **What it does**: Captures decisions as Architecture Decision Records (ADRs) with pros/cons/alternatives
+- **Files**: SKILL.md, templates/adr-template.md, examples/database-choice-example.md
+- **Example**: Debating "PostgreSQL vs MongoDB" → Claude creates ADR-012.md with full analysis
+- **Format**: MADR (Markdown ADR) with context, drivers, options, decision, consequences
+
+**5. agileflow-acceptance-criteria** ✅
+- **Auto-activates when**: User describes feature behavior or requirements
+- **What it does**: Generates detailed Given/When/Then acceptance criteria for stories
+- **Files**: SKILL.md, examples/
+- **Example**: "When user logs in with wrong password" → AC with happy path, errors, edge cases
+- **Coverage**: Ensures happy path, error handling, permissions, responsive behavior
+
+**6. agileflow-epic-planner** 🗺️
+- **Auto-activates when**: User describes large features spanning multiple sprints
+- **What it does**: Breaks down initiatives into epics with milestones and story groupings
+- **Files**: SKILL.md, templates/epic-template.md
+- **Example**: "We need to build a payment system" → EPIC-005.md with 3 milestones, 12 stories
+- **Planning**: Includes success metrics, dependencies, risks, progress tracking
+
+#### Phase 3: Team Process Skills
+
+**7. agileflow-sprint-planner** 🏃
+- **Auto-activates when**: User mentions sprint planning or iteration planning
+- **What it does**: Helps plan sprints with capacity calculations, story grouping, risk identification
+- **Files**: SKILL.md, templates/
+- **Example**: "Plan next sprint" → Capacity calculation, story selection, sprint goal, schedule
+- **Metrics**: Tracks velocity, calculates realistic capacity, identifies dependencies/blockers
+
+**8. agileflow-retro-facilitator** 🔄
+- **Auto-activates when**: Discussing retrospectives or sprint reviews
+- **What it does**: Structures retro feedback using Start/Stop/Continue format with action items
+- **Files**: SKILL.md, templates/
+- **Example**: "Let's do a retro" → Structured feedback collection, action items with owners
+- **Formats**: Supports multiple formats (Start/Stop/Continue, Glad/Sad/Mad, 4Ls, Sailboat)
+
+**9. agileflow-tech-debt** 🔧
+- **Auto-activates when**: Discussing code quality, refactoring, or maintenance
+- **What it does**: Documents tech debt with impact/effort matrix and prioritization
+- **Files**: SKILL.md, templates/
+- **Example**: "This code is messy" → TD-042.md with impact analysis, effort estimate, priority score
+- **Metrics**: Tracks total debt, resolution rate, top contributors
+
+### Technical Implementation
+
+**File Structure**:
+```
+skills/
+├── agileflow-story-writer/
+│   ├── SKILL.md (instructions + when to activate)
+│   ├── templates/story-template.md
+│   └── examples/good-story-example.md
+├── agileflow-commit-messages/
+│   ├── SKILL.md
+│   ├── scripts/check-attribution.sh (executable)
+│   └── reference/{good,bad}-examples.md
+├── agileflow-changelog/
+│   ├── SKILL.md
+│   └── templates/changelog-examples.md
+├── agileflow-adr/
+│   ├── SKILL.md
+│   ├── templates/adr-template.md
+│   └── examples/database-choice-example.md
+├── agileflow-acceptance-criteria/
+│   ├── SKILL.md
+│   └── examples/
+├── agileflow-epic-planner/
+│   ├── SKILL.md
+│   └── templates/epic-template.md
+├── agileflow-sprint-planner/
+│   ├── SKILL.md
+│   └── templates/
+├── agileflow-retro-facilitator/
+│   ├── SKILL.md
+│   └── templates/
+└── agileflow-tech-debt/
+    ├── SKILL.md
+    └── templates/
+```
+
+**Registration**:
+- Added `"skills"` array to `.claude-plugin/plugin.json`
+- 9 skills paths: `"./skills/agileflow-*"`
+- Skills load automatically when Claude detects relevance
+
+**Skill Format** (YAML frontmatter + Markdown):
+```yaml
+---
+name: agileflow-story-writer
+description: Automatically formats user requirements into proper user stories...
+allowed-tools: Read, Write, Edit, Glob
+---
+```
+
+### Benefits of Skills vs Slash Commands
+
+**Slash Commands** (User-Invoked):
+- User must remember to type `/AgileFlow:story-new`
+- Manual trigger every time
+- Good for intentional, explicit actions
+
+**Skills** (Model-Invoked):
+- Claude detects context and loads automatically
+- No manual trigger needed
+- Seamless, invisible enhancement
+
+**Example Workflow**:
+```
+User: "I need to add a login feature with email/password"
+
+WITHOUT Skills:
+  User: /AgileFlow:story-new
+  Claude: What's the feature?
+  User: Login with email/password...
+
+WITH Skills (agileflow-story-writer):
+  Claude: *detects feature discussion, loads story-writer skill*
+  Claude: "I'll create a user story for that..."
+  Claude: *creates STORY-042.md automatically*
+```
+
+### Skill Stacking
+
+Skills can coordinate automatically:
+- **story-writer** + **acceptance-criteria** = Stories with detailed AC
+- **commit-messages** + **changelog** = Commits inform changelog entries
+- **epic-planner** + **sprint-planner** = Epic stories flow into sprints
+- **adr** + **tech-debt** = Decisions inform debt tracking
+
+### Why Minor Version (2.13 → 2.14)?
+
+- Major new functionality (9 skills)
+- Backwards compatible (all existing features work)
+- Non-breaking (skills enhance, don't replace commands)
+- Significant user experience improvement
+
+### Changed (Version Files)
+
+- **plugin.json**: v2.13.3 → v2.14.0, added `"skills"` array with 9 entries
+- **marketplace.json**: Description updated with "9 autonomous skills"
+- **CHANGELOG.md**: Comprehensive v2.14.0 entry (this section)
+
+### Integration with Existing AgileFlow
+
+Skills complement slash commands:
+- **/AgileFlow:story-new** still works (explicit story creation)
+- **agileflow-story-writer** skill auto-formats during conversations
+- Users can use whichever fits their workflow
+
+### User Experience
+
+**Before v2.14.0**:
+```
+User: I need to add dark mode
+User: /AgileFlow:story-new
+Claude: [asks questions, creates story]
+```
+
+**After v2.14.0**:
+```
+User: I need to add dark mode
+Claude: [skill activates automatically]
+Claude: I'll create a user story for that feature...
+[STORY-042-add-dark-mode.md created]
+```
+
+**Result**: Faster workflow, less cognitive overhead, more natural conversation.
+
 ## [2.13.3] - 2025-10-28
 
 ### Added - Context7 MCP Integration
