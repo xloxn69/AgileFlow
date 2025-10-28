@@ -94,6 +94,146 @@ AgileFlow/
 - Latest version section must match `plugin.json` version
 - Documents all changes per version with Added/Changed/Fixed/Improved sections
 
+## BMAD-METHOD Patterns (v2.16.0+)
+
+AgileFlow now implements key patterns from BMAD-METHOD framework for improved dev agent context awareness and knowledge transfer between stories.
+
+### Architecture Context Extraction
+
+**Purpose**: Extract ONLY relevant architecture sections into each story so dev agents never need to read massive docs.
+
+**How it works**:
+1. Epic Planner extracts relevant sections from `docs/04-architecture/` when creating stories
+2. Stores in story's "Architecture Context" section with 6 subsections:
+   - **Data Models & Schemas**: Specific data structures and validation rules
+   - **API Specifications**: Endpoint details, request/response formats
+   - **Component Specifications**: UI component details and state management
+   - **File Locations & Naming**: Exact paths where new code should go
+   - **Testing Requirements**: Test patterns and coverage requirements
+   - **Technical Constraints**: Security, performance, version requirements
+3. **CRITICAL**: Every technical detail must cite source: `[Source: architecture/{filename}.md#{section}]`
+4. Never invent details - only extract from actual architecture docs
+
+**Benefits**:
+- Dev agents have self-contained context (reduced token overhead)
+- Architecture decisions are verifiable (all sources cited)
+- Faster implementation (no doc reading needed)
+
+**Example** (from docs/06-stories/EP-0001/US-0001-user-login-api.md):
+```markdown
+### API Specifications
+
+**Endpoint**: `POST /api/auth/login` [Source: architecture/api-spec.md#authentication-endpoints]
+
+**Request Format**:
+```json
+{
+  "email": "user@example.com",
+  "password": "plaintext_password"
+}
+```
+[Source: architecture/api-spec.md#login-request]
+```
+
+### Dev Agent Record (Knowledge Transfer)
+
+**Purpose**: Capture implementation wisdom for knowledge transfer to next stories in epic.
+
+**Populated during implementation** with 6 subsections:
+- **Agent Model & Version**: Which AI model was used (e.g., claude-sonnet)
+- **Completion Notes**: What was actually built vs. planned (deviations explained)
+- **Issues Encountered**: Challenges faced and how resolved
+- **Lessons Learned**: Insights for next story (patterns, technical debt discovered)
+- **Files Modified**: List of all files created, modified, or deleted
+- **Debug References**: Links to test runs, CI logs, decision traces
+
+**Example**:
+```markdown
+### Completion Notes
+Implemented POST /api/auth/login with bcrypt password verification and JWT generation.
+All acceptance criteria met. Rate limiting implemented using Redis.
+
+**Deviations**: Initially planned session-based auth, switched to JWT for scalability.
+
+**Time**: 1 day (matched estimate)
+
+### Lessons Learned
+1. Middleware-based auth validation works well across routes - recommend for other cross-cutting concerns
+2. Redis rate limiting needs careful TTL management - keys without expire cause memory leaks
+```
+
+### Previous Story Insights (Epic Flow)
+
+**Purpose**: Flow knowledge between stories in same epic.
+
+**Populated from previous story's Dev Agent Record** with:
+- Key learnings from previous story
+- Architectural patterns that worked/didn't work
+- Technical debt discovered
+
+**How it works**:
+1. Story US-0001 in epic completes → populates Dev Agent Record with lessons
+2. Story US-0002 created → automatically includes US-0001's lessons in "Previous Story Insights"
+3. Dev agent for US-0002 reads insights → applies successful patterns, avoids pitfalls
+4. Knowledge flows through epic: US-0001 → US-0002 → US-0003
+
+**Example**:
+```markdown
+## Previous Story Insights
+
+From US-0001 (User Login API):
+
+**Lessons Learned**:
+- Middleware pattern works well for authentication validation
+- Redis rate limiting needs explicit TTL management
+
+**Architectural Patterns**:
+- Use middleware for cross-cutting concerns (auth, logging, error handling)
+```
+
+### Story Validation (`/validate-story`)
+
+**Purpose**: Validate stories are complete before dev agent assignment.
+
+**New command**: `/AgileFlow:validate-story US-XXXX`
+
+**Validates**:
+1. All required sections present (frontmatter, AC, Architecture Context, Dev Agent Record, etc.)
+2. Architecture Context populated with real source citations
+3. Acceptance Criteria clear and testable (Given/When/Then format)
+4. Story completeness (estimate realistic, dependencies documented, owner assigned)
+5. Previous Story Insights relevant (if not first in epic)
+
+**Output**: Comprehensive report with passed/failed/warnings, ready for development or needs fixes.
+
+### Epic Planner Workflow Update
+
+The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
+
+**Step 3.1 - Determine Architecture Reading Strategy**:
+- Reads `docs/04-architecture/` for relevant files based on story type
+- **All stories**: tech-stack.md, coding-standards.md, project-structure.md
+- **Backend/API**: data-models.md, api-spec.md, database.md
+- **Frontend/UI**: components.md, styling.md, state-management.md
+- **Full-Stack**: All of the above
+
+**Step 3.2 - Extract Story-Specific Technical Details**:
+- ONLY information relevant to THIS story
+- NEVER invent technical details
+- Include: data models, API endpoints, component specs, file paths, testing patterns
+
+**Step 3.3 - Cite All Sources**:
+- Format: `[Source: architecture/{filename}.md#{section}]`
+- Every technical detail must be verifiable
+
+**Step 4 - Verify Project Structure Alignment**:
+- Cross-reference story requirements with project structure guide
+- Document any conflicts in story
+
+**Step 5 - Populate Architecture Context Section**:
+- Add all 6 subsections to story template
+- Include source citations in each subsection
+
 ## Common Development Tasks
 
 ### Updating Plugin Version
@@ -262,6 +402,122 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - Use bash wrapper scripts that load `.env` and pass credentials
 - See `templates/mcp-wrapper-postgres.sh` for example
 - See `templates/MCP-WRAPPER-SCRIPTS.md` for full guide
+
+## Story Template Structure (v2.16.0+)
+
+Stories in `docs/06-stories/` now follow enhanced template with BMAD patterns. Key sections:
+
+### Required Frontmatter
+```yaml
+---
+story_id: US-0001
+epic: EP-0001
+title: User Login API Implementation
+owner: AG-API
+status: ready
+estimate: 1d
+created: 2025-10-28
+updated: 2025-10-28
+dependencies: []
+---
+```
+
+### Main Sections
+
+**Description** - What is being built and why
+
+**Acceptance Criteria** - Given/When/Then format (2-5 criteria)
+```
+- **Given** a valid email and password
+  **When** user POSTs to /api/auth/login
+  **Then** they receive JWT token with 24h expiration (HTTP 200)
+```
+
+**Architecture Context** (NEW - BMAD pattern)
+- Extracted by Epic Planner from `docs/04-architecture/`
+- 6 subsections: Data Models, API Specs, Components, File Locations, Testing, Constraints
+- Every detail includes source citation: `[Source: architecture/api-spec.md#endpoints]`
+- Dev agents use this INSTEAD of reading full docs
+
+**Technical Notes** - Implementation hints, edge cases
+
+**Testing Strategy** - Points to test stub at `docs/07-testing/test-cases/<US_ID>.md`
+
+**Dependencies** - Other stories this depends on
+
+**Dev Agent Record** (NEW - Knowledge Transfer)
+- Populated during implementation
+- Agent Model & Version, Completion Notes, Issues Encountered, Lessons Learned, Files Modified, Debug References
+- Next story in epic will reference this via "Previous Story Insights"
+
+**Previous Story Insights** (NEW - Epic Flow)
+- References lessons from previous story in same epic
+- Includes learned patterns and technical debt from last implementation
+- Helps dev agent avoid pitfalls and reuse successful patterns
+
+### Example Story File
+
+See: `docs/06-stories/EP-0001/US-0001-user-login-api.md`
+- Demonstrates all new sections in action
+- Shows Architecture Context with real source citations
+- Shows populated Dev Agent Record with implementation notes
+- Shows Previous Story Insights pattern for follow-on stories
+
+## Development Workflow (with BMAD Patterns)
+
+When implementing a story:
+
+### 1. Validate Story Before Starting
+```bash
+/AgileFlow:validate-story US-XXXX
+```
+- Check Architecture Context is populated
+- Check AC is clear and testable
+- Check all required sections present
+- **If validation fails**: Fix issues before starting implementation
+
+### 2. Read Story's Architecture Context First
+- **Do this INSTEAD of reading full docs**
+- File locations are from Architecture Context
+- Testing patterns are from Testing Requirements subsection
+- API specs are already extracted with citations
+
+### 3. Check Previous Story Insights (if applicable)
+- If not first story in epic: Read Previous Story Insights
+- Apply Architectural Patterns that worked
+- Avoid Technical Debt noted from previous story
+
+### 4. Implement with Reduced Context Overhead
+- Architecture Context has everything needed
+- No need to read entire architecture docs
+- Dev agents can focus on implementation
+
+### 5. Populate Dev Agent Record During Work
+- **Agent Model & Version**: Record which AI model was used
+- **Completion Notes**: Document actual vs. planned
+- **Issues Encountered**: Capture challenges and solutions
+- **Lessons Learned**: Extract insights for NEXT story in epic
+- **Files Modified**: List all files touched
+- **Debug References**: Link to test runs, CI logs
+
+### 6. Knowledge Flows to Next Story
+- When Epic Planner creates next story in epic
+- It automatically includes your Lessons Learned as "Previous Story Insights"
+- Next dev agent applies your patterns and avoids your pitfalls
+
+**Example Flow**:
+```
+US-0001: User Login API
+  ↓ [Implementation completed]
+  ↓ [Dev Agent Record populated with Lessons Learned]
+  ↓ [Next story created]
+US-0002: Password Reset (uses lessons from US-0001)
+  ↓ [Includes US-0001's patterns in Previous Story Insights]
+  ↓ [Reuses middleware pattern, avoids Redis TTL issues]
+  ↓ [Implementation completed]
+  ↓ [Adds new lessons]
+US-0003: Token Refresh (uses lessons from US-0001 + US-0002)
+```
 
 ## Documentation Standards
 
