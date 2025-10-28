@@ -43,7 +43,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 1. **Initialize the system**:
    ```
-   /AgileFlow:setup-system
+   /setup
    ```
    This scaffolds the entire docs structure, templates, and optional CI.
 
@@ -53,7 +53,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 2. **Get help**:
    ```
-   /AgileFlow:system-help
+   /help
    ```
    View the system overview, folder structure, and available commands.
 
@@ -65,7 +65,7 @@ AgileFlow combines three proven methodologies into one cohesive system:
 
 ## Folder Structure
 
-After running `/setup-system`, you'll have:
+After running `/setup`, you'll have:
 
 ```
 docs/
@@ -89,41 +89,41 @@ docs/
 ## Commands
 
 ### Core Workflow
-- `/setup-system` - Bootstrap the entire system
-- `/validate-system` - Validate system integrity (JSON schemas, orphaned stories, WIP limits, dependencies) 🆕
-- `/system-help` - Display system overview
+- `/setup` - Bootstrap the entire system
+- `/validate` - Validate system integrity (JSON schemas, orphaned stories, WIP limits, dependencies) 🆕
+- `/help` - Display system overview
 - `/babysit` - Interactive mentor for end-to-end implementation
 
 ### Planning & Structure
-- `/epic-new` - Create a new epic
-- `/story-new` - Create a user story with AC
-- `/sprint-plan` - Data-driven sprint planning with velocity forecasting and capacity analysis 🆕
-- `/adr-new` - Create an Architecture Decision Record
-- `/agent-new` - Onboard a new agent
+- `/epic` - Create a new epic
+- `/story` - Create a user story with AC
+- `/sprint` - Data-driven sprint planning with velocity forecasting and capacity analysis 🆕
+- `/adr` - Create an Architecture Decision Record
+- `/agent` - Onboard a new agent
 
 ### Task Management
-- `/story-assign` - Assign/reassign a story
-- `/story-status` - Update story status
+- `/assign` - Assign/reassign a story
+- `/status` - Update story status
 - `/handoff` - Document handoff between agents
 
 ### Quality & CI
-- `/pr-template` - Generate PR description
-- `/ci-setup` - Bootstrap CI workflow
+- `/pr` - Generate PR description
+- `/ci` - Bootstrap CI workflow
 - `/readme-sync` - Sync folder READMEs
-- `/setup-tests` - Automated testing infrastructure setup
-- `/ai-code-review` - AI-powered code review
+- `/tests` - Automated testing infrastructure setup
+- `/review` - AI-powered code review
 
 ### Automation & DevOps 🆕
 - `/packages` - Manage dependencies (dashboard, updates, security audits)
-- `/doc-coverage` - Synchronize docs with code changes
-- `/impact-analysis` - Analyze change impact on codebase
-- `/tech-debt` - Track and prioritize technical debt
-- `/setup-deployment` - Automated deployment pipeline setup
-- `/generate-changelog` - Auto-generate changelog from commits
-- `/auto-story` - Generate stories from PRDs/mockups/specs
-- `/custom-template` - Create and manage custom templates
-- `/agent-feedback` - Collect feedback for continuous improvement
-- `/stakeholder-update` - Generate stakeholder reports
+- `/docs` - Synchronize docs with code changes
+- `/impact` - Analyze change impact on codebase
+- `/debt` - Track and prioritize technical debt
+- `/deploy` - Automated deployment pipeline setup
+- `/changelog` - Auto-generate changelog from commits
+- `/auto` - Generate stories from PRDs/mockups/specs
+- `/template` - Create and manage custom templates
+- `/feedback` - Collect feedback for continuous improvement
+- `/update` - Generate stakeholder reports
 
 ### Visualization & Analytics 🎯
 - `/board` - Visual kanban board with WIP limits
@@ -131,15 +131,15 @@ docs/
 - `/velocity` - Velocity tracking and forecasting
 - `/metrics` - Comprehensive analytics dashboard (cycle time, lead time, throughput, flow efficiency)
 - `/retro` - Automated retrospective generator with insights and action items
-- `/dependencies` - Dependency graph visualization with critical path and circular dependency detection
+- `/deps` - Dependency graph visualization with critical path and circular dependency detection
 
 ### Integration & Collaboration 🔗
-- `/github-sync` - Bidirectional GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
-- `/notion-export` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
+- `/github` - Bidirectional GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
+- `/notion` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
 
 ### ChatGPT Integration
 - `/chatgpt` - Generate/export/manage ChatGPT context (MODE=full|export|note|research)
-- `/research-init` - Save research notes
+- `/research` - Save research notes
 
 ### Specialized Agents (Commands)
 - `/agent-ui` - UI/presentation layer agent
@@ -270,8 +270,8 @@ User: "Use the agileflow-adr-writer subagent to document why we chose JWT"
 1. **Pick a story**: Use `agileflow-mentor` subagent or check `docs/09-agents/status.json`
 2. **Implement to AC**: Follow acceptance criteria from the story
 3. **Write tests**: Reference `docs/07-testing/test-cases/<STORY_ID>.md`
-4. **Update status**: Use `/story-status` to track progress
-5. **Create PR**: Use `/pr-template` to generate description
+4. **Update status**: Use `/status` to track progress
+5. **Create PR**: Use `/pr` to generate description
 6. **Mark done**: Update status after merge
 
 ## Advanced Workflows
@@ -288,7 +288,7 @@ For advanced users who need to handle urgent hotfixes during feature work or com
 
 **Quick Start:**
 ```bash
-# Use the helper script (created by /setup-system)
+# Use the helper script (created by /setup)
 ./docs/00-meta/scripts/worktree-create.sh auth-hotfix
 
 # Open in new window and start babysit
@@ -328,7 +328,7 @@ AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for stan
 
 2. **Enable during system setup**:
    ```
-   /AgileFlow:setup-system
+   /setup
    # Select "yes" for Notion integration
    ```
 
@@ -364,7 +364,7 @@ New team members need to:
 5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
 6. Restart Claude Code
 7. Share databases with their integration
-8. Start using `/notion-export`!
+8. Start using `/notion`!
 
 ### Advantages of MCP Approach
 - 🔒 Tokens in `.mcp.json` (gitignored, never committed)
@@ -380,7 +380,7 @@ New team members need to:
 - ⚠️ Each team member needs their own token (no sharing)
 - ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
 
-See `/notion-export` command for full documentation.
+See `/notion` command for full documentation.
 
 ## GitHub Integration (MCP-based) 🆕
 
@@ -404,7 +404,7 @@ AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for stan
 
 2. **Enable during system setup**:
    ```
-   /AgileFlow:setup-system
+   /setup
    # Select "yes" for GitHub integration
    ```
 
@@ -423,7 +423,7 @@ AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for stan
 
 5. **Configure repository**:
    ```
-   # Edit docs/08-project/github-sync-map.json
+   # Edit docs/08-project/github-map.json
    # Set "repository": "owner/repo"
    ```
 
@@ -444,7 +444,7 @@ New team members need to:
 4. Edit `.mcp.json` and hardcode their real token (replace placeholder)
 5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
 6. Restart Claude Code
-7. Start using `/github-sync`!
+7. Start using `/github`!
 
 ### Advantages of MCP Approach
 - 🔒 Tokens in `.mcp.json` (gitignored, never committed)
@@ -468,7 +468,7 @@ New team members need to:
 - ⚠️ Each team member needs their own token (no sharing)
 - ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
 
-See `/github-sync` command for full documentation.
+See `/github` command for full documentation.
 
 ## ChatGPT Integration
 
@@ -478,7 +478,7 @@ AgileFlow maintains a single source of truth context file (`docs/chatgpt.md`) th
 2. Use `/chatgpt MODE=export` to get a concise excerpt
 3. Paste into ChatGPT for research or ideation
 4. Use `/chatgpt MODE=research TOPIC="..."` to build structured research prompts
-5. Save results with `/research-init`
+5. Save results with `/research`
 
 ## Examples
 
