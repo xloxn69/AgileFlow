@@ -1,81 +1,68 @@
 ---
 description: Synchronize a folder's README.md with its current contents
-allowed-tools: Bash, Read, Edit, Write
+allowed-tools: Task
 ---
 
 # readme-sync
 
-Synchronize a folder's README.md with its current contents.
+Synchronize a folder's README.md with its current contents by spawning the agileflow-readme-updater subagent.
 
 ## Prompt
 
-ROLE: README Synchronizer
+**ROLE**: README Sync Command Handler
 
-You synchronize a folder's README.md file with its current contents. Your job is to keep documentation accurate by finding all files and folders, extracting their purposes, and updating the README's "## Contents" section.
+**OBJECTIVE**: Spawn the `agileflow-readme-updater` subagent to synchronize a folder's README.md with its current contents.
 
-**CRITICAL**: User will provide a folder path. Extract it from their message. Examples:
-- If they say "sync docs/02-practices" → FOLDER is docs/02-practices
-- If they say "readme sync docs/04-architecture" → FOLDER is docs/04-architecture
+**WORKFLOW**:
 
-WORKFLOW (do this exactly):
+1. **Extract folder path from user's message**:
+   - User might say: "sync docs/02-practices"
+   - Or: "/AgileFlow:readme-sync docs/04-architecture"
+   - Or: "update README for docs/06-stories"
 
-1. **Extract FOLDER path** from user message
-   - Ask if unclear: "Which folder should I sync?"
+2. **If folder path is clear**, spawn the subagent immediately:
+   ```
+   Use the Task tool to spawn agileflow-readme-updater subagent:
 
-2. **List files** (Bash tool):
-   ```bash
-   ls -la FOLDER/
-   find FOLDER -maxdepth 2 -type f
-   find FOLDER -maxdepth 2 -type d
+   Task(
+     description: "Sync README.md for [folder]",
+     prompt: "Audit and synchronize README.md for the folder: [folder_path]
+
+     Your task:
+     1. List all files and subdirectories in [folder_path]
+     2. Read the current README.md (if exists)
+     3. Extract descriptions from each file (first heading or sentence)
+     4. Build a new '## Contents' section with all files listed
+     5. Show the proposed changes (diff format)
+     6. Ask user to confirm: 'Update README.md? (YES/NO)'
+     7. If YES: Update only the '## Contents' section (preserve everything else)
+     8. Report what was changed",
+     subagent_type: "agileflow-readme-updater"
+   )
    ```
 
-3. **Read current README.md** (Read tool):
-   - `Read FOLDER/README.md` (if exists)
-   - Note the current "## Contents" section
+3. **If folder path is unclear**, ask user:
+   - "Which folder should I sync the README for? (e.g., docs/02-practices)"
+   - Then spawn the subagent with the provided folder
 
-4. **Build descriptions**:
-   - For each file, read its first heading or first sentence
-   - Create: `- **filename** – One line description`
-   - Create: `- **folder/** – One line description`
+**EXAMPLE INVOCATIONS**:
 
-5. **Show diff**:
-   ```
-   OLD ## Contents:
-   [current content]
+User: "sync docs/02-practices"
+→ Spawn agileflow-readme-updater with prompt: "Audit and synchronize README.md for docs/02-practices"
 
-   NEW ## Contents:
-   - file1.md – Description
-   - file2.md – Description
-   - folder/ – Description
-   ```
+User: "update readme for docs/06-stories"
+→ Spawn agileflow-readme-updater with prompt: "Audit and synchronize README.md for docs/06-stories"
 
-6. **Ask to apply**:
-   "Update README.md with this new Contents section? (YES/NO)"
+User: "/AgileFlow:readme-sync"
+→ Ask: "Which folder should I sync?"
+→ User responds: "docs/04-architecture"
+→ Spawn agileflow-readme-updater with that folder
 
-7. **If YES**:
-   - Use Edit tool on `FOLDER/README.md`
-   - Replace ONLY the "## Contents" section
-   - Keep everything else unchanged
-
-8. **Report**:
-   ```
-   ✅ Updated FOLDER/README.md
-   - Found X files
-   - Updated Contents section
-   - Y changes made
-   ```
-
-TOOLS YOU HAVE
-- Bash: For listing files (ls, find)
-- Read: For reading files and current README
-- Edit: For updating README.md
-- Write: For creating README.md if missing
-
-KEY RULES
-- ONLY touch the "## Contents" section
-- Preserve all other README content
-- If no README exists, create one with basic structure
-- Be concise (1-2 line descriptions only)
+**KEY POINTS**:
+- This command is just a launcher - it spawns the subagent
+- The subagent (agileflow-readme-updater) does the actual work
+- Subagent has tools: Bash, Read, Edit, Write
+- Subagent will handle all file discovery, diffing, and updating
 
 ## How It Works
 
