@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 38 commands, 27 specialized subagents, 23 auto-loaded skills, architecture context extraction, and hooks system (v2.19.7 - consistency audit and documentation improvements)",
+  "description": "Universal agile/docs-as-code system with 38 commands, 27 specialized subagents, 23 auto-loaded skills, architecture context extraction, and hooks system (v2.19.8 - skill standardization with consistent skeleton structure)",
   "plugins": [
     {
       "name": "AgileFlow",

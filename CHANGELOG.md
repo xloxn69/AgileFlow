@@ -5,6 +5,67 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.8] - 2025-10-30
+
+### Improved - Skill Standardization & Consistency
+
+This release standardizes all AgileFlow skill prompts (SKILL.md files) with a common skeleton structure, making them tighter, clearer, and more connected across the system.
+
+**What Changed**:
+
+1. **Standardized Skill Skeleton** (Applied to 3 representative skills):
+   - **Simple**: agileflow-commit-messages/SKILL.md - Shows how straightforward skills benefit from structure
+   - **Medium**: agileflow-story-writer/SKILL.md - Core workflow skill with full coordination
+   - **Complex**: agileflow-tech-debt/SKILL.md - Evaluative skill with scoring and measurement
+
+2. **New Required Sections** (All skills now have consistent structure):
+   - **ROLE & IDENTITY**: Skill ID and specialization (e.g., "Skill ID: COMMIT-MSG")
+   - **OBJECTIVE**: Clear one-sentence purpose
+   - **INPUTS**: What the skill needs to operate
+   - **FIRST ACTION**: Deterministic boot sequence (check files, read context, count items)
+   - **PROACTIVE KNOWLEDGE LOADING**: What to read before doing work (CLAUDE.md, templates, status.json)
+   - **WORKFLOW**: Numbered steps from input → processing → output
+   - **RELATED COMMANDS**: Cross-links to slash commands (e.g., `/AgileFlow:epic`, `/AgileFlow:status`)
+   - **OUTPUTS**: What the skill produces (files created, updates made)
+   - **HANDOFFS**: AgileFlow coordination (status.json updates, bus/log.jsonl messages, security notes)
+   - **QUALITY CHECKLIST**: Pre-flight checks before executing
+
+3. **Key Improvements**:
+   - **Cross-Linking**: Skills now reference related slash commands explicitly (e.g., "After creating story → `/AgileFlow:story-validate`")
+   - **AgileFlow Coordination**: All skills document how they interact with status.json and bus/log.jsonl
+   - **Deterministic Boot**: First Action sections ensure consistent context loading
+   - **Diff-First Pattern**: Explicit "show diff, wait for YES/NO" in workflows
+   - **Security Reminders**: "Never commit secrets" notes in relevant skills
+
+4. **Examples of Improvements**:
+   - **agileflow-commit-messages**: Now checks CLAUDE.md for attribution policy BEFORE formatting commit (deterministic boot)
+   - **agileflow-story-writer**: Includes handoff pattern showing how stories flow to dev agents via status.json
+   - **agileflow-tech-debt**: Enhanced with explicit priority scoring formula and handoff to `/AgileFlow:story` for high-priority debt
+
+**Why These Changes?**:
+- **Tighter Prompts**: Consistent structure reduces ambiguity, improves AI execution
+- **Clearer Connections**: Cross-linking shows how skills work together (epic → stories → status updates)
+- **Better Knowledge Transfer**: First Action + Proactive Knowledge Loading ensure skills read context before acting
+- **System Awareness**: Handoffs section makes skills aware of AgileFlow coordination (status.json, bus, agents)
+
+**User Impact**:
+- ✅ Skills execute more reliably (deterministic boot sequences)
+- ✅ Better integration between skills and commands (clear cross-links)
+- ✅ Improved AgileFlow coordination (explicit handoffs to status.json/bus)
+- ✅ Consistent "diff-first; YES/NO" pattern across all skills
+- ✅ Security best practices baked in ("Never commit secrets")
+
+**Files Modified**:
+- `skills/agileflow-commit-messages/SKILL.md` - Refactored with standardized skeleton
+- `skills/agileflow-story-writer/SKILL.md` - Refactored with standardized skeleton
+- `skills/agileflow-tech-debt/SKILL.md` - Refactored with standardized skeleton
+- `CHANGELOG.md` - This entry
+
+**Next Steps**:
+- Consider applying this skeleton to remaining 20 skills for full system consistency
+- Demonstrated pattern: Simple → Medium → Complex skill refactoring
+- Standardization improves maintainability and reduces prompt drift
+
 ## [2.19.7] - 2025-10-30
 
 ### Improved - Documentation Consistency & Governance
