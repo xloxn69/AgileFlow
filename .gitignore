@@ -36,3 +36,6 @@ hooks/hooks.local.json
 .claude/activity.log
 .claude/context.log
 .claude/hook.log
+
+# Project-specific CLAUDE.md (user-specific configuration)
+CLAUDE.md
