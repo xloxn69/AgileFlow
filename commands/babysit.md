@@ -80,12 +80,13 @@ After reading docs/02-practices/README.md, crawl to relevant practice docs based
 - **CLAUDE.md** (if exists) - AI assistant's system prompt with codebase practices and architecture
 - **docs/chatgpt.md** (if exists) - One-page project brief for research context
 
-**4. AgileFlow Command Files** (understand capabilities, 36 total):
+**4. AgileFlow Command Files** (understand capabilities, 37 total):
   - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,story-assign,story-status,handoff}.md
   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
   - Research: commands/{chatgpt,research-init}.md (chatgpt has 4 modes: full, export, note, research)
   - Package management: commands/packages.md (3 actions: dashboard, update, audit)
   - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
+  - Diagnostics: commands/diagnose.md (comprehensive system health checks)
   - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
   - Integration: commands/{github-sync,notion}.md (both use MCP with ${VAR} env substitution from .env)
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
@@ -407,7 +408,7 @@ babysit (light, orchestration only)
 - **Always spawn agents for domain-specific work**
 
 AGILEFLOW COMMAND ORCHESTRATION
-You have access to ALL 42 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
+You have access to ALL 43 AgileFlow slash commands and can orchestrate them to achieve complex workflows.
 
 **IMPORTANT**: You can directly invoke these commands using the SlashCommand tool without manual input.
 - Example: `SlashCommand("/AgileFlow:board")`
@@ -439,6 +440,7 @@ An agent can autonomously decide that invoking a specific slash command is the b
 - `/AgileFlow:chatgpt MODE=export` - Export concise project brief for ChatGPT
 - `/AgileFlow:chatgpt MODE=note NOTE="..."` - Append timestamped note to docs/chatgpt.md
 - `/AgileFlow:stakeholder-update` - Generate executive summary
+- `/AgileFlow:diagnose` - Run system health checks (validates JSON, checks archival, file sizes)
 
 **Example workflow orchestration** (autonomously executed):
 ```
@@ -572,7 +574,14 @@ When things go wrong, diagnose the issue and provide recovery steps. Common fail
 - Malformed JSON (trailing comma, missing quote, etc.)
 - File corruption or manual edit error
 
-**Recovery**:
+**Recovery (v2.19.6+)**:
+1. Use validation helper: `bash scripts/validate-json.sh docs/09-agents/status.json`
+2. Review error details (shows first 5 lines of syntax error)
+3. Fix the JSON syntax issue
+4. Re-validate: Script will confirm when JSON is valid
+5. Explain to user what was fixed and why
+
+**Legacy Recovery** (if validate-json.sh not available):
 1. Read the file: `cat docs/09-agents/status.json | jq .` (shows syntax error location)
 2. Identify the syntax error (line number from error message)
 3. Fix the JSON (remove trailing comma, add missing quote, etc.)
@@ -741,6 +750,9 @@ When things go wrong, diagnose the issue and provide recovery steps. Common fail
 - **Before making changes**: Run `/AgileFlow:validate-commands` if command structure changed
 - **Before releasing**: Run `/AgileFlow:release` which includes validation
 - **After making changes**: Run tests and build to catch issues early
+- **Before major operations**: Run `/AgileFlow:diagnose` to check system health (v2.19.6+)
+- **After JSON operations**: Validate with `bash scripts/validate-json.sh <file>` (v2.19.6+)
+- **When status.json grows**: `/AgileFlow:diagnose` warns when file exceeds 100KB
 
 **Error Recovery Checklist**:
 - [ ] Read and understand the full error message
