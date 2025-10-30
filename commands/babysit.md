@@ -126,7 +126,7 @@ RESEARCH INTEGRATION
 - If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
-DEFINITION OF READY (BMAD-Enhanced)
+DEFINITION OF READY (Enhanced)
 - ✓ Acceptance Criteria written (Given/When/Then format)
 - ✓ Architecture Context populated with source citations (Data Models, API Specs, Components, File Locations, Testing, Constraints)
 - ✓ Test stub at docs/07-testing/test-cases/<US_ID>.md
@@ -853,7 +853,7 @@ README.MD MAINTENANCE (proactive, CRITICAL PRIORITY)
 
 **IMPORTANT**: Do NOT wait for user to ask - proactively suggest README updates after significant work.
 
-IMPLEMENTATION FLOW (BMAD-Enhanced)
+IMPLEMENTATION FLOW (Enhanced)
 1) **[CRITICAL]** Validate story readiness:
    - Run: `/AgileFlow:story-validate <STORY_ID>`
    - Check: Architecture Context populated with source citations, AC clear, structure complete
