@@ -5,14 +5,24 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 
 # notion
 
-Export AgileFlow epics, stories, and ADRs to Notion via Model Context Protocol (MCP).
+Export AgileFlow epics, stories, and ADRs to Notion with detailed summaries via Model Context Protocol (MCP).
+
+**Key Feature**: Automatically generates comprehensive summaries for EVERY epic, story, and ADR exported to Notion, including full content, metadata, relationships, and progress tracking.
 
 ## Prompt
 
 ROLE: Notion Integration Agent (MCP-based)
 
 OBJECTIVE
-Bidirectional sync between AgileFlow markdown docs and Notion databases using Model Context Protocol. Supports initial setup, export, import, and incremental sync.
+Bidirectional sync between AgileFlow markdown docs and Notion databases using Model Context Protocol. **Automatically generates detailed summaries for ALL epics, stories, and ADRs** during export, ensuring complete context is available in Notion. Supports initial setup, export with summaries, import, and incremental sync.
+
+**CRITICAL**: Every item exported to Notion includes a comprehensive summary with:
+- Full content from markdown files (descriptions, acceptance criteria, technical notes, etc.)
+- Metadata (status, dates, owners, estimates)
+- Relationships (epic-story links, related ADRs)
+- Progress tracking (for epics: story completion percentage)
+
+This ensures Notion serves as a complete, searchable knowledge base for stakeholders and team members.
 
 ---
 
@@ -109,15 +119,17 @@ This will:
 /AgileFlow:notion MODE=setup
 
 # Preview export without writing to Notion
+# Shows detailed summaries that will be created for each item
 /AgileFlow:notion DRY_RUN=true
 
-# Export all docs to Notion
+# Export all docs to Notion WITH DETAILED SUMMARIES
+# Automatically generates comprehensive summaries for ALL epics, stories, and ADRs
 /AgileFlow:notion
 
-# Export specific type only
-/AgileFlow:notion TYPE=epics
-/AgileFlow:notion TYPE=stories
-/AgileFlow:notion TYPE=adrs
+# Export specific type only (with summaries)
+/AgileFlow:notion TYPE=epics      # Exports all epics with full content summaries
+/AgileFlow:notion TYPE=stories    # Exports all stories with AC, notes, testing strategy
+/AgileFlow:notion TYPE=adrs       # Exports all ADRs with context, decisions, consequences
 
 # Import from Notion back to markdown
 /AgileFlow:notion MODE=import
@@ -125,12 +137,14 @@ This will:
 # Bidirectional sync (smart merge)
 /AgileFlow:notion MODE=sync
 
-# Force overwrite (export wins)
+# Force overwrite (export wins - includes updated summaries)
 /AgileFlow:notion MODE=export FORCE=true
 
 # Force overwrite (import wins)
 /AgileFlow:notion MODE=import FORCE=true
 ```
+
+**Note on Summaries**: Every export automatically includes detailed summaries. You don't need any special flags - summaries are generated for ALL items by default.
 
 ### Environment Variables
 
@@ -205,7 +219,130 @@ docs/08-project/
 
 ## IMPLEMENTATION
 
-[Implementation sections omitted for brevity - same bash code as before]
+### Key Features
+
+**1. Detailed Summary Generation**
+
+For EVERY epic, story, and ADR exported to Notion, the command automatically generates a comprehensive summary that includes:
+
+**Epics**:
+- Epic ID and title
+- Description (full text)
+- Goals and objectives
+- All linked stories with their status
+- Progress percentage (completed vs total stories)
+- Key dates (created, updated)
+- Dependencies
+- Related ADRs
+
+**Stories**:
+- Story ID and title
+- Epic parent (linked)
+- Description and acceptance criteria (full text)
+- Status, priority, estimate
+- Owner/assignee
+- Technical notes
+- Testing strategy
+- All files modified (from implementation)
+- Dependencies
+- Created/updated dates
+
+**ADRs (Architecture Decision Records)**:
+- ADR ID and title
+- Status (proposed, accepted, superseded)
+- Context (why this decision was needed)
+- Decision (what was decided)
+- Consequences (positive and negative)
+- Alternatives considered
+- Related epics/stories
+- Created/updated dates
+
+**Why Detailed Summaries?**
+- Notion pages are searchable - full content makes finding information easier
+- Team members can review details without switching to markdown files
+- Stakeholders can read complete context in Notion
+- Better integration with Notion's AI features (Q&A, summarization)
+- Preserves all critical information even if markdown files are updated
+
+**How It Works**:
+1. Command reads each markdown file (epic/story/ADR)
+2. Extracts frontmatter metadata (YAML)
+3. Parses markdown content sections
+4. Builds comprehensive summary with all relevant details
+5. Creates/updates Notion page with summary as page content
+6. Links related items (epic ↔ stories, ADR ↔ epics)
+
+### Export Process
+
+```bash
+# For each file type (epics, stories, ADRs):
+# 1. Find all markdown files in docs/05-epics/, docs/06-stories/, docs/03-decisions/
+# 2. Read file content and parse frontmatter
+# 3. Extract all sections (Description, AC, Technical Notes, etc.)
+# 4. Generate detailed summary with full content
+# 5. Check if page exists in Notion (via sync map)
+# 6. Create new page OR update existing page with summary
+# 7. Update sync map with page ID and checksum
+# 8. Link related items (epic-story relationships, etc.)
+```
+
+### Summary Format Example
+
+**Epic Summary in Notion**:
+```
+📋 Epic: EP-0001 - User Authentication System
+
+Status: In Progress (3/5 stories completed)
+Created: 2025-01-15
+Updated: 2025-01-20
+
+## Description
+[Full description from markdown file]
+
+## Goals
+- Enable secure user login
+- Support password reset
+- Implement session management
+
+## Stories (5 total, 3 completed)
+✅ US-0001: User Login API
+✅ US-0002: Password Reset Flow
+✅ US-0003: Session Token Management
+🔄 US-0004: OAuth Integration
+📝 US-0005: Multi-Factor Authentication
+
+## Dependencies
+- Depends on: None
+- Blocks: EP-0002 (User Profile Management)
+
+## Related ADRs
+- ADR-0001: JWT vs Session-based Auth (Accepted)
+- ADR-0002: Password Hashing Strategy (Accepted)
+```
+
+### Implementation Details
+
+The command uses MCP tools to interact with Notion:
+
+**Setup Phase** (MODE=setup):
+- Use `mcp__notion__create_database` to create three databases
+- Store database IDs in `docs/08-project/notion-sync-map.json`
+
+**Export Phase** (default):
+- Use `mcp__notion__query_database` to find existing pages
+- Use `mcp__notion__create_page` for new items with full summary
+- Use `mcp__notion__update_page` for existing items with updated summary
+- All summaries include complete content from markdown files
+
+**Import Phase** (MODE=import):
+- Use `mcp__notion__retrieve_page` to read Notion page content
+- Parse Notion blocks back to markdown format
+- Update local markdown files with changes
+
+**Sync Phase** (MODE=sync):
+- Compare checksums between local and Notion
+- Detect conflicts (both changed since last sync)
+- Offer merge strategies or manual resolution
 
 ---
 
