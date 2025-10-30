@@ -106,7 +106,7 @@ Read ALL of the following to build context:
    - Package management: commands/packages.md (3 actions: dashboard, update, audit)
    - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
    - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
-   - Integration: commands/{github-sync,notion-export}.md (Notion uses MCP with token-based auth)
+   - Integration: commands/{github-sync,notion}.md (Notion uses MCP with token-based auth)
    - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
    - Docs: commands/{readme-sync,system-help}.md
 3. docs/**/README.md — scan for "Next steps", "TODO", "Open Questions", "Planned", "Risks"
@@ -165,7 +165,7 @@ You are an autonomous agent. When a slash command is the best way to accomplish 
 - `/AgileFlow:board` - Show visual kanban after status changes
 - `/AgileFlow:velocity` - Check capacity before planning new stories
 - `/AgileFlow:github-sync` - Sync to GitHub after story completion (if enabled)
-- `/AgileFlow:notion-export` - Update stakeholders via Notion (if enabled)
+- `/AgileFlow:notion` - Update stakeholders via Notion (if enabled)
 - `/AgileFlow:impact-analysis` - Before major changes, analyze impact
 - `/AgileFlow:packages ACTION=update` - Check for security issues before starting
 - `/AgileFlow:ai-code-review` - Review code before PR
@@ -190,7 +190,7 @@ Orchestration steps (you execute automatically):
 8. Review code → SlashCommand("/AgileFlow:ai-code-review")
 9. Document decision → SlashCommand("/AgileFlow:adr-new")
 10. Show progress → SlashCommand("/AgileFlow:board")
-11. Sync externally → SlashCommand("/AgileFlow:github-sync"), SlashCommand("/AgileFlow:notion-export")
+11. Sync externally → SlashCommand("/AgileFlow:github-sync"), SlashCommand("/AgileFlow:notion")
 12. Generate docs → SlashCommand("/AgileFlow:generate-changelog"), SlashCommand("/AgileFlow:stakeholder-update")
 
 You autonomously invoke all these commands - no manual user action needed.
@@ -219,13 +219,13 @@ Detect if Notion is enabled by checking for `.mcp.json` (MCP configuration) and 
 - Explain: "Need NOTION_TOKEN in .env + .mcp.json in project root + restart Claude Code"
 
 **ALWAYS sync to Notion after these changes** (if enabled):
-- After creating epic → SlashCommand("/AgileFlow:notion-export DATABASE=epics")
-- After creating story → SlashCommand("/AgileFlow:notion-export DATABASE=stories")
-- After ANY status change → SlashCommand("/AgileFlow:notion-export DATABASE=stories")
-- After creating ADR → SlashCommand("/AgileFlow:notion-export DATABASE=adrs")
-- After updating story content/AC → SlashCommand("/AgileFlow:notion-export DATABASE=stories")
-- After epic completion → SlashCommand("/AgileFlow:notion-export DATABASE=all")
-- After bus/log.jsonl update → SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+- After creating epic → SlashCommand("/AgileFlow:notion DATABASE=epics")
+- After creating story → SlashCommand("/AgileFlow:notion DATABASE=stories")
+- After ANY status change → SlashCommand("/AgileFlow:notion DATABASE=stories")
+- After creating ADR → SlashCommand("/AgileFlow:notion DATABASE=adrs")
+- After updating story content/AC → SlashCommand("/AgileFlow:notion DATABASE=stories")
+- After epic completion → SlashCommand("/AgileFlow:notion DATABASE=all")
+- After bus/log.jsonl update → SlashCommand("/AgileFlow:notion DATABASE=stories")
 
 **Why automatic sync is mandatory**:
 - status.json and bus/log.jsonl are AgileFlow's source of truth (local files)
@@ -242,7 +242,7 @@ Step 1: Update AgileFlow source of truth
 
 Step 2: Immediately sync to Notion (if enabled)
   - Check if Notion enabled
-  - Invoke SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+  - Invoke SlashCommand("/AgileFlow:notion DATABASE=stories")
   - Wait for confirmation
 
 Step 3: Continue workflow
@@ -255,7 +255,7 @@ User: "Mark US-0042 as in-progress"
 1. Update status.json: {"US-0042": {"status": "in-progress", ...}}
 2. Append to bus: {"type":"status-change","story":"US-0042","status":"in-progress"}
 3. Check .mcp.json for "notion" MCP server
-4. If found → SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+4. If found → SlashCommand("/AgileFlow:notion DATABASE=stories")
 5. Confirm "✅ Synced to Notion - stakeholders can see US-0042 is in progress"
 ```
 
@@ -297,11 +297,11 @@ IMPLEMENTATION FLOW
 4. Apply minimal code + tests incrementally (diff-first, YES/NO; optionally run commands)
 5. Update status.json → in-progress; append bus message
 6. **[CRITICAL]** Immediately sync to external systems if enabled:
-   - SlashCommand("/AgileFlow:notion-export DATABASE=stories") if `.mcp.json` has notion server
+   - SlashCommand("/AgileFlow:notion DATABASE=stories") if `.mcp.json` has notion server
    - SlashCommand("/AgileFlow:github-sync") if GITHUB_REPO in .env or gh CLI configured
 7. After implementation: update status.json → in-review
 8. **[CRITICAL]** Sync again after status change:
-   - SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+   - SlashCommand("/AgileFlow:notion DATABASE=stories")
    - SlashCommand("/AgileFlow:github-sync")
 9. Check if CLAUDE.md should be updated with new patterns/practices learned
 10. Generate PR body with /AgileFlow:pr-template command

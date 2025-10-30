@@ -479,7 +479,7 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - **Notion MCP** (`@notionhq/notion-mcp-server`):
   - Bidirectional Notion database sync
   - Token: Notion Integration Token (ntn_*) in `.env`
-  - Command: `/AgileFlow:notion-export`
+  - Command: `/AgileFlow:notion`
   - Supports `${VAR}` substitution: ✅
 
 - **Postgres MCP** (example of server WITHOUT `${VAR}` support):
