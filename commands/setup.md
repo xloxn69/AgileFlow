@@ -1010,6 +1010,245 @@ Next steps for team members:
 Note: Each team member can have different hooks - hooks/hooks.json is gitignored for personalization.
 ```
 
+AUTO-ARCHIVAL CONFIGURATION (v2.19.4+) - Story Status Management
+
+**IMPORTANT**: As projects grow, `docs/09-agents/status.json` can exceed Claude Code's token limit (25k tokens), causing agents to fail reading it. Auto-archival solves this by moving old completed stories to an archive.
+
+**The Problem**:
+- status.json grows as stories complete
+- Agents need to read status.json on every invocation
+- File exceeds 25k token limit → agents break with "file too large" error
+- Solution: Move old completed stories to status-archive.json
+
+**Ask User for Archival Threshold**:
+IF core system missing OR status.json not yet created, ask:
+```
+📦 Auto-Archival Configuration
+
+How long should completed stories remain in active status before archiving?
+
+1. 3 days (very aggressive - keeps status.json very small)
+2. 7 days (weekly archival - recommended for fast-moving teams)
+3. 14 days (bi-weekly archival - good balance)
+4. 30 days (monthly archival - default, keeps recent context)
+5. Custom (specify number of days)
+
+Your choice (1-5): [WAIT FOR INPUT]
+```
+
+**Process User Choice**:
+```bash
+# Store choice in .claude/settings.json
+case $CHOICE in
+  1) DAYS=3 ;;
+  2) DAYS=7 ;;
+  3) DAYS=14 ;;
+  4) DAYS=30 ;;
+  5)
+    echo "Enter custom days threshold: "
+    read DAYS
+    ;;
+esac
+
+# Create or update .claude/settings.json
+mkdir -p .claude
+if [ -f .claude/settings.json ]; then
+  # Update existing settings
+  jq ".env.ARCHIVE_THRESHOLD_DAYS = $DAYS" .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
+else
+  # Create new settings
+  cat > .claude/settings.json << EOF
+{
+  "env": {
+    "ARCHIVE_THRESHOLD_DAYS": "$DAYS"
+  }
+}
+EOF
+fi
+
+echo "✅ Configured $DAYS-day archival threshold"
+```
+
+**Add Auto-Archival Hook to hooks.json**:
+```bash
+# Read current hooks/hooks.json
+CURRENT_HOOKS=$(cat hooks/hooks.json)
+
+# Add SessionStart hook for auto-archival check (if not already present)
+if ! grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
+  # Add auto-archival hook to SessionStart
+  jq '.hooks.SessionStart += [{
+    "matcher": "",
+    "hooks": [{
+      "type": "command",
+      "command": "bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30) > /dev/null 2>&1 &"
+    }]
+  }]' hooks/hooks.json > hooks/hooks.json.tmp && mv hooks/hooks.json.tmp hooks/hooks.json
+
+  echo "✅ Added auto-archival hook to hooks/hooks.json"
+else
+  echo "✅ Auto-archival hook already exists"
+fi
+```
+
+**Copy Archive Script from Plugin**:
+```bash
+# Copy archive script from AgileFlow plugin
+cp ~/.claude-code/plugins/AgileFlow/scripts/archive-completed-stories.sh scripts/archive-completed-stories.sh
+
+# Make executable
+chmod +x scripts/archive-completed-stories.sh
+
+echo "✅ Deployed archival script: scripts/archive-completed-stories.sh"
+```
+
+**Update CLAUDE.md with Archival Documentation**:
+Add this section to project's CLAUDE.md:
+```markdown
+## Auto-Archival System (AgileFlow v2.19.4+)
+
+AgileFlow automatically manages `docs/09-agents/status.json` file size by archiving old completed stories to `docs/09-agents/status-archive.json`.
+
+### Why Auto-Archival?
+
+**The Problem**:
+- status.json grows as stories complete (can reach 100KB+ in active projects)
+- Agents must read status.json on every invocation
+- Files >25k tokens cause agents to fail with "file too large" error
+- This breaks all agent workflows
+
+**The Solution**:
+- Automatically move completed stories older than threshold to status-archive.json
+- Keep only active work (ready, in-progress, blocked) + recent completions in status.json
+- Agents work fast with small, focused status.json
+- Full history preserved in archive (nothing deleted)
+
+### Configuration
+
+**Current Threshold**: $DAYS days (completed stories older than $DAYS days are archived)
+
+**To change threshold**:
+1. Edit `.claude/settings.json`:
+   ```json
+   {
+     "env": {
+       "ARCHIVE_THRESHOLD_DAYS": "7"
+     }
+   }
+   ```
+2. Changes take effect immediately (no restart needed)
+3. Next SessionStart will use new threshold
+
+### How It Works
+
+**Auto-Archival Hook** (runs on SessionStart):
+- Checks `docs/09-agents/status.json` size
+- If large enough, runs: `bash scripts/archive-completed-stories.sh <DAYS>`
+- Moves completed stories older than threshold to status-archive.json
+- Updates status.json with only active + recent stories
+- Runs silently in background (no interruption)
+
+**Manual Archival**:
+```bash
+# Archive stories completed >7 days ago
+bash scripts/archive-completed-stories.sh 7
+
+# Archive stories completed >30 days ago
+bash scripts/archive-completed-stories.sh 30
+
+# View what would be archived (dry run)
+bash scripts/archive-completed-stories.sh 7 --dry-run
+```
+
+### File Structure
+
+**docs/09-agents/status.json** (active work):
+- Stories with status: ready, in-progress, blocked
+- Completed stories within threshold (recent completions)
+- Agents read this file (small, fast)
+
+**docs/09-agents/status-archive.json** (historical):
+- Completed stories older than threshold
+- Full history preserved
+- Agents rarely need to read this
+
+### Status Summary
+
+After archival, you'll see:
+```
+✅ Archival complete!
+
+📊 Results:
+   status.json: 150 → 45 stories (82KB → 18KB)
+   status-archive.json: 105 stories total
+   Archived: 105 stories
+
+📋 Active Status Summary:
+   ready: 12 stories
+   in-progress: 8 stories
+   blocked: 3 stories
+   done (recent): 22 stories
+```
+
+### Troubleshooting
+
+**If agents fail with "file too large"**:
+1. Run manual archival: `bash scripts/archive-completed-stories.sh 7`
+2. Reduce threshold in `.claude/settings.json` (e.g., 3 days instead of 30)
+3. Verify auto-archival hook is in `hooks/hooks.json`
+
+**To restore archived story**:
+1. Find story in status-archive.json
+2. Copy story object
+3. Paste into status.json
+4. Update story status if needed
+
+**To view archived stories**:
+```bash
+# List all archived stories
+jq '.stories | keys[]' docs/09-agents/status-archive.json
+
+# View specific archived story
+jq '.stories["US-0042"]' docs/09-agents/status-archive.json
+```
+```
+
+**Print Configuration Summary**:
+```
+✅ Auto-Archival System configured
+✅ Threshold: $DAYS days
+✅ Archive script deployed: scripts/archive-completed-stories.sh
+✅ Auto-archival hook added to hooks/hooks.json
+✅ Settings saved to .claude/settings.json
+✅ CLAUDE.md updated with archival documentation
+
+How it works:
+- Every time Claude Code starts (SessionStart hook)
+- Script checks docs/09-agents/status.json size
+- If needed, archives completed stories older than $DAYS days
+- Keeps status.json small and fast for agents
+- Full history preserved in docs/09-agents/status-archive.json
+
+Manual archival:
+- Run anytime: bash scripts/archive-completed-stories.sh $DAYS
+- View status: ls -lh docs/09-agents/status*.json
+
+Configuration:
+- Change threshold: Edit .claude/settings.json → "ARCHIVE_THRESHOLD_DAYS"
+- Takes effect immediately (no restart needed)
+
+Next steps:
+- Auto-archival runs automatically on SessionStart
+- Monitor file sizes: ls -lh docs/09-agents/status*.json
+- If status.json grows too large, reduce threshold or run manual archival
+```
+
+**Integration with Hooks System**:
+- Auto-archival uses the hooks system configured above
+- Runs silently in background on SessionStart
+- No user interruption or prompts during normal usage
+- Archives only when needed (status.json size triggers)
+
 TOKEN VALIDATION (SECURE - Does NOT expose tokens)
 
 **IMPORTANT**: Before or after MCP setup, validate that required tokens are present in .env WITHOUT exposing them.
