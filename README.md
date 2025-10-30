@@ -172,13 +172,13 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 
 ### Core Workflow
 - `/AgileFlow:setup` - Bootstrap the entire system
-- `/AgileFlow:validate` - Validate system integrity (JSON schemas, orphaned stories, WIP limits, dependencies) 🆕
 - `/AgileFlow:help` - Display system overview
 - `/AgileFlow:babysit` - Interactive mentor for end-to-end implementation
 
 ### Planning & Structure
 - `/AgileFlow:epic` - Create a new epic
 - `/AgileFlow:story` - Create a user story with AC
+- `/AgileFlow:story-validate` - Validate story completeness and readiness for development
 - `/AgileFlow:sprint` - Data-driven sprint planning with velocity forecasting and capacity analysis 🆕
 - `/AgileFlow:adr` - Create an Architecture Decision Record
 - `/AgileFlow:agent` - Onboard a new agent

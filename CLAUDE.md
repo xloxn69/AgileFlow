@@ -71,7 +71,7 @@ AgileFlow/
 - Provide specialized capabilities (story writing, commit messages, ADRs, acceptance criteria, etc.)
 - **Auto-discovered** from `skills/` directory (no manual registration needed)
 
-**AgileFlow System** (created by `/AgileFlow:setup-system` command):
+**AgileFlow System** (created by `/AgileFlow:setup` command):
 - **Not part of this repository** - created in user's project repos
 - Scaffolds `docs/` directory structure (00-meta through 10-research)
 - Manages epics, stories, ADRs, agent status, message bus
@@ -200,11 +200,11 @@ From US-0001 (User Login API):
 - Use middleware for cross-cutting concerns (auth, logging, error handling)
 ```
 
-### Story Validation (`/validate-story`)
+### Story Validation (`/story-validate`)
 
 **Purpose**: Validate stories are complete before dev agent assignment.
 
-**New command**: `/AgileFlow:validate-story US-XXXX`
+**New command**: `/AgileFlow:story-validate US-XXXX`
 
 **Validates**:
 1. All required sections present (frontmatter, AC, Architecture Context, Dev Agent Record, etc.)
@@ -249,11 +249,11 @@ The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
 - ✅ **Architecture Context Extraction**: Stories now include auto-filled Architecture Context with source citations
 - ✅ **Dev Agent Record**: Capture implementation model, issues, lessons learned for knowledge transfer
 - ✅ **Previous Story Insights**: Flow lessons between stories in same epic
-- ✅ **Story Validation Command**: `/AgileFlow:validate-story US-XXXX` for completeness checking
+- ✅ **Story Validation Command**: `/AgileFlow:story-validate US-XXXX` for completeness checking
 - ✅ **Enhanced /babysit**: Integrated BMAD workflow guidance (validate → read context → implement → record lessons)
 
 ### New Files Created
-- `commands/validate-story.md` - Story validation command
+- `commands/story-validate.md` - Story validation command
 - `docs/06-stories/EP-0001/US-0001-user-login-api.md` - Example story with all new sections
 
 ### Modified Files
@@ -291,7 +291,7 @@ Stories status = "ready" (Definition of Ready met)
 ```
 Dev Agent receives: US-XXXX (Story with Architecture Context populated)
   ↓
-1. Validate: /AgileFlow:validate-story US-XXXX
+1. Validate: /AgileFlow:story-validate US-XXXX
    - Check Architecture Context populated
    - Check AC clear and testable
    - Check all sections present
@@ -327,7 +327,7 @@ Dev Agent receives: US-XXXX (Story with Architecture Context populated)
 ```
 Epic Planner finishes creating story:
   ↓
-Run: /AgileFlow:validate-story US-XXXX
+Run: /AgileFlow:story-validate US-XXXX
   ↓
 If PASSED (all checks green):
   - Story is ready for development
@@ -1100,7 +1100,7 @@ When implementing a story:
 
 ### 1. Validate Story Before Starting
 ```bash
-/AgileFlow:validate-story US-XXXX
+/AgileFlow:story-validate US-XXXX
 ```
 - Check Architecture Context is populated
 - Check AC is clear and testable
@@ -1205,7 +1205,7 @@ When updating CHANGELOG.md:
 ### Architecture Context is Self-Contained
 - **Dev agents should NEVER need to read full architecture docs**
 - Everything needed is extracted into the story's Architecture Context section
-- If something is missing, it means the story wasn't properly prepared (run `/validate-story`)
+- If something is missing, it means the story wasn't properly prepared (run `/story-validate`)
 - This reduces token overhead and speeds up implementation
 
 ### Source Citations are Mandatory
@@ -1221,7 +1221,7 @@ When updating CHANGELOG.md:
 - This creates a learning loop: each story builds on previous implementation wisdom
 
 ### Story Validation is Essential
-- Always run `/validate-story` before assigning story to dev agent
+- Always run `/story-validate` before assigning story to dev agent
 - Catches issues early (missing Architecture Context, unclear AC, structure problems)
 - Prevents dev agent from starting work on incomplete story
 - If validation fails, fix the story (not the dev agent's job)

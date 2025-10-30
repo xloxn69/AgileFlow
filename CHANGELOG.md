@@ -661,7 +661,7 @@ Updated `agileflow-epic-planner` agent with new Architecture Context Extraction 
 
 ### Added - New Story Validation Command
 
-**New Command**: `/AgileFlow:validate-story` (validates individual story completeness)
+**New Command**: `/AgileFlow:story-validate` (validates individual story completeness)
 
 Validates that a story is complete, well-structured, and ready for implementation:
 
