@@ -5,6 +5,71 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.6] - 2025-10-30
+
+### Added - JSON Validation & System Diagnostics
+
+This release adds comprehensive JSON validation to prevent status.json corruption and introduces system health diagnostics to catch issues proactively.
+
+**What's New**:
+
+1. **validate-json.sh Helper Script** (`scripts/validate-json.sh`):
+   - Validates JSON files and provides helpful error messages
+   - Usage: `bash scripts/validate-json.sh <file_path>`
+   - Returns exit code 0 for valid, 1 for invalid
+   - Shows first 5 lines of error details for debugging
+
+2. **/diagnose Command** (`commands/diagnose.md`):
+   - Comprehensive system health checks
+   - Validates all JSON files (status.json, metadata.json, sync maps, hooks.json)
+   - Checks auto-archival system configuration
+   - Verifies hooks system setup
+   - Reports file sizes with recommendations
+   - Warns when status.json exceeds 100KB
+   - Validates MCP security (.mcp.json and .env in .gitignore)
+   - Provides actionable next steps for issues found
+
+3. **JSON Validation in Archive Script** (`scripts/archive-completed-stories.sh`):
+   - Validates status.json before processing
+   - Prevents corruption from cascading
+   - Provides helpful error messages and fix instructions
+   - References validate-json.sh for diagnostics
+
+4. **JSON Validation in Status Commands**:
+   - `/status` command now includes validation after updates
+   - `/assign` command now includes validation after updates
+   - Both commands document JSON safety guidelines
+   - Emphasizes always using jq or Edit tool (never echo/cat)
+   - Instructions to restore from backup if validation fails
+
+### Improved - /setup Command Reliability
+
+5. **TodoWrite Integration in /setup** (`commands/setup.md`):
+   - **CRITICAL IMPROVEMENT**: Setup now creates comprehensive todo list at start
+   - Prevents forgetting configuration steps (addresses v2.19.4 issue)
+   - Todo list maps detection results to pending tasks
+   - Tracks progress: pending → in_progress → completed
+   - Example workflow: detect → create todos → ask user → complete todos → validate
+
+6. **Auto-Archival Detection in /setup** (`commands/setup.md`):
+   - Detection phase now checks for auto-archival configuration
+   - Reports threshold: "✅ Auto-archival configured (threshold: 7 days)"
+   - Warns if not configured: "❌ Auto-archival NOT configured (recommended)"
+   - Status summary includes: "Auto-Archival: ✅ Configured (X days) / ❌ Not configured"
+
+**Why These Changes?**:
+- **Prevents JSON Corruption**: User reported status.json corrupted with 40 unescaped quotes
+- **Catches Issues Early**: /diagnose identifies problems before they cause failures
+- **Improves Setup Reliability**: TodoWrite prevents /setup from forgetting steps
+- **Better Debugging**: Validation scripts provide actionable error messages
+- **Proactive Monitoring**: File size warnings prevent token limit errors
+
+**User Impact**:
+- ✅ Fewer JSON corruption incidents
+- ✅ Faster troubleshooting with /diagnose
+- ✅ More reliable /setup (no forgotten config)
+- ✅ Better error messages when issues occur
+
 ## [2.19.5] - 2025-10-30
 
 ### Changed - Moved Archival Config to agileflow-metadata.json (Architecture Consistency)
