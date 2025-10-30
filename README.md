@@ -15,8 +15,9 @@ AgileFlow combines three proven methodologies into one cohesive system:
 - ✅ Clear priorities and testable increments
 - ✅ Durable memory and decision history
 - ✅ Effortless multi-agent collaboration via message bus
-- ✅ **25 specialized subagents** for focused work (UI, API, CI, DevOps, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, QA, and more)
-- ✅ **36 slash commands** for complete workflow automation
+- ✅ **27 specialized subagents** for focused work (UI, API, CI, DevOps, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, QA, and more)
+- ✅ **38 slash commands** for complete workflow automation
+- ✅ **23 auto-loaded skills** for context-aware enhancements
 - ✅ **Hooks system** for event-driven automation (v2.19.0+)
 - ✅ System validation with JSON schemas
 - ✅ Intelligent blocker tracking and resolution
@@ -230,7 +231,7 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 
 ## Subagents
 
-AgileFlow includes **25 specialized subagents** that operate in separate context windows for focused work. Here are the core agents (see `SUBAGENTS.md` for complete list):
+AgileFlow includes **27 specialized subagents** that operate in separate context windows for focused work. Here are the core agents (see `SUBAGENTS.md` for complete list):
 
 ### Core Implementation Agents
 
