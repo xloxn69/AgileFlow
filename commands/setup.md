@@ -348,29 +348,41 @@ Create `docs/08-project/github-sync-map.json`:
 }
 ```
 
-**Step 5: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 5: Auto-fix .gitignore to protect secrets** (CRITICAL - Auto-applied):
 ```bash
-# Check if already present
-grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
-grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
+# Auto-add .mcp.json if not present
+grep -E '^\\.mcp\\.json$' .gitignore 2>/dev/null || echo ".mcp.json" >> .gitignore
 
-# Verify (should show both)
+# Auto-add .env if not present
+grep -E '^\\.env$' .gitignore 2>/dev/null || echo ".env" >> .gitignore
+
+# Verify both are now protected
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**⚠️ CRITICAL Step 5: RESTART CLAUDE CODE**:
+**Note**: Setup automatically adds these to .gitignore if missing (no prompt needed - security critical).
+
+**🔴 CRITICAL Step 6: RESTART CLAUDE CODE** (MANDATORY - DO NOT SKIP):
 ```
-🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
+═══════════════════════════════════════════════════════════
+🔴🔴🔴 YOU MUST RESTART CLAUDE CODE NOW! 🔴🔴🔴
+═══════════════════════════════════════════════════════════
 
-MCP servers initialize on startup and read .env via ${VAR} substitution.
-If you don't restart, the GitHub MCP tools will NOT be available.
+⚠️  MCP SERVERS ONLY LOAD ON STARTUP ⚠️
 
-How to restart:
-1. Save all work
-2. Exit Claude Code completely
-3. Restart Claude Code
-4. Wait for MCP servers to initialize (2-5 seconds)
-5. GitHub tools will now be available as mcp__github__*
+If you don't restart, your MCP integration will NOT work!
+The wrapper script needs Claude Code to reload .mcp.json.
+
+HOW TO RESTART:
+1. Save all work (Cmd+S or Ctrl+S)
+2. Quit Claude Code COMPLETELY (Cmd+Q on Mac, Ctrl+Q on Linux)
+3. Wait 5 seconds (ensure process fully exits)
+4. Start Claude Code again
+5. Wait 5-10 seconds for MCP servers to initialize
+6. Run /AgileFlow:validate-mcp to verify
+
+DO THIS NOW - Your MCP integration won't work without it!
+═══════════════════════════════════════════════════════════
 ```
 
 **Step 6: Run Initial Sync**:
@@ -398,9 +410,16 @@ Next steps for you:
 3. DO NOT edit .mcp.json (wrapper loads .env automatically)
 4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
 5. NEVER commit .mcp.json or .env (contain secrets!)
-6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
-7. Preview sync: /AgileFlow:github DRY_RUN=true
-8. Perform sync: /AgileFlow:github
+
+═══════════════════════════════════════════════════════════
+6. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════
+
+7. Validate setup: /AgileFlow:validate-mcp
+8. Preview sync: /AgileFlow:github DRY_RUN=true
+9. Perform sync: /AgileFlow:github
 
 Next steps for team members:
 1. Pull latest code (includes .mcp.json, wrapper script, and .env.example)
@@ -408,8 +427,15 @@ Next steps for team members:
 3. Copy template: cp .env.example .env
 4. Edit .env with their real token
 5. Verify .gitignore has .mcp.json and .env
-6. 🔴 RESTART CLAUDE CODE
-7. Start syncing: /AgileFlow:github
+
+═══════════════════════════════════════════════════════════
+6. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════
+
+7. Validate setup: /AgileFlow:validate-mcp
+8. Start syncing: /AgileFlow:github
 ```
 
 NOTION INTEGRATION SETUP VIA MCP (if enabled)
@@ -458,29 +484,41 @@ Create or update `.env` file with your real Notion token:
 NOTION_TOKEN=ntn_your_actual_token_here
 ```
 
-**Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 3: Auto-fix .gitignore to protect secrets** (CRITICAL - Auto-applied):
 ```bash
-# Check if already present
-grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
-grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
+# Auto-add .mcp.json if not present
+grep -E '^\\.mcp\\.json$' .gitignore 2>/dev/null || echo ".mcp.json" >> .gitignore
 
-# Verify (should show both)
+# Auto-add .env if not present
+grep -E '^\\.env$' .gitignore 2>/dev/null || echo ".env" >> .gitignore
+
+# Verify both are now protected
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**⚠️ CRITICAL Step 4: RESTART CLAUDE CODE**
+**Note**: Setup automatically adds these to .gitignore if missing (no prompt needed - security critical).
+
+**🔴 CRITICAL Step 4: RESTART CLAUDE CODE** (MANDATORY - DO NOT SKIP):
 ```
-🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
+═══════════════════════════════════════════════════════════
+🔴🔴🔴 YOU MUST RESTART CLAUDE CODE NOW! 🔴🔴🔴
+═══════════════════════════════════════════════════════════
 
-MCP servers initialize on startup and read .env via ${VAR} substitution.
-If you don't restart, the Notion MCP tools will NOT be available.
+⚠️  MCP SERVERS ONLY LOAD ON STARTUP ⚠️
 
-How to restart:
-1. Save all work
-2. Exit Claude Code completely
-3. Restart Claude Code
-4. Wait for MCP servers to initialize (2-5 seconds)
-5. Notion tools will now be available as mcp__notion__*
+If you don't restart, your Notion MCP integration will NOT work!
+The wrapper script needs Claude Code to reload .mcp.json.
+
+HOW TO RESTART:
+1. Save all work (Cmd+S or Ctrl+S)
+2. Quit Claude Code COMPLETELY (Cmd+Q on Mac, Ctrl+Q on Linux)
+3. Wait 5 seconds (ensure process fully exits)
+4. Start Claude Code again
+5. Wait 5-10 seconds for MCP servers to initialize
+6. Run /AgileFlow:validate-mcp to verify
+
+DO THIS NOW - Your MCP integration won't work without it!
+═══════════════════════════════════════════════════════════
 ```
 
 **Step 5: Create AgileFlow Databases**
@@ -539,7 +577,11 @@ Next steps for you:
 3. DO NOT edit .mcp.json (wrapper loads .env automatically)
 4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
 5. NEVER commit .mcp.json or .env (contain secrets!)
-6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
+═══════════════════════════════════════════════════════════
+6. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════
 7. Create databases: /AgileFlow:notion MODE=setup
 8. Preview sync: /AgileFlow:notion DRY_RUN=true
 9. Perform initial sync: /AgileFlow:notion
@@ -550,7 +592,11 @@ Next steps for team members:
 3. Copy template: cp .env.example .env
 4. Edit .env with their real token
 5. Verify .gitignore has .mcp.json and .env
-6. 🔴 RESTART CLAUDE CODE
+═══════════════════════════════════════════════════════════
+6. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════
 7. Share databases with their integration
 8. Start syncing: /AgileFlow:notion
 ```
@@ -612,29 +658,41 @@ Get key at: https://context7.com/dashboard
 
 **Note**: The Context7 MCP server reads CONTEXT7_API_KEY from environment variables. The wrapper script will export it automatically.
 
-**Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 3: Auto-fix .gitignore to protect secrets** (CRITICAL - Auto-applied):
 ```bash
-# Check if already present
-grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
-grep -E '^\\.env$' .gitignore || echo ".env" >> .gitignore
+# Auto-add .mcp.json if not present
+grep -E '^\\.mcp\\.json$' .gitignore 2>/dev/null || echo ".mcp.json" >> .gitignore
 
-# Verify (should show both)
+# Auto-add .env if not present
+grep -E '^\\.env$' .gitignore 2>/dev/null || echo ".env" >> .gitignore
+
+# Verify both are now protected
 grep -E '\\.mcp\\.json|\\.env' .gitignore
 ```
 
-**⚠️ CRITICAL Step 4: RESTART CLAUDE CODE**:
+**Note**: Setup automatically adds these to .gitignore if missing (no prompt needed - security critical).
+
+**🔴 CRITICAL Step 4: RESTART CLAUDE CODE** (MANDATORY - DO NOT SKIP):
 ```
-🔴 YOU MUST RESTART CLAUDE CODE FOR MCP SERVERS TO LOAD
+═══════════════════════════════════════════════════════════
+🔴🔴🔴 YOU MUST RESTART CLAUDE CODE NOW! 🔴🔴🔴
+═══════════════════════════════════════════════════════════
 
-MCP servers initialize on startup and read .env.
-If you don't restart, Context7 will NOT provide current documentation.
+⚠️  MCP SERVERS ONLY LOAD ON STARTUP ⚠️
 
-How to restart:
-1. Save all work
-2. Exit Claude Code completely
-3. Restart Claude Code
-4. Wait for MCP servers to initialize (2-5 seconds)
-5. Context7 will now provide current docs transparently!
+If you don't restart, Context7 will NOT provide current documentation!
+The wrapper script needs Claude Code to reload .mcp.json.
+
+HOW TO RESTART:
+1. Save all work (Cmd+S or Ctrl+S)
+2. Quit Claude Code COMPLETELY (Cmd+Q on Mac, Ctrl+Q on Linux)
+3. Wait 5 seconds (ensure process fully exits)
+4. Start Claude Code again
+5. Wait 5-10 seconds for MCP servers to initialize
+6. Run /AgileFlow:validate-mcp to verify
+
+DO THIS NOW - Context7 won't work without it!
+═══════════════════════════════════════════════════════════
 ```
 
 **Step 5: Update CLAUDE.md with Context7 usage instructions**:
@@ -710,7 +768,11 @@ Next steps for you:
 1. OPTIONAL: Get API key for higher limits: https://context7.com/dashboard
 2. OPTIONAL: Edit .env and add: CONTEXT7_API_KEY=your_key_here
 3. Verify .gitignore has .mcp.json and .env: grep -E '\\.mcp\\.json|\\.env' .gitignore
-4. 🔴 RESTART CLAUDE CODE (to load Context7 MCP server)
+═══════════════════════════════════════════════════════════
+4. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════ (to load Context7 MCP server)
 5. Context7 will now provide current docs automatically!
 
 Next steps for team members:
@@ -718,7 +780,11 @@ Next steps for team members:
 2. Copy template: cp .env.example .env
 3. OPTIONAL: Get their own API key and add to .env
 4. Verify .gitignore has .mcp.json and .env
-5. 🔴 RESTART CLAUDE CODE
+═══════════════════════════════════════════════════════════
+5. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   Hooks/MCP ONLY load on startup!
+═══════════════════════════════════════════════════════════
 6. Start getting current docs automatically!
 
 Note: Context7 works transparently - no manual commands needed. Claude will automatically access current documentation when working with frameworks/libraries.
@@ -805,12 +871,17 @@ Create `hooks/hooks.json` with welcome message:
 }
 ```
 
-**Step 4: Ensure .gitignore has hooks and .claude directories**:
+**Step 4: Auto-fix .gitignore for hooks and .claude directories** (Auto-applied):
 ```bash
-grep -E '^hooks/hooks\\.json$' .gitignore || echo "hooks/hooks.json" >> .gitignore
-grep -E '^hooks/hooks\\.local\\.json$' .gitignore || echo "hooks/hooks.local.json" >> .gitignore
-grep -E '^\\.claude/' .gitignore || echo ".claude/" >> .gitignore
+# Auto-add hooks files if not present
+grep -E '^hooks/hooks\\.json$' .gitignore 2>/dev/null || echo "hooks/hooks.json" >> .gitignore
+grep -E '^hooks/hooks\\.local\\.json$' .gitignore 2>/dev/null || echo "hooks/hooks.local.json" >> .gitignore
+
+# Auto-add .claude directory if not present
+grep -E '^\\.claude/' .gitignore 2>/dev/null || echo ".claude/" >> .gitignore
 ```
+
+**Note**: Setup automatically adds these to .gitignore if missing (user-specific config files).
 
 **Step 5: Create .claude directory structure** (for settings):
 ```bash
@@ -918,14 +989,22 @@ See AgileFlow plugin documentation for advanced hooks patterns.
 Next steps for you:
 1. Customize hooks: Edit hooks/hooks.json
 2. OPTIONAL: Create .claude/settings.json for dynamic environment variables
-3. 🔴 RESTART CLAUDE CODE (to load hooks system)
+═══════════════════════════════════════════════════════════
+3. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   Hooks ONLY load on startup!
+═══════════════════════════════════════════════════════════
 4. Hooks will run automatically on SessionStart, UserPromptSubmit, Stop events
 
 Next steps for team members:
 1. Pull latest code (includes hooks/hooks.json and .claude/settings.example.json)
 2. Customize their own hooks: Edit hooks/hooks.json locally
 3. OPTIONAL: Create .claude/settings.json with their own values
-4. 🔴 RESTART CLAUDE CODE
+═══════════════════════════════════════════════════════════
+4. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   MCP servers ONLY load on startup!
+═══════════════════════════════════════════════════════════
 5. Hooks will run automatically!
 
 Note: Each team member can have different hooks - hooks/hooks.json is gitignored for personalization.
