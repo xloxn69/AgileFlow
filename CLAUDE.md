@@ -872,7 +872,7 @@ AgileFlow includes an automatic archival system to manage `docs/09-agents/status
       "hooks": [
         {
           "type": "command",
-          "command": "bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30) > /dev/null 2>&1 &"
+          "command": "bash scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
         }
       ]
     }
@@ -880,11 +880,20 @@ AgileFlow includes an automatic archival system to manage `docs/09-agents/status
 }
 ```
 
-**Configuration** (in `.claude/settings.json`):
+**Configuration** (in `docs/00-meta/agileflow-metadata.json`):
 ```json
 {
-  "env": {
-    "ARCHIVE_THRESHOLD_DAYS": "7"
+  "version": "2.19.5",
+  "created": "2025-10-30T00:00:00Z",
+  "updated": "2025-10-30T00:00:00Z",
+  "archival": {
+    "threshold_days": 7,
+    "enabled": true
+  },
+  "git": {
+    "initialized": true,
+    "remoteConfigured": true,
+    "remoteUrl": "git@github.com:user/repo.git"
   }
 }
 ```
@@ -913,13 +922,10 @@ During `/AgileFlow:setup`, users choose archival threshold:
 5. **Custom** - Specify any number of days
 
 **To change threshold after setup**:
-1. Edit `.claude/settings.json`:
-   ```json
-   {
-     "env": {
-       "ARCHIVE_THRESHOLD_DAYS": "7"
-     }
-   }
+1. Edit `docs/00-meta/agileflow-metadata.json`:
+   ```bash
+   # Update threshold to 7 days
+   jq '.archival.threshold_days = 7 | .updated = "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"' docs/00-meta/agileflow-metadata.json > tmp.json && mv tmp.json docs/00-meta/agileflow-metadata.json
    ```
 2. Changes take effect immediately (no restart needed)
 3. Next SessionStart will use new threshold
@@ -970,7 +976,7 @@ Stories to archive:
 
 **If agents fail with "file too large" error**:
 1. Run manual archival: `bash scripts/archive-completed-stories.sh 7`
-2. Reduce threshold in `.claude/settings.json` (e.g., 3 days instead of 30)
+2. Reduce threshold in `docs/00-meta/agileflow-metadata.json` (e.g., 3 days instead of 30)
 3. Verify auto-archival hook exists in `hooks/hooks.json`
 4. Check file sizes: `ls -lh docs/09-agents/status*.json`
 
@@ -1005,7 +1011,7 @@ jq '.stories | length' docs/09-agents/status-archive.json
 - Hook added automatically during `/AgileFlow:setup` if enabled
 - Runs silently in background on every SessionStart
 - No user interruption or prompts during normal usage
-- Uses `scripts/get-env.js` to read threshold from `.claude/settings.json`
+- Reads threshold from `docs/00-meta/agileflow-metadata.json` automatically
 
 ### Benefits
 
@@ -1021,7 +1027,7 @@ jq '.stories | length' docs/09-agents/status-archive.json
 
 Auto-archival is configured automatically by `/AgileFlow:setup` when the hooks system is enabled. The setup process:
 1. Asks user for archival threshold preference (3/7/14/30/custom days)
-2. Stores preference in `.claude/settings.json`
+2. Stores preference in `docs/00-meta/agileflow-metadata.json` (team-wide config)
 3. Copies `archive-completed-stories.sh` script from plugin to project
 4. Adds SessionStart hook to `hooks/hooks.json`
 5. Updates project's CLAUDE.md with archival documentation

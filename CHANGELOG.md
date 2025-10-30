@@ -5,6 +5,85 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.5] - 2025-10-30
+
+### Changed - Moved Archival Config to agileflow-metadata.json (Architecture Consistency)
+
+Refactored auto-archival configuration to use `docs/00-meta/agileflow-metadata.json` instead of `.claude/settings.json` for better consistency with AgileFlow's architecture.
+
+**Why This Change?**:
+- **Consistency**: All AgileFlow configuration should live in `docs/00-meta/`
+- **Discoverability**: Developers know where to find all AgileFlow settings
+- **Team-wide**: Can be committed to git, whole team uses same threshold
+- **Simpler**: Don't need separate `.claude/settings.json` for archival
+- **Clean Architecture**: One source of truth for AgileFlow settings
+
+**What Changed**:
+
+1. **Archive Script** (`scripts/archive-completed-stories.sh`):
+   - Now reads threshold from `docs/00-meta/agileflow-metadata.json`
+   - Falls back to CLI arg if provided: `bash scripts/archive-completed-stories.sh 7`
+   - Falls back to 30 days if metadata file missing
+   - Simpler: No dependency on `get-env.js` for archival config
+
+2. **Setup Command** (`commands/setup.md`):
+   - Writes archival config to `docs/00-meta/agileflow-metadata.json`
+   - Structure: `{"archival": {"threshold_days": 7, "enabled": true}}`
+   - Updates `agileflow-metadata.json` timestamp on config changes
+
+3. **Hooks Template** (`templates/hooks.example.json`):
+   - Simplified hook command: `bash scripts/archive-completed-stories.sh`
+   - No need for `get-env.js` in hook command
+   - Script reads config from metadata automatically
+
+4. **Documentation** (`CLAUDE.md`):
+   - Updated all references to new config location
+   - Changed configuration examples to use `agileflow-metadata.json`
+   - Updated troubleshooting to reference correct file
+   - Clearer instructions for changing threshold
+
+**Configuration Format Change**:
+
+Before (v2.19.4) - in `.claude/settings.json`:
+```json
+{
+  "env": {
+    "ARCHIVE_THRESHOLD_DAYS": "7"
+  }
+}
+```
+
+After (v2.19.5) - in `docs/00-meta/agileflow-metadata.json`:
+```json
+{
+  "version": "2.19.5",
+  "archival": {
+    "threshold_days": 7,
+    "enabled": true
+  }
+}
+```
+
+**Benefits**:
+1. ✅ **Better Architecture** - All AgileFlow config in one place (`docs/00-meta/`)
+2. ✅ **Team-wide Config** - Can commit to git, whole team shares same archival threshold
+3. ✅ **Discoverable** - Developers know where to find settings
+4. ✅ **Simpler** - No need for `get-env.js` helper
+5. ✅ **Consistent** - Follows existing pattern (metadata already stores git config)
+
+**Files Modified**:
+- `scripts/archive-completed-stories.sh` - Read from `agileflow-metadata.json`
+- `commands/setup.md` - Write to `agileflow-metadata.json`
+- `templates/hooks.example.json` - Simplified hook command
+- `CLAUDE.md` - Updated all config references
+- `.claude-plugin/plugin.json` - Version bumped to 2.19.5
+- `.claude-plugin/marketplace.json` - Updated description
+
+**Migration Path**:
+- Existing projects: Re-run `/AgileFlow:setup` to migrate config
+- New projects: Config stored in `agileflow-metadata.json` from start
+- Backward compatible: Script still accepts CLI arg for manual runs
+
 ## [2.19.4] - 2025-10-30
 
 ### Added - Auto-Archival System (Prevents Agent Failures from Large status.json)
