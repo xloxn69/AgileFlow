@@ -5,6 +5,52 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.1] - 2025-10-30
+
+### Fixed - MCP Environment Variable Loading (Critical Bug Fix)
+
+Fixed critical MCP integration issue where environment variables from `.env` files were not being loaded properly. The previous `${VAR}` substitution approach didn't work because Claude Code doesn't automatically load `.env` files for MCP servers.
+
+**The Problem**:
+- OLD approach: `.mcp.json` used `"env": {"VAR": "${VAR}"}` syntax
+- Expected Claude Code to load `.env` files (it doesn't!)
+- `${VAR}` substitution reads from system environment variables, not `.env` files
+- Users had to manually export environment variables before starting Claude Code
+- This caused MCP integrations (GitHub, Notion, Context7) to fail silently
+
+**The Solution - Wrapper Approach**:
+- Created universal wrapper script: `templates/mcp-wrapper-load-env.sh`
+- Wrapper loads `.env` and exports variables before running MCP server
+- Updated `.mcp.json.example` to use wrapper: `"command": "bash", "args": ["scripts/mcp-wrappers/load-env.sh", ...]`
+- No "env" blocks needed - wrapper handles everything
+- Works reliably across all platforms (Linux, macOS, Windows WSL)
+
+**Files Modified**:
+1. **templates/mcp-wrapper-load-env.sh** (NEW) - Universal environment variable loader for MCP servers
+2. **.mcp.json.example** - Updated to use wrapper approach (removed "env" blocks)
+3. **commands/setup.md** - Updated GitHub, Notion, and Context7 setup sections to deploy wrapper
+4. **CLAUDE.md** - Updated MCP Integration and Setup Flow sections to document wrapper approach
+
+**Migration for Existing Users**:
+If you have an existing `.mcp.json` that's not working:
+1. Create wrapper directory: `mkdir -p scripts/mcp-wrappers`
+2. Copy wrapper script: `cp ~/.claude-code/plugins/AgileFlow/templates/mcp-wrapper-load-env.sh scripts/mcp-wrappers/load-env.sh`
+3. Make executable: `chmod +x scripts/mcp-wrappers/load-env.sh`
+4. Update your `.mcp.json` to use wrapper approach (see `.mcp.json.example` for template)
+5. Ensure your tokens are in `.env` (not `.mcp.json`)
+6. Restart Claude Code
+
+**Why This Matters**:
+- MCP integrations now work out-of-the-box without manual environment variable exports
+- Improved developer experience - just edit `.env` and restart Claude Code
+- Better security - wrapper approach is clearer and more maintainable than `${VAR}` substitution
+- Cross-platform compatibility - works consistently on all operating systems
+
+**Impact**:
+- Fixes MCP integration for all users experiencing GitHub/Notion/Context7 connection issues
+- /AgileFlow:setup now correctly configures MCP servers with working environment variable loading
+- Aligns with industry best practices for MCP server configuration
+
 ## [2.19.0] - 2025-10-28
 
 ### Added - Hooks System (Event-Driven Automation)

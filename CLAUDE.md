@@ -451,14 +451,21 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - Users copy to `.mcp.json` (gitignored) - do NOT modify, it reads from .env
 - **Why MCP?** Standardized tool interface, no sudo required, better portability
 
-**⚠️ CRITICAL: Environment Variable Security (NOT Hardcoded Tokens)**:
-- ✅ `.mcp.json` uses `${VAR}` syntax to read from `.env`
+**⚠️ CRITICAL: Environment Variable Security (Wrapper Approach)**:
+- ✅ Use wrapper script: `"command": "bash", "args": ["scripts/mcp-wrappers/load-env.sh", ...]`
+- ✅ Wrapper loads `.env` and exports variables before running MCP server
 - ✅ Actual tokens stored in `.env` (NOT in `.mcp.json`)
 - ✅ BOTH `.mcp.json` AND `.env` MUST be gitignored
-- ✅ Commit `.mcp.json.example` and `.env.example` (templates with `${VAR}` syntax)
+- ✅ Commit `.mcp.json.example` and `.env.example` (templates with wrapper approach)
 - ❌ NEVER hardcode tokens in `.mcp.json`
 - ❌ NEVER commit `.mcp.json` or `.env` to git
 - ⚠️ Each team member needs their own tokens (NO SHARING)
+
+**Why wrapper approach?**
+- OLD (broken): `"env": {"VAR": "${VAR}"}` - Expected Claude Code to load .env (it doesn't!)
+- NEW (works): Wrapper script loads .env and exports vars before running MCP server
+- ${VAR} substitution reads from system environment variables, not .env files
+- Wrapper approach works reliably across all platforms
 
 **Supported MCP Servers**:
 - **GitHub MCP** (`@modelcontextprotocol/server-github`):
@@ -486,33 +493,41 @@ AgileFlow integrates with external services via Model Context Protocol (MCP):
 - Users copy to `.env` and replace placeholders with real tokens
 - `.env` MUST be gitignored (contains actual secrets)
 
-**Setup Flow (NEW - Secure Approach)**:
+**Setup Flow (NEW - Wrapper Approach)**:
 1. User runs `/AgileFlow:setup` and selects which MCPs to enable
-2. AI creates `.mcp.json` directly with `${VAR}` syntax and `.env.example`
-3. User edits `.env` (NOT `.mcp.json`) and adds real tokens:
+2. AI creates wrapper infrastructure:
+   - Creates `scripts/mcp-wrappers/` directory
+   - Copies wrapper script from plugin templates to `scripts/mcp-wrappers/load-env.sh`
+   - Makes wrapper executable (`chmod +x`)
+3. AI creates `.mcp.json` using wrapper approach (NO "env" blocks) and `.env.example`
+4. User edits `.env` (NOT `.mcp.json`) and adds real tokens:
    ```bash
    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_actual_token_here
    NOTION_TOKEN=ntn_actual_token_here
    CONTEXT7_API_KEY=optional_key_here
    ```
-4. User verifies `.mcp.json` and `.env` are in `.gitignore`:
+5. User verifies `.mcp.json` and `.env` are in `.gitignore`:
    ```bash
    grep -E '\\.mcp\\.json|\\.env' .gitignore
    ```
-5. **🔴 User RESTARTS Claude Code** (critical - MCPs won't load without restart!)
-6. User runs commands to sync: `/AgileFlow:github`, `/AgileFlow:notion`, etc.
+6. **🔴 User RESTARTS Claude Code** (critical - MCPs won't load without restart!)
+7. User runs commands to sync: `/AgileFlow:github`, `/AgileFlow:notion`, etc.
 
 **Key principles**:
-- `.mcp.json` (generated with `${VAR}` syntax) → gitignored (CRITICAL)
+- `.mcp.json` (generated with wrapper approach) → gitignored (CRITICAL)
+- `scripts/mcp-wrappers/load-env.sh` (wrapper script) → committed to git
 - `.env.example` (template with placeholders) → committed to git
 - `.env` (actual tokens) → gitignored (CRITICAL - user creates locally)
 - Tokens ONLY in `.env`, NEVER in `.mcp.json`
+- Wrapper loads `.env` and exports vars before running MCP server
 - AI creates `.mcp.json` during setup, users only edit `.env`
 
-**Wrapper Scripts (for servers without `${VAR}` support)**:
-- Some MCP servers don't support `${VAR}` substitution
-- Use bash wrapper scripts that load `.env` and pass credentials
-- See `templates/mcp-wrapper-postgres.sh` for example
+**Wrapper Scripts (Universal Approach)**:
+- ALL MCP servers now use the wrapper approach (not just some)
+- `scripts/mcp-wrappers/load-env.sh` - Universal wrapper that loads `.env` and exports variables
+- Deployed automatically by `/AgileFlow:setup` when MCP is enabled
+- For servers needing custom logic, create dedicated wrapper scripts
+- See `templates/mcp-wrapper-postgres.sh` for advanced example
 - See `templates/MCP-WRAPPER-SCRIPTS.md` for full guide
 
 ## Hooks System (v2.19.0+)
