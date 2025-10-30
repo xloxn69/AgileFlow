@@ -21,9 +21,61 @@ See "Updating Plugin Version" section below for detailed steps.
 
 ## Repository Overview
 
-**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (36 slash commands + 25 specialized subagents), not a traditional application codebase. There is no build step, runtime, or deployment process.
+**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (38 slash commands + 27 specialized subagents + 23 auto-loaded skills), not a traditional application codebase. There is no build step, runtime, or deployment process.
 
-**Current Version**: v2.19.0 (25 specialized agents + hooks system for event-driven automation covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA)
+**Current Version**: v2.19.7 (27 specialized agents, 38 commands, 23 skills + hooks system for event-driven automation covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA)
+
+---
+
+## 🎯 Command Safety Policy
+
+**When working with AgileFlow, follow these execution rules:**
+
+### Slash Commands (Autonomous)
+✅ **Run autonomously without asking** - Slash commands like `/AgileFlow:story`, `/AgileFlow:epic`, `/AgileFlow:status` can be invoked directly as part of workflow orchestration. The user expects proactive command execution.
+
+### File Operations (Confirmation Required)
+⚠️ **Require diff + YES/NO confirmation** - Any file write, edit, or creation must:
+1. Show a clear diff of changes
+2. Wait for explicit YES/NO approval from user
+3. Keep JSON valid (repair if broken and explain the fix)
+
+### Shell Operations (Risk-Based)
+- **Safe commands** (autonomous): `ls`, `cat`, `grep`, `npm test`, `npm run build`, file scaffolding
+- **Dangerous commands** (require justification + confirmation): `rm -rf`, `git reset --hard`, `git push --force` to main/master
+
+**Summary**: Commands are autonomous, writes need approval.
+
+---
+
+## 📊 Test Coverage Policy
+
+**AgileFlow enforces consistent test coverage standards across all projects:**
+
+### Coverage Targets
+- **Global target**: 80% overall code coverage
+- **Critical paths**: 100% coverage required (authentication, payment, data integrity, security)
+- **CI enforcement**: Builds fail if coverage drops below 80%
+
+### Coverage by Component Type
+- **Unit tests**: 80%+ (business logic, utilities)
+- **Integration tests**: 60%+ (API endpoints, database interactions)
+- **E2E tests**: 30%+ (critical user flows)
+
+### Guidelines
+- New code should aim for 90%+ coverage
+- Never accept <70% without documented exceptions and plan to improve
+- Test quality matters: prefer meaningful tests over coverage percentage
+- Document any coverage exceptions in story's Testing Strategy section
+
+### Reporting
+- Coverage reports generated on every CI run
+- Dev agents must report coverage metrics when completing stories
+- Blockers created if coverage drops below threshold
+
+**Rationale**: Consistent standards prevent "coverage drift" where different agents/docs cite different thresholds.
+
+---
 
 ## Architecture
 
@@ -34,8 +86,9 @@ AgileFlow/
 ├── .claude-plugin/
 │   ├── plugin.json           # Plugin metadata (version, command/subagent registry)
 │   └── marketplace.json      # Marketplace listing
-├── commands/                 # 41 slash command definitions (*.md files)
-├── agents/                   # 25 subagent definitions (*.md files)
+├── commands/                 # 38 slash command definitions (*.md files)
+├── agents/                   # 27 subagent definitions (*.md files)
+├── skills/                   # 23 skill definitions (*/SKILL.md files)
 ├── hooks/                    # Hooks system (gitignored - user creates)
 │   ├── hooks.json           # Hook configuration (user-specific)
 │   └── hooks.local.json     # Local overrides (optional)
@@ -103,9 +156,9 @@ AgileFlow/
 - Latest version section must match `plugin.json` version
 - Documents all changes per version with Added/Changed/Fixed/Improved sections
 
-## BMAD-METHOD Patterns (v2.16.0+)
+## Architecture Context & Knowledge Transfer Patterns (v2.16.0+)
 
-AgileFlow now implements key patterns from BMAD-METHOD framework for improved dev agent context awareness and knowledge transfer between stories.
+AgileFlow now implements key patterns for improved dev agent context awareness and knowledge transfer between stories.
 
 ### Architecture Context Extraction
 
@@ -245,12 +298,12 @@ The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
 
 ## v2.16.0 Quick Reference
 
-### New Features (BMAD Integration)
+### New Features
 - ✅ **Architecture Context Extraction**: Stories now include auto-filled Architecture Context with source citations
 - ✅ **Dev Agent Record**: Capture implementation model, issues, lessons learned for knowledge transfer
 - ✅ **Previous Story Insights**: Flow lessons between stories in same epic
 - ✅ **Story Validation Command**: `/AgileFlow:story-validate US-XXXX` for completeness checking
-- ✅ **Enhanced /babysit**: Integrated BMAD workflow guidance (validate → read context → implement → record lessons)
+- ✅ **Enhanced /babysit**: Integrated workflow guidance (validate → read context → implement → record lessons)
 
 ### New Files Created
 - `commands/story-validate.md` - Story validation command
@@ -259,7 +312,7 @@ The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
 ### Modified Files
 - `templates/story-template.md` - Added Architecture Context, Dev Agent Record, Previous Story Insights
 - `agents/agileflow-epic-planner.md` - Added Architecture Context Extraction workflow
-- `commands/babysit.md` - Enhanced with BMAD guidance sections
+- `commands/babysit.md` - Enhanced with workflow guidance sections
 - `CHANGELOG.md` - v2.16.0 entry with full details
 - `.claude-plugin/plugin.json` - Version bumped to 2.16.0
 
@@ -286,7 +339,7 @@ For each story:
 Stories status = "ready" (Definition of Ready met)
 ```
 
-### Workflow 2: Implement Story with BMAD Patterns
+### Workflow 2: Implement Story with Enhanced Patterns
 
 ```
 Dev Agent receives: US-XXXX (Story with Architecture Context populated)
@@ -1036,7 +1089,7 @@ No additional setup required - works automatically after `/AgileFlow:setup` comp
 
 ## Story Template Structure (v2.16.0+)
 
-Stories in `docs/06-stories/` now follow enhanced template with BMAD patterns. Key sections:
+Stories in `docs/06-stories/` now follow enhanced template with improved patterns. Key sections:
 
 ### Required Frontmatter
 ```yaml
@@ -1064,7 +1117,7 @@ dependencies: []
   **Then** they receive JWT token with 24h expiration (HTTP 200)
 ```
 
-**Architecture Context** (NEW - BMAD pattern)
+**Architecture Context** (NEW)
 - Extracted by Epic Planner from `docs/04-architecture/`
 - 6 subsections: Data Models, API Specs, Components, File Locations, Testing, Constraints
 - Every detail includes source citation: `[Source: architecture/api-spec.md#endpoints]`
@@ -1094,7 +1147,7 @@ See: `docs/06-stories/EP-0001/US-0001-user-login-api.md`
 - Shows populated Dev Agent Record with implementation notes
 - Shows Previous Story Insights pattern for follow-on stories
 
-## Development Workflow (with BMAD Patterns)
+## Development Workflow (Enhanced)
 
 When implementing a story:
 

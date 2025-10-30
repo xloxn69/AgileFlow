@@ -23,7 +23,7 @@ Validate that a story is complete, well-structured, and ready for implementation
 SCOPE
 - Validating individual user stories in docs/06-stories/
 - Checking story completeness before assignment to dev agents
-- Verifying Architecture Context extraction (BMAD pattern)
+- Verifying Architecture Context extraction
 - Ensuring compliance with story template structure
 - NOT modifying stories (read-only validation)
 
