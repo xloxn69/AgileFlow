@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 commands, 26 specialized subagents, BMAD-METHOD integration, and hooks system (v2.19.5 - Archival config moved to agileflow-metadata.json for consistency)",
+  "description": "Universal agile/docs-as-code system with 37 commands, 26 specialized subagents, BMAD-METHOD integration, and hooks system (v2.19.6 - JSON validation and system diagnostics)",
   "plugins": [
     {
       "name": "AgileFlow",
