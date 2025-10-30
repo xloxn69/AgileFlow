@@ -1038,7 +1038,7 @@ Your choice (1-5): [WAIT FOR INPUT]
 
 **Process User Choice**:
 ```bash
-# Store choice in .claude/settings.json
+# Store choice in docs/00-meta/agileflow-metadata.json
 case $CHOICE in
   1) DAYS=3 ;;
   2) DAYS=7 ;;
@@ -1050,23 +1050,27 @@ case $CHOICE in
     ;;
 esac
 
-# Create or update .claude/settings.json
-mkdir -p .claude
-if [ -f .claude/settings.json ]; then
-  # Update existing settings
-  jq ".env.ARCHIVE_THRESHOLD_DAYS = $DAYS" .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
+# Update docs/00-meta/agileflow-metadata.json with archival config
+METADATA_FILE="docs/00-meta/agileflow-metadata.json"
+if [ -f "$METADATA_FILE" ]; then
+  # Update existing metadata
+  jq ".archival = {\"threshold_days\": $DAYS, \"enabled\": true} | .updated = \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"" "$METADATA_FILE" > "${METADATA_FILE}.tmp" && mv "${METADATA_FILE}.tmp" "$METADATA_FILE"
 else
-  # Create new settings
-  cat > .claude/settings.json << EOF
+  # Create new metadata (shouldn't happen if core system was set up)
+  cat > "$METADATA_FILE" << EOF
 {
-  "env": {
-    "ARCHIVE_THRESHOLD_DAYS": "$DAYS"
+  "version": "2.19.5",
+  "created": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "archival": {
+    "threshold_days": $DAYS,
+    "enabled": true
   }
 }
 EOF
 fi
 
-echo "✅ Configured $DAYS-day archival threshold"
+echo "✅ Configured $DAYS-day archival threshold in agileflow-metadata.json"
 ```
 
 **Add Auto-Archival Hook to hooks.json**:
@@ -1077,11 +1081,12 @@ CURRENT_HOOKS=$(cat hooks/hooks.json)
 # Add SessionStart hook for auto-archival check (if not already present)
 if ! grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
   # Add auto-archival hook to SessionStart
+  # Script reads threshold from agileflow-metadata.json automatically
   jq '.hooks.SessionStart += [{
     "matcher": "",
     "hooks": [{
       "type": "command",
-      "command": "bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30) > /dev/null 2>&1 &"
+      "command": "bash scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
     }]
   }]' hooks/hooks.json > hooks/hooks.json.tmp && mv hooks/hooks.json.tmp hooks/hooks.json
 
@@ -1128,13 +1133,10 @@ AgileFlow automatically manages `docs/09-agents/status.json` file size by archiv
 **Current Threshold**: $DAYS days (completed stories older than $DAYS days are archived)
 
 **To change threshold**:
-1. Edit `.claude/settings.json`:
-   ```json
-   {
-     "env": {
-       "ARCHIVE_THRESHOLD_DAYS": "7"
-     }
-   }
+1. Edit `docs/00-meta/agileflow-metadata.json`:
+   ```bash
+   # Update threshold to 7 days
+   jq '.archival.threshold_days = 7 | .updated = "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"' docs/00-meta/agileflow-metadata.json > tmp.json && mv tmp.json docs/00-meta/agileflow-metadata.json
    ```
 2. Changes take effect immediately (no restart needed)
 3. Next SessionStart will use new threshold
@@ -1219,22 +1221,25 @@ jq '.stories["US-0042"]' docs/09-agents/status-archive.json
 ✅ Threshold: $DAYS days
 ✅ Archive script deployed: scripts/archive-completed-stories.sh
 ✅ Auto-archival hook added to hooks/hooks.json
-✅ Settings saved to .claude/settings.json
+✅ Settings saved to docs/00-meta/agileflow-metadata.json
 ✅ CLAUDE.md updated with archival documentation
 
 How it works:
 - Every time Claude Code starts (SessionStart hook)
 - Script checks docs/09-agents/status.json size
+- Reads threshold from docs/00-meta/agileflow-metadata.json
 - If needed, archives completed stories older than $DAYS days
 - Keeps status.json small and fast for agents
 - Full history preserved in docs/09-agents/status-archive.json
 
 Manual archival:
-- Run anytime: bash scripts/archive-completed-stories.sh $DAYS
+- Run anytime: bash scripts/archive-completed-stories.sh (reads from metadata)
+- Or with custom threshold: bash scripts/archive-completed-stories.sh 7
 - View status: ls -lh docs/09-agents/status*.json
 
 Configuration:
-- Change threshold: Edit .claude/settings.json → "ARCHIVE_THRESHOLD_DAYS"
+- Stored in: docs/00-meta/agileflow-metadata.json
+- Change threshold: jq '.archival.threshold_days = 7' docs/00-meta/agileflow-metadata.json
 - Takes effect immediately (no restart needed)
 
 Next steps:
