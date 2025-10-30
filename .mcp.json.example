@@ -1,60 +1,91 @@
 {
   "mcpServers": {
     "notion": {
-      "command": "npx",
-      "args": ["-y", "@notionhq/notion-mcp-server"],
-      "env": {
-        "NOTION_TOKEN": "${NOTION_TOKEN}"
-      }
+      "command": "bash",
+      "args": [
+        "scripts/mcp-wrappers/load-env.sh",
+        "npx",
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ]
     },
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp", "--api-key", "${CONTEXT7_API_KEY}"]
+      "command": "bash",
+      "args": [
+        "scripts/mcp-wrappers/load-env.sh",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
     }
   }
 }
 
 // ⚠️ CRITICAL SECURITY INSTRUCTIONS ⚠️
 //
-// 1. Copy this file to .mcp.json:
-//    cp .mcp.json.example .mcp.json
+// HOW MCP ENVIRONMENT VARIABLES WORK:
 //
-// 2. NEVER EDIT .mcp.json - it uses environment variable substitution!
-//    The ${VAR} syntax automatically reads from your .env file.
+// Claude Code does NOT automatically load .env files for MCP servers.
+// This template uses a wrapper script (scripts/mcp-wrappers/load-env.sh)
+// that loads .env and exports variables before starting the MCP server.
 //
-// 3. Add your tokens to .env file (NOT .mcp.json):
+// SETUP STEPS:
+//
+// 1. Run /AgileFlow:setup and select MCP integration to auto-generate:
+//    - .mcp.json (this file, copied from template)
+//    - scripts/mcp-wrappers/load-env.sh (wrapper script)
+//    - .env (token storage - you must add your actual tokens)
+//
+// 2. Add your tokens to .env file:
 //    NOTION_TOKEN=ntn_your_actual_notion_token_here
 //    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_github_token_here
-//    CONTEXT7_API_KEY=your_context7_api_key_here  # OPTIONAL - see note below
 //
-// 4. VERIFY .mcp.json and .env are in .gitignore:
+// 3. VERIFY .mcp.json and .env are in .gitignore:
 //    grep -E '\.mcp\.json|\.env' .gitignore
-//    If missing, run /AgileFlow:setup-system or add manually!
+//    If missing, run /AgileFlow:setup or add manually!
 //
-// 5. NEVER commit .mcp.json or .env to git (contains secrets!)
+// 4. RESTART Claude Code (critical - MCP servers only load at startup)
+//
+// 5. Test with: /AgileFlow:github or /AgileFlow:notion
+//
+// NEVER commit .mcp.json or .env to git (contains secrets!)
 //
 // Token sources:
 // - Notion: https://www.notion.so/my-integrations (starts with "ntn_")
 // - GitHub: https://github.com/settings/tokens (starts with "ghp_")
-// - Context7: https://context7.com/dashboard (OPTIONAL - see note below)
 //
 // GitHub token permissions needed:
 // - repo (full control) - for issues, PRs, labels
 // - read:org - for organization access (if needed)
 //
-// Context7 (OPTIONAL API key):
-// - Context7 works WITHOUT an API key (standard rate limits, public repos only)
-// - API key provides: higher rate limits, private repo access, priority support
-// - If NOT using API key: Leave CONTEXT7_API_KEY blank or remove from .env
-// - Context7 provides Claude with up-to-date framework/library documentation
-//   (overcomes January 2025 training data cutoff)
+// WHY WRAPPER APPROACH?
 //
-// NOTE: Some MCP servers don't support ${VAR} substitution (e.g., Postgres).
-// For those, see docs/00-meta/mcp-wrapper-scripts/ for wrapper script examples.
+// OLD (broken): "env": {"VAR": "${VAR}"}
+//   - Expected Claude Code to load .env (it doesn't)
+//   - ${VAR} substitution reads from system env vars, not .env files
+//
+// NEW (works): "command": "bash", "args": ["scripts/mcp-wrappers/load-env.sh", ...]
+//   - Wrapper loads .env and exports vars before running MCP server
+//   - No "env" block needed
+//   - Works reliably across all platforms
+//
+// ADDING OTHER MCP SERVERS:
+//
+// For servers that read from environment variables:
+//   {
+//     "server-name": {
+//       "command": "bash",
+//       "args": [
+//         "scripts/mcp-wrappers/load-env.sh",
+//         "npx",
+//         "-y",
+//         "@scope/mcp-server-package"
+//       ]
+//     }
+//   }
+//
+// For servers that need command-line args with secrets:
+//   - Create a dedicated wrapper script in scripts/mcp-wrappers/
+//   - See templates/mcp-wrapper-postgres.sh for example
+//   - Wrapper should load .env and pass secrets as CLI args
+//
