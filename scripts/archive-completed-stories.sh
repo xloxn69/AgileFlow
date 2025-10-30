@@ -42,6 +42,24 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
+# Validate status.json before processing (CRITICAL)
+if ! jq empty "$STATUS_FILE" 2>/dev/null; then
+    echo -e "${RED}❌ ERROR: $STATUS_FILE is invalid JSON${NC}"
+    echo ""
+    echo -e "${YELLOW}To diagnose the issue, run:${NC}"
+    echo "   jq . $STATUS_FILE"
+    echo ""
+    echo -e "${YELLOW}To fix manually:${NC}"
+    echo "   1. Open $STATUS_FILE in a text editor"
+    echo "   2. Look for syntax errors (unescaped quotes, missing commas, etc.)"
+    echo "   3. Fix the JSON syntax"
+    echo "   4. Validate: jq empty $STATUS_FILE"
+    echo ""
+    echo -e "${YELLOW}Or use the validation helper:${NC}"
+    echo "   bash scripts/validate-json.sh $STATUS_FILE"
+    exit 1
+fi
+
 # Calculate cutoff date (stories completed before this date will be archived)
 CUTOFF_DATE=$(date -u -d "$DAYS_THRESHOLD days ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || date -u -v-${DAYS_THRESHOLD}d +"%Y-%m-%dT%H:%M:%SZ")
 
