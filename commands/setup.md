@@ -285,39 +285,58 @@ GITHUB MCP INTEGRATION SETUP (if enabled)
 2. Get your token (starts with `ghp_`)
 3. Token permissions needed: `repo` (full control), `read:org` (if using organization repos)
 
-**Step 1: Create .mcp.json directly**:
-The AI will create `.mcp.json` in your project root with all configured MCP servers.
-
-**Step 2: Add your GitHub token to .env**:
-Create or update `.env` file with your real GitHub PAT:
+**Step 1: Create MCP wrapper infrastructure**:
 ```bash
-GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
+# Create wrapper directory
+mkdir -p scripts/mcp-wrappers
+
+# Copy wrapper script from plugin templates
+cp ~/.claude-code/plugins/AgileFlow/templates/mcp-wrapper-load-env.sh scripts/mcp-wrappers/load-env.sh
+
+# Make executable
+chmod +x scripts/mcp-wrappers/load-env.sh
 ```
 
-**Step 3: Verify .mcp.json uses environment variable substitution**:
+**Step 2: Create .mcp.json with wrapper approach**:
+The AI will create `.mcp.json` in your project root using the wrapper approach (NO "env" blocks).
+
+Example `.mcp.json`:
 ```json
 {
   "mcpServers": {
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
+      "command": "bash",
+      "args": [
+        "scripts/mcp-wrappers/load-env.sh",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ]
     }
   }
 }
 ```
 
-**⚠️ CRITICAL SECURITY - Environment Variables (NOT Hardcoded Tokens)**:
-- ✅ USE ${VAR} syntax in .mcp.json (reads from .env)
+**Step 3: Add your GitHub token to .env**:
+Create or update `.env` file with your real GitHub PAT:
+```bash
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
+```
+
+**⚠️ CRITICAL SECURITY - Wrapper Approach (NOT ${VAR} Substitution)**:
+- ✅ Use wrapper script: "command": "bash", "args": ["scripts/mcp-wrappers/load-env.sh", ...]
+- ✅ Wrapper loads .env and exports variables before running MCP server
 - ✅ Store actual tokens in .env (NOT .mcp.json)
 - ✅ BOTH .mcp.json AND .env MUST be in .gitignore
-- ✅ Commit .mcp.json.example and .env.example (with ${VAR} syntax and placeholders)
+- ✅ Commit .mcp.json.example and .env.example (templates with wrapper approach)
 - ❌ NEVER hardcode tokens in .mcp.json
 - ❌ NEVER commit .mcp.json or .env to git
 
-**Step 2: Create GitHub Sync Mapping**:
+**Why wrapper approach?**
+- OLD (broken): "env": {"VAR": "${VAR}"} - Expected Claude Code to load .env (it doesn't)
+- NEW (works): Wrapper loads .env and exports vars before running MCP server
+
+**Step 4: Create GitHub Sync Mapping**:
 Create `docs/08-project/github-sync-map.json`:
 ```json
 {
@@ -329,7 +348,7 @@ Create `docs/08-project/github-sync-map.json`:
 }
 ```
 
-**Step 4: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
+**Step 5: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
 ```bash
 # Check if already present
 grep -E '^\\.mcp\\.json$' .gitignore || echo ".mcp.json" >> .gitignore
@@ -365,7 +384,8 @@ How to restart:
 
 **Print Next Steps**:
 ```
-✅ GitHub MCP configured (.mcp.json created with ${VAR} syntax)
+✅ GitHub MCP configured (.mcp.json created with wrapper approach)
+✅ MCP wrapper script deployed (scripts/mcp-wrappers/load-env.sh)
 ✅ .env template created (.env.example)
 ✅ .gitignore updated (.mcp.json AND .env excluded)
 ✅ GitHub sync mapping created
@@ -375,7 +395,7 @@ Next steps for you:
 1. Create GitHub PAT: https://github.com/settings/tokens (permissions: repo, read:org)
 2. Edit .env and add your real token:
    GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_actual_token_here
-3. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
+3. DO NOT edit .mcp.json (wrapper loads .env automatically)
 4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
 5. NEVER commit .mcp.json or .env (contain secrets!)
 6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
@@ -383,7 +403,7 @@ Next steps for you:
 8. Perform sync: /AgileFlow:github
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json and .env.example)
+1. Pull latest code (includes .mcp.json, wrapper script, and .env.example)
 2. Create their own GitHub PAT
 3. Copy template: cp .env.example .env
 4. Edit .env with their real token
@@ -400,10 +420,39 @@ NOTION INTEGRATION SETUP VIA MCP (if enabled)
 2. Get your Integration Token (starts with `ntn_`)
 3. Share your Notion databases with the integration
 
-**Step 1: Create .mcp.json with Notion server**:
-The AI will create `.mcp.json` with Notion MCP server configured using environment variable substitution.
+**Step 1: Create MCP wrapper infrastructure** (if not already created by GitHub setup):
+```bash
+# Create wrapper directory
+mkdir -p scripts/mcp-wrappers
 
-**Step 2: Add your Notion token to .env**:
+# Copy wrapper script from plugin templates
+cp ~/.claude-code/plugins/AgileFlow/templates/mcp-wrapper-load-env.sh scripts/mcp-wrappers/load-env.sh
+
+# Make executable
+chmod +x scripts/mcp-wrappers/load-env.sh
+```
+
+**Step 2: Create .mcp.json with Notion server using wrapper approach**:
+The AI will create `.mcp.json` with Notion MCP server configured using the wrapper approach (NO "env" blocks).
+
+Example:
+```json
+{
+  "mcpServers": {
+    "notion": {
+      "command": "bash",
+      "args": [
+        "scripts/mcp-wrappers/load-env.sh",
+        "npx",
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ]
+    }
+  }
+}
+```
+
+**Step 3: Add your Notion token to .env**:
 Create or update `.env` file with your real Notion token:
 ```bash
 NOTION_TOKEN=ntn_your_actual_token_here
@@ -477,7 +526,8 @@ Run `/AgileFlow:notion-export MODE=setup` which will:
 
 **Print Next Steps**:
 ```
-✅ Notion MCP configured (.mcp.json created with ${VAR} syntax)
+✅ Notion MCP configured (.mcp.json created with wrapper approach)
+✅ MCP wrapper script deployed (scripts/mcp-wrappers/load-env.sh)
 ✅ .env template created (.env.example)
 ✅ .gitignore updated (.mcp.json AND .env excluded)
 ⚠️  You still need to configure YOUR Notion token
@@ -486,7 +536,7 @@ Next steps for you:
 1. Create Notion integration: https://www.notion.so/my-integrations
 2. Edit .env and add your real token:
    NOTION_TOKEN=ntn_your_actual_token_here
-3. DO NOT edit .mcp.json (it uses ${VAR} to read from .env)
+3. DO NOT edit .mcp.json (wrapper loads .env automatically)
 4. Verify BOTH .mcp.json AND .env are in .gitignore: grep -E '\\.mcp\\.json|\\.env' .gitignore
 5. NEVER commit .mcp.json or .env (contain secrets!)
 6. 🔴 RESTART CLAUDE CODE (to load MCP server with your token)
@@ -495,7 +545,7 @@ Next steps for you:
 9. Perform initial sync: /AgileFlow:notion
 
 Next steps for team members:
-1. Pull latest code (includes .mcp.json and .env.example)
+1. Pull latest code (includes .mcp.json, wrapper script, and .env.example)
 2. Create their own Notion integration
 3. Copy template: cp .env.example .env
 4. Edit .env with their real token
@@ -521,15 +571,46 @@ CONTEXT7 INTEGRATION SETUP VIA MCP (if enabled)
   - Private repository access
   - Priority support
 
-**Step 1: Create .mcp.json with Context7 server**:
-The AI will create `.mcp.json` with Context7 MCP server configured.
+**Step 1: Create MCP wrapper infrastructure** (if not already created):
+```bash
+# Create wrapper directory
+mkdir -p scripts/mcp-wrappers
 
-**Step 2: (Optional) Add your Context7 API key to .env**:
+# Copy wrapper script from plugin templates
+cp ~/.claude-code/plugins/AgileFlow/templates/mcp-wrapper-load-env.sh scripts/mcp-wrappers/load-env.sh
+
+# Make executable
+chmod +x scripts/mcp-wrappers/load-env.sh
+```
+
+**Step 2: Create .mcp.json with Context7 server using wrapper approach**:
+Context7 MCP server reads from CONTEXT7_API_KEY environment variable (wrapper will export it).
+
+Example:
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "bash",
+      "args": [
+        "scripts/mcp-wrappers/load-env.sh",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  }
+}
+```
+
+**Step 3: (Optional) Add your Context7 API key to .env**:
 Context7 works WITHOUT an API key (standard rate limits). For higher limits, add to `.env`:
 ```bash
 CONTEXT7_API_KEY=your_actual_api_key_here
 ```
 Get key at: https://context7.com/dashboard
+
+**Note**: The Context7 MCP server reads CONTEXT7_API_KEY from environment variables. The wrapper script will export it automatically.
 
 **Step 3: Ensure .gitignore has BOTH .mcp.json AND .env** (CRITICAL):
 ```bash
