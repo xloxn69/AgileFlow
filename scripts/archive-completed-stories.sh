@@ -2,14 +2,24 @@
 # Archive Completed Stories Script
 # Moves completed stories older than threshold from status.json to status-archive.json
 # Usage: bash scripts/archive-completed-stories.sh [DAYS_THRESHOLD]
+# If DAYS_THRESHOLD not provided, reads from docs/00-meta/agileflow-metadata.json
 
 set -euo pipefail
 
 # Configuration
-DAYS_THRESHOLD="${1:-30}"  # Default 30 days
+METADATA_FILE="docs/00-meta/agileflow-metadata.json"
 STATUS_FILE="docs/09-agents/status.json"
 ARCHIVE_FILE="docs/09-agents/status-archive.json"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Determine threshold: CLI arg > metadata file > default 30
+if [ -n "${1:-}" ]; then
+  DAYS_THRESHOLD="$1"
+elif [ -f "$METADATA_FILE" ] && command -v jq &> /dev/null; then
+  DAYS_THRESHOLD=$(jq -r '.archival.threshold_days // 30' "$METADATA_FILE" 2>/dev/null || echo "30")
+else
+  DAYS_THRESHOLD=30
+fi
 
 # Colors for output
 RED='\033[0;31m'

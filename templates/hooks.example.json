@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30) > /dev/null 2>&1 &"
+            "command": "bash scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
           }
         ]
       }
