@@ -1,6 +1,6 @@
 # AgileFlow Subagents Guide
 
-This document explains how to use the 8 specialized subagents included with AgileFlow.
+This document explains how to use the 26 specialized subagents included with AgileFlow.
 
 ## What are Subagents?
 
@@ -40,7 +40,9 @@ Agents communicate via standardized **bus messages** in `docs/09-agents/bus/log.
 
 ---
 
-## The 8 AgileFlow Subagents
+## All AgileFlow Subagents
+
+AgileFlow includes 26 specialized agents covering all aspects of software development. Here are the core workflow agents:
 
 ### 1. `agileflow-ui` - UI/Presentation Specialist
 **When to use**: Implementing front-end components, styling, accessibility
@@ -389,6 +391,98 @@ Auto-suggestions:
 Which research topic should I prioritize?
 I can create a ChatGPT research prompt, search the web, or refresh existing notes.
 ```
+
+---
+
+## Export & Integration Agents
+
+### 9. `agileflow-notion-exporter` - Parallel Notion Export Specialist
+**When to use**: Exporting individual epics/stories/ADRs to Notion (spawned by /AgileFlow:notion)
+
+**Capabilities**:
+- Processes ONE item at a time (epic, story, or ADR)
+- Generates comprehensive summaries with full content
+- Exports to Notion using MCP tools
+- Calculates checksums for sync tracking
+- **Designed for parallel execution** (orchestrator spawns multiple agents)
+- Uses Haiku model for fast processing
+
+**How It Works**:
+This agent is **spawned in parallel** by the `/AgileFlow:notion` command, not invoked directly by users. The orchestrator spawns multiple agents (batches of 10) to export items concurrently, achieving 10-30x performance improvement over sequential processing.
+
+**Agent Input** (from orchestrator):
+```
+ITEM_PATH: docs/05-epics/EP-0001-authentication.md
+ITEM_TYPE: epic | story | adr
+DATABASE_ID: notion-database-id-here
+DRY_RUN: true | false
+```
+
+**Agent Output** (JSON result):
+```json
+{
+  "item_path": "docs/05-epics/EP-0001-authentication.md",
+  "item_type": "epic",
+  "status": "success",
+  "notion_page_id": "abc123-notion-page-id",
+  "notion_url": "https://notion.so/workspace/abc123",
+  "checksum": "abc123def456",
+  "timestamp": "2025-10-30T10:30:00Z",
+  "summary_length": 1234
+}
+```
+
+**Summary Generation**:
+The agent generates **detailed summaries** based on item type:
+
+- **Epic Summary**: Full description, goals, story list with progress (X/Y completed), dependencies, related ADRs, dates
+- **Story Summary**: Full description, acceptance criteria (all Given/When/Then), technical notes, testing strategy, architecture context, implementation details, files modified, dependencies
+- **ADR Summary**: Full context, decision rationale, alternatives considered with pros/cons, consequences (positive/negative), related epics/stories
+
+**Performance**:
+- **Sequential**: 100 items = 3-5 minutes
+- **Parallel (v2.19.3)**: 100 items = 10-30 seconds
+- **Batching**: Processes 10 agents at a time to respect API rate limits
+- **Error resilience**: Failed items don't block successful exports
+
+**Example orchestration**:
+```
+/AgileFlow:notion
+  ↓
+Orchestrator scans docs/ for all epics, stories, ADRs
+  ↓
+Spawns agileflow-notion-exporter agents in batches:
+  - Batch 1: 10 agents (EP-0001, EP-0002, ..., US-0001)
+  - Batch 2: 10 agents (US-0002, US-0003, ..., ADR-0001)
+  - Batch 3: Remaining items
+  ↓
+Each agent independently:
+  - Reads markdown file
+  - Generates comprehensive summary
+  - Exports to Notion via MCP
+  - Returns JSON result
+  ↓
+Orchestrator collects results and updates sync map
+```
+
+**MCP Integration**:
+Uses Notion MCP tools:
+- `mcp__notion__create_page` - Create new Notion page
+- `mcp__notion__update_page` - Update existing page
+- `mcp__notion__query_database` - Query for existing pages
+
+**Quality Checklist**:
+- [ ] File read successfully
+- [ ] Frontmatter parsed correctly
+- [ ] All sections extracted
+- [ ] Summary includes FULL content (not just metadata)
+- [ ] Relationships identified (epic ↔ stories, ADR ↔ epics)
+- [ ] MCP tool called successfully
+- [ ] Page ID received from Notion
+- [ ] Checksum calculated
+- [ ] JSON result formatted correctly
+
+**You don't invoke this agent directly** - use `/AgileFlow:notion` which orchestrates parallel agent spawning.
 
 ---
 
