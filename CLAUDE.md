@@ -835,6 +835,199 @@ hooks/hooks.local.json
 }
 ```
 
+## Auto-Archival System (v2.19.4+)
+
+AgileFlow includes an automatic archival system to manage `docs/09-agents/status.json` file size and prevent agents from failing with "file too large" errors.
+
+### The Problem
+
+**As projects grow, status.json can exceed token limits**:
+- status.json contains ALL stories (ready, in-progress, blocked, completed)
+- Agents must read status.json on every invocation
+- Files >25k tokens (typically >100KB) cause "file content exceeds maximum allowed tokens" error
+- This breaks ALL agent workflows (UI, API, CI, DevOps, etc.)
+
+### The Solution
+
+**Active/Archive Split**:
+- `docs/09-agents/status.json` - Only active work + recent completions (last N days)
+- `docs/09-agents/status-archive.json` - Older completed stories (full history preserved)
+- Auto-archival runs on SessionStart hook (silently in background)
+- Nothing is deleted - full history maintained in archive
+
+### How It Works
+
+**Auto-Archival Script** (`scripts/archive-completed-stories.sh`):
+- Takes threshold parameter (days): `bash scripts/archive-completed-stories.sh 7`
+- Moves completed stories older than threshold from status.json → status-archive.json
+- Keeps active work (ready, in-progress, blocked) + recent completions in status.json
+- Runs via SessionStart hook configured during `/AgileFlow:setup`
+
+**Example Auto-Archival Hook** (in `hooks/hooks.json`):
+```json
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30) > /dev/null 2>&1 &"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Configuration** (in `.claude/settings.json`):
+```json
+{
+  "env": {
+    "ARCHIVE_THRESHOLD_DAYS": "7"
+  }
+}
+```
+
+### File Structure
+
+**docs/09-agents/status.json** (Active Work):
+- Stories with status: `ready`, `in-progress`, `blocked`
+- Completed stories within threshold (recent completions)
+- Agents read this file (small, fast, <25k tokens)
+- Example: 45 stories, 18KB
+
+**docs/09-agents/status-archive.json** (Historical):
+- Completed stories older than threshold
+- Full history preserved (nothing deleted)
+- Agents rarely need to read this
+- Example: 105 stories, 82KB
+
+### User Configuration Options
+
+During `/AgileFlow:setup`, users choose archival threshold:
+1. **3 days** - Very aggressive (keeps status.json tiny, for fast-moving teams)
+2. **7 days** - Weekly archival (recommended for active projects)
+3. **14 days** - Bi-weekly archival (good balance)
+4. **30 days** - Monthly archival (default, keeps recent context)
+5. **Custom** - Specify any number of days
+
+**To change threshold after setup**:
+1. Edit `.claude/settings.json`:
+   ```json
+   {
+     "env": {
+       "ARCHIVE_THRESHOLD_DAYS": "7"
+     }
+   }
+   ```
+2. Changes take effect immediately (no restart needed)
+3. Next SessionStart will use new threshold
+
+### Manual Archival
+
+**Run archival manually anytime**:
+```bash
+# Archive stories completed >7 days ago
+bash scripts/archive-completed-stories.sh 7
+
+# Archive stories completed >30 days ago
+bash scripts/archive-completed-stories.sh 30
+```
+
+**Output Example**:
+```
+📦 AgileFlow Story Archival
+   Threshold: 7 days
+   Cutoff Date: 2025-10-23T00:00:00Z
+
+📊 Current status.json: 150 stories
+
+📦 Archiving 105 completed stories older than 7 days...
+
+Stories to archive:
+   • US-0001: User Login API (completed: 2025-10-15)
+   • US-0002: Password Reset (completed: 2025-10-16)
+   ... and 103 more
+
+✅ Archival complete!
+
+📊 Results:
+   status.json: 150 → 45 stories (82KB → 18KB)
+   status-archive.json: 105 stories total (82KB)
+   Archived: 105 stories
+
+📋 Active Status Summary:
+   ready: 12 stories
+   in-progress: 8 stories
+   blocked: 3 stories
+   done (recent): 22 stories
+
+✅ Agents will now work with smaller, faster status.json
+```
+
+### Troubleshooting
+
+**If agents fail with "file too large" error**:
+1. Run manual archival: `bash scripts/archive-completed-stories.sh 7`
+2. Reduce threshold in `.claude/settings.json` (e.g., 3 days instead of 30)
+3. Verify auto-archival hook exists in `hooks/hooks.json`
+4. Check file sizes: `ls -lh docs/09-agents/status*.json`
+
+**To restore archived story to active**:
+```bash
+# 1. Find story in archive
+jq '.stories["US-0042"]' docs/09-agents/status-archive.json
+
+# 2. Copy story object
+
+# 3. Add to status.json
+jq '.stories["US-0042"] = <COPIED_OBJECT>' docs/09-agents/status.json > tmp.json && mv tmp.json docs/09-agents/status.json
+
+# 4. Update story status if needed
+```
+
+**To view archived stories**:
+```bash
+# List all archived stories
+jq '.stories | keys[]' docs/09-agents/status-archive.json
+
+# View specific archived story
+jq '.stories["US-0042"]' docs/09-agents/status-archive.json
+
+# Count archived stories
+jq '.stories | length' docs/09-agents/status-archive.json
+```
+
+### Integration with Hooks System
+
+- Auto-archival uses the hooks system (v2.19.0+)
+- Hook added automatically during `/AgileFlow:setup` if enabled
+- Runs silently in background on every SessionStart
+- No user interruption or prompts during normal usage
+- Uses `scripts/get-env.js` to read threshold from `.claude/settings.json`
+
+### Benefits
+
+1. **Prevents agent failures** - Keeps status.json under 25k token limit
+2. **Improves performance** - Agents read smaller files faster
+3. **Maintains history** - Nothing deleted, full audit trail in archive
+4. **Automatic** - Runs on SessionStart, no manual intervention
+5. **Configurable** - Users choose threshold (3/7/14/30+ days)
+6. **Transparent** - Runs silently in background
+7. **Safe** - Creates backups before modifying files
+
+### Setup
+
+Auto-archival is configured automatically by `/AgileFlow:setup` when the hooks system is enabled. The setup process:
+1. Asks user for archival threshold preference (3/7/14/30/custom days)
+2. Stores preference in `.claude/settings.json`
+3. Copies `archive-completed-stories.sh` script from plugin to project
+4. Adds SessionStart hook to `hooks/hooks.json`
+5. Updates project's CLAUDE.md with archival documentation
+
+No additional setup required - works automatically after `/AgileFlow:setup` completes!
+
 ## Story Template Structure (v2.16.0+)
 
 Stories in `docs/06-stories/` now follow enhanced template with BMAD patterns. Key sections:
