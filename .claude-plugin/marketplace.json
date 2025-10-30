@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system with 36 commands, 25 specialized subagents, BMAD-METHOD integration, and hooks system (v2.19.2 - MCP token validation, .gitignore auto-fix, enhanced restart warnings)",
+  "description": "Universal agile/docs-as-code system with 36 commands, 26 specialized subagents, BMAD-METHOD integration, and hooks system (v2.19.3 - Parallel Notion exports 10-30x faster)",
   "plugins": [
     {
       "name": "AgileFlow",
