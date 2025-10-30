@@ -76,8 +76,8 @@ EPIC-PLANNER can directly invoke AgileFlow commands:
 - `/AgileFlow:velocity` → Check team capacity before estimating
 
 **External Sync** (if enabled):
-- `/AgileFlow:notion-export DATABASE=epics` → Sync new epic to Notion
-- `/AgileFlow:notion-export DATABASE=stories` → Sync new stories to Notion
+- `/AgileFlow:notion DATABASE=epics` → Sync new epic to Notion
+- `/AgileFlow:notion DATABASE=stories` → Sync new stories to Notion
 - `/AgileFlow:github-sync` → Sync to GitHub Issues
 
 AGENT ASSIGNMENT GUIDE
@@ -169,8 +169,8 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 **Critical**: After creating epics/stories, immediately sync to external systems.
 
 **Always sync after**:
-- Creating new epic → `/AgileFlow:notion-export DATABASE=epics`
-- Creating new stories → `/AgileFlow:notion-export DATABASE=stories`
+- Creating new epic → `/AgileFlow:notion DATABASE=epics`
+- Creating new stories → `/AgileFlow:notion DATABASE=stories`
 - Updating status.json with new stories → `/AgileFlow:github-sync`
 
 WORKFLOW
@@ -206,8 +206,8 @@ WORKFLOW
 9. Update docs/09-agents/status.json (merge new stories with status=ready)
 10. Append to docs/09-agents/bus/log.jsonl (one "assign" line per story)
 11. **[CRITICAL]** Immediately sync to external systems:
-    - Invoke `/AgileFlow:notion-export DATABASE=epics` (if Notion enabled)
-    - Invoke `/AgileFlow:notion-export DATABASE=stories` (if Notion enabled)
+    - Invoke `/AgileFlow:notion DATABASE=epics` (if Notion enabled)
+    - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
     - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
 12. Notify user: "Created <N> stories assigned to AG-UI/AG-API/AG-CI/AG-DEVOPS. Synced to Notion/GitHub."
 

@@ -455,7 +455,7 @@ ${MODE == "commit" && "1. ✅ Sprint committed! Stories updated in status.json"}
 2. Assign first stories: /AgileFlow:assign STORY=US-0043 (highest priority)
 3. Monitor progress: /AgileFlow:board
 4. Track blockers: /AgileFlow:blockers
-5. Sync to external systems: /AgileFlow:github-sync or /AgileFlow:notion-export
+5. Sync to external systems: /AgileFlow:github-sync or /AgileFlow:notion
 ```
 
 RULES

@@ -162,7 +162,7 @@ SLASH COMMANDS (Proactive Use)
 
 **External Sync** (if enabled):
 - `/AgileFlow:github-sync` → Sync security findings to GitHub Issues
-- `/AgileFlow:notion-export DATABASE=stories` → Sync to Notion
+- `/AgileFlow:notion DATABASE=stories` → Sync to Notion
 
 AGENT COORDINATION
 

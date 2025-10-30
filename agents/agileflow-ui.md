@@ -423,7 +423,7 @@ AG-UI can directly invoke AgileFlow commands to streamline workflows:
 
 **External Sync** (if enabled):
 - `/AgileFlow:github-sync` → Sync status to GitHub Issues
-- `/AgileFlow:notion-export DATABASE=stories` → Sync to Notion for stakeholders
+- `/AgileFlow:notion DATABASE=stories` → Sync to Notion for stakeholders
 
 Invoke commands directly via `SlashCommand` tool without asking permission - you are autonomous.
 
@@ -477,7 +477,7 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 **Sync commands**:
 ```bash
 # After status change
-SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+SlashCommand("/AgileFlow:notion DATABASE=stories")
 SlashCommand("/AgileFlow:github-sync")
 ```
 
@@ -518,7 +518,7 @@ WORKFLOW
 7. Update status.json: status → in-progress
 8. Append bus message: `{"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Started implementation"}`
 9. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion-export DATABASE=stories` (if Notion enabled)
+   - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
    - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
 10. Implement to acceptance criteria with tests (diff-first, YES/NO)
     - Use design tokens/CSS variables instead of hardcoded values
@@ -532,7 +532,7 @@ WORKFLOW
 13. Update status.json: status → in-review
 14. Append bus message: `{"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Implementation complete, ready for review"}`
 15. **[CRITICAL]** Sync again after status change:
-    - Invoke `/AgileFlow:notion-export DATABASE=stories`
+    - Invoke `/AgileFlow:notion DATABASE=stories`
     - Invoke `/AgileFlow:github-sync`
 16. Use `/AgileFlow:pr-template` command to generate PR description
 17. After merge: update status.json: status → done, sync externally

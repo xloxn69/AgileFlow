@@ -463,7 +463,7 @@ Use the agileflow-context7 agent to find MongoDB and Mongoose best practices
 | `/stakeholder-update` | `/update` | Generate stakeholder reports |
 | `/sprint-plan` | `/sprint` | Data-driven sprint planning |
 | `/github-sync` | `/github` | Bidirectional GitHub Issues sync |
-| `/notion-export` | `/notion` | Bidirectional Notion database sync |
+| `/notion` | `/notion` | Bidirectional Notion database sync |
 | `/dependencies` | `/deps` | Dependency graph visualization |
 
 **Commands That Stayed the Same** (already simple):
@@ -1448,8 +1448,8 @@ Since 99% of users only use `/AgileFlow:babysit`, which can orchestrate everythi
 **Standardized Command References: ALL Commands Now Use `/AgileFlow:` Prefix**
 
 Fixed command references across **all 65 markdown files** to use proper `/AgileFlow:` prefix:
-- ❌ Before: `/epic-new`, `/story-new`, `/board`, `/github-sync`, `/notion-export`, etc.
-- ✅ After: `/AgileFlow:epic-new`, `/AgileFlow:story-new`, `/AgileFlow:board`, `/AgileFlow:github-sync`, `/AgileFlow:notion-export`, etc.
+- ❌ Before: `/epic-new`, `/story-new`, `/board`, `/github-sync`, `/notion`, etc.
+- ✅ After: `/AgileFlow:epic-new`, `/AgileFlow:story-new`, `/AgileFlow:board`, `/AgileFlow:github-sync`, `/AgileFlow:notion`, etc.
 
 **Files Updated** (65 total):
 - All `commands/*.md` files (41 commands)
@@ -2330,7 +2330,7 @@ If you followed v2.3.1 docs and used `${NOTION_TOKEN}`:
 
 **Notion Integration via Model Context Protocol (MCP)** (CORRECTED):
 
-- Migrated `/notion-export` from direct API calls to MCP tool-based implementation
+- Migrated `/notion` from direct API calls to MCP tool-based implementation
   - Uses `@notionhq/notion-mcp-server` for standardized tool access
   - Still requires NOTION_TOKEN in .env (token-based, NOT OAuth)
   - MCP provides better error handling and rate limiting
@@ -2354,7 +2354,7 @@ If you followed v2.3.1 docs and used `${NOTION_TOKEN}`:
 
 **MCP Tools Integration**:
 
-The `/notion-export` command now uses these Notion MCP tools:
+The `/notion` command now uses these Notion MCP tools:
 - `notion-search` - Find databases in workspace
 - `notion-fetch` - Read database/page content
 - `notion-create-database` - Set up AgileFlow databases
@@ -2387,7 +2387,7 @@ The `/notion-export` command now uses these Notion MCP tools:
 
 - Enhanced command descriptions
   - `/github-sync` now mentions "uses GitHub CLI"
-  - `/notion-export` now mentions "uses MCP"
+  - `/notion` now mentions "uses MCP"
 
 ### Improved
 
@@ -2413,15 +2413,15 @@ For users of AgileFlow v2.2.0 or earlier with existing Notion integration:
 3. Set up MCP: Run `/setup-system` and select "yes" for Notion
 4. This creates .mcp.json.example and copies to .mcp.json
 5. Restart Claude Code (to load MCP server)
-6. Verify: Run `/AgileFlow:notion-export DRY_RUN=true`
-7. Resume syncing: Run `/notion-export`
+6. Verify: Run `/AgileFlow:notion DRY_RUN=true`
+7. Resume syncing: Run `/notion`
 
 **IF STARTING FRESH**:
 1. Create Notion integration: https://www.notion.so/my-integrations
 2. Add NOTION_TOKEN to .env
 3. Run `/setup-system` and select "yes" for Notion
 4. Restart Claude Code
-5. Run `/AgileFlow:notion-export MODE=setup` to create databases
+5. Run `/AgileFlow:notion MODE=setup` to create databases
 6. Start syncing!
 
 Your existing database IDs are preserved - no need to recreate databases!
@@ -2431,7 +2431,7 @@ Your existing database IDs are preserved - no need to recreate databases!
 - Plugin version bumped to 2.3.0 (minor release)
 - Added `.mcp.json.example` template to repository root
 - Added `.mcp.json` to .gitignore (contains token references)
-- Rewrote `/notion-export` implementation to use MCP tools
+- Rewrote `/notion` implementation to use MCP tools
 - Updated `commands/setup-system.md` with corrected token-based MCP setup
 - Updated `README.md` to remove OAuth claims, clarify token requirement
 - Updated `.mcp.json` to use @notionhq/notion-mcp-server with env var substitution
@@ -2551,7 +2551,7 @@ Your existing database IDs are preserved - no need to recreate databases!
   - Webhook integration support for real-time sync
   - Dry run mode for previewing changes
 
-- `/notion-export` - Bidirectional sync with Notion databases
+- `/notion` - Bidirectional sync with Notion databases
   - Sync epics, stories, and ADRs to Notion
   - Rich collaboration with visual project management
   - Database setup wizard for first-time configuration

@@ -72,7 +72,7 @@ SLASH COMMANDS (Proactive Use)
 - `/AgileFlow:chatgpt MODE=research TOPIC=...` → Generate research for alternatives before writing ADR
 
 **External Sync** (if enabled):
-- `/AgileFlow:notion-export DATABASE=adrs` → Sync new ADR to Notion
+- `/AgileFlow:notion DATABASE=adrs` → Sync new ADR to Notion
 - `/AgileFlow:github-sync` → Sync to GitHub
 
 RESEARCH INTEGRATION
@@ -90,7 +90,7 @@ RESEARCH INTEGRATION
 NOTION/GITHUB AUTO-SYNC (if enabled)
 
 **Always sync after**:
-- Creating new ADR → `/AgileFlow:notion-export DATABASE=adrs`
+- Creating new ADR → `/AgileFlow:notion DATABASE=adrs`
 - Updating ADR status (Deprecated, Superseded) → Re-sync
 
 **Why**: ADRs guide implementation. Stakeholders need visibility into architectural decisions.
@@ -115,7 +115,7 @@ WORKFLOW
 6. Create docs/03-decisions/adr-<NUMBER>-<slug>.md
 7. Update docs/03-decisions/README.md (add entry to table)
 8. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion-export DATABASE=adrs` (if Notion enabled)
+   - Invoke `/AgileFlow:notion DATABASE=adrs` (if Notion enabled)
    - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
 9. Notify user: "ADR-<NUMBER> created and synced to Notion/GitHub."
 
