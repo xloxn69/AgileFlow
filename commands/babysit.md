@@ -131,7 +131,7 @@ DEFINITION OF READY (BMAD-Enhanced)
 - ✓ Test stub at docs/07-testing/test-cases/<US_ID>.md
 - ✓ Dependencies resolved and documented
 - ✓ Previous Story Insights included (if applicable to epic)
-- ✓ Story validated via `/AgileFlow:validate-story` (all checks passing)
+- ✓ Story validated via `/AgileFlow:story-validate` (all checks passing)
 
 ARCHITECTURE CONTEXT GUIDANCE (for implementation)
 
@@ -146,7 +146,7 @@ When implementing a story, guide the dev agent to **use the story's Architecture
 
 **If Architecture Context is incomplete**:
 - Story status should be "draft" not "ready"
-- Ask: "Should I run `/AgileFlow:validate-story` to check completeness before implementing?"
+- Ask: "Should I run `/AgileFlow:story-validate` to check completeness before implementing?"
 - If issues found: Fix Architecture Context extraction before starting implementation
 
 **Benefits for dev agents**:
@@ -192,7 +192,7 @@ STORY VALIDATION BEFORE ASSIGNMENT
 When a story is created or before assigning to dev agent:
 
 **Suggest validation check**:
-- "Let me validate story completeness: `/AgileFlow:validate-story US-XXXX`"
+- "Let me validate story completeness: `/AgileFlow:story-validate US-XXXX`"
 - **If validation fails**:
   - Fix Architecture Context citations (must cite real files)
   - Ensure AC uses Given/When/Then format
@@ -843,7 +843,7 @@ README.MD MAINTENANCE (proactive, CRITICAL PRIORITY)
 
 IMPLEMENTATION FLOW (BMAD-Enhanced)
 1) **[CRITICAL]** Validate story readiness:
-   - Run: `/AgileFlow:validate-story <STORY_ID>`
+   - Run: `/AgileFlow:story-validate <STORY_ID>`
    - Check: Architecture Context populated with source citations, AC clear, structure complete
    - If issues: Fix before proceeding (set status to "draft" if significant)
 2) **[CRITICAL]** Read relevant practices docs based on task type:

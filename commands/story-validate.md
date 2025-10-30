@@ -1,9 +1,9 @@
 ---
-description: validate-story
+description: story-validate
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
-# validate-story
+# story-validate
 
 Validate a specific story for completeness, architecture context, and readiness for development.
 
@@ -181,7 +181,7 @@ WORKFLOW
 
 1. **Story Selection**:
    - Ask user: "Which story would you like to validate? (provide story ID like US-0001)"
-   - Or: Auto-detect if run with `/AgileFlow:validate-story US-0001`
+   - Or: Auto-detect if run with `/AgileFlow:story-validate US-0001`
 
 2. **Load Story File**:
    - Find story file: `docs/06-stories/*/{{STORY_ID}}*.md`
@@ -221,7 +221,7 @@ FIRST ACTION
 
 When invoked:
 1. Ask user: "Which story would you like to validate? (e.g., US-0001)"
-2. Or parse story ID from command: `/AgileFlow:validate-story US-0001`
+2. Or parse story ID from command: `/AgileFlow:story-validate US-0001`
 3. Load story file
 4. Run all validation checks
 5. Generate comprehensive report
