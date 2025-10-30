@@ -1240,8 +1240,17 @@ When updating CHANGELOG.md:
 **Commits**:
 - Use Conventional Commits format
 - Example: `feat: add /AgileFlow:new-command for X`, `fix: correct version in marketplace.json`
-- Include co-authorship: `Co-Authored-By: Claude <noreply@anthropic.com>`
 - **ALWAYS PUSH AFTER COMMITTING**: `git push origin main` (marketplace reads from GitHub)
+
+## Git Commit Attribution Policy
+
+**DO NOT ADD AI ATTRIBUTION** to any commits in this repository.
+
+- **No Claude Code attribution footer** - Do not add "🤖 Generated with Claude Code" or similar
+- **No Co-Authored-By** - Do not add "Co-Authored-By: Claude <noreply@anthropic.com>"
+- **Commits should be clean** - Human-only attribution
+
+This policy applies to ALL commits in the AgileFlow repository. User preference: no AI attribution.
 
 **Never commit**:
 - `.mcp.json` (gitignored - even though it uses `${VAR}`, keep gitignored as safety measure)
