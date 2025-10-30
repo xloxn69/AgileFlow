@@ -379,7 +379,6 @@ HOW TO RESTART:
 3. Wait 5 seconds (ensure process fully exits)
 4. Start Claude Code again
 5. Wait 5-10 seconds for MCP servers to initialize
-6. Run /AgileFlow:validate-mcp to verify
 
 DO THIS NOW - Your MCP integration won't work without it!
 ═══════════════════════════════════════════════════════════
@@ -417,7 +416,7 @@ Next steps for you:
    MCP servers ONLY load on startup!
 ═══════════════════════════════════════════════════════════
 
-7. Validate setup: /AgileFlow:validate-mcp
+7. Verify MCP servers loaded (check Claude Code startup logs)
 8. Preview sync: /AgileFlow:github DRY_RUN=true
 9. Perform sync: /AgileFlow:github
 
@@ -434,7 +433,7 @@ Next steps for team members:
    MCP servers ONLY load on startup!
 ═══════════════════════════════════════════════════════════
 
-7. Validate setup: /AgileFlow:validate-mcp
+7. Verify MCP servers loaded (check Claude Code startup logs)
 8. Start syncing: /AgileFlow:github
 ```
 
@@ -515,7 +514,6 @@ HOW TO RESTART:
 3. Wait 5 seconds (ensure process fully exits)
 4. Start Claude Code again
 5. Wait 5-10 seconds for MCP servers to initialize
-6. Run /AgileFlow:validate-mcp to verify
 
 DO THIS NOW - Your MCP integration won't work without it!
 ═══════════════════════════════════════════════════════════
@@ -689,7 +687,6 @@ HOW TO RESTART:
 3. Wait 5 seconds (ensure process fully exits)
 4. Start Claude Code again
 5. Wait 5-10 seconds for MCP servers to initialize
-6. Run /AgileFlow:validate-mcp to verify
 
 DO THIS NOW - Context7 won't work without it!
 ═══════════════════════════════════════════════════════════
