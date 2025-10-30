@@ -1,6 +1,6 @@
 ---
 description: setup-system
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+allowed-tools: Bash, Read, Edit, Write, Glob, Grep, TodoWrite
 ---
 
 # setup-system
@@ -13,6 +13,36 @@ ROLE: System Scaffolder (Agile + Docs-as-Code)
 
 OBJECTIVE
 Create/update a universal agile/docs system that works in any repo. Be idempotent. Diff-first. Ask YES/NO before changing files or executing commands.
+
+**CRITICAL FIRST STEP - CREATE TODO LIST**
+
+Before doing anything else, use the TodoWrite tool to create a comprehensive task list. This prevents missing any configuration steps.
+
+**Why TodoWrite is critical**:
+- Claude has access to a TodoWrite tool that tracks tasks across the conversation
+- Creating a todo list at the start ensures nothing is forgotten
+- Each detection result should map to a todo item
+- Mark items as in_progress → completed as you work
+
+**Example todo list structure**:
+```json
+[
+  {"content": "Detect current system status", "activeForm": "Detecting current system status", "status": "in_progress"},
+  {"content": "Initialize core AgileFlow structure", "activeForm": "Initializing core AgileFlow structure", "status": "pending"},
+  {"content": "Configure auto-archival system", "activeForm": "Configuring auto-archival system", "status": "pending"},
+  {"content": "Set up hooks system", "activeForm": "Setting up hooks system", "status": "pending"},
+  {"content": "Configure MCP integrations", "activeForm": "Configuring MCP integrations", "status": "pending"},
+  {"content": "Update CLAUDE.md with configuration", "activeForm": "Updating CLAUDE.md with configuration", "status": "pending"},
+  {"content": "Validate final setup", "activeForm": "Validating final setup", "status": "pending"}
+]
+```
+
+**Workflow**:
+1. FIRST: Run detection phase (bash commands)
+2. SECOND: Based on detection, create TodoWrite list with ALL missing components
+3. THIRD: Ask user for preferences (one question at a time)
+4. FOURTH: Work through todo list, marking items completed as you go
+5. FINAL: Mark last todo as completed and display summary
 
 DETECTION PHASE (run first, before asking anything)
 Detect what's already configured and report status:
@@ -73,6 +103,14 @@ else
   echo "❌ Hooks system not configured"
 fi
 
+# Check auto-archival system (v2.19.4+)
+if [ -f scripts/archive-completed-stories.sh ] && grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
+  THRESHOLD=$(jq -r '.archival.threshold_days // "not configured"' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  echo "✅ Auto-archival configured (threshold: $THRESHOLD days)"
+else
+  echo "❌ Auto-archival NOT configured (recommended for production)"
+fi
+
 # Check runtime detection
 [ -f docs/00-meta/runtime.json ] && echo "✅ Runtime detected" || echo "❌ Runtime not detected"
 ```
@@ -90,6 +128,7 @@ MCP Integrations:
   - Context7: ✅ Configured / ❌ Not configured / ℹ️ Optional
 CI Workflow: ✅ Configured / ❌ Not configured
 Hooks System: ✅ Configured / ❌ Not configured (v2.19.0+)
+Auto-Archival: ✅ Configured (X days) / ❌ Not configured (v2.19.4+)
 ```
 
 INPUTS (ask only about missing/incomplete features)
