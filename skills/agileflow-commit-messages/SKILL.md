@@ -4,104 +4,164 @@ description: Formats git commit messages following Conventional Commits and resp
 allowed-tools: Read, Bash
 ---
 
-# AgileFlow Commit Messages
+# agileflow-commit-messages
 
-## Purpose
+ROLE & IDENTITY
+- Skill ID: COMMIT-MSG
+- Specialization: Git commit message formatting with Conventional Commits + attribution policy compliance
+- Part of the AgileFlow docs-as-code system
 
-This skill automatically formats git commit messages following Conventional Commits specification and respects the user's Claude Code attribution preferences configured in CLAUDE.md.
+OBJECTIVE
+Format git commit messages following Conventional Commits specification while respecting user's Claude Code attribution preferences from CLAUDE.md. Ensure commits are clear, concise, and follow project conventions for type, scope, and footer formatting.
 
-## When This Skill Activates
+INPUTS
+- User request to commit changes
+- Files staged for commit (from git status)
+- Change descriptions or diff context
+- CLAUDE.md (optional) - Attribution policy
 
-Load this skill when:
-- User asks to create a git commit
-- User says "commit these changes"
-- Discussing what changes to commit
-- User runs git commands or mentions staging changes
-- After completing code changes that need to be committed
+FIRST ACTION
+**Deterministic boot sequence**:
+1. Check if CLAUDE.md exists: `[ -f CLAUDE.md ] && echo "Found" || echo "Not found"`
+2. If found, read attribution policy: `grep -A 20 "Git Commit Attribution Policy" CLAUDE.md`
+3. Scan git status: `git status --short` to understand scope of changes
+4. Check for staged changes: `git diff --cached --stat`
+
+PROACTIVE KNOWLEDGE LOADING
+**Before generating commit message:**
+- Read CLAUDE.md for attribution policy (CRITICAL - respect user preference)
+- Read .git/config for repo context (if available)
+- Scan staged files to determine commit type and scope
+- Check recent commit history: `git log --oneline -5` to match style
+
+**Attribution Policy Detection**:
+- IF `grep -q "DO NOT ADD AI ATTRIBUTION" CLAUDE.md` → No attribution
+- ELSE → Add default attribution footer
+
+WORKFLOW
+1. **Analyze staged changes**:
+   - Run `git diff --cached --stat` to see files
+   - Determine primary change type (feat, fix, refactor, etc.)
+   - Identify affected scope (api, ui, auth, db, config, etc.)
+
+2. **Check attribution policy** (CRITICAL):
+   - Read CLAUDE.md for "Git Commit Attribution Policy"
+   - IF "DO NOT ADD AI ATTRIBUTION" found → skip footer
+   - ELSE → prepare attribution footer
+
+3. **Format commit message** following Conventional Commits:
+   ```
+   <type>(<scope>): <subject>
+
+   <body>
+
+   <footer>
+   ```
+   - **Type**: feat, fix, docs, style, refactor, perf, test, chore, ci, revert
+   - **Scope** (optional): api, ui, auth, db, config, etc.
+   - **Subject**: Imperative mood, lowercase, <50 chars, no period
+   - **Body** (optional): Explain WHAT and WHY (not HOW), wrap at 72 chars
+   - **Footer**: Issue refs (Closes #123), breaking changes, attribution
+
+4. **Add attribution footer** (if policy allows):
+   ```
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+   Co-Authored-By: Claude <noreply@anthropic.com>
+   ```
+
+5. **Show commit message** to user for approval (diff-first pattern)
+
+6. **Execute commit** after YES confirmation:
+   ```bash
+   git commit -m "$(cat <<'EOF'
+   <formatted message>
+   EOF
+   )"
+   ```
+
+RELATED COMMANDS
+- `/AgileFlow:setup` - Creates CLAUDE.md with attribution policy during setup
+- `/AgileFlow:ai-code-review` - Use before committing to verify quality
+- `/AgileFlow:generate-changelog` - Parses commit messages for changelog generation
+- `/AgileFlow:status STORY=... STATUS=in-review` - Update story status after commit
+
+**When to use slash commands**:
+- After committing code changes → `/AgileFlow:status` to update story
+- After completing story → `/AgileFlow:generate-changelog` for release notes
+
+OUTPUTS
+- Formatted commit message (shown to user for approval)
+- Git commit executed (if user says YES)
+- Commit SHA (from git output)
+
+HANDOFFS
+**AgileFlow Coordination** (optional - if working within AgileFlow system):
+- DOES NOT update docs/09-agents/status.json directly (commit is atomic)
+- DOES NOT append to bus/log.jsonl (commits don't trigger coordination)
+- **Story lifecycle**: Commits typically happen during `in-progress` phase
+- **After commit**: Dev agent should update status.json to `in-review` if story complete
+
+**Security Note**: NEVER commit secrets to git
+- Check for .env, credentials.json, tokens, API keys
+- Warn user if sensitive files are staged
+- Suggest adding to .gitignore instead
+
+QUALITY CHECKLIST
+Before suggesting commit message:
+- [ ] Type is appropriate (feat/fix/refactor/docs/chore/etc.)
+- [ ] Subject is imperative mood ("add" not "added" or "adds")
+- [ ] Subject is lowercase, <50 chars, no period at end
+- [ ] Body explains WHY (not just WHAT), wrapped at 72 chars
+- [ ] Footer includes issue references if applicable (Closes #123)
+- [ ] **Attribution policy checked in CLAUDE.md** (CRITICAL)
+- [ ] No secrets in staged files (.env, tokens, credentials)
+- [ ] Breaking changes marked with `!` and `BREAKING CHANGE:` footer
 
 ## Conventional Commits Format
 
-```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
-```
-
 ### Types
-
 - **feat**: New feature
 - **fix**: Bug fix
-- **docs**: Documentation changes
-- **style**: Code style changes (formatting, missing semicolons, etc.)
-- **refactor**: Code refactoring (neither fixes a bug nor adds a feature)
+- **docs**: Documentation only changes
+- **style**: Code style (formatting, missing semicolons, whitespace)
+- **refactor**: Code refactor (neither fixes bug nor adds feature)
 - **perf**: Performance improvements
-- **test**: Adding or modifying tests
-- **chore**: Build process, dependencies, tooling changes
+- **test**: Adding/modifying tests
+- **chore**: Build process, dependencies, tooling
 - **ci**: CI/CD configuration changes
 - **revert**: Reverts a previous commit
 
 ### Scope (Optional)
-
-The scope specifies what part of the codebase is affected:
 - `(api)`, `(ui)`, `(auth)`, `(db)`, `(config)`, etc.
 - Can be omitted if change affects multiple areas
 
-### Subject
-
-- Imperative mood ("add" not "added" or "adds")
+### Subject Rules
+- Imperative mood: "add feature" not "added feature" or "adds feature"
 - No capitalization of first letter
 - No period at the end
 - Max 50 characters
+- Clear and concise
 
 ### Body (Optional but Recommended)
-
-- Explain WHAT and WHY, not HOW
-- Wrap at 72 characters
+- Explain WHAT changed and WHY (not HOW - code shows that)
+- Wrap at 72 characters per line
 - Separate from subject with blank line
 - Use bullet points for multiple changes
 
 ### Footer (Optional)
+- **Breaking changes**: `BREAKING CHANGE: description`
+- **Issue references**: `Closes #123`, `Fixes #456`
+- **Attribution**: Add if CLAUDE.md allows (see attribution policy)
 
-- Breaking changes: `BREAKING CHANGE: description`
-- Issue references: `Closes #123`, `Fixes #456`
-- Attribution (see below)
+## Attribution Examples
 
-## Attribution Handling (CRITICAL)
-
-**ALWAYS check CLAUDE.md for attribution preferences before adding footer!**
-
-### Workflow
-
-1. **Check for CLAUDE.md**:
-   ```bash
-   [ -f CLAUDE.md ] && echo "Found" || echo "Not found"
-   ```
-
-2. **Read attribution policy**:
-   ```bash
-   grep -A 20 "Git Commit Attribution Policy" CLAUDE.md
-   ```
-
-3. **Apply attribution based on policy**:
-
-**If CLAUDE.md says "DO NOT ADD AI ATTRIBUTION":**
+**WITH attribution** (default if no policy):
 ```
 feat(auth): add two-factor authentication
 
 Implemented TOTP-based 2FA with QR code generation
-for user account security.
-
-Closes #234
-```
-
-**If CLAUDE.md has NO attribution policy (or doesn't exist):**
-```
-feat(auth): add two-factor authentication
-
-Implemented TOTP-based 2FA with QR code generation
-for user account security.
+for enhanced user account security.
 
 Closes #234
 
@@ -110,22 +170,15 @@ Closes #234
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-**If user explicitly requests no attribution (in current conversation):**
-Respect their request for THIS commit, but note that CLAUDE.md should be updated for permanent preference.
+**WITHOUT attribution** (if CLAUDE.md says "DO NOT ADD AI ATTRIBUTION"):
+```
+feat(auth): add two-factor authentication
 
-## Commit Message Quality Checklist
+Implemented TOTP-based 2FA with QR code generation
+for enhanced user account security.
 
-Before suggesting a commit message:
-- [ ] Type is appropriate for the change
-- [ ] Subject is imperative mood, lowercase, <50 chars
-- [ ] Body explains WHY (not just WHAT)
-- [ ] Footer includes issue references if applicable
-- [ ] **Attribution policy checked in CLAUDE.md**
-- [ ] Line lengths respected (subject <50, body <72)
-
-## Examples
-
-See `reference/` directory for good vs bad commit message examples.
+Closes #234
+```
 
 ## Multi-File Commits
 
@@ -148,7 +201,7 @@ Closes #123, #124
 
 ## Breaking Changes
 
-When introducing breaking changes:
+When introducing breaking changes, use `!` and `BREAKING CHANGE:`:
 ```
 feat(api)!: change authentication endpoint structure
 
@@ -175,26 +228,8 @@ certain browser configurations. Reverting to investigate and fix.
 ## Integration with Other Skills
 
 - **agileflow-changelog**: Commit messages inform changelog entries
-- **agileflow-story-writer**: Reference story IDs in commits (`Closes STORY-042`)
-
-## Script: check-attribution.sh
-
-Use `scripts/check-attribution.sh` to determine attribution preference:
-
-```bash
-#!/bin/bash
-# Returns "yes" if attribution should be added, "no" if it should not
-
-if [ -f CLAUDE.md ]; then
-  if grep -q "DO NOT ADD AI ATTRIBUTION" CLAUDE.md; then
-    echo "no"
-  else
-    echo "yes"
-  fi
-else
-  echo "yes"  # Default to adding attribution if no CLAUDE.md
-fi
-```
+- **agileflow-story-writer**: Reference story IDs in commits (Closes STORY-042)
+- **agileflow-adr-writer**: Link ADRs in footer (Refs: ADR-0005)
 
 ## Notes
 
@@ -203,3 +238,4 @@ fi
 - If unsure about type, ask the user
 - For large commits, suggest breaking into smaller logical commits
 - Include context in body - future developers will thank you
+- Keep line lengths: subject <50 chars, body <72 chars
