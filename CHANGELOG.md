@@ -5,6 +5,175 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.4] - 2025-10-30
+
+### Added - Auto-Archival System (Prevents Agent Failures from Large status.json)
+
+Implemented automatic archival system to manage `docs/09-agents/status.json` file size and prevent agents from failing with "file content exceeds maximum allowed tokens" error (25k token limit).
+
+**The Problem Solved**:
+- As projects grow, status.json can exceed 25k tokens (typically >100KB)
+- Agents must read status.json on every invocation
+- Files exceeding token limit cause agents to fail with "file too large" error
+- This breaks ALL agent workflows (UI, API, CI, DevOps, etc.)
+- User reported: "⏺ Read(docs/09-agents/status.json) ⎿ Error: File content (25574 tokens) exceeds maximum allowed tokens (25000)"
+
+**The Solution - Active/Archive Split**:
+
+1. **Archive Script** (`scripts/archive-completed-stories.sh`)
+   - Moves completed stories older than threshold from status.json → status-archive.json
+   - Keeps active work (ready, in-progress, blocked) + recent completions in status.json
+   - Configurable threshold (3/7/14/30+ days)
+   - Safe: Creates backups before modifying files
+   - Detailed output showing what was archived and current status
+
+2. **Setup Integration** (updated `/AgileFlow:setup`)
+   - New section: "Auto-Archival Configuration"
+   - Asks user for archival threshold preference:
+     - 3 days (very aggressive - keeps status.json tiny)
+     - 7 days (weekly archival - recommended for active projects)
+     - 14 days (bi-weekly archival - good balance)
+     - 30 days (monthly archival - default, keeps recent context)
+     - Custom (specify any number of days)
+   - Stores preference in `.claude/settings.json`
+   - Copies archive script from plugin to project
+   - Adds SessionStart hook for automatic archival
+   - Updates project's CLAUDE.md with archival documentation
+
+3. **Auto-Archival Hook** (updated `templates/hooks.example.json`)
+   - Added SessionStart hook for automatic archival
+   - Runs silently in background on every Claude Code session start
+   - Uses `scripts/get-env.js` to read threshold from `.claude/settings.json`
+   - No user interruption or prompts during normal usage
+
+4. **Comprehensive Documentation** (updated `CLAUDE.md`)
+   - New section: "Auto-Archival System (v2.19.4+)"
+   - Explains the problem, solution, and benefits
+   - File structure (active vs archive)
+   - User configuration options
+   - Manual archival commands
+   - Troubleshooting guide
+   - Integration with hooks system
+
+**How It Works**:
+
+```
+SessionStart hook fires
+  ↓
+bash scripts/archive-completed-stories.sh $(node scripts/get-env.js ARCHIVE_THRESHOLD_DAYS 30)
+  ↓
+Script checks status.json for completed stories older than threshold
+  ↓
+If found: Move to status-archive.json, update status.json
+  ↓
+Agents work with smaller, faster status.json (under 25k tokens)
+```
+
+**Example Results**:
+```
+📦 AgileFlow Story Archival
+   Threshold: 7 days
+   Cutoff Date: 2025-10-23T00:00:00Z
+
+📊 Current status.json: 150 stories
+
+📦 Archiving 105 completed stories older than 7 days...
+
+✅ Archival complete!
+
+📊 Results:
+   status.json: 150 → 45 stories (82KB → 18KB)
+   status-archive.json: 105 stories total (82KB)
+   Archived: 105 stories
+
+📋 Active Status Summary:
+   ready: 12 stories
+   in-progress: 8 stories
+   blocked: 3 stories
+   done (recent): 22 stories
+
+✅ Agents will now work with smaller, faster status.json
+```
+
+**File Structure**:
+
+- **docs/09-agents/status.json** (Active Work):
+  - Stories with status: ready, in-progress, blocked
+  - Completed stories within threshold (recent completions)
+  - Agents read this file (small, fast, <25k tokens)
+  - Example: 45 stories, 18KB
+
+- **docs/09-agents/status-archive.json** (Historical):
+  - Completed stories older than threshold
+  - Full history preserved (nothing deleted)
+  - Agents rarely need to read this
+  - Example: 105 stories, 82KB
+
+**Benefits**:
+1. **Prevents agent failures** - Keeps status.json under 25k token limit
+2. **Improves performance** - Agents read smaller files faster (18KB vs 82KB)
+3. **Maintains history** - Nothing deleted, full audit trail in archive
+4. **Automatic** - Runs on SessionStart, no manual intervention needed
+5. **Configurable** - Users choose threshold (3/7/14/30+ days)
+6. **Transparent** - Runs silently in background
+7. **Safe** - Creates backups before modifying files
+
+**Files Created**:
+- `scripts/archive-completed-stories.sh` - Archive script with configurable threshold
+
+**Files Modified**:
+- `commands/setup.md` - Added "Auto-Archival Configuration" section
+- `templates/hooks.example.json` - Added auto-archival SessionStart hook example
+- `CLAUDE.md` - Added "Auto-Archival System (v2.19.4+)" section with full documentation
+- `.claude-plugin/plugin.json` - Version bumped to 2.19.4
+- `.claude-plugin/marketplace.json` - Updated description with v2.19.4
+
+**Usage**:
+
+**Automatic** (via SessionStart hook):
+- No action needed - runs automatically when Claude Code starts
+- Configured during `/AgileFlow:setup`
+
+**Manual** (run anytime):
+```bash
+# Archive stories completed >7 days ago
+bash scripts/archive-completed-stories.sh 7
+
+# Archive stories completed >30 days ago
+bash scripts/archive-completed-stories.sh 30
+```
+
+**Configuration** (change threshold):
+```bash
+# Edit .claude/settings.json
+{
+  "env": {
+    "ARCHIVE_THRESHOLD_DAYS": "7"
+  }
+}
+```
+
+**Why This Matters**:
+- Solves critical scalability issue affecting all active projects
+- Prevents "file too large" errors that break agent workflows
+- No breaking changes - existing projects continue working
+- Self-maintaining - runs automatically via hooks system
+- User-reported issue: Fixed the exact error user encountered
+
+**Technical Implementation**:
+- Uses jq for JSON manipulation (safe, tested)
+- Calculates cutoff date based on threshold
+- Filters completed stories older than cutoff
+- Merges filtered stories into archive
+- Removes archived stories from active status
+- Creates backups before modifications
+- Provides detailed output with status summary
+
+**Upgrade Path**:
+- Existing projects: Run `/AgileFlow:setup` to enable auto-archival
+- New projects: Auto-archival configured automatically during setup
+- Backward compatible: Archive created on first run, no migration needed
+
 ## [2.19.3] - 2025-10-30
 
 ### Added - Parallel Notion Export Architecture (10-30x Performance Improvement)
