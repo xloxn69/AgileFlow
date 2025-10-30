@@ -5,6 +5,66 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.7] - 2025-10-30
+
+### Improved - Documentation Consistency & Governance
+
+This release addresses inconsistencies identified in a comprehensive audit of AgileFlow's documentation and prompts, establishing clear policies and single sources of truth.
+
+**What Changed**:
+
+1. **Count Validation Script** (NEW - scripts/validate-counts.sh):
+   - Automated validation to prevent count drift
+   - Checks actual file counts vs. marketplace.json/README.md
+   - Exits with error if inconsistencies found
+   - Run before releases: `bash scripts/validate-counts.sh`
+   - Prevents the "41 vs 37 commands" confusion from recurring
+
+2. **Command/Subagent/Skill Count Accuracy**:
+   - Updated marketplace.json: "38 commands, 27 specialized subagents, 23 auto-loaded skills" (was "37 commands, 26 subagents")
+   - Updated README.md: Corrected counts in two locations (lines 18-20, 233)
+   - Updated CLAUDE.md: Corrected counts in Repository Overview and Plugin Structure sections
+   - **Source of Truth**: Actual file counts (ls commands/ agents/ skills/) - no more drift
+
+2. **Command Safety Policy** (NEW - CLAUDE.md):
+   - Added dedicated section clarifying execution rules
+   - **Slash commands**: Run autonomously without asking (workflow orchestration)
+   - **File operations**: Require diff + YES/NO confirmation
+   - **Shell operations**: Risk-based (safe commands autonomous, dangerous require justification)
+   - Resolves confusion between "autonomous command execution" and "require confirmation"
+
+3. **Test Coverage Policy** (NEW - CLAUDE.md):
+   - Standardized coverage targets: **80% global, 100% critical paths**
+   - CI enforcement: Fail builds <80%
+   - Coverage by type: Unit 80%+, Integration 60%+, E2E 30%+
+   - Resolves drift where different docs cited 70%, 80%, or "target >80%"
+
+**Why These Changes?**:
+- **Eliminates Ambiguity**: Clear policies prevent agents from getting conflicting guidance
+- **Single Source of Truth**: All counts auto-generated from directory structure
+- **Prevents Coverage Drift**: One policy prevents different thresholds across docs
+- **Better Developer Experience**: Clear rules = faster onboarding, fewer questions
+
+**User Impact**:
+- ✅ Agents follow consistent command execution patterns
+- ✅ Test coverage standards are uniform across all projects
+- ✅ Marketplace shows accurate capability counts
+- ✅ No more "which threshold do I use?" confusion
+
+**Files Modified**:
+- `.claude-plugin/marketplace.json` - Updated description with correct counts + v2.19.7
+- `.claude-plugin/plugin.json` - Version bumped to 2.19.7
+- `README.md` - Corrected command/subagent counts (2 locations)
+- `CLAUDE.md` - Added Command Safety Policy and Test Coverage Policy sections + updated counts
+- `commands/notion.md` - Clarified v2.3.0 correction is historical reference
+- `agents/agileflow-mentor.md` - Added Execution Policy one-liner
+- `agents/agileflow-epic-planner.md` - Added Execution Policy one-liner
+- `agents/agileflow-ui.md` - Added Execution Policy one-liner
+- `agents/agileflow-api.md` - Added Execution Policy one-liner
+- `agents/agileflow-ci.md` - Added Execution Policy one-liner
+- `scripts/validate-counts.sh` - NEW: Automated count validation script
+- `CHANGELOG.md` - This entry
+
 ## [2.19.6] - 2025-10-30
 
 ### Added - JSON Validation & System Diagnostics
@@ -671,9 +731,9 @@ Expanded agent team from 9 to 17 specialized agents. Each agent focuses deeply o
 
 ## [2.16.0] - 2025-10-28
 
-### Added - BMAD-METHOD Architecture Context Extraction
+### Added - Architecture Context Extraction
 
-Implemented key patterns from BMAD-METHOD framework for improved dev agent context awareness and knowledge transfer between stories.
+Implemented key patterns for improved dev agent context awareness and knowledge transfer between stories.
 
 **Architecture Context Extraction** (in Story Template):
 - New `Architecture Context` section in story template with auto-filled subsections:
@@ -710,7 +770,7 @@ Implemented key patterns from BMAD-METHOD framework for improved dev agent conte
 Updated `agileflow-epic-planner` agent with new Architecture Context Extraction workflow:
 
 **New ARCHITECTURE CONTEXT EXTRACTION Section** (for story creation):
-- Documents BMAD-METHOD pattern for extracting architecture context
+- Documents pattern for extracting architecture context
 - Specifies which architecture files to read based on story type:
   - **All stories**: tech-stack.md, coding-standards.md, project-structure.md
   - **Backend/API stories**: data-models.md, api-spec.md, database.md
@@ -749,7 +809,7 @@ Validates that a story is complete, well-structured, and ready for implementatio
 
 ### Improved - Story Template Enhancement
 
-Enhanced `templates/story-template.md` with BMAD-inspired sections:
+Enhanced `templates/story-template.md` with improved sections:
 - Architecture Context section with clear subsections and source citation requirements
 - Dev Agent Record section with structured subsections for implementation tracking
 - Previous Story Insights section for inter-story knowledge transfer
@@ -765,7 +825,7 @@ Enhanced `templates/story-template.md` with BMAD-inspired sections:
 - Implementation wisdom flows between stories in an epic (knowledge transfer)
 - Stories are validated before assignment (higher quality work)
 
-**Pattern Origins**: These patterns are proven in BMAD-METHOD framework, now adapted for AgileFlow's command-based architecture.
+**Pattern Origins**: These patterns have been adapted and refined for AgileFlow's command-based architecture.
 
 ## [2.15.2] - 2025-10-28
 

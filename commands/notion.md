@@ -799,7 +799,9 @@ ls -la .mcp.json  # Should exist in current directory
 
 ---
 
-## KEY LEARNINGS (v2.3.0 Correction)
+## KEY LEARNINGS (Historical: v2.3.0 Correction)
+
+**Note**: This section documents a correction made during the v2.3.0 release (October 2025). It is preserved for historical context. See [CHANGELOG.md](../../CHANGELOG.md#230---2025-10-18) for full details.
 
 **What We Got Wrong Initially**:
 - ❌ Claimed OAuth authentication via /mcp command
