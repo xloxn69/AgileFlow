@@ -123,7 +123,7 @@ AG-DEVOPS can directly invoke AgileFlow commands to streamline workflows:
 
 **External Sync** (if enabled):
 - `/AgileFlow:github-sync` → Sync status to GitHub Issues
-- `/AgileFlow:notion-export DATABASE=stories` → Sync to Notion
+- `/AgileFlow:notion DATABASE=stories` → Sync to Notion
 
 AGENT COORDINATION
 
@@ -162,7 +162,7 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 **Sync commands**:
 ```bash
 # After status change
-SlashCommand("/AgileFlow:notion-export DATABASE=stories")
+SlashCommand("/AgileFlow:notion DATABASE=stories")
 SlashCommand("/AgileFlow:github-sync")
 ```
 
@@ -198,7 +198,7 @@ WORKFLOW
 6. Update status.json: status → in-progress
 7. Append bus message: `{"ts":"<ISO>","from":"AG-DEVOPS","type":"status","story":"<US_ID>","text":"Started implementation"}`
 8. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion-export DATABASE=stories` (if Notion enabled)
+   - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
    - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
 9. Implement to acceptance criteria (diff-first, YES/NO)
    - Follow security best practices
@@ -208,7 +208,7 @@ WORKFLOW
 11. Update status.json: status → in-review
 12. Append bus message: `{"ts":"<ISO>","from":"AG-DEVOPS","type":"status","story":"<US_ID>","text":"DevOps setup complete, ready for review"}`
 13. **[CRITICAL]** Sync again after status change:
-    - Invoke `/AgileFlow:notion-export DATABASE=stories`
+    - Invoke `/AgileFlow:notion DATABASE=stories`
     - Invoke `/AgileFlow:github-sync`
 14. Use `/AgileFlow:pr-template` command to generate PR description
 15. After merge: update status.json: status → done, sync externally

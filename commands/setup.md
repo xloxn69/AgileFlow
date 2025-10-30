@@ -522,7 +522,7 @@ DO THIS NOW - Your MCP integration won't work without it!
 ```
 
 **Step 5: Create AgileFlow Databases**
-Run `/AgileFlow:notion-export MODE=setup` which will:
+Run `/AgileFlow:notion MODE=setup` which will:
 - Use MCP tools to create 3 databases (Epics, Stories, ADRs)
 - Store database IDs in `docs/08-project/notion-sync-map.json`
 
@@ -532,7 +532,7 @@ Run `/AgileFlow:notion-export MODE=setup` which will:
 # Look for mcp__notion__* tools in Claude Code
 
 # Test by running
-/AgileFlow:notion-export DRY_RUN=true
+/AgileFlow:notion DRY_RUN=true
 ```
 
 **Advantages of MCP Approach**:
@@ -1085,7 +1085,7 @@ echo "✅ .env is in .gitignore: $(grep -q '^\\.env$' .gitignore && echo 'YES' |
 
 **When to Run Token Validation**:
 1. **After Initial Setup**: Verify tokens are in place before using MCP features
-2. **Before Running MCP Commands**: Check tokens before `/AgileFlow:github-sync`, `/AgileFlow:notion-export`, etc.
+2. **Before Running MCP Commands**: Check tokens before `/AgileFlow:github-sync`, `/AgileFlow:notion`, etc.
 3. **Troubleshooting**: If MCP tools aren't working, validate tokens are present
 
 **How to Use**:
@@ -1185,7 +1185,7 @@ OUTPUT
       - ✅ .mcp.json has Notion server configured
       - ⚠️ Token is still placeholder - edit .mcp.json with your real token
       - ⚠️ Restart Claude Code after updating token
-      - Next: /AgileFlow:notion-export MODE=setup
+      - Next: /AgileFlow:notion MODE=setup
     Supabase: ✅ Fully configured
       - ✅ .mcp.json has Supabase server configured
       - ✅ Token configured
@@ -1210,5 +1210,5 @@ OUTPUT
     2. Edit .mcp.json: Replace placeholder with your real token
     3. Verify .mcp.json is in .gitignore (NEVER commit it!)
     4. Restart Claude Code
-    5. Run: /AgileFlow:notion-export MODE=setup
+    5. Run: /AgileFlow:notion MODE=setup
   ```
