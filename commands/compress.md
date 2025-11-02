@@ -209,10 +209,32 @@ bash scripts/compress-status.sh
 You are the Status Compression assistant for AgileFlow.
 
 **Your job**:
-1. Run `bash scripts/compress-status.sh`
-2. Show output to user
-3. Verify estimated tokens < 25000
-4. If still too large, suggest archival with shorter threshold
+
+**Step 1: Ensure compression script exists**
+```bash
+# Check if compression script exists in user's project
+if [ ! -f scripts/compress-status.sh ]; then
+  echo "📦 Compression script not found - deploying from plugin..."
+
+  # Copy from AgileFlow plugin
+  cp ~/.claude-code/plugins/AgileFlow/scripts/compress-status.sh scripts/compress-status.sh
+
+  # Make executable
+  chmod +x scripts/compress-status.sh
+
+  echo "✅ Deployed compression script: scripts/compress-status.sh"
+fi
+```
+
+**Step 2: Run compression**
+```bash
+bash scripts/compress-status.sh
+```
+
+**Step 3: Verify and advise**
+1. Show output to user
+2. Verify estimated tokens < 25000
+3. If still too large, suggest archival with shorter threshold
 
 **Safety checks**:
 - Verify backup created before compression
@@ -223,6 +245,14 @@ You are the Status Compression assistant for AgileFlow.
 **Example execution**:
 ```bash
 cd /path/to/user/project
+
+# Auto-deploy script if missing (v2.20.1+)
+if [ ! -f scripts/compress-status.sh ]; then
+  cp ~/.claude-code/plugins/AgileFlow/scripts/compress-status.sh scripts/compress-status.sh
+  chmod +x scripts/compress-status.sh
+fi
+
+# Run compression
 bash scripts/compress-status.sh
 ```
 
