@@ -1132,15 +1132,17 @@ else
 fi
 ```
 
-**Copy Archive Script from Plugin**:
+**Copy Scripts from Plugin**:
 ```bash
-# Copy archive script from AgileFlow plugin
+# Copy archival script from AgileFlow plugin
 cp ~/.claude-code/plugins/AgileFlow/scripts/archive-completed-stories.sh scripts/archive-completed-stories.sh
-
-# Make executable
 chmod +x scripts/archive-completed-stories.sh
-
 echo "✅ Deployed archival script: scripts/archive-completed-stories.sh"
+
+# Copy compression script from AgileFlow plugin (v2.20.0+)
+cp ~/.claude-code/plugins/AgileFlow/scripts/compress-status.sh scripts/compress-status.sh
+chmod +x scripts/compress-status.sh
+echo "✅ Deployed compression script: scripts/compress-status.sh"
 ```
 
 **Update CLAUDE.md with Archival Documentation**:
@@ -1256,6 +1258,7 @@ jq '.stories["US-0042"]' docs/09-agents/status-archive.json
 ✅ Auto-Archival System configured
 ✅ Threshold: $DAYS days
 ✅ Archive script deployed: scripts/archive-completed-stories.sh
+✅ Compression script deployed: scripts/compress-status.sh (v2.20.0+)
 ✅ Auto-archival hook added to hooks/hooks.json
 ✅ Settings saved to docs/00-meta/agileflow-metadata.json
 ✅ CLAUDE.md updated with archival documentation
@@ -1268,9 +1271,10 @@ How it works:
 - Keeps status.json small and fast for agents
 - Full history preserved in docs/09-agents/status-archive.json
 
-Manual archival:
-- Run anytime: bash scripts/archive-completed-stories.sh (reads from metadata)
-- Or with custom threshold: bash scripts/archive-completed-stories.sh 7
+Manual archival and compression:
+- Archival: bash scripts/archive-completed-stories.sh (reads from metadata)
+- Archival with custom threshold: bash scripts/archive-completed-stories.sh 7
+- Compression: /AgileFlow:compress (strips verbose fields if archival isn't enough)
 - View status: ls -lh docs/09-agents/status*.json
 
 Configuration:
