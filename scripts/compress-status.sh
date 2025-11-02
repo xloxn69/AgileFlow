@@ -141,7 +141,7 @@ echo ""
 
 echo -e "${BLUE}📋 Status Summary:${NC}"
 echo "$COMPRESSED_STATUS" | jq -r '
-  .stories |
+  .stories | to_entries | map(.value) |
   group_by(.status) |
   map({status: .[0].status, count: length}) |
   .[] |
