@@ -5,6 +5,61 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.1] - 2025-11-02
+
+### Fixed - Compression Script Deployment
+
+This patch release fixes an issue where `/AgileFlow:compress` would fail with "script not found" because the compression script wasn't deployed to user projects.
+
+**The Issue**:
+- v2.20.0 introduced `/AgileFlow:compress` command
+- Script `compress-status.sh` exists in AgileFlow plugin
+- But `/AgileFlow:compress` tries to run it from user's project directory
+- Result: "bash: scripts/compress-status.sh: No such file or directory"
+
+**The Fix**: Two-pronged approach
+
+**1. Auto-Copy on First Run** (existing users who won't re-run setup):
+- `/AgileFlow:compress` now checks if script exists in user's project
+- If missing, automatically copies from plugin: `~/.claude-code/plugins/AgileFlow/scripts/compress-status.sh`
+- Makes executable with `chmod +x`
+- Then runs compression
+- Users don't need to manually deploy the script
+
+**2. Setup Command Deployment** (new users running `/AgileFlow:setup`):
+- `/AgileFlow:setup` now copies BOTH archival and compression scripts
+- Updated "Copy Scripts from Plugin" section in setup workflow
+- Scripts deployed during initial setup alongside archival configuration
+- Prints confirmation: "✅ Deployed compression script: scripts/compress-status.sh"
+
+**Files Modified**:
+- `commands/compress.md` - Added auto-copy logic in Step 1
+- `commands/setup.md` - Updated to deploy compression script alongside archival script
+
+**Why Both Approaches?**:
+- **Auto-copy**: Helps existing v2.20.0 users who already ran setup
+- **Setup deployment**: Ensures new users get script from the start
+- **Result**: Works for everyone regardless of when they set up AgileFlow
+
+**Testing**:
+```bash
+# Test auto-copy (existing users)
+/AgileFlow:compress
+# Output: "📦 Compression script not found - deploying from plugin..."
+# Output: "✅ Deployed compression script: scripts/compress-status.sh"
+# Output: [compression results]
+
+# Test setup deployment (new users)
+/AgileFlow:setup
+# Output: "✅ Deployed archival script: scripts/archive-completed-stories.sh"
+# Output: "✅ Deployed compression script: scripts/compress-status.sh (v2.20.0+)"
+```
+
+**No Breaking Changes**:
+- Existing users: Script auto-deploys on first `/AgileFlow:compress` run
+- New users: Script deployed during `/AgileFlow:setup`
+- No manual intervention required
+
 ## [2.20.0] - 2025-11-02
 
 ### Added - Status.json Compression Command
