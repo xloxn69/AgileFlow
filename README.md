@@ -195,6 +195,7 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 - `/AgileFlow:readme-sync` - Sync folder READMEs
 - `/AgileFlow:tests` - Automated testing infrastructure setup
 - `/AgileFlow:review` - AI-powered code review
+- `/AgileFlow:compress` - Compress status.json by removing verbose fields (fixes token limit issues)
 
 ### Automation & DevOps 🆕
 - `/AgileFlow:packages` - Manage dependencies (dashboard, updates, security audits)
