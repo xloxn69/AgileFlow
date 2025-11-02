@@ -5,6 +5,52 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.2] - 2025-11-02
+
+### Fixed - Compression Script jq Error
+
+This patch release fixes a critical bug in the compression script that caused it to fail with a jq error when generating the status summary.
+
+**The Error**:
+```
+jq: error (at docs/09-agents/status.json:266):
+object ({"US-0010":...) and array ([["in-progr...)
+cannot be sorted, as they are not both arrays
+```
+
+**Root Cause**:
+- The compression script's status summary (lines 143-149) tried to `group_by(.status)` directly on `.stories`
+- `.stories` is an object (key-value pairs: `{"US-0010": {...}, "US-0011": {...}}`)
+- `group_by()` requires an array, not an object
+- Result: jq fails with "cannot be sorted" error
+
+**The Fix**:
+- Convert `.stories` object to array before grouping: `.stories | to_entries | map(.value) | group_by(.status)`
+- This extracts the story objects from the key-value pairs into an array
+- Now `group_by()` works correctly
+
+**Files Modified**:
+- `scripts/compress-status.sh` line 144 - Added `to_entries | map(.value)` to convert object to array
+
+**Impact**:
+- Before: Compression script would fail partway through with jq error (exit code 5)
+- After: Compression completes successfully and shows status summary
+
+**Testing**:
+```bash
+# Before fix (v2.20.1)
+bash scripts/compress-status.sh
+# jq: error (at docs/09-agents/status.json:266): object and array cannot be sorted
+
+# After fix (v2.20.2)
+bash scripts/compress-status.sh
+# ✅ Compression complete!
+# 📋 Status Summary:
+#    done: 9 stories
+#    in-progress: 3 stories
+#    ready: 11 stories
+```
+
 ## [2.20.1] - 2025-11-02
 
 ### Fixed - Compression Script Deployment
