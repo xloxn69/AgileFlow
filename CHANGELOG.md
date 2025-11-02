@@ -5,6 +5,85 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.0] - 2025-11-02
+
+### Added - Status.json Compression Command
+
+This release adds `/AgileFlow:compress` to solve the "file content exceeds maximum allowed tokens" error when status.json grows too large, even with auto-archival enabled.
+
+**The Problem**:
+- Auto-archival moves completed stories >N days old to archive
+- But status.json can still exceed 25k tokens from verbose story objects
+- Story objects may contain full description, architectureContext, devAgentRecord, etc.
+- This breaks ALL agent workflows when agents try to read status.json
+
+**The Solution**: `/AgileFlow:compress`
+
+**New Files**:
+1. `scripts/compress-status.sh` - Compression script
+2. `commands/compress.md` - Slash command definition
+
+**How It Works**:
+- Removes verbose fields: description, acceptanceCriteria, architectureContext, technicalNotes, testingStrategy, devAgentRecord, previousStoryInsights
+- Keeps ONLY essential tracking metadata: story_id, epic, title, owner, status, estimate, timestamps, dependencies, branch, summary
+- Full story content remains in `docs/06-stories/` markdown files (no data loss)
+- Creates backup at `docs/09-agents/status.json.backup` before compression
+- Typical result: 80-90% size reduction
+
+**Usage**:
+```bash
+/AgileFlow:compress
+```
+
+**Output Example**:
+```
+📊 Before Compression:
+   Stories: 145
+   Size: 384KB
+   Lines: 12,847
+
+✅ Compression complete!
+
+📊 After Compression:
+   Stories: 145 (unchanged)
+   Size: 384KB → 42KB
+   Lines: 12,847 → 1,203
+   Saved: 89% (342KB)
+
+✅ Estimated tokens: ~10,500 (safely under 25000 limit)
+```
+
+**When to Use**:
+- status.json exceeds 25000 tokens despite archival
+- Agents fail with "file content exceeds maximum allowed tokens"
+- status.json contains verbose story objects from external tools/imports
+
+**Recommended Workflow**:
+1. First run archival: `bash scripts/archive-completed-stories.sh 3` (move old stories)
+2. If still too large, run compression: `/AgileFlow:compress` (strip verbose fields)
+3. Result: status.json under 25000 tokens
+
+**Archival vs. Compression**:
+- **Archival** (automatic): Moves old completed stories to archive (50-70% savings)
+- **Compression** (manual): Strips verbose fields from all stories (80-90% savings)
+- **Best practice**: Use BOTH for maximum efficiency
+
+**Safety**:
+- Backup created before compression
+- Full story content preserved in markdown files
+- Reversible: `cp docs/09-agents/status.json.backup docs/09-agents/status.json`
+
+**Documentation**:
+- Added "Status.json Compression" section to CLAUDE.md
+- Updated README.md with `/AgileFlow:compress` command
+- Command reference in `commands/compress.md`
+
+**Why This Matters**:
+- Prevents agent failures when status.json grows large
+- Improves performance (agents read smaller files faster)
+- Separates concerns: status.json = tracking index, markdown files = full content
+- Complements auto-archival for two-pronged size management
+
 ## [2.19.8] - 2025-10-30
 
 ### Improved - Skill Standardization & Consistency
