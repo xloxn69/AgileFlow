@@ -1,3 +1,8 @@
+---
+name: changelog-entry
+description: Generate Keep a Changelog format entries for version releases
+---
+
 # changelog-entry
 
 Generate Keep a Changelog format entries.

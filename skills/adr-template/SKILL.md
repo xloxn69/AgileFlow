@@ -1,3 +1,8 @@
+---
+name: adr-template
+description: Generate Architecture Decision Record structure with context/decision/consequences
+---
+
 # adr-template
 
 Generate Architecture Decision Record structure with context/decision/consequences.

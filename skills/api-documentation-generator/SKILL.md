@@ -1,3 +1,8 @@
+---
+name: api-documentation-generator
+description: Generate OpenAPI/Swagger documentation with request/response schemas
+---
+
 # api-documentation-generator
 
 Generate OpenAPI/Swagger snippets with proper schemas.

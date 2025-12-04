@@ -1,3 +1,8 @@
+---
+name: diagram-generator
+description: Generate Mermaid/ASCII diagrams for workflows, architecture, and sequence diagrams
+---
+
 # diagram-generator
 
 Generate Mermaid/ASCII diagrams from descriptions.

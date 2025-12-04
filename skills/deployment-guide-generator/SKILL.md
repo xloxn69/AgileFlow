@@ -1,3 +1,8 @@
+---
+name: deployment-guide-generator
+description: Generate deployment guides with rollback procedures and verification steps
+---
+
 # deployment-guide-generator
 
 Generate deployment guides with rollback procedures.

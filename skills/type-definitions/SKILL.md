@@ -1,3 +1,8 @@
+---
+name: type-definitions
+description: Generate TypeScript interfaces and types from data structure descriptions
+---
+
 # type-definitions
 
 Generate TypeScript interfaces and types from descriptions.

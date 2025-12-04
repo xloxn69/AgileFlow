@@ -1,3 +1,8 @@
+---
+name: commit-message-formatter
+description: Generate conventional commit messages following Conventional Commits standard
+---
+
 # commit-message-formatter
 
 Generate conventional commit messages with detailed descriptions.

@@ -1,3 +1,8 @@
+---
+name: story-skeleton
+description: Auto-generate story template with boilerplate sections pre-filled
+---
+
 # story-skeleton
 
 Auto-generate story template with boilerplate sections pre-filled.

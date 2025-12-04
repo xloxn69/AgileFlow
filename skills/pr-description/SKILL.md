@@ -1,3 +1,8 @@
+---
+name: pr-description
+description: Generate pull request description with testing instructions and comprehensive checklist
+---
+
 # pr-description
 
 Generate pull request description with testing instructions.

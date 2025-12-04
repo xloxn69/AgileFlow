@@ -1,3 +1,8 @@
+---
+name: validation-schema-generator
+description: Generate input validation schemas for Joi, Zod, Yup, or Pydantic
+---
+
 # validation-schema-generator
 
 Generate input validation schemas (Joi, Zod, Yup).

@@ -1,3 +1,8 @@
+---
+name: error-handler-template
+description: Generate error handling boilerplate with custom error classes and try/catch patterns
+---
+
 # error-handler-template
 
 Generate error handling boilerplate for different languages.

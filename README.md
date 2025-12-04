@@ -349,6 +349,140 @@ User: "Use the agileflow-adr-writer subagent to document why we chose JWT"
 [Subagent creates ADR with context, alternatives, consequences]
 ```
 
+## Skills 🎯
+
+AgileFlow includes **23 auto-loaded skills** that activate based on context keywords. Skills are lightweight enhancements that automatically trigger when Claude detects specific patterns in conversation.
+
+### What Are Skills?
+
+Skills are **context-aware helpers** that:
+- Activate automatically based on keywords (no manual invocation)
+- Provide focused capabilities for specific tasks
+- Follow Anthropic's minimal specification (v2.21.0+)
+- Have standardized YAML frontmatter (`name` + `description`)
+- Range from 34-281 lines (concise, scannable format)
+
+### How Skills Differ from Commands & Subagents
+
+|  | Skills | Commands | Subagents |
+|---|---|---|---|
+| **Invocation** | Automatic (keyword-based) | Manual (`/AgileFlow:command`) | Manual ("Use subagent...") |
+| **Context** | Main conversation | Main conversation | Separate context window |
+| **Purpose** | Quick enhancements | Single-purpose actions | Complex, multi-step work |
+| **Examples** | Format commit messages | Update story status | Implement full feature |
+
+### Available Skills by Category
+
+#### AgileFlow Skills (8 skills)
+Auto-formatted outputs following AgileFlow templates:
+
+- **agileflow-story-writer** - Converts feature discussions to user stories with AC
+- **agileflow-acceptance-criteria** - Generates Given/When/Then acceptance criteria
+- **agileflow-epic-planner** - Breaks features into epics and stories
+- **agileflow-sprint-planner** - Plans sprints with velocity and capacity
+- **agileflow-retro-facilitator** - Structures retrospectives with action items
+- **agileflow-adr** - Captures architectural decisions as ADRs
+- **agileflow-commit-messages** - Formats Conventional Commits with attribution
+- **agileflow-tech-debt** - Tracks and prioritizes technical debt
+
+#### Template Generators (15 skills)
+Generate code templates and documentation:
+
+- **story-skeleton** - Story template scaffolding
+- **acceptance-criteria-generator** - AC formatting
+- **commit-message-formatter** - Git commit messages
+- **adr-template** - Architecture decision records
+- **api-documentation-generator** - OpenAPI/Swagger docs
+- **changelog-entry** - Keep a Changelog format
+- **pr-description** - Pull request descriptions
+- **test-case-generator** - Test cases from AC
+- **type-definitions** - TypeScript interfaces
+- **sql-schema-generator** - SQL schemas with migrations
+- **error-handler-template** - Error handling patterns
+- **diagram-generator** - Mermaid/ASCII diagrams
+- **validation-schema-generator** - Joi/Zod/Yup schemas
+- **deployment-guide-generator** - Deployment runbooks
+- **migration-checklist** - Data migration checklists
+
+### Skill Structure (v2.21.0+)
+
+All skills follow Anthropic's minimal specification:
+
+```markdown
+---
+name: skill-name
+description: Brief description (one line)
+---
+
+# Skill Name
+
+Brief overview
+
+## When to Use
+- Activation keywords and scenarios
+
+## What This Does
+- Key functionality
+
+## Instructions
+1. Step-by-step workflow
+
+## Output Examples
+[Concise examples]
+
+## Quality Checklist
+- [ ] Pre-execution checks
+
+## Notes
+- Important considerations
+```
+
+**Changes in v2.21.0**:
+- Removed `allowed-tools` field from frontmatter
+- Removed verbose sections (ROLE & IDENTITY, FIRST ACTION, PROACTIVE KNOWLEDGE LOADING, HANDOFFS)
+- Consolidated into 6-8 core sections
+- Reduced complexity by 27% (517 lines removed across all skills)
+- Now follows Anthropic's official skills specification
+
+### Skill Activation Examples
+
+**Auto-activation** (skills detect context):
+```
+User: "I need to create a user story for login functionality"
+[agileflow-story-writer skill activates automatically]
+Claude: Generates formatted story with AC, owner, priority, estimate
+```
+
+```
+User: "Let's commit these changes"
+[agileflow-commit-messages skill activates automatically]
+Claude: Formats commit message following Conventional Commits
+```
+
+```
+User: "Generate test cases for this feature"
+[test-case-generator skill activates automatically]
+Claude: Converts AC to unit/integration/E2E test cases
+```
+
+### When Skills Activate
+
+Skills activate when Claude detects specific keywords:
+- **"story", "feature", "requirement"** → agileflow-story-writer
+- **"commit", "git commit"** → agileflow-commit-messages
+- **"AC", "acceptance criteria", "Given When Then"** → agileflow-acceptance-criteria
+- **"test cases", "test plan"** → test-case-generator
+- **"ADR", "architecture decision"** → agileflow-adr
+- **"PR", "pull request"** → pr-description
+- **"changelog"** → changelog-entry
+- **"deployment", "release guide"** → deployment-guide-generator
+
+See individual skill files in `skills/*/SKILL.md` for complete activation keywords.
+
+### Skill Template
+
+A standardized skill template is available at `templates/skill-template.md` for creating custom skills following Anthropic's specification.
+
 ## Daily Workflow
 
 1. **Pick a story**: Use `agileflow-mentor` subagent or check `docs/09-agents/status.json`
