@@ -5,6 +5,70 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2025-12-04
+
+### Changed - Skills Architecture Refactoring (Anthropic Specification)
+
+This release refactors all 23 skills to follow Anthropic's official skills specification, resulting in cleaner, more maintainable, and consistent skills structure.
+
+**Major Changes**:
+- **Removed `allowed-tools` field** from all skills frontmatter (no longer part of Anthropic spec)
+- **Simplified structure**: Removed verbose meta-sections (ROLE & IDENTITY, OBJECTIVE, INPUTS, FIRST ACTION, PROACTIVE KNOWLEDGE LOADING, HANDOFFS, OUTPUTS)
+- **Consolidated into 6-8 core sections**: When to Use, What This Does, Instructions, Output Examples, Quality Checklist, Integration, Notes
+- **27% complexity reduction**: Removed 517 lines across all 23 skills (from ~3,000+ lines to 2,435 lines)
+- **Consistent YAML frontmatter**: Only `name` + `description` fields (matching Anthropic specification)
+- **Added minimal frontmatter** to 15 simple skills that previously had none
+- **Refactored 8 complex skills** to follow the same minimal pattern
+
+**Skills Affected** (all 23 skills refactored):
+
+*Simple Skills* (15 skills - added frontmatter, maintained simplicity):
+- story-skeleton, acceptance-criteria-generator, commit-message-formatter
+- adr-template, api-documentation-generator, changelog-entry
+- pr-description, test-case-generator, type-definitions
+- sql-schema-generator, error-handler-template, diagram-generator
+- validation-schema-generator, deployment-guide-generator, migration-checklist
+
+*Complex Skills* (8 skills - simplified structure):
+- agileflow-story-writer (228 → 163 lines, 28% reduction)
+- agileflow-acceptance-criteria (217 → 156 lines, 28% reduction)
+- agileflow-epic-planner (243 → 184 lines, 24% reduction)
+- agileflow-sprint-planner (246 → 212 lines, 13% reduction)
+- agileflow-retro-facilitator (305 → 281 lines, 8% reduction)
+- agileflow-adr (216 → 147 lines, 32% reduction)
+- agileflow-commit-messages (242 → 130 lines, 46% reduction)
+- agileflow-tech-debt (427 → 215 lines, 49% reduction - largest reduction)
+
+**Benefits**:
+- ✅ **Standards compliance**: Now follows Anthropic's official skills specification
+- ✅ **Improved scannability**: Faster to find information with consistent structure
+- ✅ **Easier maintenance**: Less verbose, focused on practical guidance
+- ✅ **Better onboarding**: Consistent patterns across all skills
+- ✅ **No functionality loss**: All essential content preserved
+
+**New Template**:
+- Added `templates/skill-template.md` following Anthropic specification
+- Provides standardized structure for creating new skills
+- Documents all 6 core sections with examples
+
+**Documentation Updates**:
+- Updated README.md with comprehensive Skills section explaining architecture
+- Updated CLAUDE.md with "Adding a New Skill (v2.21.0+)" guide
+- Documented removed sections and new minimal structure
+
+**Migration Notes**:
+- Existing skills continue to work without changes
+- New skills should follow the minimal template in `templates/skill-template.md`
+- Do NOT use `allowed-tools` field in new skills (removed from specification)
+- Do NOT add verbose meta-sections (ROLE & IDENTITY, FIRST ACTION, etc.)
+
+### Technical
+
+- Refactored all 23 SKILL.md files to match Anthropic specification
+- Created standardized skill template (`templates/skill-template.md`)
+- Updated plugin documentation (README.md, CLAUDE.md)
+- Version bumped in all 3 required files (plugin.json, marketplace.json, CHANGELOG.md)
+
 ## [2.20.2] - 2025-11-02
 
 ### Fixed - Compression Script jq Error

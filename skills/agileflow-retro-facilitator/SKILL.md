@@ -1,23 +1,58 @@
 ---
 name: agileflow-retro-facilitator
 description: Structures retrospective discussions using Start/Stop/Continue format with action items and accountability. Loads during retrospective conversations or sprint reviews.
-allowed-tools: Read, Write, Edit
 ---
 
 # AgileFlow Retro Facilitator
 
-## Purpose
+Facilitates sprint retrospectives by structuring feedback, identifying actionable improvements, and tracking action items across sprints.
 
-This skill facilitates sprint retrospectives by structuring feedback, identifying actionable improvements, and tracking action items across sprints.
+## When to Use
 
-## When This Skill Activates
-
-Load this skill when:
-- User mentions "retrospective", "retro", "sprint review"
+This skill activates when:
+- Keywords: "retrospective", "retro", "sprint review"
 - Discussing what went well/poorly in a sprint
-- User says "let's reflect on..." or "how can we improve..."
+- Keywords: "lessons learned", "process improvements", "reflect on..."
 - Gathering team feedback
-- User mentions "lessons learned", "process improvements"
+- Running sprint reviews
+
+## What This Does
+
+1. Structures retrospective using Start/Stop/Continue format
+2. Gathers feedback on what went well and what didn't
+3. Identifies patterns and root causes
+4. Creates SMART action items with owners and due dates
+5. Reviews previous action items
+6. Captures insights for next sprint
+
+## Instructions
+
+1. **Set the stage**:
+   - Review sprint metrics (velocity, completion rate)
+   - Check previous action items
+
+2. **Gather feedback**:
+   - What went well?
+   - What didn't go well?
+   - What should we start doing?
+   - What should we stop doing?
+   - What should we continue doing?
+
+3. **Identify patterns**:
+   - Group similar feedback
+   - Find root causes
+   - Spot recurring themes
+
+4. **Create action items**:
+   - Specific, actionable steps
+   - Assign owners
+   - Set due dates
+   - Define success criteria
+
+5. **Document and share**:
+   - Save in `docs/08-project/retros/`
+   - Share with team
+   - Add action items to backlog if needed
 
 ## Retro Format (Start/Stop/Continue)
 
@@ -36,7 +71,6 @@ Load this skill when:
 - **Velocity**: Z%
 - **Stories Done**: A / B
 - **Bugs Found**: C
-- **Blockers**: D
 
 ## What Went Well ✅
 
@@ -88,50 +122,15 @@ Load this skill when:
 1. [Insight 1: Pattern or learning]
 2. [Insight 2: Team dynamic observation]
 3. [Insight 3: Process discovery]
-
-## Next Retrospective
-
-**Date**: [Next retro date]
-**Focus Areas**: [Specific topics to revisit]
 ```
 
-## Workflow
+## Retro Formats
 
-1. **Set the Stage**:
-   - Review sprint metrics (velocity, completion rate)
-   - Check previous action items
+Choose based on context:
 
-2. **Gather Feedback**:
-   - What went well?
-   - What didn't go well?
-   - What should we start doing?
-   - What should we stop doing?
-   - What should we continue doing?
+**Start/Stop/Continue**: Best for regular sprint retros
 
-3. **Identify Patterns**:
-   - Group similar feedback
-   - Find root causes
-   - Spot recurring themes
-
-4. **Create Action Items**:
-   - Specific, actionable steps
-   - Assign owners
-   - Set due dates
-   - Define success criteria
-
-5. **Document and Share**:
-   - Save in `docs/08-project/retros/`
-   - Share with team
-   - Add action items to backlog if needed
-
-## Retro Formats (Choose Based on Context)
-
-### 1. Start/Stop/Continue (Standard)
-Best for: Regular sprint retros
-
-### 2. Glad/Sad/Mad
-Best for: Emotional topics, team dynamics
-
+**Glad/Sad/Mad**: Best for emotional topics, team dynamics
 ```markdown
 ## Glad 😊
 - [Things that made us happy]
@@ -143,9 +142,7 @@ Best for: Emotional topics, team dynamics
 - [Things that frustrated us]
 ```
 
-### 3. 4Ls (Liked, Learned, Lacked, Longed For)
-Best for: Learning-focused retros
-
+**4Ls (Liked, Learned, Lacked, Longed For)**: Best for learning-focused retros
 ```markdown
 ## Liked 👍
 - [What we enjoyed]
@@ -160,56 +157,36 @@ Best for: Learning-focused retros
 - [What we wish we had]
 ```
 
-### 4. Sailboat (Wind, Anchor, Rocks, Island)
-Best for: Visual teams, long-term goals
-
-```markdown
-## Wind ⛵ (What pushes us forward)
-- [Helpful forces]
-
-## Anchor ⚓ (What slows us down)
-- [Obstacles]
-
-## Rocks 🪨 (What could sink us)
-- [Risks]
-
-## Island 🏝️ (Our goal)
-- [Where we want to be]
-```
-
 ## Good vs Bad Feedback
 
-### Good (Specific, Actionable):
-```markdown
-✅ "Daily standups ran long (20+ min) because we discussed implementation details.
-    Consider moving technical discussions to separate sessions."
+**Good (Specific, Actionable)**:
+```
+✅ "Daily standups ran long (20+ min) because we discussed
+   implementation details. Consider moving technical discussions
+   to separate sessions."
 
-✅ "Code reviews were faster this sprint (avg 4 hours vs 24 hours last sprint)
-    thanks to smaller PR sizes. Let's keep PRs under 300 lines."
-
-✅ "Unclear acceptance criteria on STORY-042 led to 3 days of rework.
-    We should refine stories more thoroughly during planning."
+✅ "Code reviews were faster this sprint (avg 4 hours vs 24 hours
+   last sprint) thanks to smaller PR sizes."
 ```
 
-### Bad (Vague, Blame-Oriented):
-```markdown
+**Bad (Vague, Blame-Oriented)**:
+```
 ❌ "Meetings were bad"
 ❌ "Bob didn't do his job"
 ❌ "Everything was terrible"
 ❌ "Process is broken"
 ```
 
-## Action Item Quality
+## SMART Action Items
 
-### SMART Action Items:
 - **S**pecific: Clear what needs to be done
 - **M**easurable: Can verify it's complete
 - **A**ssignable: Has an owner
 - **R**elevant: Addresses the issue
 - **T**ime-bound: Has a deadline
 
-### Example:
-```markdown
+**Example**:
+```
 ✅ Good:
 - [ ] **Create PR size guideline** - @TechLead - Due: Before next sprint
   - Success: Document written, shared with team, added to CLAUDE.md
@@ -221,19 +198,19 @@ Best for: Visual teams, long-term goals
 
 ## Metrics to Track
 
-### Sprint Health:
+**Sprint Health**:
 - Velocity trend (increasing, stable, decreasing?)
 - Commitment accuracy (completed vs committed)
 - Bug count (increasing, decreasing?)
 - Blocker frequency
 
-### Team Health:
+**Team Health**:
 - Meeting effectiveness
 - Communication quality
 - Collaboration level
 - Work-life balance
 
-### Process Health:
+**Process Health**:
 - Cycle time (story start to done)
 - Code review turnaround
 - Deployment frequency
@@ -241,42 +218,36 @@ Best for: Visual teams, long-term goals
 
 ## Common Themes to Watch For
 
-### Positive Patterns:
-- 🟢 Consistent velocity
-- 🟢 Low bug count
-- 🟢 Fast code reviews
-- 🟢 Clear requirements
-- 🟢 Good collaboration
+**Positive Patterns**:
+- Consistent velocity
+- Low bug count
+- Fast code reviews
+- Clear requirements
+- Good collaboration
 
-### Warning Signs:
-- 🔴 Declining velocity
-- 🔴 Recurring blockers
-- 🔴 Communication issues
-- 🔴 Scope creep
-- 🔴 Burnout indicators
-
-## Integration with Other Skills
-
-- **agileflow-sprint-planner**: Retro insights inform next sprint planning
-- **agileflow-tech-debt**: Identifies tech debt to address
-- **agileflow-story-writer**: Improves story writing process
+**Warning Signs**:
+- Declining velocity
+- Recurring blockers
+- Communication issues
+- Scope creep
+- Burnout indicators
 
 ## Facilitator Tips
 
-### Do:
-- ✅ Create safe space for honest feedback
-- ✅ Focus on process, not people
-- ✅ Time-box discussions (5-10 min per topic)
-- ✅ Ensure everyone participates
-- ✅ End on positive note
-- ✅ Follow up on action items
+**Do**:
+- Create safe space for honest feedback
+- Focus on process, not people
+- Time-box discussions (5-10 min per topic)
+- Ensure everyone participates
+- End on positive note
+- Follow up on action items
 
-### Don't:
-- ❌ Blame individuals
-- ❌ Let discussions run too long
-- ❌ Skip retros ("too busy")
-- ❌ Create action items without owners
-- ❌ Ignore previous action items
+**Don't**:
+- Blame individuals
+- Let discussions run too long
+- Skip retros ("too busy")
+- Create action items without owners
+- Ignore previous action items
 
 ## Remote Retro Adaptations
 
@@ -293,6 +264,12 @@ For distributed teams:
 - **Major milestones**: Extended retros (2-3 hours)
 - **Quarterly**: Big-picture retros (process, tools, culture)
 - **Post-incident**: Blameless postmortems (as needed)
+
+## Integration
+
+- **agileflow-sprint-planner**: Retro insights inform next sprint planning
+- **agileflow-tech-debt**: Identifies tech debt to address
+- **agileflow-story-writer**: Improves story writing process
 
 ## Notes
 

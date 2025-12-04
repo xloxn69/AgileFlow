@@ -1,3 +1,8 @@
+---
+name: sql-schema-generator
+description: Generate SQL schemas with migrations and database table definitions
+---
+
 # sql-schema-generator
 
 Generate SQL schemas with migrations.

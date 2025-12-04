@@ -1,26 +1,52 @@
 ---
 name: agileflow-adr
 description: Detects architectural or technical decisions in conversations and formats them as Architecture Decision Records in docs/03-decisions/. Loads when discussing technology choices, architecture patterns, or trade-offs.
-allowed-tools: Read, Write, Edit, Glob
 ---
 
 # AgileFlow ADR (Architecture Decision Records)
 
-## Purpose
+Automatically captures architectural and technical decisions and formats them as formal Architecture Decision Records (ADRs) in `docs/03-decisions/`.
 
-This skill automatically captures architectural and technical decisions from conversations and formats them as formal Architecture Decision Records (ADRs) in `docs/03-decisions/`.
+## When to Use
 
-## When This Skill Activates
-
-Load this skill when:
+This skill activates when:
 - Discussing technology choices ("Should we use PostgreSQL or MongoDB?")
 - Debating architecture patterns ("REST vs GraphQL")
 - Making framework decisions ("React vs Vue")
 - Discussing infrastructure choices ("AWS vs GCP")
 - Evaluating trade-offs between options
-- User mentions "decision", "choose", "architecture", "trade-off"
+- Keywords: "decision", "choose", "architecture", "trade-off"
 
-## ADR Format (MADR - Markdown Architecture Decision Records)
+## What This Does
+
+1. Detects architectural decision discussions from conversations
+2. Asks clarifying questions if needed (context, options, constraints)
+3. Extracts decision elements (problem, options, drivers, trade-offs)
+4. Generates properly formatted ADR file
+5. Shows for approval before writing
+
+## Instructions
+
+1. **Detect decision discussion**: User is debating options or asking "which should we use?"
+
+2. **Extract decision elements**:
+   - Context/problem statement
+   - Options being considered
+   - Trade-offs for each option
+   - Decision drivers (requirements, constraints)
+
+3. **Read existing ADRs**:
+   - Check `docs/03-decisions/` for numbering
+   - Look for related decisions
+
+4. **Generate ADR**:
+   - File: `docs/03-decisions/ADR-###-descriptive-title.md`
+   - Use MADR (Markdown Architecture Decision Records) format
+   - Mark status as "Proposed" unless decision is final
+
+5. **Confirm with user**: Show the ADR and ask for corrections
+
+## ADR Format (MADR)
 
 ```markdown
 # [ADR-###] Title
@@ -32,8 +58,7 @@ Load this skill when:
 
 ## Context and Problem Statement
 
-[Describe the context and the problem that led to this decision.
-What are we trying to solve? Why is this decision necessary?]
+[Describe the context and problem. What are we trying to solve? Why necessary?]
 
 ## Decision Drivers
 
@@ -51,7 +76,7 @@ What are we trying to solve? Why is this decision necessary?]
 
 **Chosen option**: [Option X]
 
-**Justification**: [Why was this option chosen? What makes it the best fit for our context?]
+**Justification**: [Why chosen? What makes it best fit?]
 
 ### Positive Consequences
 
@@ -61,31 +86,11 @@ What are we trying to solve? Why is this decision necessary?]
 ### Negative Consequences
 
 - [Bad outcome 1]
-- [Bad outcome 2 - with mitigation plan if possible]
+- [Bad outcome 2 - with mitigation if possible]
 
 ## Pros and Cons of the Options
 
 ### [Option 1]
-
-**Pros**:
-- [Pro 1]
-- [Pro 2]
-
-**Cons**:
-- [Con 1]
-- [Con 2]
-
-### [Option 2]
-
-**Pros**:
-- [Pro 1]
-- [Pro 2]
-
-**Cons**:
-- [Con 1]
-- [Con 2]
-
-### [Option 3]
 
 **Pros**:
 - [Pro 1]
@@ -105,34 +110,7 @@ What are we trying to solve? Why is this decision necessary?]
 
 - [Additional information]
 - [Implementation notes]
-- [Review date if applicable]
 ```
-
-## Workflow
-
-1. **Detect decision discussion**: User is debating options or asking "which should we use?"
-
-2. **Ask clarifying questions** if needed:
-   - "What problem are you trying to solve?"
-   - "What options are you considering?"
-   - "What are your constraints (cost, time, expertise)?"
-
-3. **Extract decision elements**:
-   - Context/problem
-   - Options being considered
-   - Trade-offs for each option
-   - Decision drivers (requirements, constraints)
-
-4. **Read existing ADRs**:
-   - Check `docs/03-decisions/` for numbering
-   - Look for related decisions
-
-5. **Generate ADR**:
-   - Create file: `docs/03-decisions/ADR-###-descriptive-title.md`
-   - Fill in all sections with gathered information
-   - Mark status as "Proposed" unless decision is final
-
-6. **Confirm with user**: Show the ADR and ask for corrections
 
 ## ADR Statuses
 
@@ -140,18 +118,6 @@ What are we trying to solve? Why is this decision necessary?]
 - **Accepted**: Decision made and approved
 - **Deprecated**: No longer relevant (but kept for history)
 - **Superseded**: Replaced by a newer decision (link to new ADR)
-
-## Decision Drivers (Common Examples)
-
-- **Performance requirements** (latency, throughput)
-- **Scalability needs** (expected growth)
-- **Team expertise** (learning curve)
-- **Cost constraints** (budget, licensing)
-- **Time to market** (urgency)
-- **Maintenance burden** (long-term support)
-- **Ecosystem maturity** (libraries, community)
-- **Security requirements** (compliance, encryption)
-- **Integration needs** (existing systems)
 
 ## Quality Checklist
 
@@ -161,50 +127,15 @@ Before creating ADR:
 - [ ] Each option has pros and cons listed
 - [ ] Decision drivers are explicitly stated
 - [ ] Chosen option has clear justification
-- [ ] Consequences (both positive and negative) are documented
+- [ ] Consequences (both positive and negative) documented
 - [ ] File name follows pattern: ADR-###-descriptive-title.md
 - [ ] Status is appropriate (Proposed/Accepted)
 
-## Examples
-
-See `examples/` directory for well-formed ADRs across different domains.
-
-## Tags (Common)
-
-- `architecture` - Overall system design
-- `database` - Data storage choices
-- `api` - API design decisions
-- `infrastructure` - Cloud, hosting, deployment
-- `frontend` - UI framework, state management
-- `backend` - Server framework, language
-- `security` - Authentication, encryption
-- `testing` - Test strategy, tools
-- `cicd` - CI/CD pipeline choices
-- `monitoring` - Observability tools
-
-## Linking ADRs
-
-When decisions build on or replace each other:
-
-```markdown
-## Links
-
-- Supersedes [ADR-042: Use REST API](./ADR-042-use-rest-api.md)
-- Related to [ADR-056: API Authentication](./ADR-056-api-authentication.md)
-- Informs [ADR-073: Rate Limiting Strategy](./ADR-073-rate-limiting.md)
-```
-
-## Integration with Other Skills
+## Integration
 
 - **agileflow-story-writer**: ADRs inform technical notes in stories
 - **agileflow-tech-debt**: Negative consequences become tech debt items
 - **agileflow-changelog**: Major decisions appear in changelog
-
-## Updating ADRs
-
-ADRs are immutable once accepted - don't edit them! Instead:
-- Create a new ADR that supersedes the old one
-- Update status to "Superseded by ADR-XXX"
 
 ## Notes
 
@@ -213,3 +144,4 @@ ADRs are immutable once accepted - don't edit them! Instead:
 - Include who made the decision (deciders) - accountability matters
 - Date decisions - context changes over time
 - Keep ADRs focused - one decision per ADR
+- ADRs are immutable once accepted - create new ADR if superseding

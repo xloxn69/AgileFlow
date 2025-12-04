@@ -1,3 +1,8 @@
+---
+name: test-case-generator
+description: Generate test cases from acceptance criteria with unit, integration, and E2E scenarios
+---
+
 # test-case-generator
 
 Generate test cases from acceptance criteria.

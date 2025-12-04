@@ -1,3 +1,8 @@
+---
+name: migration-checklist
+description: Generate data migration checklist with validation, rollback, and zero-downtime procedures
+---
+
 # migration-checklist
 
 Generate data migration checklist.
