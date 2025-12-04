@@ -1,3 +1,8 @@
+---
+name: acceptance-criteria-generator
+description: Generate properly-formatted Given/When/Then acceptance criteria for user stories
+---
+
 # acceptance-criteria-generator
 
 Generate properly-formatted Given/When/Then acceptance criteria.
