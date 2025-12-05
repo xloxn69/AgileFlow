@@ -493,6 +493,63 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
    grep -n "2.3.2" .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md
    ```
 
+### Creating GitHub Releases (v2.23.0+)
+
+AgileFlow now supports automated GitHub Releases using GitHub Actions workflow.
+
+**Manual Release Process** (for immediate releases):
+
+1. **Ensure version is bumped** (see "Updating Plugin Version" above)
+2. **Ensure CHANGELOG has section** for the new version
+3. **Create git tag**:
+   ```bash
+   git tag -a v2.23.0 -m "Release v2.23.0 - Description"
+   ```
+4. **Push tag**:
+   ```bash
+   git push origin v2.23.0
+   ```
+5. **Create GitHub Release using gh CLI**:
+   ```bash
+   # Extract changelog section
+   awk '/## \[2.23.0\]/,/## \[/ {if (/## \[/ && !/## \[2.23.0\]/) exit; print}' CHANGELOG.md > /tmp/release-notes.txt
+
+   # Create release
+   gh release create v2.23.0 --title "Release v2.23.0" --notes-file /tmp/release-notes.txt --latest
+   ```
+
+**Automated Release Process** (using GitHub Actions):
+
+1. **Prepare CHANGELOG entry** for the new version BEFORE triggering workflow
+2. **Navigate to Actions tab** in GitHub repository
+3. **Select "Release Pipeline" workflow**
+4. **Click "Run workflow"**
+5. **Enter new version** (e.g., 2.23.1)
+6. **Workflow automatically**:
+   - Updates all 3 version files (plugin.json, marketplace.json, README.md)
+   - Verifies CHANGELOG has section for this version
+   - Commits version bump
+   - Creates git tag with changelog notes
+   - Pushes changes and tag
+   - Creates GitHub Release
+
+**Workflow Location**: `.github/workflows/release.yml`
+
+**Requirements**:
+- CHANGELOG.md must have `## [X.Y.Z]` section BEFORE running workflow
+- Workflow validates CHANGELOG presence and fails if missing
+- Version must be in format X.Y.Z (e.g., 2.23.1)
+
+**Example Workflow Run**:
+```bash
+# In GitHub UI: Actions → Release Pipeline → Run workflow → Enter "2.23.1"
+# Workflow outputs:
+# ✅ Version bumped to 2.23.1
+# ✅ Git tag created: v2.23.1
+# ✅ GitHub release published
+# View Release: https://github.com/xloxn69/AgileFlow/releases/tag/v2.23.1
+```
+
 ### Adding a New Command
 
 1. **Create command file** (auto-discovered):
