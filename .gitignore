@@ -33,5 +33,5 @@ logs/
 .claude/context.log
 .claude/hook.log
 
-# Project-specific CLAUDE.md (user-specific configuration)
-CLAUDE.md
+# NOTE: CLAUDE.md in THIS repo (AgileFlow plugin) is committed (documentation for plugin development)
+# User projects created by /AgileFlow:setup may have their own CLAUDE.md (not this repo)
