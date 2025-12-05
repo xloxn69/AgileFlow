@@ -1,5 +1,5 @@
 ---
-description: setup-deployment
+description: Set up automated deployment pipeline
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

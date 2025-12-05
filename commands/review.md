@@ -1,5 +1,5 @@
 ---
-description: ai-code-review
+description: AI-powered code review with quality suggestions
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

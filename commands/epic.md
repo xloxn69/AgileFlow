@@ -1,5 +1,5 @@
 ---
-description: epic-new
+description: Create a new epic with stories
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

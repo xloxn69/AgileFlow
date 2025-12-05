@@ -1,5 +1,5 @@
 ---
-description: system-help
+description: Display AgileFlow system overview and commands
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

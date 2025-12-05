@@ -1,5 +1,5 @@
 ---
-description: retro
+description: Generate retrospective with Start/Stop/Continue format
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

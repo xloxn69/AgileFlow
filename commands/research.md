@@ -1,5 +1,5 @@
 ---
-description: research-init
+description: Initialize research note with structured template
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: handoff
+description: Document work handoff between agents
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

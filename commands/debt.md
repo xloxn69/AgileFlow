@@ -1,5 +1,5 @@
 ---
-description: tech-debt
+description: Track and prioritize technical debt items
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

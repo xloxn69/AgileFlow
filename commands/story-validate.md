@@ -1,5 +1,5 @@
 ---
-description: story-validate
+description: Validate story completeness before development
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

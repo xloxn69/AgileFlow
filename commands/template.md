@@ -1,5 +1,5 @@
 ---
-description: custom-template
+description: Create and manage custom document templates
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

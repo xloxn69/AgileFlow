@@ -1,5 +1,5 @@
 ---
-description: status
+description: Update story status and progress
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

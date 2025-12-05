@@ -1,5 +1,5 @@
 ---
-description: setup-tests
+description: Set up automated testing infrastructure
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

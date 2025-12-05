@@ -1,5 +1,5 @@
 ---
-description: babysit
+description: Interactive mentor for end-to-end feature implementation
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: setup-system
+description: Bootstrap entire AgileFlow system in current project
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep, TodoWrite
 ---
 

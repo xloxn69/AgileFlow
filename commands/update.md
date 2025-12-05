@@ -1,5 +1,5 @@
 ---
-description: stakeholder-update
+description: Generate stakeholder progress report
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

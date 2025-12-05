@@ -1,5 +1,5 @@
 ---
-description: docs-sync
+description: Synchronize documentation with code changes
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
