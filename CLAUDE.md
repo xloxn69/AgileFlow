@@ -64,11 +64,72 @@ Updated regex pattern to require non-empty values.
 
 User preference: No disclosure of AI assistance in git history for professional, client, and personal reasons. The git history should reflect clean, professional commit messages without any indication of AI tooling.
 
-**Reference example**: https://github.com/jeremylongshore/claude-code-plugins-plus has clean commits with NO AI attribution whatsoever - follow this pattern.
-
 ### When in Doubt
 
 Write the commit message as if you were a human developer on the team. No mentions of AI tools, automation, or assistance whatsoever. Keep it professional, concise, and focused on WHAT changed and WHY (not HOW it was created).
+
+---
+
+## 🚫 CRITICAL: NO SOURCE ATTRIBUTION
+
+**NEVER MENTION SOURCE REPOSITORIES WHEN IMPLEMENTING FEATURES.**
+
+When implementing features inspired by or copied from other repositories, NEVER document the source repository name in commits, documentation, or code comments.
+
+### Forbidden Practices (NEVER do these)
+
+- ❌ **No repository attribution** - NEVER mention "based on repo X", "inspired by Y", "copied from Z"
+- ❌ **No URL references** - NEVER include GitHub URLs or repo links when discussing implementations
+- ❌ **No author attribution** - NEVER mention other developers or projects by name
+- ❌ **No "credit" comments** - NEVER add comments like "// Credit to ProjectX for this approach"
+
+### Required Behavior
+
+- ✅ **Describe the FEATURE, not the SOURCE** - Focus on WHAT was built, not WHERE it came from
+- ✅ **Use generic terminology** - "Implemented workflow system" NOT "Copied workflow from RepoX"
+- ✅ **Focus on functionality** - Document what the code does, not its origins
+- ✅ **Keep documentation clean** - No paper trail linking to external repositories
+
+### Examples
+
+**WRONG** (NEVER do this):
+```
+feat: add release automation workflow
+
+Implemented GitHub Actions workflow based on jeremylongshore/claude-code-plugins-plus.
+Copied their release.yml and adapted it for our use case.
+```
+
+**WRONG** (NEVER do this):
+```markdown
+## Release Process
+
+This process follows the pattern from https://github.com/jeremylongshore/claude-code-plugins-plus
+```
+
+**CORRECT** (Always do this):
+```
+feat: add release automation workflow
+
+Implemented GitHub Actions workflow for automated releases.
+Workflow validates CHANGELOG, updates version files, creates git tags, and publishes releases.
+```
+
+**CORRECT** (Always do this):
+```markdown
+## Release Process
+
+AgileFlow supports automated releases using GitHub Actions.
+The workflow handles version bumping, tagging, and release creation.
+```
+
+### Rationale
+
+User preference: Avoid legal issues and attribution problems by not creating a paper trail to source repositories. Focus on describing the functionality implemented, not where the implementation idea originated.
+
+### When in Doubt
+
+Describe WHAT the system does, not WHERE you learned about it. If you implement a feature after studying another repository, document the feature itself without mentioning the source.
 
 ---
 
