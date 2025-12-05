@@ -104,10 +104,40 @@ Based on detection results above, ask ONLY about features that aren't fully conf
 Skip asking about features that are already fully configured (just report them as ✅).
 
 CREATE DIRECTORIES (if missing)
-docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
-.github/workflows
-.claude/
-scripts/
+
+**CRITICAL: Use Validation Script (v2.22.2+)**
+
+AgileFlow provides a validation script to ensure all required directories are created properly. This prevents issues where some folders may be missed during manual setup.
+
+**Step 1: Copy validation script from plugin**:
+```bash
+# Copy validation script from AgileFlow plugin to project
+cp ~/.claude-code/plugins/AgileFlow/scripts/validate-setup.sh scripts/validate-setup.sh
+chmod +x scripts/validate-setup.sh
+```
+
+**Step 2: Run validation script**:
+```bash
+bash scripts/validate-setup.sh
+```
+
+**What the validation script does**:
+- Checks for all required directories in docs/ structure
+- Creates any missing directories automatically
+- Reports status of critical files (status.json, agileflow-metadata.json)
+- Provides a comprehensive validation summary
+
+**Required directories** (all created by validation script):
+- docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
+- .github/workflows
+- .claude/
+- scripts/
+
+**Alternative: Manual directory creation** (if validation script not available):
+```bash
+mkdir -p docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
+mkdir -p .github/workflows .claude scripts
+```
 
 **IMPORTANT - docs/02-practices Purpose**:
 - docs/02-practices is for **USER'S CODEBASE practices** (NOT AgileFlow system practices)

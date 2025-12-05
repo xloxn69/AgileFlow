@@ -3,7 +3,7 @@
   "owner": {
     "name": "xloxn69"
   },
-  "description": "Universal agile/docs-as-code system (v2.22.1) combining Scrum, Kanban, ADRs, and docs-as-code with multi-agent collaboration and automation features",
+  "description": "Universal agile/docs-as-code system (v2.22.2) combining Scrum, Kanban, ADRs, and docs-as-code with multi-agent collaboration and automation features",
   "plugins": [
     {
       "name": "AgileFlow",
