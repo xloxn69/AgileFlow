@@ -1,73 +1,56 @@
-# AgileFlow Plugin
+# AgileFlow
 
-Universal agile/docs-as-code system for Claude Code. Framework-agnostic command pack combining Scrum, Kanban, ADRs, and docs-as-code principles.
+[![Version](https://img.shields.io/badge/version-2.22.3-brightgreen)](CHANGELOG.md)
+[![Commands](https://img.shields.io/badge/commands-36-blue)](#commands)
+[![Subagents](https://img.shields.io/badge/subagents-27-orange)](SUBAGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
-## Why AgileFlow?
-
-AgileFlow combines three proven methodologies into one cohesive system:
-
-- **Agile (Scrum/Kanban)**: Break work into Epics → Stories → Acceptance Criteria; flow small batches to done with WIP limits
-- **ADRs (Architecture Decision Records)**: Record why decisions were made so future teams/agents don't re-debate
-- **Docs-as-Code**: Humans and AI agents coordinate via versioned files in the repo (traceable, reviewable, automatable)
-
-## Benefits
-
-- ✅ Clear priorities and testable increments
-- ✅ Durable memory and decision history
-- ✅ Effortless multi-agent collaboration via message bus
-- ✅ **27 specialized subagents** for focused work (UI, API, CI, DevOps, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, QA, and more)
-- ✅ **38 slash commands** for complete workflow automation
-- ✅ **23 auto-loaded skills** for context-aware enhancements
-- ✅ **Hooks system** for event-driven automation (v2.19.0+)
-- ✅ System validation with JSON schemas
-- ✅ Intelligent blocker tracking and resolution
-- ✅ Data-driven sprint planning with velocity forecasting
-- ✅ Automated dependency management and security audits
-- ✅ AI-powered code review and quality checks
-- ✅ Technical debt tracking and reduction
-- ✅ Automated deployment pipeline setup
-- ✅ CI as a guardrail
-- ✅ Works with any tech stack or framework
-
-## Installation
-
-**Step 1 - Add the marketplace:**
-```
-/plugin marketplace add xloxn69/AgileFlow
-```
-
-**Step 2 - Install the plugin:**
-```
-/plugin install AgileFlow
-```
+**Universal agile/docs-as-code system for Claude Code.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic command pack.
 
 ## Quick Start
 
-1. **Initialize the system**:
-   ```
-   /AgileFlow:setup
-   ```
-   This scaffolds the entire docs structure, templates, and optional CI.
+**Step 1 - Install plugin:**
+```
+/plugin marketplace add xloxn69/AgileFlow
+/plugin install AgileFlow
+```
 
-   During setup, you can optionally enable:
-   - GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
-   - Notion integration (uses Notion MCP - Model Context Protocol)
+**Step 2 - Initialize system:**
+```
+/AgileFlow:setup
+```
+Scaffolds docs structure, templates, and optional CI configuration.
 
-2. **Get help**:
-   ```
-   /help
-   ```
-   View the system overview, folder structure, and available commands.
+**Step 3 - Get help:**
+```
+/AgileFlow:help
+```
+View system overview and available commands.
 
-3. **Use the mentor subagent** (recommended):
-   ```
-   Use the agileflow-mentor subagent to guide me through implementing <your feature>
-   ```
-   Interactive mentor that guides you through epic/story creation, implementation, research, and PR preparation.
+**Step 4 - Use mentor (recommended):**
+```
+Use the agileflow-mentor subagent to guide me through implementing <feature>
+```
+Interactive mentor guides you through epic/story creation, implementation, and PR preparation.
 
-## Folder Structure
+## Why AgileFlow?
 
-After running `/AgileFlow:setup`, you'll have:
+AgileFlow combines three proven methodologies:
+
+- **Agile (Scrum/Kanban)** - Break work into Epics → Stories → Acceptance Criteria with WIP limits
+- **ADRs** - Record architectural decisions so future teams don't re-debate
+- **Docs-as-Code** - Humans and AI agents coordinate via versioned files (traceable, reviewable, automatable)
+
+**Key Benefits:**
+- Clear priorities and testable increments
+- Durable memory and decision history
+- Effortless multi-agent collaboration via message bus
+- Works with any tech stack or framework
+
+<details>
+<summary><strong>📁 Folder Structure</strong> (click to expand)</summary>
+
+After running `/AgileFlow:setup`:
 
 ```
 docs/
@@ -75,8 +58,8 @@ docs/
   01-brainstorming/    # Ideas and sketches
   02-practices/        # Testing, git, CI, security practices
     prompts/agents/    # Agent profiles and contracts
-  03-decisions/        # ADRs
-  04-architecture/     # Architecture docs
+  03-decisions/        # ADRs (Architecture Decision Records)
+  04-architecture/     # Architecture documentation
   05-epics/            # Epic definitions
   06-stories/          # User stories (grouped by epic)
   07-testing/          # Test cases and acceptance criteria
@@ -88,103 +71,10 @@ docs/
   context.md           # One-page context brief for web AI tools
 ```
 
-## Hooks System (v2.19.0+) 🎯
+</details>
 
-AgileFlow now supports **event-driven automation** through Claude Code's official hooks system. Hooks allow you to automatically run commands when Claude Code lifecycle events occur.
-
-### What Are Hooks?
-
-Hooks are automatic triggers that execute commands in response to events:
-- **SessionStart**: Runs when Claude Code session starts (welcome messages, context preloading)
-- **UserPromptSubmit**: Runs after you submit a prompt (logging, analytics)
-- **Stop**: Runs when Claude stops responding (cleanup, notifications)
-
-### Quick Setup
-
-1. **Create .claude directory**:
-   ```bash
-   mkdir -p .claude
-   ```
-
-2. **Copy the template**:
-   ```bash
-   cp templates/claude-settings.example.json .claude/settings.json
-   ```
-
-3. **Customize your hooks** (edit `.claude/settings.json`):
-   ```json
-   {
-     "hooks": {
-       "SessionStart": [{
-         "hooks": [{
-           "type": "command",
-           "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help'"
-         }]
-       }]
-     }
-   }
-   ```
-
-4. **Restart Claude Code** to load hooks
-
-### Example Use Cases
-
-**Welcome message on startup**:
-```json
-{
-  "hooks": {
-    "SessionStart": [{
-      "hooks": [{
-        "type": "command",
-        "command": "echo '👋 Welcome to AgileFlow! Current sprint: $(cat docs/08-project/current-sprint.txt)'"
-      }]
-    }]
-  }
-}
-```
-
-**Activity logging**:
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [{
-      "hooks": [{
-        "type": "command",
-        "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
-      }]
-    }]
-  }
-}
-```
-
-**Dynamic environment variables**:
-Use the `get-env.js` helper to load configuration without restart:
-```json
-{
-  "hooks": {
-    "SessionStart": [{
-      "hooks": [{
-        "type": "command",
-        "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
-      }]
-    }]
-  }
-}
-```
-
-### Templates Provided
-
-- `templates/claude-settings.example.json` - Basic Claude settings template
-- `templates/claude-settings.advanced.example.json` - Advanced with matchers and logging
-
-### Configuration Files
-
-- `.claude/settings.json` - Project-level config (committed to git, shared with team)
-- `.claude/settings.local.json` - User-specific overrides (gitignored, personal config)
-
-See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
-
-## Commands
+<details>
+<summary><strong>📚 Commands</strong> (36 total - click to expand)</summary>
 
 ### Core Workflow
 - `/AgileFlow:setup` - Bootstrap the entire system
@@ -193,9 +83,9 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 
 ### Planning & Structure
 - `/AgileFlow:epic` - Create a new epic
-- `/AgileFlow:story` - Create a user story with AC
-- `/AgileFlow:story-validate` - Validate story completeness and readiness for development
-- `/AgileFlow:sprint` - Data-driven sprint planning with velocity forecasting and capacity analysis 🆕
+- `/AgileFlow:story` - Create a user story with acceptance criteria
+- `/AgileFlow:story-validate` - Validate story completeness before development
+- `/AgileFlow:sprint` - Data-driven sprint planning with velocity forecasting
 - `/AgileFlow:adr` - Create an Architecture Decision Record
 - `/AgileFlow:agent` - Onboard a new agent
 
@@ -210,9 +100,9 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 - `/AgileFlow:readme-sync` - Sync folder READMEs
 - `/AgileFlow:tests` - Automated testing infrastructure setup
 - `/AgileFlow:review` - AI-powered code review
-- `/AgileFlow:compress` - Compress status.json by removing verbose fields (fixes token limit issues)
+- `/AgileFlow:compress` - Compress status.json (fixes token limit issues)
 
-### Automation & DevOps 🆕
+### Automation & DevOps
 - `/AgileFlow:packages` - Manage dependencies (dashboard, updates, security audits)
 - `/AgileFlow:docs` - Synchronize docs with code changes
 - `/AgileFlow:impact` - Analyze change impact on codebase
@@ -224,505 +114,286 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 - `/AgileFlow:feedback` - Collect feedback for continuous improvement
 - `/AgileFlow:update` - Generate stakeholder reports
 
-### Visualization & Analytics 🎯
+### Visualization & Analytics
 - `/AgileFlow:board` - Visual kanban board with WIP limits
-- `/AgileFlow:blockers` - Comprehensive blocker tracking with resolution suggestions and cross-agent coordination analysis 🆕
+- `/AgileFlow:blockers` - Comprehensive blocker tracking with resolution suggestions
 - `/AgileFlow:velocity` - Velocity tracking and forecasting
-- `/AgileFlow:metrics` - Comprehensive analytics dashboard (cycle time, lead time, throughput, flow efficiency)
-- `/AgileFlow:retro` - Automated retrospective generator with insights and action items
-- `/AgileFlow:deps` - Dependency graph visualization with critical path and circular dependency detection
-
-### Integration & Collaboration 🔗
-- `/AgileFlow:github` - Bidirectional GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
-- `/AgileFlow:notion` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
+- `/AgileFlow:metrics` - Analytics dashboard (cycle time, lead time, throughput, flow efficiency)
+- `/AgileFlow:retro` - Automated retrospective generator with insights
+- `/AgileFlow:deps` - Dependency graph visualization with critical path detection
 
 ### Web AI Integration
-- `/AgileFlow:context` - Generate/export/manage context for web AI tools (MODE=full|export|note|research)
+- `/AgileFlow:context` - Generate/export/manage context for web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.)
 - `/AgileFlow:research` - Save research notes
 
-### Specialized Agents (Commands)
-- `/agent-ui` - UI/presentation layer agent
-- `/agent-api` - Services/data layer agent
-- `/agent-ci` - CI & quality agent
+</details>
 
-## Subagents
+<details>
+<summary><strong>🤖 Subagents</strong> (27 specialized agents - click to expand)</summary>
 
-AgileFlow includes **27 specialized subagents** that operate in separate context windows for focused work. Here are the core agents (see `SUBAGENTS.md` for complete list):
+AgileFlow includes **27 specialized subagents** that operate in separate context windows for focused work. See [SUBAGENTS.md](SUBAGENTS.md) for complete documentation.
 
 ### Core Implementation Agents
 
-#### `agileflow-ui`
-**UI/Presentation Layer Specialist**
-- Implements front-end components, styling, theming
-- Ensures accessibility (WCAG 2.1 AA)
-- Writes component tests
-- Works on stories tagged `owner: AG-UI`
+**`agileflow-ui`** - UI/Presentation Layer Specialist
+- Front-end components, styling, theming, accessibility (WCAG 2.1 AA)
 - Invocation: "Use the agileflow-ui subagent to implement this UI feature"
 
-#### `agileflow-api`
-**Services/Data Layer Specialist**
-- Implements backend APIs, business logic, data models
-- Writes API tests (unit + integration + contract)
-- Ensures proper error handling and validation
-- Works on stories tagged `owner: AG-API`
+**`agileflow-api`** - Services/Data Layer Specialist
+- Backend APIs, business logic, data models, API tests
 - Invocation: "Use the agileflow-api subagent to implement this API endpoint"
 
-#### `agileflow-ci`
-**CI/CD & Quality Specialist**
-- Sets up and maintains CI/CD pipelines
-- Configures linting, type checking, testing
-- Ensures test coverage and quality gates
-- Works on stories tagged `owner: AG-CI`
+**`agileflow-ci`** - CI/CD & Quality Specialist
+- CI/CD pipelines, linting, type checking, test coverage
 - Invocation: "Use the agileflow-ci subagent to set up the test pipeline"
 
 ### Orchestration & Planning Agents
 
-#### `agileflow-mentor`
-**End-to-End Implementation Mentor** (Replaces `/AgileFlow:babysit` command)
+**`agileflow-mentor`** - End-to-End Implementation Mentor
 - Guides feature implementation from idea to PR
-- Finds/creates epics and stories
-- Integrates research and suggests gaps
-- Coordinates multi-step workflows
-- Can run commands (diff-first, YES/NO)
-- Invocation: "Use the agileflow-mentor subagent to guide me through implementing this feature"
+- Invocation: "Use the agileflow-mentor subagent to guide me through this feature"
 
-#### `agileflow-epic-planner`
-**Epic & Story Planning Specialist**
-- Breaks down large features into epics and stories
-- Writes testable acceptance criteria (Given/When/Then)
-- Estimates effort and maps dependencies
-- Creates test stubs
+**`agileflow-epic-planner`** - Epic & Story Planning Specialist
+- Breaks down features into epics and stories with acceptance criteria
 - Invocation: "Use the agileflow-epic-planner subagent to plan this feature"
 
-#### `agileflow-adr-writer`
-**Architecture Decision Record Specialist**
-- Documents technical decisions and trade-offs
-- Records alternatives considered
-- Maintains decision history
-- Links related decisions
+**`agileflow-adr-writer`** - Architecture Decision Record Specialist
+- Documents technical decisions, trade-offs, alternatives
 - Invocation: "Use the agileflow-adr-writer subagent to document this decision"
 
-#### `agileflow-research`
-**Research & Knowledge Management Specialist**
-- Conducts technical research (web search, docs)
-- Builds comprehensive ChatGPT research prompts
-- Saves and indexes research notes
-- Identifies research gaps
+**`agileflow-research`** - Research & Knowledge Management Specialist
+- Conducts technical research, builds research prompts, saves notes
 - Invocation: "Use the agileflow-research subagent to research authentication approaches"
 
-### Automation & DevOps Agent 🆕
+### Additional Specialized Agents
+- `agileflow-devops` - DevOps & Automation
+- `agileflow-security` - Security & Compliance
+- `agileflow-database` - Database & Data Layer
+- `agileflow-testing` - Testing & QA Automation
+- `agileflow-product` - Product Management & Prioritization
+- `agileflow-performance` - Performance Optimization
+- `agileflow-mobile` - Mobile Development
+- `agileflow-integrations` - Third-Party Integrations
+- `agileflow-refactor` - Code Refactoring & Technical Debt
+- `agileflow-design` - Design Systems & UI/UX
+- `agileflow-accessibility` - Accessibility Compliance (WCAG)
+- `agileflow-analytics` - Analytics & Metrics Implementation
+- `agileflow-data-migration` - Data Migration & ETL
+- `agileflow-qa` - Quality Assurance & Test Planning
+- And more...
 
-#### `agileflow-devops`
-**DevOps & Automation Specialist**
-- Manages dependencies and security audits
-- Sets up deployment pipelines (Vercel, Netlify, AWS, Docker, etc.)
-- Configures testing infrastructure
-- Performs AI-powered code reviews
-- Tracks and reduces technical debt
-- Generates changelogs and stakeholder reports
-- Synchronizes documentation with code
-- Analyzes impact of code changes
-- Works on stories tagged `owner: AG-DEVOPS`
-- Invocation: "Use the agileflow-devops subagent to set up the deployment pipeline"
-
-### How Subagents Work
-
-Subagents operate in **separate context windows** from the main conversation, allowing:
-- **Focused expertise**: Each subagent has specialized knowledge and constraints
-- **Parallel work**: Multiple subagents can work simultaneously (future)
-- **Context isolation**: Long implementation details don't clutter main conversation
-- **Consistent behavior**: Subagents follow strict contracts (testing, status updates, etc.)
-
-### When to Use Subagents vs Commands
-
-**Use Subagents** for:
+**When to Use Subagents:**
 - Complex, multi-step implementation work
 - Specialized tasks requiring focused expertise
-- Work that benefits from separate context
-- Tasks that need to run commands or write code
+- Work benefiting from separate context
+- Tasks needing to run commands or write code
 
-**Use Commands** for:
+**When to Use Commands:**
 - Quick, single-purpose actions
 - Status updates and assignments
 - Generating templates or prompts
 - Simple file operations
 
-### Example: Using Subagents
+</details>
 
-```
-# Planning a feature
-User: "I need to add user authentication with JWT"
-Claude: "Use the agileflow-epic-planner subagent to plan this feature"
-[Subagent creates epic + 5 stories with AC]
+<details>
+<summary><strong>🎯 Skills</strong> (23 auto-loaded skills - click to expand)</summary>
 
-# Implementing UI
-User: "Use the agileflow-ui subagent to implement US-0001 (login form)"
-[Subagent implements component + tests + updates status]
+Skills are **context-aware helpers** that activate automatically based on keywords (no manual invocation needed).
 
-# Documenting decision
-User: "Use the agileflow-adr-writer subagent to document why we chose JWT"
-[Subagent creates ADR with context, alternatives, consequences]
-```
+### How Skills Work
+- **Activation:** Automatic (keyword-based detection)
+- **Context:** Main conversation
+- **Purpose:** Quick enhancements and formatting
+- **Structure:** Follow Anthropic's minimal specification (v2.21.0+)
 
-## Skills 🎯
-
-AgileFlow includes **23 auto-loaded skills** that activate based on context keywords. Skills are lightweight enhancements that automatically trigger when Claude detects specific patterns in conversation.
-
-### What Are Skills?
-
-Skills are **context-aware helpers** that:
-- Activate automatically based on keywords (no manual invocation)
-- Provide focused capabilities for specific tasks
-- Follow Anthropic's minimal specification (v2.21.0+)
-- Have standardized YAML frontmatter (`name` + `description`)
-- Range from 34-281 lines (concise, scannable format)
-
-### How Skills Differ from Commands & Subagents
-
-|  | Skills | Commands | Subagents |
-|---|---|---|---|
-| **Invocation** | Automatic (keyword-based) | Manual (`/AgileFlow:command`) | Manual ("Use subagent...") |
-| **Context** | Main conversation | Main conversation | Separate context window |
-| **Purpose** | Quick enhancements | Single-purpose actions | Complex, multi-step work |
-| **Examples** | Format commit messages | Update story status | Implement full feature |
-
-### Available Skills by Category
+### Skills by Category
 
 #### AgileFlow Skills (8 skills)
 Auto-formatted outputs following AgileFlow templates:
-
-- **agileflow-story-writer** - Converts feature discussions to user stories with AC
-- **agileflow-acceptance-criteria** - Generates Given/When/Then acceptance criteria
-- **agileflow-epic-planner** - Breaks features into epics and stories
-- **agileflow-sprint-planner** - Plans sprints with velocity and capacity
-- **agileflow-retro-facilitator** - Structures retrospectives with action items
-- **agileflow-adr** - Captures architectural decisions as ADRs
-- **agileflow-commit-messages** - Formats Conventional Commits with attribution
-- **agileflow-tech-debt** - Tracks and prioritizes technical debt
+- `agileflow-story-writer` - Converts discussions to user stories
+- `agileflow-acceptance-criteria` - Generates Given/When/Then AC
+- `agileflow-epic-planner` - Breaks features into epics/stories
+- `agileflow-sprint-planner` - Plans sprints with velocity
+- `agileflow-retro-facilitator` - Structures retrospectives
+- `agileflow-adr` - Captures architectural decisions
+- `agileflow-commit-messages` - Formats Conventional Commits
+- `agileflow-tech-debt` - Tracks technical debt
 
 #### Template Generators (15 skills)
 Generate code templates and documentation:
+- `story-skeleton` - Story template scaffolding
+- `acceptance-criteria-generator` - AC formatting
+- `commit-message-formatter` - Git commit messages
+- `adr-template` - Architecture decision records
+- `api-documentation-generator` - OpenAPI/Swagger docs
+- `changelog-entry` - Keep a Changelog format
+- `pr-description` - Pull request descriptions
+- `test-case-generator` - Test cases from AC
+- `type-definitions` - TypeScript interfaces
+- `sql-schema-generator` - SQL schemas with migrations
+- `error-handler-template` - Error handling patterns
+- `diagram-generator` - Mermaid/ASCII diagrams
+- `validation-schema-generator` - Joi/Zod/Yup schemas
+- `deployment-guide-generator` - Deployment runbooks
+- `migration-checklist` - Data migration checklists
 
-- **story-skeleton** - Story template scaffolding
-- **acceptance-criteria-generator** - AC formatting
-- **commit-message-formatter** - Git commit messages
-- **adr-template** - Architecture decision records
-- **api-documentation-generator** - OpenAPI/Swagger docs
-- **changelog-entry** - Keep a Changelog format
-- **pr-description** - Pull request descriptions
-- **test-case-generator** - Test cases from AC
-- **type-definitions** - TypeScript interfaces
-- **sql-schema-generator** - SQL schemas with migrations
-- **error-handler-template** - Error handling patterns
-- **diagram-generator** - Mermaid/ASCII diagrams
-- **validation-schema-generator** - Joi/Zod/Yup schemas
-- **deployment-guide-generator** - Deployment runbooks
-- **migration-checklist** - Data migration checklists
-
-### Skill Structure (v2.21.0+)
-
-All skills follow Anthropic's minimal specification:
-
-```markdown
----
-name: skill-name
-description: Brief description (one line)
----
-
-# Skill Name
-
-Brief overview
-
-## When to Use
-- Activation keywords and scenarios
-
-## What This Does
-- Key functionality
-
-## Instructions
-1. Step-by-step workflow
-
-## Output Examples
-[Concise examples]
-
-## Quality Checklist
-- [ ] Pre-execution checks
-
-## Notes
-- Important considerations
-```
-
-**Changes in v2.21.0**:
-- Removed `allowed-tools` field from frontmatter
-- Removed verbose sections (ROLE & IDENTITY, FIRST ACTION, PROACTIVE KNOWLEDGE LOADING, HANDOFFS)
-- Consolidated into 6-8 core sections
-- Reduced complexity by 27% (517 lines removed across all skills)
-- Now follows Anthropic's official skills specification
-
-### Skill Activation Examples
-
-**Auto-activation** (skills detect context):
+### Example Activation
 ```
 User: "I need to create a user story for login functionality"
 [agileflow-story-writer skill activates automatically]
 Claude: Generates formatted story with AC, owner, priority, estimate
 ```
 
+</details>
+
+<details>
+<summary><strong>🎯 Hooks System</strong> (event-driven automation - click to expand)</summary>
+
+AgileFlow supports **event-driven automation** through Claude Code's official hooks system.
+
+### What Are Hooks?
+
+Hooks are automatic triggers that execute commands in response to events:
+- **SessionStart** - Runs when Claude Code session starts
+- **UserPromptSubmit** - Runs after you submit a prompt
+- **Stop** - Runs when Claude stops responding
+
+### Quick Setup
+
+1. **Create .claude directory:**
+   ```bash
+   mkdir -p .claude
+   ```
+
+2. **Copy template:**
+   ```bash
+   cp templates/claude-settings.example.json .claude/settings.json
+   ```
+
+3. **Customize hooks** (edit `.claude/settings.json`):
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [{
+         "hooks": [{
+           "type": "command",
+           "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help'"
+         }]
+       }]
+     }
+   }
+   ```
+
+4. **Restart Claude Code**
+
+### Example Use Cases
+
+**Welcome message:**
+```json
+{
+  "SessionStart": [{
+    "hooks": [{
+      "type": "command",
+      "command": "echo '👋 Welcome! Current sprint: $(cat docs/08-project/current-sprint.txt)'"
+    }]
+  }]
+}
 ```
-User: "Let's commit these changes"
-[agileflow-commit-messages skill activates automatically]
-Claude: Formats commit message following Conventional Commits
+
+**Activity logging:**
+```json
+{
+  "UserPromptSubmit": [{
+    "hooks": [{
+      "type": "command",
+      "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+    }]
+  }]
+}
 ```
 
-```
-User: "Generate test cases for this feature"
-[test-case-generator skill activates automatically]
-Claude: Converts AC to unit/integration/E2E test cases
-```
+### Configuration Files
+- `.claude/settings.json` - Project-level config (committed to git)
+- `.claude/settings.local.json` - User-specific overrides (gitignored)
 
-### When Skills Activate
+</details>
 
-Skills activate when Claude detects specific keywords:
-- **"story", "feature", "requirement"** → agileflow-story-writer
-- **"commit", "git commit"** → agileflow-commit-messages
-- **"AC", "acceptance criteria", "Given When Then"** → agileflow-acceptance-criteria
-- **"test cases", "test plan"** → test-case-generator
-- **"ADR", "architecture decision"** → agileflow-adr
-- **"PR", "pull request"** → pr-description
-- **"changelog"** → changelog-entry
-- **"deployment", "release guide"** → deployment-guide-generator
+<details>
+<summary><strong>🔧 Advanced Topics</strong> (click to expand)</summary>
 
-See individual skill files in `skills/*/SKILL.md` for complete activation keywords.
+### Daily Workflow
 
-### Skill Template
+1. **Pick a story** - Use `agileflow-mentor` or check `docs/09-agents/status.json`
+2. **Implement to AC** - Follow acceptance criteria
+3. **Write tests** - Reference `docs/07-testing/test-cases/<STORY_ID>.md`
+4. **Update status** - Use `/AgileFlow:status`
+5. **Create PR** - Use `/AgileFlow:pr`
+6. **Mark done** - Update status after merge
 
-A standardized skill template is available at `templates/skill-template.md` for creating custom skills following Anthropic's specification.
+### Multi-Agent Collaboration
 
-## Daily Workflow
-
-1. **Pick a story**: Use `agileflow-mentor` subagent or check `docs/09-agents/status.json`
-2. **Implement to AC**: Follow acceptance criteria from the story
-3. **Write tests**: Reference `docs/07-testing/test-cases/<STORY_ID>.md`
-4. **Update status**: Use `/AgileFlow:status` to track progress
-5. **Create PR**: Use `/AgileFlow:pr` to generate description
-6. **Mark done**: Update status after merge
-
-## Advanced Workflows
+AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for coordination:
+- Agents update `docs/09-agents/status.json` with current work
+- Messages logged to bus for async communication
+- Use `/AgileFlow:handoff` to transfer work between agents
+- WIP limit: max 2 stories per agent
 
 ### Git Worktrees for Context Preservation
 
-For advanced users who need to handle urgent hotfixes during feature work or compare architectural approaches side-by-side, AgileFlow supports **git worktrees** for isolated parallel development.
+For advanced users handling urgent hotfixes during feature work:
 
-**Key Benefits:**
-- Preserve AI context when switching between tasks
-- Handle urgent production bugs without losing feature work flow
-- Compare different implementations side-by-side
-- Test risky refactors in complete isolation
+**Benefits:**
+- Preserve AI context when switching tasks
+- Handle production bugs without losing feature flow
+- Compare implementations side-by-side
+- Test risky refactors in isolation
 
 **Quick Start:**
 ```bash
-# Use the helper script (created by /AgileFlow:setup)
+# Use helper script (created by /AgileFlow:setup)
 ./docs/00-meta/scripts/worktree-create.sh auth-hotfix
 
-# Open in new window and start babysit
+# Open in new window
 code ../myapp-auth-hotfix
 /AgileFlow:babysit
 ```
 
-**Important:** Use worktrees for **ISOLATION** (separate features/experiments), not **PARALLEL EXECUTION** (concurrent edits to same epic).
-See `docs/00-meta/guides/worktrees.md` for comprehensive guide and best practices.
+See `docs/00-meta/guides/worktrees.md` for comprehensive guide.
 
-## Multi-Agent Collaboration
+### Web AI Integration
 
-AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for agent coordination:
+Share context with web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.):
 
-- Agents update `docs/09-agents/status.json` with their current work
-- Messages are logged to the bus for async communication
-- Use `/AgileFlow:handoff` to explicitly transfer work between agents
-- WIP limit: max 2 stories per agent
-
-## Notion Integration (MCP-based) 🆕
-
-AgileFlow integrates with Notion using **Model Context Protocol (MCP)** for standardized tool access:
-
-### Features
-- ✅ **Standardized interface** - MCP provides unified tool API across services
-- ✅ **Bidirectional sync** - Changes flow both ways (AgileFlow ↔ Notion)
-- ✅ **Better error handling** - Improved over raw API calls
-- ✅ **Project-scoped** - `.mcp.json.example` template committed to git
-- ✅ **Three databases** - Epics, Stories, and ADRs synced to Notion
-
-### Setup (One-Time)
-
-1. **Create Notion Integration**:
-   - Visit https://www.notion.so/my-integrations
-   - Create new integration
-   - Copy Integration Token (starts with `ntn_`)
-
-2. **Enable during system setup**:
-   ```
-   /AgileFlow:setup
-   # Select "yes" for Notion integration
-   ```
-
-3. **Add your token to MCP config**:
-   ```bash
-   # Copy MCP template to active config
-   cp .mcp.json.example .mcp.json
-
-   # Edit .mcp.json and replace "ntn_YOUR_NOTION_TOKEN_HERE" with your actual token
-   # Notion tokens start with "ntn_"
-   # CRITICAL: Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
-   # Verify .mcp.json is in .gitignore - NEVER commit it!
-   ```
-
-4. **Restart Claude Code** (to load MCP server)
-
-5. **Create Notion databases**:
-   ```
-   /AgileFlow:notion MODE=setup
-   ```
-
-6. **Start syncing**:
-   ```
-   /AgileFlow:notion
-   ```
-
-### Team Onboarding
-New team members need to:
-1. Pull the latest code (includes `.mcp.json.example`)
-2. Create their own Notion integration at https://www.notion.so/my-integrations
-3. Copy template: `cp .mcp.json.example .mcp.json`
-4. Edit `.mcp.json` and hardcode their real token (replace placeholder)
-5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
-6. Restart Claude Code
-7. Share databases with their integration
-8. Start using `/AgileFlow:notion`!
-
-### Advantages of MCP Approach
-- 🔒 Tokens in `.mcp.json` (gitignored, never committed)
-- 👥 Template-based setup (`.mcp.json.example` in git with placeholder)
-- 🚀 Native Claude Code integration via MCP tools
-- 🛠️ Better error handling and rate limiting
-- 📦 Standardized protocol across services
-
-### Critical Security Notes
-- ⚠️ Environment variable substitution (`${NOTION_TOKEN}`) does NOT work in `.mcp.json`
-- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
-- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks
-- ⚠️ Each team member needs their own token (no sharing)
-- ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
-
-See `/AgileFlow:notion` command for full documentation.
-
-## GitHub Integration (MCP-based) 🆕
-
-AgileFlow integrates with GitHub using **Model Context Protocol (MCP)** for standardized tool access:
-
-### Features
-- ✅ **Standardized interface** - MCP provides unified tool API across services
-- ✅ **Bidirectional sync** - Changes flow both ways (AgileFlow ↔ GitHub Issues)
-- ✅ **No sudo required** - Uses npx (unlike `gh` CLI which requires installation)
-- ✅ **Better portability** - Works across environments without dependencies
-- ✅ **Project-scoped** - `.mcp.json.example` template committed to git
-- ✅ **Issue/PR management** - Create issues, labels, sync stories with GitHub
-
-### Setup (One-Time)
-
-1. **Create GitHub Personal Access Token**:
-   - Visit https://github.com/settings/tokens
-   - Click "Generate new token (classic)"
-   - Select scopes: `repo` (full control), `read:org` (if using organization repos)
-   - Copy token (starts with `ghp_`)
-
-2. **Enable during system setup**:
-   ```
-   /AgileFlow:setup
-   # Select "yes" for GitHub integration
-   ```
-
-3. **Add your token to MCP config**:
-   ```bash
-   # Copy MCP template to active config
-   cp .mcp.json.example .mcp.json
-
-   # Edit .mcp.json and replace "ghp_YOUR_GITHUB_TOKEN_HERE" with your actual token
-   # GitHub PATs start with "ghp_"
-   # CRITICAL: Tokens must be hardcoded in .mcp.json (env var substitution doesn't work)
-   # Verify .mcp.json is in .gitignore - NEVER commit it!
-   ```
-
-4. **Restart Claude Code** (to load MCP server)
-
-5. **Configure repository**:
-   ```
-   # Edit docs/08-project/github-map.json
-   # Set "repository": "owner/repo"
-   ```
-
-6. **Start syncing**:
-   ```
-   # Preview first
-   /AgileFlow:github DRY_RUN=true
-
-   # Perform sync
-   /AgileFlow:github
-   ```
-
-### Team Onboarding
-New team members need to:
-1. Pull the latest code (includes `.mcp.json.example`)
-2. Create their own GitHub PAT at https://github.com/settings/tokens
-3. Copy template: `cp .mcp.json.example .mcp.json`
-4. Edit `.mcp.json` and hardcode their real token (replace placeholder)
-5. Verify `.mcp.json` is in .gitignore (NEVER commit it!)
-6. Restart Claude Code
-7. Start using `/AgileFlow:github`!
-
-### Advantages of MCP Approach
-- 🔒 Tokens in `.mcp.json` (gitignored, never committed)
-- 👥 Template-based setup (`.mcp.json.example` in git with placeholder)
-- 🚀 Native Claude Code integration via MCP tools
-- 🛠️ Better error handling and rate limiting
-- 📦 Standardized protocol across services
-- ⚡ No sudo required (unlike `gh` CLI installation)
-
-### Why We Switched from GitHub CLI
-- ✅ No installation required (npx handles it automatically)
-- ✅ No sudo permissions needed
-- ✅ Consistent with Notion MCP approach
-- ✅ Unified configuration in `.mcp.json`
-- ✅ Better portability across environments
-
-### Critical Security Notes
-- ⚠️ Environment variable substitution (`${GITHUB_TOKEN}`) does NOT work in `.mcp.json`
-- ⚠️ Tokens must be hardcoded directly in `.mcp.json` file
-- ⚠️ `.mcp.json` MUST be gitignored to prevent token leaks
-- ⚠️ Each team member needs their own token (no sharing)
-- ⚠️ Always verify `.mcp.json` is in `.gitignore` before committing
-
-See `/AgileFlow:github` command for full documentation.
-
-## Web AI Integration
-
-AgileFlow maintains a single source of truth context file (`docs/context.md`) that can be shared with web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.) for research and planning:
-
-1. Run `/AgileFlow:context` to generate or refresh the context (default MODE=full)
-2. Use `/AgileFlow:context MODE=export` to get a concise excerpt
-3. Paste into your preferred web AI tool for research or ideation
-4. Use `/AgileFlow:context MODE=research TOPIC="..."` to build structured research prompts
+1. Run `/AgileFlow:context` to generate/refresh context
+2. Use `/AgileFlow:context MODE=export` for concise excerpt
+3. Paste into web AI tool for research/ideation
+4. Use `/AgileFlow:context MODE=research TOPIC="..."` for structured prompts
 5. Save results with `/AgileFlow:research`
+
+### Status.json Compression
+
+Prevent "file too large" errors:
+
+```bash
+# Compress status.json (removes verbose fields)
+/AgileFlow:compress
+
+# Typical result: 80-90% size reduction
+```
+
+Full story content remains in `docs/06-stories/` markdown files (no data loss).
+
+</details>
 
 ## Examples
 
 ### Creating an Epic with Stories
-
 ```
-/AgileFlow:epic EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API,US-0003|Session management|AG-API"
+/AgileFlow:epic EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API"
 ```
 
 ### Working on a Story
-
 ```
 /AgileFlow:assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
 # ... do the work ...
@@ -730,7 +401,6 @@ AgileFlow maintains a single source of truth context file (`docs/context.md`) th
 ```
 
 ### Recording a Decision
-
 ```
 /AgileFlow:adr NUMBER=0001 TITLE="Use JWT for authentication" CONTEXT="Need stateless auth for API" DECISION="JWT with 15min access + refresh tokens" CONSEQUENCES="Simpler scaling but requires token refresh flow"
 ```
@@ -757,4 +427,4 @@ MIT
 
 ## Support
 
-For issues or questions, please refer to your Claude Code plugin marketplace or repository.
+For issues or questions, please visit the [GitHub repository](https://github.com/xloxn69/AgileFlow).
