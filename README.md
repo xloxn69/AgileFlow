@@ -11,8 +11,7 @@
 
 **Step 1 - Install plugin:**
 ```
-/plugin marketplace add xloxn69/AgileFlow
-/plugin install AgileFlow
+/plugin install xloxn69/AgileFlow
 ```
 
 **Step 2 - Initialize system:**
