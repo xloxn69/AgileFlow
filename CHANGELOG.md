@@ -5,6 +5,58 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.23.0] - 2025-12-05
+
+### Changed - Major Repository Restructure and Organization
+
+This release represents a comprehensive organizational overhaul of the AgileFlow repository, following professional plugin development standards.
+
+**README.md Restructure** (43% reduction):
+- **Before**: 760 lines, unorganized, outdated MCP content
+- **After**: 430 lines with professional structure
+- Added badges for version, commands (36), subagents (27), skills (23)
+- Moved Quick Start to top for better onboarding
+- Implemented collapsible `<details>` sections for:
+  - Folder Structure
+  - Commands (36 total)
+  - Subagents (27 specialized agents)
+  - Skills (23 auto-loaded)
+  - Hooks System
+  - Advanced Topics
+- **Removed entirely**: All MCP integration sections (Notion and GitHub MCP documentation - outdated as of v2.22.0)
+- Kept only essential examples (1-2 per section instead of many)
+- Better visual hierarchy and scanability
+
+**Git History Cleanup**:
+- Rewrote all 103 commits to remove AI attribution
+- Removed "🤖 Generated with Claude Code" footers
+- Removed "Co-Authored-By: Claude <noreply@anthropic.com>" lines
+- Clean git history with human-only attribution
+- All commit hashes changed (force-pushed to GitHub)
+
+**CLAUDE.md Enhancement**:
+- Added prominent **NO AI ATTRIBUTION** policy at top (line 7-72)
+- Moved from line 1336 to line 7 for visibility
+- Comprehensive examples of forbidden vs. correct practices
+- Clear guidelines for all future commits
+- Removed CLAUDE.md from .gitignore (it's plugin documentation, should be committed)
+
+**Documentation Cleanup**:
+- Removed all outdated MCP integration references
+- Removed Notion MCP setup instructions (v2.22.0 removed MCP)
+- Removed GitHub MCP setup instructions (v2.22.0 removed MCP)
+- Updated all documentation to reflect current architecture
+
+**Why This Matters**:
+- Professional presentation matching industry standards
+- Easier onboarding for new users (Quick Start first, collapsible details)
+- Cleaner git history without AI attribution clutter
+- Clear policies preventing future attribution issues
+- Up-to-date documentation (no outdated MCP content)
+- Better maintainability with organized structure
+
+**Reference**: This restructure follows patterns from high-quality Claude Code plugins like https://github.com/jeremylongshore/claude-code-plugins-plus
+
 ## [2.22.3] - 2025-12-05
 
 ### Changed - Renamed ChatGPT Command to Context (Platform-Agnostic)
