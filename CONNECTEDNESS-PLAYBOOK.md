@@ -268,84 +268,6 @@
 
 ---
 
-### 5. MCP "One-Time Setup" Validation
-
-**Current**: Setup instructions exist, but no validation that MCP is working.
-
-**New**: **Health check** command that validates .env, wrapper scripts, and MCP connectivity.
-
-**Implementation**:
-
-**New Command**: `/AgileFlow:mcp-check`
-
-```bash
-#!/bin/bash
-# scripts/mcp-check.sh
-
-echo "🔍 AgileFlow MCP Health Check"
-echo ""
-
-# Check .mcp.json exists
-if [ ! -f ".mcp.json" ]; then
-  echo "❌ .mcp.json not found"
-  echo "   Run /AgileFlow:setup to configure MCP servers"
-  exit 1
-fi
-
-# Check .env exists
-if [ ! -f ".env" ]; then
-  echo "❌ .env not found"
-  echo "   Copy .env.example to .env and add your tokens"
-  exit 1
-fi
-
-# Check wrapper scripts exist
-if [ ! -f "scripts/mcp-wrappers/load-env.sh" ]; then
-  echo "❌ MCP wrapper scripts not found"
-  echo "   Run /AgileFlow:setup to install wrapper infrastructure"
-  exit 1
-fi
-
-# Validate GitHub MCP (if configured)
-if grep -q "server-github" .mcp.json; then
-  if ! grep -q "GITHUB_PERSONAL_ACCESS_TOKEN" .env; then
-    echo "❌ GitHub MCP configured but GITHUB_PERSONAL_ACCESS_TOKEN missing in .env"
-    exit 1
-  else
-    echo "✅ GitHub MCP configured and token present"
-  fi
-fi
-
-# Validate Notion MCP (if configured)
-if grep -q "notion-mcp-server" .mcp.json; then
-  if ! grep -q "NOTION_TOKEN" .env; then
-    echo "❌ Notion MCP configured but NOTION_TOKEN missing in .env"
-    exit 1
-  else
-    echo "✅ Notion MCP configured and token present"
-  fi
-fi
-
-# Check .mcp.json and .env are in .gitignore
-if ! grep -q "\.mcp\.json" .gitignore || ! grep -q "\.env" .gitignore; then
-  echo "⚠️  WARNING: .mcp.json and .env should be in .gitignore"
-  echo "   Add them to prevent committing secrets"
-fi
-
-echo ""
-echo "✅ MCP setup validated - external sync ready!"
-echo ""
-echo "**Available sync commands**:"
-if grep -q "server-github" .mcp.json; then
-  echo "  • /AgileFlow:github-sync"
-fi
-if grep -q "notion-mcp-server" .mcp.json; then
-  echo "  • /AgileFlow:notion DATABASE=stories"
-fi
-```
-
----
-
 ### 6. Decisions Ripple Automatically
 
 **Current**: ADRs are created, but follow-up work (tech debt, migration stories, changelog) is manual.
@@ -644,12 +566,7 @@ Assistant (agileflow-epic-planner):
   - Implement suggestion logic in key commands (adr-new, epic, chatgpt)
   - Estimated: 2 days
 
-- [ ] **MCP Health Check** (Rule #5)
-  - Create `/AgileFlow:mcp-check` command
-  - Create `scripts/mcp-check.sh`
-  - Estimated: 1 day
-
-**Deliverable**: Cross-links enforced, commands chain logically, MCP setup validated
+**Deliverable**: Cross-links enforced, commands chain logically
 
 ---
 
@@ -662,12 +579,12 @@ Assistant (agileflow-epic-planner):
   - Create `/AgileFlow:validate-handoffs` command
   - Estimated: 4 days
 
-- [ ] **Mobile/Web Coordination** (Rule #7)
+- [ ] **Mobile/Web Coordination** (Rule #6)
   - Update AG-MOBILE and AG-UI with coordination blocks
   - Add platform coordination to story template
   - Estimated: 2 days
 
-- [ ] **Security/Compliance Playbook** (Rule #8)
+- [ ] **Security/Compliance Playbook** (Rule #7)
   - Create `docs/02-practices/security-compliance-playbook.md`
   - Update AG-SECURITY and AG-COMPLIANCE with coordination
   - Estimated: 1 day
@@ -685,12 +602,12 @@ Assistant (agileflow-epic-planner):
   - Add optional SessionStart hook template
   - Estimated: 5 days
 
-- [ ] **ADR Ripple Effects** (Rule #6)
+- [ ] **ADR Ripple Effects** (Rule #5)
   - Update agileflow-adr-writer to auto-create tech-debt, stories, changelog
   - Add ripple effect validation
   - Estimated: 4 days
 
-- [ ] **Guided Epic Creation** (Rule #9)
+- [ ] **Guided Epic Creation** (Rule #8)
   - Update agileflow-epic-planner with auto-proposal
   - Add preview + one-click create workflow
   - Estimated: 4 days
@@ -843,18 +760,18 @@ User runs validation:
 
 ## What Changed from v1.0?
 
-**Removed (4 rules)** - These assumed AgileFlow controls user CI pipeline:
+**Removed (5 rules)** - These assumed AgileFlow controls user CI pipeline or MCP setup:
 - ❌ Definition-of-Ready CI enforcement
 - ❌ README-as-UI Contract CI gates
 - ❌ Design→Dev→CI quality checklist enforcement
 - ❌ CI enforces connectedness validation
+- ❌ MCP health check (setup validation - removed for context efficiency)
 
-**Kept (9 rules)** - These fit AgileFlow's scope as a plugin:
+**Kept (8 rules)** - These fit AgileFlow's scope as a plugin:
 - ✅ Cross-links (templates, commands, validation)
 - ✅ Agent handoffs (bus/status.json coordination)
 - ✅ Dashboard (data aggregation from docs)
 - ✅ Command chaining (UX suggestions)
-- ✅ MCP health check (setup validation)
 - ✅ ADR ripples (auto-generate artifacts)
 - ✅ Mobile/Web coordination (platform guidance)
 - ✅ Security/Compliance playbook (specialized docs)
