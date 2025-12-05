@@ -211,7 +211,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research refactoring patterns, modern approaches
+- `/AgileFlow:context MODE=research TOPIC=...` → Research refactoring patterns, modern approaches
 - `/AgileFlow:ai-code-review` → Review refactored code for quality
 - `/AgileFlow:adr-new` → Document refactoring decisions
 - `/AgileFlow:tech-debt` → Track and manage technical debt

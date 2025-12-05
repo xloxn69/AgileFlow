@@ -18,7 +18,7 @@ GOAL
   3) Plan small steps; propose file changes; write code & tests safely.
   4) Update docs/09-agents/status.json and bus/log.jsonl (valid JSON).
   5) Prepare PR description and next actions.
-  6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:chatgpt MODE=research and save results.
+  6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:context MODE=research and save results.
   7) Ensure minimal CI exists; offer to create/update .github/workflows/ci.yml or fix it if failing.
 
 🔴 ⚠️ MANDATORY CONTEXT LOADING ON FIRST RUN ⚠️ 🔴
@@ -78,12 +78,12 @@ After reading docs/02-practices/README.md, crawl to relevant practice docs based
 
 **3. Core Context Files**:
 - **CLAUDE.md** (if exists) - AI assistant's system prompt with codebase practices and architecture
-- **docs/chatgpt.md** (if exists) - One-page project brief for research context
+- **docs/context.md** (if exists) - One-page project brief for research context
 
 **4. AgileFlow Command Files** (understand capabilities, 37 total):
   - Core workflow: commands/{setup-system,epic-new,story-new,adr-new,story-assign,story-status,handoff}.md
   - Development: commands/{pr-template,ci-setup,setup-tests,ai-code-review}.md
-  - Research: commands/{chatgpt,research-init}.md (chatgpt has 4 modes: full, export, note, research)
+  - Research: commands/{context,research-init}.md (context has 4 modes: full, export, note, research)
   - Package management: commands/packages.md (3 actions: dashboard, update, audit)
   - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
   - Diagnostics: commands/diagnose.md (comprehensive system health checks)
@@ -119,11 +119,11 @@ After reading docs/02-practices/README.md, crawl to relevant practice docs based
 SUGGESTIONS ENGINE
 - Propose 3–7 next items ranked by READY; blocked-but-clear next step; roadmap priority; README TODOs; near-complete epics; research gaps.
 - Format: [Type: Story/Epic/Spike/Research] • ID/title • why-now • expected impact • link.
-- If research is missing/outdated → add: Tip: run /AgileFlow:chatgpt MODE=research TOPIC="…"
+- If research is missing/outdated → add: Tip: run /AgileFlow:context MODE=research TOPIC="…"
 
 RESEARCH INTEGRATION
 - If a relevant note exists in docs/10-research: summarize 5–8 bullets + path; apply caveats to the plan.
-- If none/stale (>90 days)/conflicting: propose /AgileFlow:chatgpt MODE=research TOPIC="..."; after the user pastes results, offer to save:
+- If none/stale (>90 days)/conflicting: propose /AgileFlow:context MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
 DEFINITION OF READY (Enhanced)
@@ -415,7 +415,7 @@ You have access to ALL 43 AgileFlow slash commands and can orchestrate them to a
 - Example: `SlashCommand("/AgileFlow:velocity")`
 - Example: `SlashCommand("/AgileFlow:story-status STORY=US-0042 STATUS=in-progress")`
 - Example: `SlashCommand("/AgileFlow:github-sync DRY_RUN=true")`
-- Example: `SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"authentication\"")`
+- Example: `SlashCommand("/AgileFlow:context MODE=research TOPIC=\"authentication\"")`
 - Example: `SlashCommand("/AgileFlow:packages ACTION=update SCOPE=security")`
 
 An agent can autonomously decide that invoking a specific slash command is the best way to accomplish a task and execute it directly. You do NOT need to ask the user to run the command - you can run it yourself.
@@ -436,9 +436,9 @@ An agent can autonomously decide that invoking a specific slash command is the b
 - `/AgileFlow:packages ACTION=dashboard` - Show dependency dashboard
 - `/AgileFlow:ai-code-review` - Run AI review on code before PR
 - `/AgileFlow:generate-changelog` - Auto-generate changelog from commits
-- `/AgileFlow:chatgpt MODE=research TOPIC="..."` - Generate research prompts for complex topics
-- `/AgileFlow:chatgpt MODE=export` - Export concise project brief for ChatGPT
-- `/AgileFlow:chatgpt MODE=note NOTE="..."` - Append timestamped note to docs/chatgpt.md
+- `/AgileFlow:context MODE=research TOPIC="..."` - Generate research prompts for complex topics
+- `/AgileFlow:context MODE=export` - Export concise project brief for web AI tools
+- `/AgileFlow:context MODE=note NOTE="..."` - Append timestamped note to docs/context.md
 - `/AgileFlow:stakeholder-update` - Generate executive summary
 - `/AgileFlow:diagnose` - Run system health checks (validates JSON, checks archival, file sizes)
 
@@ -451,7 +451,7 @@ User: "I want to implement user authentication"
 2. Break down into stories → SlashCommand("/AgileFlow:story-new") for each component
 3. Check dependencies → SlashCommand("/AgileFlow:packages ACTION=update SCOPE=security")
 4. Analyze impact → SlashCommand("/AgileFlow:impact-analysis")
-5. Research best practices → SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"authentication best practices\"")
+5. Research best practices → SlashCommand("/AgileFlow:context MODE=research TOPIC=\"authentication best practices\"")
 6. Implement step-by-step (guide user with code)
 7. Update status → SlashCommand("/AgileFlow:story-status STORY=US-XXXX STATUS=in-progress")
 8. Run AI review → SlashCommand("/AgileFlow:ai-code-review")
@@ -470,7 +470,7 @@ All commands are invoked directly by the agent - no manual user intervention req
 - Before major refactor: Invoke SlashCommand("/AgileFlow:impact-analysis") and SlashCommand("/AgileFlow:tech-debt")
 - After feature complete: Chain SlashCommand("/AgileFlow:generate-changelog"), SlashCommand("/AgileFlow:stakeholder-update"), SlashCommand("/AgileFlow:velocity")
 - When blocked: Invoke SlashCommand("/AgileFlow:board") to check WIP limits
-- After research session: Chain SlashCommand("/AgileFlow:chatgpt MODE=note NOTE=\"Research findings...\"") → SlashCommand("/AgileFlow:adr-new")
+- After research session: Chain SlashCommand("/AgileFlow:context MODE=note NOTE=\"Research findings...\"") → SlashCommand("/AgileFlow:adr-new")
 
 **Proactive command execution** (run without asking):
 - If velocity is low: Automatically run SlashCommand("/AgileFlow:velocity") and show results
@@ -479,7 +479,7 @@ All commands are invoked directly by the agent - no manual user intervention req
 - If major decision made: Automatically run SlashCommand("/AgileFlow:adr-new") with decision context
 - If GitHub enabled and story done: Automatically run SlashCommand("/AgileFlow:github-sync")
 - After significant changes: Run SlashCommand("/AgileFlow:impact-analysis") to show affected areas
-- If research needed: Run SlashCommand("/AgileFlow:chatgpt MODE=research TOPIC=\"...\"") to generate research prompt
+- If research needed: Run SlashCommand("/AgileFlow:context MODE=research TOPIC=\"...\"") to generate research prompt
 
 **CRITICAL - GitHub & Notion Integration (if enabled via MCP)**:
 Check if integrations are enabled by looking for `.mcp.json` (MCP configuration).
@@ -554,16 +554,16 @@ When things go wrong, diagnose the issue and provide recovery steps. Common fail
 
 **Issue 1: Command Not Found**
 ```
-❌ Error: Command /AgileFlow:chatgpt-research not found
+❌ Error: Command /AgileFlow:context-research not found
 ```
 **Diagnosis**:
 - Command was renamed or consolidated in v2.12.0
 - Old syntax no longer valid
 
 **Recovery**:
-1. Check if command exists: `grep "chatgpt-research" .claude-plugin/plugin.json`
+1. Check if command exists: `grep "context-research" .claude-plugin/plugin.json`
 2. If not found, check CHANGELOG.md for command consolidations
-3. Use new syntax: `/AgileFlow:chatgpt MODE=research TOPIC="..."`
+3. Use new syntax: `/AgileFlow:context MODE=research TOPIC="..."`
 4. Run `/AgileFlow:validate-commands` to check for other broken references
 
 **Issue 2: Invalid JSON in status.json**
@@ -883,7 +883,7 @@ IMPLEMENTATION FLOW (Enhanced)
     - Lessons Learned documented for next story
     - Files Modified listed
 13) Update status.json → in-review; sync to Notion/GitHub again.
-14) Generate PR body; suggest syncing docs/chatgpt.md and saving research.
+14) Generate PR body; suggest syncing docs/context.md and saving research.
 
 SKILLS & AUTO-ACTIVATION (v2.18.0+)
 

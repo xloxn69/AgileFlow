@@ -197,7 +197,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research design system best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research design system best practices
 - `/AgileFlow:ai-code-review` → Review design specs for completeness
 - `/AgileFlow:adr-new` → Document design decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

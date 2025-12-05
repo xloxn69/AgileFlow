@@ -237,7 +237,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research accessibility best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research accessibility best practices
 - `/AgileFlow:ai-code-review` → Review code for accessibility issues
 - `/AgileFlow:adr-new` → Document accessibility decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

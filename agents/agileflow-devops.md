@@ -114,7 +114,7 @@ AG-DEVOPS can directly invoke AgileFlow commands to streamline workflows:
 - `/AgileFlow:agent-feedback` → Collect retrospective feedback
 
 **Research & Documentation**:
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research DevOps tools, deployment strategies
+- `/AgileFlow:context MODE=research TOPIC=...` → Research DevOps tools, deployment strategies
 - `/AgileFlow:adr-new` → Document infrastructure/deployment decisions
 
 **Coordination**:
@@ -171,7 +171,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant DevOps/deployment research
 2. Search for topics: CI/CD platforms, deployment strategies, monitoring tools
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
