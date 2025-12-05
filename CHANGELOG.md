@@ -5,6 +5,54 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.1] - 2025-12-05
+
+### Fixed - Hooks Configuration Location (Critical Fix)
+
+This release fixes a **critical error** in the hooks system implementation. AgileFlow was documenting hooks in the wrong location, causing all hooks to be non-functional.
+
+**The Problem**:
+- ❌ AgileFlow documented hooks in `hooks/hooks.json` (WRONG - doesn't exist in Claude Code spec)
+- ❌ Official Claude Code location is `.claude/settings.json` (project-level) or `~/.claude/settings.json` (user-level)
+- ❌ Our hooks were completely non-functional because Claude Code doesn't read from `hooks/` directory
+- ❌ Wrong gitignore patterns (gitignored `.claude/settings.json` which should be committed to git)
+
+**The Fix**:
+- ✅ Renamed template files:
+  - `templates/hooks.example.json` → `templates/claude-settings.example.json`
+  - `templates/hooks.advanced.example.json` → `templates/claude-settings.advanced.example.json`
+- ✅ Updated all documentation to use `.claude/settings.json` (correct location)
+- ✅ Fixed `.gitignore` patterns:
+  - `.claude/settings.json` is now committed (project-level config)
+  - Only `.claude/settings.local.json` is gitignored (user-specific overrides)
+- ✅ Updated 5 documentation files with correct hooks implementation
+
+**Files Modified**:
+- Renamed: `templates/hooks.example.json` → `templates/claude-settings.example.json`
+- Renamed: `templates/hooks.advanced.example.json` → `templates/claude-settings.advanced.example.json`
+- Updated: `CLAUDE.md` (hooks system section corrected)
+- Updated: `commands/setup.md` (hooks setup instructions corrected)
+- Updated: `commands/diagnose.md` (hooks diagnostics corrected)
+- Updated: `README.md` (hooks documentation corrected)
+- Updated: `.gitignore` (corrected patterns for `.claude/` directory)
+
+**Migration Instructions for Users**:
+If you previously set up hooks following AgileFlow documentation (v2.19.0 - v2.22.0):
+1. Move your hooks configuration from `hooks/hooks.json` to `.claude/settings.json`
+2. Update the format (hooks are nested under `"hooks"` key in settings.json)
+3. Delete the old `hooks/` directory
+4. Restart Claude Code to load the corrected hooks
+
+**Impact**:
+- All hooks documented in v2.19.0 - v2.22.0 were non-functional (wrong location)
+- Users who followed our documentation need to migrate to `.claude/settings.json`
+- Hooks will now work correctly following official Claude Code specification
+
+**Technical**:
+- Version bumped in all 3 required files (plugin.json, marketplace.json, CHANGELOG.md)
+- 7 files modified (2 renamed, 5 updated)
+- No functionality changes - purely fixing incorrect documentation and file locations
+
 ## [2.22.0] - 2025-12-04
 
 ### Removed - MCP Integration (Context Optimization)

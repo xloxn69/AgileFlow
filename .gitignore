@@ -24,12 +24,8 @@ logs/
 # Environment
 .env
 
-# Hooks (user-specific configuration)
-hooks/hooks.json
-hooks/hooks.local.json
-
-# Claude Settings (user-specific configuration)
-.claude/settings.json
+# Claude Settings (user-specific files only)
+# NOTE: .claude/settings.json is NOT gitignored (project-level config)
 .claude/settings.local.json
 .claude/prompt-log.txt
 .claude/session.log
