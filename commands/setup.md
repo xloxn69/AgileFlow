@@ -55,14 +55,14 @@ Detect what's already configured and report status:
 [ -f .github/workflows/ci.yml ] && echo "✅ CI workflow exists" || echo "❌ CI workflow missing"
 
 # Check hooks system (v2.19.0+)
-if [ -d hooks ] && [ -f hooks/hooks.json ]; then
+if [ -d .claude ] && [ -f .claude/settings.json ]; then
   echo "✅ Hooks system configured"
 else
   echo "❌ Hooks system not configured"
 fi
 
 # Check auto-archival system (v2.19.4+)
-if [ -f scripts/archive-completed-stories.sh ] && grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
+if [ -f scripts/archive-completed-stories.sh ] && grep -q "archive-completed-stories.sh" .claude/settings.json 2>/dev/null; then
   THRESHOLD=$(jq -r '.archival.threshold_days // "not configured"' docs/00-meta/agileflow-metadata.json 2>/dev/null)
   echo "✅ Auto-archival configured (threshold: $THRESHOLD days)"
 else
@@ -106,7 +106,7 @@ Skip asking about features that are already fully configured (just report them a
 CREATE DIRECTORIES (if missing)
 docs/{00-meta/{templates,guides,scripts},01-brainstorming/{ideas,sketches},02-practices/prompts/agents,03-decisions,04-architecture,05-epics,06-stories,07-testing/{acceptance,test-cases},08-project,09-agents/bus,10-research}
 .github/workflows
-hooks/
+.claude/
 scripts/
 
 **IMPORTANT - docs/02-practices Purpose**:
@@ -223,9 +223,9 @@ HOOKS SYSTEM SETUP (v2.19.0+) - If Enabled
 - **UserPromptSubmit**: Runs after user submits a prompt (logging, analytics)
 - **Stop**: Runs when Claude stops responding (cleanup, notifications)
 
-**Step 1: Create hooks directory and scripts directory**:
+**Step 1: Create .claude and scripts directories**:
 ```bash
-mkdir -p hooks scripts
+mkdir -p .claude scripts
 ```
 
 **Step 2: Copy get-env.js helper script**:
@@ -274,8 +274,8 @@ console.log(finalValue);
 ```
 Make executable: `chmod +x scripts/get-env.js`
 
-**Step 3: Create basic hooks.json**:
-Create `hooks/hooks.json` with welcome message:
+**Step 3: Create basic Claude settings with hooks**:
+Create `.claude/settings.json` with welcome message hook:
 ```json
 {
   "hooks": {
@@ -296,25 +296,21 @@ Create `hooks/hooks.json` with welcome message:
 }
 ```
 
-**Step 4: Auto-fix .gitignore for hooks and .claude directories** (Auto-applied):
+**Step 4: Auto-fix .gitignore for .claude directory** (Auto-applied):
 ```bash
-# Auto-add hooks files if not present
-grep -E '^hooks/hooks\\.json$' .gitignore 2>/dev/null || echo "hooks/hooks.json" >> .gitignore
-grep -E '^hooks/hooks\\.local\\.json$' .gitignore 2>/dev/null || echo "hooks/hooks.local.json" >> .gitignore
-
-# Auto-add .claude directory if not present
-grep -E '^\\.claude/' .gitignore 2>/dev/null || echo ".claude/" >> .gitignore
+# Auto-add .claude user-specific files if not present
+grep -E '^\\.claude/settings\\.local\\.json$' .gitignore 2>/dev/null || echo ".claude/settings.local.json" >> .gitignore
+grep -E '^\\.claude/prompt-log\\.txt$' .gitignore 2>/dev/null || echo ".claude/prompt-log.txt" >> .gitignore
+grep -E '^\\.claude/session\\.log$' .gitignore 2>/dev/null || echo ".claude/session.log" >> .gitignore
+grep -E '^\\.claude/activity\\.log$' .gitignore 2>/dev/null || echo ".claude/activity.log" >> .gitignore
+grep -E '^\\.claude/context\\.log$' .gitignore 2>/dev/null || echo ".claude/context.log" >> .gitignore
+grep -E '^\\.claude/hook\\.log$' .gitignore 2>/dev/null || echo ".claude/hook.log" >> .gitignore
 ```
 
-**Note**: Setup automatically adds these to .gitignore if missing (user-specific config files).
+**Note**: Setup automatically adds user-specific .claude files to .gitignore if missing. `.claude/settings.json` is committed to git (project-level config).
 
-**Step 5: Create .claude directory structure** (for settings):
-```bash
-mkdir -p .claude
-```
-
-**Step 6: Create example settings.json template**:
-Create `.claude/settings.example.json` (commit to git):
+**Step 5: Create example settings.local.json template** (optional):
+Create `.claude/settings.local.example.json` (commit to git):
 ```json
 {
   "env": {
@@ -324,56 +320,62 @@ Create `.claude/settings.example.json` (commit to git):
 }
 ```
 
-**Step 7: Update CLAUDE.md with hooks documentation**:
+**Step 6: Update CLAUDE.md with hooks documentation**:
 Add this section to project's CLAUDE.md:
 ```markdown
 ## Hooks System (AgileFlow v2.19.0+)
 
-AgileFlow supports event-driven automation through hooks. Hooks are automatically triggered when Claude Code lifecycle events occur.
+AgileFlow supports event-driven automation through Claude Code's official hooks system. Hooks are automatically triggered when Claude Code lifecycle events occur.
 
 ### Configured Hooks
 
 **SessionStart Hook**:
 - Displays welcome message when Claude Code starts
 - Current hook: Shows "🚀 AgileFlow loaded" message
-- Located in: hooks/hooks.json
+- Located in: .claude/settings.json
 
 ### Customizing Hooks
 
 **To customize hooks**:
-1. Edit `hooks/hooks.json`
+1. Edit `.claude/settings.json`
 2. Add commands to SessionStart, UserPromptSubmit, or Stop events
 3. Restart Claude Code to apply changes
 
 **Example - Add project context loading**:
 ```json
 {
-  "SessionStart": [{
-    "hooks": [
-      {
-        "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
-      }
-    ]
-  }]
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
+        }
+      ]
+    }]
+  }
 }
 ```
 
 **Example - Activity logging**:
 ```json
 {
-  "UserPromptSubmit": [{
-    "hooks": [{
-      "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+  "hooks": {
+    "UserPromptSubmit": [{
+      "hooks": [{
+        "type": "command",
+        "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+      }]
     }]
-  }]
+  }
 }
 ```
 
 ### Dynamic Environment Variables
 
-Use `scripts/get-env.js` to load environment variables from `.claude/settings.json`:
+Use `scripts/get-env.js` to load environment variables from `.claude/settings.json` and `.claude/settings.local.json`:
 
-**Create .claude/settings.json** (gitignored - your local config):
+**Create .claude/settings.local.json** (gitignored - your local config):
 ```json
 {
   "env": {
@@ -386,17 +388,24 @@ Use `scripts/get-env.js` to load environment variables from `.claude/settings.js
 **Use in hooks**:
 ```json
 {
-  "command": "echo 'Welcome $(node scripts/get-env.js USER_NAME)!'"
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "echo 'Welcome $(node scripts/get-env.js USER_NAME)!'"
+      }]
+    }]
+  }
 }
 ```
 
-Changes to `.claude/settings.json` take effect immediately (no restart needed).
+Changes to `.claude/settings.local.json` take effect immediately (no restart needed).
 
 ### Security
 
-- `hooks/hooks.json` is gitignored (user-specific)
-- `.claude/settings.json` is gitignored (local overrides)
-- `.claude/settings.example.json` is committed (template for team)
+- `.claude/settings.json` is committed (project-level config, shared with team)
+- `.claude/settings.local.json` is gitignored (user-specific overrides)
+- `.claude/settings.local.example.json` is committed (template for team)
 
 See AgileFlow plugin documentation for advanced hooks patterns.
 ```
@@ -404,16 +413,16 @@ See AgileFlow plugin documentation for advanced hooks patterns.
 **Print Next Steps**:
 ```
 ✅ Hooks system configured
-✅ hooks/hooks.json created with SessionStart welcome message
+✅ .claude/settings.json created with SessionStart welcome message
 ✅ scripts/get-env.js helper created
-✅ .gitignore updated (hooks and .claude directories protected)
+✅ .gitignore updated (.claude user-specific files protected)
 ✅ .claude/ directory created for settings
-✅ .claude/settings.example.json template created
+✅ .claude/settings.local.example.json template created
 ✅ CLAUDE.md updated with hooks documentation
 
 Next steps for you:
-1. Customize hooks: Edit hooks/hooks.json
-2. OPTIONAL: Create .claude/settings.json for dynamic environment variables
+1. Customize hooks: Edit .claude/settings.json
+2. OPTIONAL: Create .claude/settings.local.json for user-specific environment variables
 ═══════════════════════════════════════════════════════════
 3. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
    Quit completely (Cmd+Q), wait 5 seconds, restart
@@ -422,17 +431,16 @@ Next steps for you:
 4. Hooks will run automatically on SessionStart, UserPromptSubmit, Stop events
 
 Next steps for team members:
-1. Pull latest code (includes hooks/hooks.json and .claude/settings.example.json)
-2. Customize their own hooks: Edit hooks/hooks.json locally
-3. OPTIONAL: Create .claude/settings.json with their own values
+1. Pull latest code (includes .claude/settings.json project config)
+2. OPTIONAL: Create .claude/settings.local.json with their own environment variable overrides
 ═══════════════════════════════════════════════════════════
-4. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+3. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
    Quit completely (Cmd+Q), wait 5 seconds, restart
    Hooks ONLY load on startup!
 ═══════════════════════════════════════════════════════════
-5. Hooks will run automatically!
+4. Hooks will run automatically!
 
-Note: Each team member can have different hooks - hooks/hooks.json is gitignored for personalization.
+Note: .claude/settings.json is committed to git (shared config). Team members can create .claude/settings.local.json for personal overrides (gitignored).
 ```
 
 AUTO-ARCHIVAL CONFIGURATION (v2.19.4+) - Story Status Management
@@ -498,13 +506,13 @@ fi
 echo "✅ Configured $DAYS-day archival threshold in agileflow-metadata.json"
 ```
 
-**Add Auto-Archival Hook to hooks.json**:
+**Add Auto-Archival Hook to .claude/settings.json**:
 ```bash
-# Read current hooks/hooks.json
-CURRENT_HOOKS=$(cat hooks/hooks.json)
+# Read current .claude/settings.json
+CURRENT_SETTINGS=$(cat .claude/settings.json)
 
 # Add SessionStart hook for auto-archival check (if not already present)
-if ! grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
+if ! grep -q "archive-completed-stories.sh" .claude/settings.json 2>/dev/null; then
   # Add auto-archival hook to SessionStart
   # Script reads threshold from agileflow-metadata.json automatically
   jq '.hooks.SessionStart += [{
@@ -513,9 +521,9 @@ if ! grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
       "type": "command",
       "command": "bash scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
     }]
-  }]' hooks/hooks.json > hooks/hooks.json.tmp && mv hooks/hooks.json.tmp hooks/hooks.json
+  }]' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
 
-  echo "✅ Added auto-archival hook to hooks/hooks.json"
+  echo "✅ Added auto-archival hook to .claude/settings.json"
 else
   echo "✅ Auto-archival hook already exists"
 fi
@@ -612,7 +620,7 @@ jq '.stories["US-0042"]' docs/09-agents/status-archive.json
 ✅ Threshold: $DAYS days
 ✅ Archive script deployed: scripts/archive-completed-stories.sh
 ✅ Compression script deployed: scripts/compress-status.sh (v2.20.0+)
-✅ Auto-archival hook added to hooks/hooks.json
+✅ Auto-archival hook added to .claude/settings.json
 ✅ Settings saved to docs/00-meta/agileflow-metadata.json
 ✅ CLAUDE.md updated with archival documentation
 

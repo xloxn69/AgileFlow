@@ -90,7 +90,7 @@ docs/
 
 ## Hooks System (v2.19.0+) 🎯
 
-AgileFlow now supports **event-driven automation** through a hooks system. Hooks allow you to automatically run commands when Claude Code lifecycle events occur.
+AgileFlow now supports **event-driven automation** through Claude Code's official hooks system. Hooks allow you to automatically run commands when Claude Code lifecycle events occur.
 
 ### What Are Hooks?
 
@@ -101,12 +101,17 @@ Hooks are automatic triggers that execute commands in response to events:
 
 ### Quick Setup
 
-1. **Copy the template**:
+1. **Create .claude directory**:
    ```bash
-   cp templates/hooks.example.json hooks/hooks.json
+   mkdir -p .claude
    ```
 
-2. **Customize your hooks** (edit `hooks/hooks.json`):
+2. **Copy the template**:
+   ```bash
+   cp templates/claude-settings.example.json .claude/settings.json
+   ```
+
+3. **Customize your hooks** (edit `.claude/settings.json`):
    ```json
    {
      "hooks": {
@@ -120,29 +125,35 @@ Hooks are automatic triggers that execute commands in response to events:
    }
    ```
 
-3. **Restart Claude Code** to load hooks
+4. **Restart Claude Code** to load hooks
 
 ### Example Use Cases
 
 **Welcome message on startup**:
 ```json
 {
-  "SessionStart": [{
-    "hooks": [{
-      "command": "echo '👋 Welcome to AgileFlow! Current sprint: $(cat docs/08-project/current-sprint.txt)'"
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "echo '👋 Welcome to AgileFlow! Current sprint: $(cat docs/08-project/current-sprint.txt)'"
+      }]
     }]
-  }]
+  }
 }
 ```
 
 **Activity logging**:
 ```json
 {
-  "UserPromptSubmit": [{
-    "hooks": [{
-      "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+  "hooks": {
+    "UserPromptSubmit": [{
+      "hooks": [{
+        "type": "command",
+        "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
+      }]
     }]
-  }]
+  }
 }
 ```
 
@@ -150,22 +161,26 @@ Hooks are automatic triggers that execute commands in response to events:
 Use the `get-env.js` helper to load configuration without restart:
 ```json
 {
-  "SessionStart": [{
-    "hooks": [{
-      "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
+      }]
     }]
-  }]
+  }
 }
 ```
 
 ### Templates Provided
 
-- `templates/hooks.example.json` - Basic hooks template
-- `templates/hooks.advanced.example.json` - Advanced with matchers and logging
+- `templates/claude-settings.example.json` - Basic Claude settings template
+- `templates/claude-settings.advanced.example.json` - Advanced with matchers and logging
 
-### Security Note
+### Configuration Files
 
-Hooks files (`hooks/hooks.json`, `hooks/hooks.local.json`) are **gitignored** - each user creates their own custom hooks.
+- `.claude/settings.json` - Project-level config (committed to git, shared with team)
+- `.claude/settings.local.json` - User-specific overrides (gitignored, personal config)
 
 See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 

@@ -32,7 +32,7 @@ JSON_FILES=(
   "docs/09-agents/status-archive.json"
   "docs/08-project/github-sync-map.json"
   "docs/08-project/notion-sync-map.json"
-  "hooks/hooks.json"
+  ".claude/settings.json"
 )
 
 JSON_ERRORS=0
@@ -77,7 +77,7 @@ if [ -f scripts/archive-completed-stories.sh ]; then
     echo "  ✅ Archive script exists and is executable"
 
     # Check if hooked up
-    if [ -f hooks/hooks.json ] && grep -q "archive-completed-stories.sh" hooks/hooks.json 2>/dev/null; then
+    if [ -f .claude/settings.json ] && grep -q "archive-completed-stories.sh" .claude/settings.json 2>/dev/null; then
       echo "  ✅ Auto-archival hook configured"
 
       # Check threshold
@@ -88,7 +88,7 @@ if [ -f scripts/archive-completed-stories.sh ]; then
         echo "  ⚠️  Archival threshold not configured in metadata"
       fi
     else
-      echo "  ❌ Auto-archival hook NOT configured in hooks/hooks.json"
+      echo "  ❌ Auto-archival hook NOT configured in .claude/settings.json"
       JSON_ERRORS=$((JSON_ERRORS + 1))
     fi
   else
@@ -107,20 +107,20 @@ echo ""
 echo "🪝 Hooks System"
 echo "---------------"
 
-if [ -d hooks ] && [ -f hooks/hooks.json ]; then
-  if jq empty hooks/hooks.json 2>/dev/null; then
-    echo "  ✅ hooks/hooks.json is valid JSON"
+if [ -d .claude ] && [ -f .claude/settings.json ]; then
+  if jq empty .claude/settings.json 2>/dev/null; then
+    echo "  ✅ .claude/settings.json is valid JSON"
 
     # Count hooks
-    SESSION_START_HOOKS=$(jq '.hooks.SessionStart | length' hooks/hooks.json 2>/dev/null)
-    USER_PROMPT_HOOKS=$(jq '.hooks.UserPromptSubmit | length' hooks/hooks.json 2>/dev/null)
-    STOP_HOOKS=$(jq '.hooks.Stop | length' hooks/hooks.json 2>/dev/null)
+    SESSION_START_HOOKS=$(jq '.hooks.SessionStart | length' .claude/settings.json 2>/dev/null)
+    USER_PROMPT_HOOKS=$(jq '.hooks.UserPromptSubmit | length' .claude/settings.json 2>/dev/null)
+    STOP_HOOKS=$(jq '.hooks.Stop | length' .claude/settings.json 2>/dev/null)
 
     echo "  ℹ️  SessionStart hooks: $SESSION_START_HOOKS"
     echo "  ℹ️  UserPromptSubmit hooks: $USER_PROMPT_HOOKS"
     echo "  ℹ️  Stop hooks: $STOP_HOOKS"
   else
-    echo "  ❌ hooks/hooks.json is INVALID JSON"
+    echo "  ❌ .claude/settings.json is INVALID JSON"
     JSON_ERRORS=$((JSON_ERRORS + 1))
   fi
 else
