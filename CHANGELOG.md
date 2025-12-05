@@ -5,6 +5,110 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.2] - 2025-12-05
+
+### Added - Setup Validation Script
+
+This release adds a validation script to ensure all required directories are created during AgileFlow setup, addressing issues where some folders were occasionally missed.
+
+**The Problem**:
+- ❌ Sometimes `/AgileFlow:setup` didn't create all folders in docs/ structure
+- ❌ Missing folders caused agent failures later in the workflow
+- ❌ Manual directory creation was error-prone (28+ directories to create)
+- ❌ No easy way to verify complete setup
+
+**The Solution**:
+- ✅ New validation script: `scripts/validate-setup.sh`
+- ✅ Checks for all 26 required directories
+- ✅ Creates any missing directories automatically
+- ✅ Reports status of critical files (status.json, agileflow-metadata.json)
+- ✅ Safe to run multiple times (idempotent)
+- ✅ Integrated into `/AgileFlow:setup` command
+
+**What It Validates**:
+
+*Required Directories* (all auto-created if missing):
+- docs/00-meta/{templates,guides,scripts}
+- docs/01-brainstorming/{ideas,sketches}
+- docs/02-practices/prompts/agents
+- docs/03-decisions
+- docs/04-architecture
+- docs/05-epics
+- docs/06-stories
+- docs/07-testing/{acceptance,test-cases}
+- docs/08-project
+- docs/09-agents/bus
+- docs/10-research
+- .github/workflows
+- .claude
+- scripts
+
+*Critical Files* (reported, not created):
+- docs/09-agents/status.json
+- docs/00-meta/agileflow-metadata.json
+- .gitignore
+
+**Usage**:
+
+*During setup* (automatic):
+```bash
+# Validation script is copied and run automatically by /AgileFlow:setup
+```
+
+*Manual validation* (anytime):
+```bash
+bash scripts/validate-setup.sh
+```
+
+**Example Output**:
+```
+📋 AgileFlow Setup Validation
+==============================
+
+🔍 Checking directory structure...
+
+✅ docs
+✅ docs/00-meta
+✅ docs/00-meta/templates
+❌ docs/00-meta/guides (missing)
+  └─ Created
+...
+
+📊 Validation Summary
+====================
+
+Directories:
+  ✅ Existing: 22
+  🆕 Created: 4
+  ❌ Missing (before): 4
+
+✅ Validation complete! Created 4 missing directories.
+
+💡 Tips:
+  - Run this script anytime to verify your AgileFlow setup
+  - Safe to run multiple times (idempotent)
+  - Run /AgileFlow:setup for full setup with all files
+```
+
+**Files Added**:
+- `scripts/validate-setup.sh` - Setup validation and auto-repair script
+
+**Files Modified**:
+- `commands/setup.md` - Integrated validation script into setup workflow
+
+**Benefits**:
+- ✅ **Prevents setup failures** - All directories guaranteed to exist
+- ✅ **Self-healing** - Automatically creates missing directories
+- ✅ **Verifiable** - Clear report of what was created vs. existing
+- ✅ **Idempotent** - Safe to run multiple times without side effects
+- ✅ **User-friendly** - Color-coded output with clear status indicators
+
+**Technical**:
+- Version bumped in all 3 required files (plugin.json, marketplace.json, CHANGELOG.md)
+- Script uses standard bash with no dependencies (works everywhere)
+- Validates 26 directories + 3 critical files
+- Exit code 0 (always succeeds, creates what's missing)
+
 ## [2.22.1] - 2025-12-05
 
 ### Fixed - Hooks Configuration Location (Critical Fix)
