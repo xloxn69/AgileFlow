@@ -1,5 +1,5 @@
 ---
-description: adr-new
+description: Create an Architecture Decision Record
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

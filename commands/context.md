@@ -1,5 +1,5 @@
 ---
-description: context
+description: Generate context export for web AI tools
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: pr-template
+description: Generate pull request description from story
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

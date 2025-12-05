@@ -1,5 +1,5 @@
 ---
-description: blockers
+description: Track and resolve blockers with actionable suggestions
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

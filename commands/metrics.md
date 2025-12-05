@@ -1,5 +1,5 @@
 ---
-description: metrics
+description: Analytics dashboard with cycle time and throughput
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
