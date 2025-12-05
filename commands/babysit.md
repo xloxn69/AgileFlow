@@ -88,7 +88,7 @@ After reading docs/02-practices/README.md, crawl to relevant practice docs based
   - Automation: commands/{doc-coverage,impact-analysis,tech-debt,generate-changelog,auto-story,custom-template,stakeholder-update,setup-deployment,agent-feedback}.md
   - Diagnostics: commands/diagnose.md (comprehensive system health checks)
   - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
-  - Integration: commands/{github-sync,notion}.md (both use MCP with ${VAR} env substitution from .env)
+  - Visualization: commands/{board,velocity,metrics,retro,dependencies}.md
   - Agents: commands/{agent-new,agent-ui,agent-api,agent-ci}.md
   - Docs: commands/system-help.md
 
@@ -588,27 +588,21 @@ When things go wrong, diagnose the issue and provide recovery steps. Common fail
 4. Validate: `jq . docs/09-agents/status.json` (should print formatted JSON)
 5. Explain to user what was fixed and why
 
-**Issue 3: MCP Integration Fails**
+**Issue 3: Dependencies or Setup Issues**
 ```
-❌ Error: GitHub MCP server not responding
-❌ Error: Notion integration unavailable
+❌ Error: Package not found or initialization failed
 ```
 **Diagnosis**:
-- MCP server not configured or tokens missing
-- Claude Code not restarted after adding tokens
-- Tokens expired or invalid
+- Required dependencies missing or misconfigured
+- Project setup incomplete
+- Environment not properly initialized
 
 **Recovery**:
-1. Check if `.mcp.json` exists: `ls -la .mcp.json`
-2. If not exists: Suggest `/AgileFlow:setup-system` to create it
-3. If exists, check for ${VAR} substitution: `grep '\${' .mcp.json`
-4. If using ${VAR}, check `.env` file: `grep -E 'GITHUB_TOKEN|NOTION_TOKEN' .env`
-5. If tokens missing: Guide user to add tokens to `.env`
-6. Remind: "You must restart Claude Code after adding tokens to .env for MCP servers to load"
-7. If tokens exist, check format:
-   - GitHub: Should start with `ghp_` and be 40+ chars
-   - Notion: Should start with `secret_` or `ntn_`
-8. If still failing: Run `/AgileFlow:setup-system` again to regenerate config
+1. Check if basic setup is complete: Run `/AgileFlow:diagnose`
+2. Ensure all core directories exist: `ls -la docs/`
+3. Check for missing configuration files
+4. Review project README for setup requirements
+5. Install or update dependencies as needed
 
 **Issue 4: Test Execution Fails**
 ```

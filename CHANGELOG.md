@@ -5,6 +5,74 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.0] - 2025-12-04
+
+### Removed - MCP Integration (Context Optimization)
+
+This release removes all Model Context Protocol (MCP) integration to reduce context usage and simplify AgileFlow's architecture. MCP servers consumed significant context tokens, and integration complexity outweighed benefits.
+
+**What Was Removed**:
+- ❌ **Commands removed** (2): `/AgileFlow:github` (GitHub sync), `/AgileFlow:notion` (Notion export)
+- ❌ **Agent removed** (1): `agileflow-notion-exporter` (parallel export agent)
+- ❌ **MCP configuration files**: `.mcp.json.example`, `.env.example`, all MCP wrapper scripts
+- ❌ **MCP documentation**: Removed ~1,340+ lines from setup.md, CLAUDE.md, README.md, babysit.md, diagnose.md, SUBAGENTS.md
+- ❌ **MCP references**: All mentions of Model Context Protocol, MCP servers, MCP tools
+- ❌ **GitHub MCP**: `@modelcontextprotocol/server-github` integration
+- ❌ **Notion MCP**: `@notionhq/notion-mcp-server` integration
+- ❌ **Token management**: GITHUB_PERSONAL_ACCESS_TOKEN, NOTION_TOKEN environment variables
+
+**Why Remove MCP?**:
+- **Context usage**: MCP servers consumed 2,000-3,000 tokens per session
+- **Complexity**: Integration setup required multiple files (.mcp.json, .env, wrappers)
+- **User feedback**: "MCPs take up a lot of context" - users prefer lightweight plugin
+- **Simpler architecture**: Direct user integration (users handle GitHub/Notion sync themselves)
+- **Focus**: AgileFlow core is docs-as-code + multi-agent collaboration, not external integrations
+
+**What's Preserved** (100% of core functionality):
+- ✅ All 27 specialized agents (UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, etc.)
+- ✅ 36 slash commands (down from 38 - only github/notion removed)
+- ✅ All 23 auto-loaded skills following Anthropic specification
+- ✅ Hooks system for event-driven automation
+- ✅ Status.json compression for managing file size
+- ✅ Auto-archival system for completed stories
+- ✅ Epic planning and story decomposition
+- ✅ ADR system and architecture decision tracking
+- ✅ Bus/log.jsonl agent coordination protocol
+- ✅ All core AgileFlow workflows
+
+**Migration Path**:
+Users who relied on GitHub/Notion sync can:
+1. Use GitHub CLI (`gh`) directly for GitHub Issues sync
+2. Use Notion API directly or third-party tools for Notion export
+3. AgileFlow remains the source of truth for docs-as-code in `docs/` directory
+4. External integrations are now user responsibility (reduces plugin complexity)
+
+**Benefits**:
+- ✅ **~2,000-3,000 tokens saved** per session (more room for user project context)
+- ✅ **Simpler setup** - no .mcp.json, no environment variables, no wrapper scripts
+- ✅ **Cleaner documentation** - 1,340+ lines removed from docs
+- ✅ **Faster plugin loading** - no MCP server initialization
+- ✅ **Easier maintenance** - fewer dependencies, fewer integration points
+
+**Files Modified**:
+- Deleted: `commands/github.md`, `commands/notion.md`, `agents/agileflow-notion-exporter.md`
+- Deleted: `.mcp.json.example`, `.env.example`, `scripts/validate-mcp-tokens.sh`
+- Deleted: `templates/mcp-wrapper-load-env.sh`, `templates/mcp-wrapper-postgres.sh`, `templates/MCP-WRAPPER-SCRIPTS.md`
+- Cleaned: `commands/setup.md` (788 lines removed), `CLAUDE.md` (160 lines), `README.md` (171 lines)
+- Cleaned: `commands/babysit.md` (66 lines), `commands/diagnose.md` (50 lines), `SUBAGENTS.md`, `agents/agileflow-mentor.md` (60 lines)
+
+**Command Count**:
+- Before: 38 commands
+- After: 36 commands (github, notion removed)
+- Agent count: 27 (notion-exporter agent removed)
+
+### Technical
+
+- Removed all MCP-related files and documentation (9 files deleted, 8 files cleaned)
+- Updated command count from 38 → 36
+- Version bumped in all 3 required files (plugin.json, marketplace.json, CHANGELOG.md)
+- Net reduction: ~1,500 lines across all files
+
 ## [2.21.0] - 2025-12-04
 
 ### Changed - Skills Architecture Refactoring (Anthropic Specification)
