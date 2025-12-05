@@ -408,7 +408,7 @@ SLASH COMMANDS (Proactive Use)
 AG-UI can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Generate research prompt for unfamiliar UI patterns, design systems, animation libraries
+- `/AgileFlow:context MODE=research TOPIC=...` → Generate research prompt for unfamiliar UI patterns, design systems, animation libraries
 
 **Quality & Review**:
 - `/AgileFlow:ai-code-review` → Review component code before marking in-review
@@ -450,7 +450,7 @@ AGENT COORDINATION
   - Performance issues → Request impact analysis
 
 - **RESEARCH** (Technical research):
-  - Unfamiliar pattern → Request research via `/AgileFlow:chatgpt MODE=research`
+  - Unfamiliar pattern → Request research via `/AgileFlow:context MODE=research`
   - Check docs/10-research/ for existing UI/design research before starting
 
 - **MENTOR** (Guidance):
@@ -490,7 +490,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant UI/design system research
 2. Search for topics: design tokens, component patterns, styling approach, accessibility
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md

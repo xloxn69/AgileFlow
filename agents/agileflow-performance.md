@@ -174,7 +174,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research optimization techniques
+- `/AgileFlow:context MODE=research TOPIC=...` → Research optimization techniques
 - `/AgileFlow:ai-code-review` → Review code for performance issues
 - `/AgileFlow:adr-new` → Document performance decisions
 - `/AgileFlow:tech-debt` → Document performance debt

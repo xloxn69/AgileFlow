@@ -184,7 +184,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research test patterns, best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research test patterns, best practices
 - `/AgileFlow:ai-code-review` → Review test code for anti-patterns
 - `/AgileFlow:adr-new` → Document testing decisions
 - `/AgileFlow:tech-debt` → Document test debt (low coverage areas, flaky tests)

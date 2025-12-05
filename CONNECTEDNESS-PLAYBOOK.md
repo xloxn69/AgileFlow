@@ -168,7 +168,7 @@
 - **Agent Handoff**: AG-INTEGRATIONS → AG-SECURITY (webhook signature validation)
 
 ## 🔜 Next Steps (Auto-Suggested)
-1. Unblock US-0078: Request Stripe API keys via `/AgileFlow:chatgpt MODE=research TOPIC="Stripe test mode setup"`
+1. Unblock US-0078: Request Stripe API keys via `/AgileFlow:context MODE=research TOPIC="Stripe test mode setup"`
 2. Complete US-0077: AG-API merge pending, handoff to AG-UI for checkout UI
 3. Schedule TD-042 migration: Create epic via `/AgileFlow:epic` (migration stories)
 4. Security review: AG-SECURITY to audit US-0082 before production deployment
@@ -219,11 +219,11 @@
 **Next Steps** (auto-suggested):
 - `/AgileFlow:tech-debt` → Document migration from old Charges API (TD-042)
 - `/AgileFlow:story` → Create implementation story for Payment Intents integration
-- `/AgileFlow:chatgpt MODE=research TOPIC="Stripe Payment Intents best practices"`
+- `/AgileFlow:context MODE=research TOPIC="Stripe Payment Intents best practices"`
 ```
 
 ```markdown
-# After /AgileFlow:chatgpt MODE=full completes
+# After /AgileFlow:context MODE=full completes
 ✅ Research complete: Payment processing security best practices
 
 **Next Steps** (auto-suggested):
@@ -254,7 +254,7 @@
 +   - If "Negatives" section has items → Suggest `/AgileFlow:tech-debt` to document migration/cleanup
 +   - If "Supersedes" an old ADR → Suggest creating migration story
 +   - If introduces new pattern → Suggest `/AgileFlow:story` to implement in codebase
-+   - If mentions external research → Suggest `/AgileFlow:chatgpt MODE=research`
++   - If mentions external research → Suggest `/AgileFlow:context MODE=research`
 +
 +   **Output format**:
 +   ```
@@ -545,7 +545,7 @@ Assistant (agileflow-epic-planner):
 1. `/AgileFlow:adr-new` → Document Payment Intents vs Charges API decision
 2. `/AgileFlow:story-validate US-0075` → Validate first story before AG-UI starts
 3. `/AgileFlow:board` → Visualize epic progress
-4. `/AgileFlow:chatgpt MODE=research TOPIC="Stripe Payment Intents security best practices"`
+4. `/AgileFlow:context MODE=research TOPIC="Stripe Payment Intents security best practices"`
 ```
 
 ---
@@ -702,7 +702,7 @@ AG-UI picks up automatically via SessionStart hook, sees handoff, starts US-0093
 **Suggested next steps**:
 - `/AgileFlow:dashboard` → View updated system state
 - `/AgileFlow:github-sync` → Sync completion to GitHub
-- `/AgileFlow:chatgpt MODE=research TOPIC="2FA recovery codes best practices"` → Research next iteration
+- `/AgileFlow:context MODE=research TOPIC="2FA recovery codes best practices"` → Research next iteration
 ```
 
 ### 6. Connectedness Dashboard (Rule #3)

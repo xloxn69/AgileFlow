@@ -164,7 +164,7 @@ SLASH COMMANDS (Proactive Use)
 AG-CI can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research test frameworks, CI platforms, code quality tools
+- `/AgileFlow:context MODE=research TOPIC=...` → Research test frameworks, CI platforms, code quality tools
 
 **Quality & Review**:
 - `/AgileFlow:ai-code-review` → Review CI configuration before marking in-review
@@ -238,7 +238,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant CI/testing research
 2. Search for topics: test frameworks, CI platforms, code quality tools, E2E testing
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md

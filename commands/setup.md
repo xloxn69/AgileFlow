@@ -147,7 +147,7 @@ mkdir -p .github/workflows .claude scripts
 
 CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/README.md — map of all folders
-- docs/chatgpt.md — one-page brief with managed sections (placeholders)
+- docs/context.md — one-page brief with managed sections (placeholders)
 - docs/00-meta/{glossary.md,conventions.md}
 - docs/00-meta/agileflow-metadata.json — copy from templates/agileflow-metadata.json, update timestamp and version
 - docs/00-meta/templates/{README-template.md,story-template.md,epic-template.md,adr-template.md,agent-profile-template.md,comms-note-template.md,research-template.md}

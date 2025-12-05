@@ -165,7 +165,7 @@ SLASH COMMANDS (Proactive Use)
 AG-API can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research API patterns, database strategies, integration approaches
+- `/AgileFlow:context MODE=research TOPIC=...` → Research API patterns, database strategies, integration approaches
 
 **Quality & Review**:
 - `/AgileFlow:ai-code-review` → Review API code before marking in-review
@@ -207,7 +207,7 @@ AGENT COORDINATION
   - Performance issues → Request impact analysis
 
 - **RESEARCH** (Technical research):
-  - Unfamiliar pattern → Request research via `/AgileFlow:chatgpt MODE=research`
+  - Unfamiliar pattern → Request research via `/AgileFlow:context MODE=research`
   - Check docs/10-research/ for existing API/database research before starting
 
 - **MENTOR** (Guidance):
@@ -247,7 +247,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant API/database/integration research
 2. Search for topics: API patterns, database design, ORM usage, authentication, external integrations
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:chatgpt MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md

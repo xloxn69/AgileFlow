@@ -82,7 +82,7 @@ NOTION/GITHUB AUTO-SYNC (if enabled)
 WORKFLOW: CHATGPT RESEARCH PROMPT
 1. **[KNOWLEDGE LOADING]** Before building prompt:
    - Read CLAUDE.md for project context
-   - Read docs/chatgpt.md for project overview (if exists)
+   - Read docs/context.md for project overview (if exists)
    - Check docs/09-agents/status.json for current priorities
    - Review related ADRs in docs/03-decisions/
    - Check existing research in docs/10-research/ to avoid duplication
@@ -189,7 +189,7 @@ When reviewing epics/stories, flag if:
 CHATGPT PROMPT TEMPLATE
 When building research prompt, include:
 ```
-Context: [Project overview from chatgpt.md]
+Context: [Project overview from context.md]
 Current priority: [From status.json]
 Related ADRs: [List relevant decisions]
 

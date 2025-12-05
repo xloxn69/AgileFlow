@@ -85,7 +85,7 @@ docs/
     bus/log.jsonl      # Agent communication log
     status.json        # Current story statuses
   10-research/         # Saved research notes
-  chatgpt.md           # One-page context brief for ChatGPT
+  context.md           # One-page context brief for web AI tools
 ```
 
 ## Hooks System (v2.19.0+) 🎯
@@ -236,8 +236,8 @@ See `CLAUDE.md` section "Hooks System" for comprehensive documentation.
 - `/AgileFlow:github` - Bidirectional GitHub Issues sync (uses GitHub MCP - Model Context Protocol)
 - `/AgileFlow:notion` - Bidirectional Notion database sync (uses Notion MCP - Model Context Protocol)
 
-### ChatGPT Integration
-- `/AgileFlow:chatgpt` - Generate/export/manage ChatGPT context (MODE=full|export|note|research)
+### Web AI Integration
+- `/AgileFlow:context` - Generate/export/manage context for web AI tools (MODE=full|export|note|research)
 - `/AgileFlow:research` - Save research notes
 
 ### Specialized Agents (Commands)
@@ -703,14 +703,14 @@ New team members need to:
 
 See `/AgileFlow:github` command for full documentation.
 
-## ChatGPT Integration
+## Web AI Integration
 
-AgileFlow maintains a single source of truth context file (`docs/chatgpt.md`) that can be shared with ChatGPT for research and planning:
+AgileFlow maintains a single source of truth context file (`docs/context.md`) that can be shared with web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.) for research and planning:
 
-1. Run `/AgileFlow:chatgpt` to generate or refresh the context (default MODE=full)
-2. Use `/AgileFlow:chatgpt MODE=export` to get a concise excerpt
-3. Paste into ChatGPT for research or ideation
-4. Use `/AgileFlow:chatgpt MODE=research TOPIC="..."` to build structured research prompts
+1. Run `/AgileFlow:context` to generate or refresh the context (default MODE=full)
+2. Use `/AgileFlow:context MODE=export` to get a concise excerpt
+3. Paste into your preferred web AI tool for research or ideation
+4. Use `/AgileFlow:context MODE=research TOPIC="..."` to build structured research prompts
 5. Save results with `/AgileFlow:research`
 
 ## Examples

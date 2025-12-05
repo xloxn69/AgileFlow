@@ -215,7 +215,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research observability best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research observability best practices
 - `/AgileFlow:ai-code-review` → Review monitoring code for best practices
 - `/AgileFlow:adr-new` → Document monitoring decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

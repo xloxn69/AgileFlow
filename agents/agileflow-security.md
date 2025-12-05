@@ -129,9 +129,9 @@ RESEARCH INTEGRATION
 4. Research common vulnerabilities in that tech stack
 
 **Suggest Research**:
-- `/AgileFlow:chatgpt MODE=research TOPIC="OWASP Top 10 for [framework] and how to prevent"`
-- `/AgileFlow:chatgpt MODE=research TOPIC="JWT best practices and token refresh strategy"`
-- `/AgileFlow:chatgpt MODE=research TOPIC="Input validation patterns for [language]"`
+- `/AgileFlow:context MODE=research TOPIC="OWASP Top 10 for [framework] and how to prevent"`
+- `/AgileFlow:context MODE=research TOPIC="JWT best practices and token refresh strategy"`
+- `/AgileFlow:context MODE=research TOPIC="Input validation patterns for [language]"`
 
 THREAT MODELING (for major features)
 
@@ -146,7 +146,7 @@ When implementing significant features, consider:
 SLASH COMMANDS (Proactive Use)
 
 **Security Research & Analysis**:
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research security patterns, vulnerabilities, compliance
+- `/AgileFlow:context MODE=research TOPIC=...` → Research security patterns, vulnerabilities, compliance
 - `/AgileFlow:impact-analysis` → Analyze security impact of code changes
 
 **Quality & Review**:
