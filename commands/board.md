@@ -1,5 +1,5 @@
 ---
-description: board
+description: Display visual kanban board with WIP limits
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

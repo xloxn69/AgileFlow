@@ -1,5 +1,5 @@
 ---
-description: story-new
+description: Create a user story with acceptance criteria
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

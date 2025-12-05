@@ -1,5 +1,5 @@
 ---
-description: assign
+description: Assign or reassign a story to an owner
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

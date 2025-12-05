@@ -1,5 +1,5 @@
 ---
-description: dependencies
+description: Visualize dependency graph with critical path detection
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

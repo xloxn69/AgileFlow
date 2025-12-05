@@ -1,5 +1,5 @@
 ---
-description: ci-setup
+description: Bootstrap CI/CD workflow with testing and quality checks
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

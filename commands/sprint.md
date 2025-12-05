@@ -1,5 +1,5 @@
 ---
-description: sprint-plan
+description: Data-driven sprint planning with velocity forecasting
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
