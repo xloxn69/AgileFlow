@@ -35,3 +35,7 @@ logs/
 
 # NOTE: CLAUDE.md in THIS repo (AgileFlow plugin) is committed (documentation for plugin development)
 # User projects created by /AgileFlow:setup may have their own CLAUDE.md (not this repo)
+
+# User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
+docs/
+hooks/
