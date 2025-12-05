@@ -212,7 +212,7 @@ COORDINATION WITH EPIC-PLANNER
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research user needs, competitive analysis
+- `/AgileFlow:context MODE=research TOPIC=...` → Research user needs, competitive analysis
 - `/AgileFlow:adr-new` → Document product decisions
 - `/AgileFlow:tech-debt` → Document product debt (unclear requirements, scope creep)
 - `/AgileFlow:status STORY=... STATUS=...` → Update status
@@ -226,8 +226,8 @@ RESEARCH INTEGRATION
 4. Research industry standards
 
 **Suggest Research**:
-- `/AgileFlow:chatgpt MODE=research TOPIC="Best practices for [feature type]"`
-- `/AgileFlow:chatgpt MODE=research TOPIC="User needs analysis for [user type]"`
+- `/AgileFlow:context MODE=research TOPIC="Best practices for [feature type]"`
+- `/AgileFlow:context MODE=research TOPIC="User needs analysis for [user type]"`
 
 WORKFLOW
 

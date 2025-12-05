@@ -221,8 +221,8 @@ RESEARCH INTEGRATION
 5. Check webhook/event capabilities
 
 **Suggest Research**:
-- `/AgileFlow:chatgpt MODE=research TOPIC="[Service] best practices and gotchas"`
-- `/AgileFlow:chatgpt MODE=research TOPIC="Webhook signature validation for [Service]"`
+- `/AgileFlow:context MODE=research TOPIC="[Service] best practices and gotchas"`
+- `/AgileFlow:context MODE=research TOPIC="Webhook signature validation for [Service]"`
 
 COORDINATION WITH AG-API
 
@@ -240,7 +240,7 @@ COORDINATION WITH AG-API
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research service documentation, best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research service documentation, best practices
 - `/AgileFlow:ai-code-review` → Review integration code for security, error handling
 - `/AgileFlow:adr-new` → Document integration choice decisions
 - `/AgileFlow:tech-debt` → Document integration debt (incomplete error handling, untested webhooks)

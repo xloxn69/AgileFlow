@@ -191,7 +191,7 @@ COORDINATION WITH AG-SECURITY
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research compliance requirements
+- `/AgileFlow:context MODE=research TOPIC=...` → Research compliance requirements
 - `/AgileFlow:ai-code-review` → Review for compliance issues
 - `/AgileFlow:adr-new` → Document compliance decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

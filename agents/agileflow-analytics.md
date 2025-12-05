@@ -308,7 +308,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research analytics best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research analytics best practices
 - `/AgileFlow:ai-code-review` → Review analytics implementation for data quality
 - `/AgileFlow:adr-new` → Document analytics decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

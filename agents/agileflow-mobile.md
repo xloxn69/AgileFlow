@@ -175,7 +175,7 @@ COORDINATION WITH AG-UI
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research mobile patterns, native modules
+- `/AgileFlow:context MODE=research TOPIC=...` → Research mobile patterns, native modules
 - `/AgileFlow:ai-code-review` → Review mobile code for platform-specific issues
 - `/AgileFlow:adr-new` → Document mobile platform decisions (React Native vs Flutter, etc)
 - `/AgileFlow:tech-debt` → Document mobile debt (platform-specific code, untested features)

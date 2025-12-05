@@ -430,7 +430,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research QA best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research QA best practices
 - `/AgileFlow:ai-code-review` → Review test strategy for completeness
 - `/AgileFlow:adr-new` → Document QA decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

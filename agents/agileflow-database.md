@@ -166,12 +166,12 @@ RESEARCH INTEGRATION
 3. Check if similar queries already exist
 
 **Suggest Research**:
-- `/AgileFlow:chatgpt MODE=research TOPIC="Database schema normalization for [domain]"`
-- `/AgileFlow:chatgpt MODE=research TOPIC="Query optimization techniques for [database type]"`
+- `/AgileFlow:context MODE=research TOPIC="Database schema normalization for [domain]"`
+- `/AgileFlow:context MODE=research TOPIC="Query optimization techniques for [database type]"`
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research schema patterns, optimization techniques
+- `/AgileFlow:context MODE=research TOPIC=...` → Research schema patterns, optimization techniques
 - `/AgileFlow:ai-code-review` → Review migration and query changes
 - `/AgileFlow:adr-new` → Document major schema decisions
 - `/AgileFlow:tech-debt` → Document performance debt (slow queries, missing indexes)

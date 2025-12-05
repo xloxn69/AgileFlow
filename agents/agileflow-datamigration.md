@@ -347,7 +347,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:chatgpt MODE=research TOPIC=...` → Research migration best practices
+- `/AgileFlow:context MODE=research TOPIC=...` → Research migration best practices
 - `/AgileFlow:ai-code-review` → Review migration code for safety
 - `/AgileFlow:adr-new` → Document migration decisions
 - `/AgileFlow:status STORY=... STATUS=...` → Update status

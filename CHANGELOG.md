@@ -5,6 +5,71 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.3] - 2025-12-05
+
+### Changed - Renamed ChatGPT Command to Context (Platform-Agnostic)
+
+This release renames the chatgpt command and file to "context" to better reflect multi-platform support for web-based AI tools.
+
+**The Rationale**:
+- ❌ "chatgpt" was too specific - users may use other web AI tools
+- ✅ "context" is platform-agnostic and accurately describes purpose
+- ✅ Supports ChatGPT, Perplexity, Gemini, Claude web, and other web AI tools
+- ✅ Clearer intent: context file for web AI tools vs. Claude Code (CLI-based)
+
+**What Changed**:
+
+*Command Rename*:
+- `/AgileFlow:chatgpt` → `/AgileFlow:context`
+- `commands/chatgpt.md` → `commands/context.md`
+
+*File Rename*:
+- `docs/chatgpt.md` → `docs/context.md`
+
+*Documentation Updates*:
+- All references updated across 31 files (README.md, setup.md, all agent files, etc.)
+- Command description now references "web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.)"
+- Export mode message updated: "Paste this excerpt into your web AI tool..."
+- Research mode now builds prompts for any web AI tool
+
+**Usage** (same modes, new command name):
+```bash
+# Generate/refresh full context brief (default)
+/AgileFlow:context
+/AgileFlow:context MODE=full
+
+# Export concise excerpt for pasting
+/AgileFlow:context MODE=export
+
+# Add a quick note
+/AgileFlow:context MODE=note NOTE="User reported auth bug in production"
+
+# Build research prompt
+/AgileFlow:context MODE=research TOPIC="Implement OAuth 2.0 with Google"
+```
+
+**Migration**:
+- Old command `/AgileFlow:chatgpt` will no longer work (renamed)
+- Update any saved workflows or scripts to use `/AgileFlow:context`
+- If you have existing `docs/chatgpt.md` files in projects, manually rename to `docs/context.md`
+- Command functionality unchanged - only name changed
+
+**Files Modified**:
+- Renamed: `commands/chatgpt.md` → `commands/context.md`
+- Updated: All 31 files with references (README.md, setup.md, 24 agent files, CONNECTEDNESS-PLAYBOOK.md, babysit.md, blockers.md, SUBAGENTS.md)
+- CHANGELOG.md preserved historical references (this entry only new mention)
+
+**Benefits**:
+- ✅ **Platform-agnostic** - Works with any web AI tool, not just ChatGPT
+- ✅ **Clearer intent** - "Context" describes purpose better than tool name
+- ✅ **Future-proof** - Won't need to rename again when new AI tools emerge
+- ✅ **Consistent** - Aligns with docs-as-code philosophy (content > tool)
+
+**Technical**:
+- Version bumped in all 3 required files (plugin.json, marketplace.json, CHANGELOG.md)
+- 31 files updated with new command/file references
+- No functionality changes - pure rename for clarity
+
 ## [2.22.2] - 2025-12-05
 
 ### Added - Setup Validation Script
