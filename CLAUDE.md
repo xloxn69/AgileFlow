@@ -305,7 +305,7 @@ AgileFlow now implements key patterns for improved dev agent context awareness a
 - Architecture decisions are verifiable (all sources cited)
 - Faster implementation (no doc reading needed)
 
-**Example** (from docs/06-stories/EP-0001/US-0001-user-login-api.md):
+**Example** (from examples/story-example.md):
 ```markdown
 ### API Specifications
 
@@ -431,7 +431,7 @@ The `agileflow-epic-planner` agent now includes Architecture Context Extraction:
 
 ### New Files Created
 - `commands/story-validate.md` - Story validation command
-- `docs/06-stories/EP-0001/US-0001-user-login-api.md` - Example story with all new sections
+- `examples/story-example.md` - Example story with all new sections
 
 ### Modified Files
 - `templates/story-template.md` - Added Architecture Context, Dev Agent Record, Previous Story Insights
@@ -553,6 +553,19 @@ When releasing a new version (example: v2.3.1 → v2.3.2):
    # Check all 3 files have matching version
    grep -n "2.3.2" .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md
    ```
+
+5. **Run validation** (CRITICAL):
+   ```bash
+   # Validate plugin structure and consistency before releasing
+   bash scripts/validate-plugin.sh
+   ```
+   The validation script checks:
+   - Command/agent/skill file structure and frontmatter
+   - Version consistency across plugin.json, marketplace.json, CHANGELOG.md, README.md, CLAUDE.md
+   - Documentation counts match actual files
+   - No missing descriptions or deprecated fields
+
+   **If validation fails**, fix the issues before pushing/releasing.
 
 ### Creating GitHub Releases (v2.23.0+)
 
@@ -1418,7 +1431,7 @@ dependencies: []
 
 ### Example Story File
 
-See: `docs/06-stories/EP-0001/US-0001-user-login-api.md`
+See: `examples/story-example.md`
 - Demonstrates all new sections in action
 - Shows Architecture Context with real source citations
 - Shows populated Dev Agent Record with implementation notes

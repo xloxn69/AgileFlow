@@ -1443,7 +1443,7 @@ Validates that a story is complete, well-structured, and ready for implementatio
 
 **Output**: Comprehensive validation report with passed/failed/warnings grouped by severity
 
-**Example Story**: `docs/06-stories/EP-0001/US-0001-user-login-api.md`
+**Example Story**: `examples/story-example.md`
 - Demonstrates all new sections in action
 - Shows proper Architecture Context with source citations
 - Shows populated Dev Agent Record with real-world implementation notes
