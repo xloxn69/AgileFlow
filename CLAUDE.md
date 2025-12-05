@@ -150,9 +150,9 @@ See "Updating Plugin Version" section below for detailed steps.
 
 ## Repository Overview
 
-**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (38 slash commands + 27 specialized subagents + 23 auto-loaded skills), not a traditional application codebase. There is no build step, runtime, or deployment process.
+**AgileFlow** is a Claude Code plugin providing a universal agile/docs-as-code system. It's a **command pack** (37 slash commands + 26 specialized subagents + 23 auto-loaded skills), not a traditional application codebase. There is no build step, runtime, or deployment process.
 
-**Current Version**: v2.22.1 (27 specialized agents, 36 commands, 23 refactored skills following Anthropic specification + hooks system for event-driven automation covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA + status.json compression - MCP-free for reduced context usage)
+**Current Version**: v2.23.0 (26 specialized agents, 37 commands, 23 refactored skills following Anthropic specification + hooks system for event-driven automation covering UI, API, CI, DevOps, Planning, Research, Mentoring, Documentation, Monitoring, Compliance, Security, Database, Testing, Product, Performance, Mobile, Integrations, Refactoring, Design, Accessibility, Analytics, Data Migration, and QA + status.json compression - MCP-free for reduced context usage)
 
 ---
 

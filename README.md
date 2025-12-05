@@ -1,8 +1,8 @@
 # AgileFlow
 
 [![Version](https://img.shields.io/badge/version-2.23.0-brightgreen)](CHANGELOG.md)
-[![Commands](https://img.shields.io/badge/commands-36-blue)](#commands)
-[![Subagents](https://img.shields.io/badge/subagents-27-orange)](SUBAGENTS.md)
+[![Commands](https://img.shields.io/badge/commands-37-blue)](#commands)
+[![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
 **Universal agile/docs-as-code system for Claude Code.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic command pack.
