@@ -43,7 +43,7 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 **AgileFlow**: Claude Code plugin providing universal agile/docs-as-code system.
 - **Type**: Command pack
-- **Current Version**: v2.26.0 (41 commands + 26 specialized agents + 23 refactored skills)
+- **Current Version**: v2.27.0 (41 commands + 26 specialized agents + 23 refactored skills)
 - **No build step, runtime, or deployment process**
 
 ---
@@ -157,15 +157,82 @@ bash scripts/validate-plugin.sh
 
 ### Creating GitHub Releases (v2.23.0+)
 
-**Manual**:
+**CRITICAL POLICY**: Create a GitHub release for EVERY significant update (new features, major improvements, multi-phase work).
+
+**WHEN TO CREATE RELEASES**:
+- ✅ After completing an entire phase/feature (e.g., "Phase 3 complete" not "Phase 3 started")
+- ✅ After all files updated (version bumped, CHANGELOG updated, README updated, validation passed, committed, pushed)
+- ✅ When the work is FULLY DONE and documented
+- ❌ NOT before completing all steps
+- ❌ NOT while work is in progress
+- ❌ NOT without updating README.md with new features
+
+**RELEASE TITLE SPECIFICITY**:
+- ✅ **GOOD**: "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
+- ✅ **GOOD**: "Release v2.24.0 - Session Harness Phase 1 (Foundation)"
+- ❌ **BAD**: "Release v2.26.0 - Session Harness System" (too generic, doesn't say what was completed)
+- ❌ **BAD**: "Release v2.26.0 - Implemented Session Harness" (vague, no phase context)
+
+**Be specific about what was ACTUALLY completed in THIS release**, not the whole feature/system.
+
+**Manual Release Process**:
 ```bash
-git tag -a v2.23.0 -m "Release v2.23.0"
-git push origin v2.23.0
-awk '/## \[2.23.0\]/,/## \[/ {if (/## \[/ && !/## \[2.23.0\]/) exit; print}' CHANGELOG.md > /tmp/notes.txt
-gh release create v2.23.0 --title "Release v2.23.0" --notes-file /tmp/notes.txt --latest
+# 1. ONLY run this AFTER all work is complete:
+#    - Version bumped in 3 files (plugin.json, marketplace.json, README.md)
+#    - CHANGELOG.md updated with detailed entry
+#    - README.md updated with new feature documentation
+#    - Validation passed (bash scripts/validate-plugin.sh)
+#    - Changes committed and pushed to GitHub
+
+# 2. Create and push git tag
+git tag -a v2.26.0 -m "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
+git push origin v2.26.0
+
+# 3. Extract changelog notes for this version
+awk '/## \[2.26.0\]/,/## \[2.25.0\]/ {if (/## \[2.25.0\]/) exit; print}' CHANGELOG.md > /tmp/v2.26.0-notes.txt
+
+# 4. Create GitHub release with specific title
+gh release create v2.26.0 \
+  --title "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)" \
+  --notes-file /tmp/v2.26.0-notes.txt \
+  --latest
 ```
 
 **Automated**: GitHub Actions → Run "Release Pipeline" workflow → Enter version
+
+**Example Complete Workflow** (Session Harness Phase 3):
+```bash
+# Step 1: Complete all implementation work (18 agents updated, babysit updated)
+# Step 2: Update version in 3 files
+# Step 3: Write detailed CHANGELOG.md entry
+# Step 4: Add feature documentation to README.md
+# Step 5: Run validation
+bash scripts/validate-plugin.sh
+# Step 6: Commit and push
+git add -A
+git commit -m "feat: complete session harness phase 3 (dev agent integration)"
+git push origin main
+# Step 7: Update README.md with session harness system documentation
+git add README.md
+git commit -m "docs: add session harness system section to README"
+git push origin main
+# Step 8: NOW create the release (all work is done)
+git tag -a v2.26.0 -m "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
+git push origin v2.26.0
+awk '/## \[2.26.0\]/,/## \[2.25.0\]/ {if (/## \[2.25.0\]/) exit; print}' CHANGELOG.md > /tmp/v2.26.0-notes.txt
+gh release create v2.26.0 --title "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)" --notes-file /tmp/v2.26.0-notes.txt --latest
+```
+
+**Release Checklist**:
+- [ ] All implementation work complete
+- [ ] Version bumped in plugin.json, marketplace.json, README.md
+- [ ] CHANGELOG.md updated with detailed entry
+- [ ] README.md updated with new feature documentation
+- [ ] Validation passed (bash scripts/validate-plugin.sh)
+- [ ] All changes committed and pushed to GitHub
+- [ ] Release title is SPECIFIC about what was completed in THIS version
+- [ ] Git tag created and pushed
+- [ ] GitHub release created with extracted changelog notes
 
 ### Adding New Command
 1. Create `commands/new-command.md` (auto-discovered)
