@@ -43,7 +43,7 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 **AgileFlow**: Claude Code plugin providing universal agile/docs-as-code system.
 - **Type**: Command pack
-- **Current Version**: v2.25.0 (41 commands + 26 specialized agents + 23 refactored skills)
+- **Current Version**: v2.26.0 (41 commands + 26 specialized agents + 23 refactored skills)
 - **No build step, runtime, or deployment process**
 
 ---
@@ -401,7 +401,7 @@ Set in `environment.json` → `verification_policy`
 
 - ✅ **Phase 1 (v2.24.0)**: Test status tracking, /verify command, templates
 - ✅ **Phase 2 (v2.25.0)**: Session management, /session-init, /resume, /baseline
-- ⏳ **Phase 3 (v2.26.0)**: Dev agent integration, verification protocols
+- ✅ **Phase 3 (v2.26.0)**: Dev agent integration (18 agents), verification protocols, /babysit integration
 - ⏳ **Phase 4 (v2.27.0+)**: Advanced features (test parsing, regression detection, dashboards)
 
 ---
