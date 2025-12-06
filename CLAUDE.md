@@ -43,7 +43,7 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 **AgileFlow**: Claude Code plugin providing universal agile/docs-as-code system.
 - **Type**: Command pack
-- **Current Version**: v2.24.0 (38 commands + 26 specialized agents + 23 refactored skills)
+- **Current Version**: v2.25.0 (41 commands + 26 specialized agents + 23 refactored skills)
 - **No build step, runtime, or deployment process**
 
 ---
@@ -69,8 +69,8 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 ```
 AgileFlow/
 ├── .claude-plugin/          # plugin.json, marketplace.json
-├── commands/                # 38 slash commands (*.md, auto-discovered)
-├── agents/                  # 27 subagents (*.md, auto-discovered)
+├── commands/                # 41 slash commands (*.md, auto-discovered)
+├── agents/                  # 26 subagents (*.md, auto-discovered)
 ├── skills/                  # 23 skills (*/SKILL.md, auto-discovered)
 ├── scripts/                 # Helper scripts (get-env.js, archive, compress)
 ├── templates/               # Document templates
@@ -322,16 +322,32 @@ session_metadata:
 
 ### Commands
 
-**`/AgileFlow:verify [story_id]`**: Run tests and update test_status
+**`/AgileFlow:verify [story_id]`**: Run tests and update test_status (Phase 1)
 - No args: Update all in_progress stories
 - With story_id: Update specific story
 - Exit code 0 = passing, non-zero = failing
 - Parses output for test counts (best effort)
 
-**Future (Phase 2)**:
-- `/AgileFlow:session-init`: First-time setup
-- `/AgileFlow:resume`: Session startup routine
-- `/AgileFlow:baseline`: Establish known-good state
+**`/AgileFlow:session-init`**: First-time harness setup (Phase 2)
+- Detects project type and test framework
+- Creates environment.json, session-state.json, init.sh
+- Runs initial test verification
+- Creates baseline git tag
+- Configures SessionStart hook (optional)
+
+**`/AgileFlow:resume`**: Session startup routine (Phase 2)
+- Runs init script (environment setup)
+- Verifies tests and detects regressions
+- Loads context from previous sessions
+- Shows comprehensive session summary
+- Auto-runs via SessionStart hook (if enabled)
+
+**`/AgileFlow:baseline [message]`**: Establish known-good state (Phase 2)
+- Requires all tests passing
+- Creates git tag with baseline marker
+- Updates environment.json with baseline commit
+- Records in session history
+- Used for reset points and regression tracking
 
 ### Workflow Integration
 
@@ -383,10 +399,10 @@ Set in `environment.json` → `verification_policy`
 
 ### Phases
 
-- **Phase 1 (v2.24.0)**: Test status tracking, /verify command, templates
-- **Phase 2 (v2.25.0)**: Session management, /session-init, /resume, /baseline
-- **Phase 3 (v2.26.0)**: Dev agent integration, verification protocols
-- **Phase 4 (v2.27.0+)**: Advanced features (test parsing, regression detection, dashboards)
+- ✅ **Phase 1 (v2.24.0)**: Test status tracking, /verify command, templates
+- ✅ **Phase 2 (v2.25.0)**: Session management, /session-init, /resume, /baseline
+- ⏳ **Phase 3 (v2.26.0)**: Dev agent integration, verification protocols
+- ⏳ **Phase 4 (v2.27.0+)**: Advanced features (test parsing, regression detection, dashboards)
 
 ---
 

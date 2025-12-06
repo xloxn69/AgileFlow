@@ -1,7 +1,7 @@
 # AgileFlow
 
-[![Version](https://img.shields.io/badge/version-2.24.0-brightgreen)](CHANGELOG.md)
-[![Commands](https://img.shields.io/badge/commands-38-blue)](#commands)
+[![Version](https://img.shields.io/badge/version-2.25.0-brightgreen)](CHANGELOG.md)
+[![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
@@ -74,7 +74,7 @@ docs/
 </details>
 
 <details>
-<summary><strong>📚 Commands</strong> (38 total - click to expand)</summary>
+<summary><strong>📚 Commands</strong> (41 total - click to expand)</summary>
 
 ### Core Workflow
 - `/AgileFlow:setup` - Bootstrap the entire system
@@ -100,7 +100,10 @@ docs/
 - `/AgileFlow:readme-sync` - Sync folder READMEs
 - `/AgileFlow:tests` - Automated testing infrastructure setup
 - `/AgileFlow:review` - AI-powered code review
-- `/AgileFlow:verify` - Run tests and update story test status (Session Harness v2.24.0+)
+- `/AgileFlow:verify` - Run tests and update story test status (Session Harness)
+- `/AgileFlow:session-init` - Initialize session harness with test verification (Phase 2)
+- `/AgileFlow:resume` - Resume session with environment verification and context (Phase 2)
+- `/AgileFlow:baseline` - Mark current state as verified baseline (Phase 2)
 - `/AgileFlow:compress` - Compress status.json (fixes token limit issues)
 
 ### Automation & DevOps
