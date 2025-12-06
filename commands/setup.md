@@ -149,7 +149,7 @@ CREATE/SEED FILES (only if missing; never overwrite non-empty content)
 - docs/README.md — map of all folders
 - docs/context.md — one-page brief with managed sections (placeholders)
 - docs/00-meta/{glossary.md,conventions.md}
-- docs/00-meta/agileflow-metadata.json — copy from templates/agileflow-metadata.json, update timestamp and version
+- docs/00-meta/agileflow-metadata.json — copy from templates/agileflow-metadata.json, update timestamp and version to CURRENT plugin version (read from ~/.claude-code/plugins/AgileFlow/.claude-plugin/plugin.json)
 - docs/00-meta/templates/{README-template.md,story-template.md,epic-template.md,adr-template.md,agent-profile-template.md,comms-note-template.md,research-template.md}
 - docs/00-meta/guides/worktrees.md — copy from templates/worktrees-guide.md (comprehensive git worktrees guide for context preservation)
 - docs/02-practices/{README.md,testing.md,git-branching.md,releasing.md,security.md,ci.md} — **USER CODEBASE practices** (styling, typography, component patterns, API conventions, etc.) NOT AgileFlow practices
@@ -522,7 +522,7 @@ else
   # Create new metadata (shouldn't happen if core system was set up)
   cat > "$METADATA_FILE" << EOF
 {
-  "version": "2.21.0",
+  "version": "2.27.0",
   "created": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
   "updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
   "archival": {
