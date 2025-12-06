@@ -5,6 +5,101 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.26.0] - 2025-12-06
+
+### Added - Session Harness System (Phase 3: Dev Agent Integration)
+
+Completes Phase 3 of the Session Harness System with comprehensive verification protocols integrated into all dev agents and orchestration tools. This ensures agents cannot claim work is complete when tests fail, and maintains test baselines across all implementations.
+
+**Core Achievement**: All dev agents now enforce test verification before marking stories complete.
+
+**Dev Agent Updates (18 agents)**:
+
+All implementation agents now include SESSION HARNESS & VERIFICATION PROTOCOL section with:
+- **Pre-Implementation Verification**: Check test_status before starting work
+- **During Implementation**: Incremental testing with `/AgileFlow:verify`
+- **Post-Implementation Verification**: Mandatory test verification before marking in-review
+- **Override Protocol**: Documented process for proceeding with failing tests (rare, requires full documentation)
+- **Baseline Management**: Suggest baseline creation after major milestones
+- **Session Resume**: Load context from previous sessions and detect regressions
+
+**Updated Agents**:
+1. agileflow-ui (UI/presentation layer)
+2. agileflow-api (Backend services)
+3. agileflow-ci (CI/CD & quality)
+4. agileflow-devops (DevOps & automation)
+5. agileflow-security (Security specialist)
+6. agileflow-database (Database & data layer)
+7. agileflow-testing (Testing specialist)
+8. agileflow-performance (Performance optimization)
+9. agileflow-mobile (Mobile development)
+10. agileflow-integrations (Third-party integrations)
+11. agileflow-refactor (Refactoring specialist)
+12. agileflow-design (Design systems)
+13. agileflow-accessibility (Accessibility compliance)
+14. agileflow-analytics (Analytics implementation)
+15. agileflow-datamigration (Data migration specialist)
+16. agileflow-monitoring (Monitoring & observability)
+17. agileflow-compliance (Compliance specialist)
+18. agileflow-qa (QA & test planning)
+
+**Command Updates**:
+- **`/AgileFlow:babysit`**: Enhanced with comprehensive session harness integration
+  - Detection & initialization prompts for new projects
+  - Auto-resume integration at session start
+  - Pre/during/post implementation verification guidance
+  - Baseline management suggestions after milestones
+  - Error handling for test failures and regressions
+  - Guides spawned dev agents on verification protocols
+
+**Verification Protocol Details**:
+
+1. **Pre-Implementation**:
+   - Check `test_status` from story in status.json
+   - If `"failing"`: STOP - cannot start with failing baseline
+   - If `"not_run"`: Run `/AgileFlow:verify` to establish baseline
+   - If `"passing"`: Proceed with implementation
+
+2. **During Implementation**:
+   - Run tests incrementally (not just at end)
+   - Fix failures immediately (don't accumulate debt)
+   - Update test_status in real-time
+
+3. **Post-Implementation**:
+   - Run `/AgileFlow:verify [story_id]` before marking in-review
+   - Story can ONLY be marked `"in-review"` if `test_status: "passing"`
+   - If tests fail: Keep `"in-progress"` until fixed
+   - No exceptions unless fully documented (override protocol)
+
+4. **Override Protocol** (use with extreme caution):
+   - Document override decision in bus message
+   - Update Dev Agent Record with explanation
+   - Create follow-up story for test fix
+   - Notify user of risk
+
+**Automation Script**:
+- **`scripts/add-verification-protocol.py`**: Bulk-updated all 18 dev agents with verification protocol
+  - Regex-based insertion after BOUNDARIES section
+  - Consistent protocol across all agents
+  - Skips agents already updated
+
+**Benefits**:
+- **No More Broken Baselines**: Agents cannot mark stories complete with failing tests
+- **Fail Fast**: Catch regressions immediately, not at PR review
+- **Context Preservation**: Session harness maintains progress across context windows
+- **Transparency**: All override decisions fully documented
+- **Accountability**: test_status field creates audit trail
+
+**Integration**: Phase 3 completes the verification enforcement layer. All dev agents now share consistent verification behavior, preventing the common failure mode of agents claiming work is done when tests fail.
+
+### Technical
+
+- Agents updated: 18 dev agents + babysit orchestrator
+- Verification protocol: 170+ lines per agent (comprehensive)
+- Scripts: 1 new automation script for bulk updates
+- Documentation: CLAUDE.md Phase 3 marked complete
+- Version: v2.25.0 → v2.26.0
+
 ## [2.25.0] - 2025-12-06
 
 ### Added - Session Harness System (Phase 2: Session Management)
