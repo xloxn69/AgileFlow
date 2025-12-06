@@ -5,6 +5,28 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.27.0] - 2025-12-06
+
+### Fixed - Setup Version Synchronization
+
+Ensures `/AgileFlow:setup` always uses the current plugin version when initializing projects.
+
+**Changes**:
+- **Template Update**: Updated `templates/agileflow-metadata.json` from v2.10.0 → v2.26.0
+- **Setup Command**: Updated `commands/setup.md` to explicitly read current version from plugin.json (v2.21.0 → v2.26.0)
+- **Documentation**: Added instruction to always use CURRENT plugin version when creating agileflow-metadata.json
+
+**Why This Matters**:
+- Projects initialized with `/AgileFlow:setup` now correctly show current plugin version
+- Metadata version matches installed plugin version (prevents confusion)
+- Future version bumps only require updating plugin.json and template (setup auto-reads current version)
+
+**Files Modified**:
+- `templates/agileflow-metadata.json` - Version field updated to 2.26.0
+- `commands/setup.md` - Added explicit instruction to read version from plugin.json during setup
+
+**Note**: The `/AgileFlow:help` command already exists and is properly configured.
+
 ## [2.26.0] - 2025-12-06
 
 ### Added - Session Harness System (Phase 3: Dev Agent Integration)
