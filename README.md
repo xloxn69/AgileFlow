@@ -375,6 +375,59 @@ Share context with web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.):
 4. Use `/AgileFlow:context MODE=research TOPIC="..."` for structured prompts
 5. Save results with `/AgileFlow:research`
 
+### Session Harness System (v2.24.0+)
+
+Ensures test verification and session continuity for long-running projects. Prevents agents from breaking functionality and maintains progress across context windows.
+
+**The Problem:**
+Without verification, agents can:
+- Break existing functionality without noticing
+- Claim features work when tests fail
+- Lose context between sessions
+- Mark incomplete work as finished
+
+**The Solution:**
+Session Harness System tracks test status, verifies baselines, and maintains session state.
+
+**Quick Start:**
+```bash
+# First time setup (interactive)
+/AgileFlow:session-init
+
+# Start each session (or auto-run via hook)
+/AgileFlow:resume
+
+# Run tests and update test status
+/AgileFlow:verify
+
+# Create verified checkpoint
+/AgileFlow:baseline "Sprint 12 complete"
+```
+
+**How It Works:**
+1. **Test Tracking**: Every story has `test_status` field (passing/failing/not_run)
+2. **Pre-Implementation**: Agents check test_status before starting work
+3. **Post-Implementation**: Agents run `/AgileFlow:verify` before marking complete
+4. **Session Resume**: Loads context and detects regressions
+5. **Baselines**: Git tags mark known-good states for reset points
+
+**Benefits:**
+- **No Broken Baselines**: Agents can't mark stories complete with failing tests
+- **Fail Fast**: Catch regressions immediately, not at PR review
+- **Context Continuity**: Structured handoff between sessions
+- **Regression Detection**: Alerts when tests were passing, now failing
+
+**Agent Integration (v2.26.0):**
+All 18 dev agents now include verification protocol:
+- agileflow-ui, agileflow-api, agileflow-ci, agileflow-devops
+- agileflow-security, agileflow-database, agileflow-testing
+- agileflow-performance, agileflow-mobile, agileflow-integrations
+- agileflow-refactor, agileflow-design, agileflow-accessibility
+- agileflow-analytics, agileflow-datamigration, agileflow-monitoring
+- agileflow-compliance, agileflow-qa
+
+**Learn More:** See CLAUDE.md "Session Harness System" section for complete documentation.
+
 ### Status.json Compression
 
 Prevent "file too large" errors:
