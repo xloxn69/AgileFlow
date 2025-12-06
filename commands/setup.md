@@ -522,7 +522,7 @@ else
   # Create new metadata (shouldn't happen if core system was set up)
   cat > "$METADATA_FILE" << EOF
 {
-  "version": "2.27.0",
+  "version": "2.28.0",
   "created": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
   "updated": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
   "archival": {

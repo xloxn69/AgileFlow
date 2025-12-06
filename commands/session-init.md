@@ -256,19 +256,32 @@ Offer to add automatic session resumption:
 Enable automatic session resumption on startup? [Y/n]: _
 
 This will:
-  - Run /AgileFlow:resume on every Claude Code session start
+  - Run session resume script on every Claude Code session start
   - Verify tests and load context automatically
   - Show session summary with recent activity
 ```
 
 If yes:
 ```bash
+# Copy resume script from AgileFlow plugin
+cp ~/.claude-code/plugins/AgileFlow/templates/resume-session.sh docs/00-meta/resume-session.sh
+chmod +x docs/00-meta/resume-session.sh
+
 # Create or update .claude/settings.json
 mkdir -p .claude
 
 if [ -f ".claude/settings.json" ]; then
-  # Merge with existing settings
+  # Merge with existing settings using jq
   echo "Updating existing .claude/settings.json..."
+
+  # Add SessionStart hook if it doesn't exist
+  jq '.hooks.SessionStart += [{
+    "matcher": "",
+    "hooks": [{
+      "type": "command",
+      "command": "bash docs/00-meta/resume-session.sh"
+    }]
+  }]' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
 else
   # Create new settings.json
   cat > .claude/settings.json <<'EOF'
@@ -278,14 +291,22 @@ else
       "matcher": "",
       "hooks": [{
         "type": "command",
-        "command": "/AgileFlow:resume"
+        "command": "bash docs/00-meta/resume-session.sh"
       }]
     }]
   }
 }
 EOF
 fi
+
+echo "✅ SessionStart hook configured"
+echo "✅ docs/00-meta/resume-session.sh created"
 ```
+
+**IMPORTANT**: The hook calls a **shell script** (`bash docs/00-meta/resume-session.sh`), NOT the slash command `/AgileFlow:resume`. This is because:
+- Hooks execute shell commands, not Claude Code slash commands
+- The shell script replicates `/AgileFlow:resume` functionality
+- This enables true automatic session resumption
 
 ### 10. Final Summary
 
@@ -297,7 +318,9 @@ Display setup completion summary:
 Files Created:
   ✅ docs/00-meta/environment.json
   ✅ docs/00-meta/init.sh
+  ✅ docs/00-meta/resume-session.sh (auto-resume script)
   ✅ docs/09-agents/session-state.json
+  ✅ .claude/settings.json (hook configured)
 
 Baseline Status:
   ✅ Tests: 42/42 passing
@@ -308,13 +331,18 @@ Configuration:
   Project Type: nodejs
   Test Command: npm test
   Verification Policy: warn
-  Auto-Resume: enabled
+  Auto-Resume: enabled (via shell script hook)
 
 Next Steps:
-  1. Run /AgileFlow:verify to check tests anytime
-  2. Run /AgileFlow:baseline to mark new baselines
-  3. Run /AgileFlow:resume to manually resume session
-  4. Tests will auto-verify on session start (hook enabled)
+  1. Restart Claude Code to activate SessionStart hook
+  2. Run /AgileFlow:verify to check tests anytime
+  3. Run /AgileFlow:baseline to mark new baselines
+  4. Run /AgileFlow:resume (slash command) or bash docs/00-meta/resume-session.sh (shell script)
+
+On Next Session:
+  - Hook will automatically run: bash docs/00-meta/resume-session.sh
+  - Init script executes, tests verify, context loads
+  - You'll see session summary and be ready to code!
 
 Session harness is ready! 🚀
 ```
@@ -444,7 +472,8 @@ Claude: ✅ Git tag created: agileflow-baseline-20251206-103000
 
 User: y
 
-Claude: ✅ SessionStart hook configured
+Claude: ✅ Resume script created: docs/00-meta/resume-session.sh
+        ✅ SessionStart hook configured
         ✅ .claude/settings.json updated
 
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -454,6 +483,7 @@ Claude: ✅ SessionStart hook configured
         Files Created:
           ✅ docs/00-meta/environment.json
           ✅ docs/00-meta/init.sh
+          ✅ docs/00-meta/resume-session.sh (auto-resume script)
           ✅ docs/09-agents/session-state.json
           ✅ .claude/settings.json (hook added)
 
@@ -466,13 +496,19 @@ Claude: ✅ SessionStart hook configured
           Project Type: nodejs
           Test Command: npm test
           Verification Policy: warn
-          Auto-Resume: enabled
+          Auto-Resume: enabled (via shell script)
+
+        Hook Configuration:
+          bash docs/00-meta/resume-session.sh
 
         Next session will automatically:
-          1. Run init script
-          2. Verify tests
-          3. Load context
-          4. Show summary
+          1. Run bash docs/00-meta/resume-session.sh (via hook)
+          2. Execute init script (environment setup)
+          3. Verify tests (detect regressions)
+          4. Load context (recent activity)
+          5. Show summary (ready to code!)
+
+        🔴 IMPORTANT: Restart Claude Code to activate the hook!
 
         Session harness is ready! 🚀
 ```
