@@ -5,6 +5,72 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.28.0] - 2025-12-06
+
+### Fixed - Session Harness Hook Configuration
+
+Fixes critical bug where `/AgileFlow:session-init` configured SessionStart hooks incorrectly, causing "No such file or directory" errors.
+
+**The Problem**:
+- `/AgileFlow:session-init` tried to execute `/AgileFlow:resume` as a shell command via hooks
+- Slash commands are Claude Code commands, NOT shell executables
+- Hook system tried to run: `/bin/sh -c /AgileFlow:resume`
+- Result: "SessionStart:startup hook error: /AgileFlow:resume: No such file or directory"
+
+**The Solution**:
+Created shell wrapper script that replicates `/AgileFlow:resume` functionality and can be executed by hooks.
+
+**Changes**:
+- **New Template**: `templates/resume-session.sh` - Shell script for automatic session resumption
+- **Updated Command**: `commands/session-init.md` - Now creates resume-session.sh and configures hook correctly
+- **Hook Configuration**: Changed from `"/AgileFlow:resume"` to `"bash docs/00-meta/resume-session.sh"`
+
+**What the Shell Script Does**:
+1. Runs init script (`docs/00-meta/init.sh`) - Environment setup
+2. Runs test verification - Detects regressions
+3. Loads session context - Recent commits, active stories
+4. Shows session summary - Status, baseline info
+
+**Before (BROKEN)**:
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "/AgileFlow:resume"  // ❌ Slash commands don't work in hooks!
+      }]
+    }]
+  }
+}
+```
+
+**After (FIXED)**:
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "bash docs/00-meta/resume-session.sh"  // ✅ Shell script works!
+      }]
+    }]
+  }
+}
+```
+
+**User Impact**:
+- ✅ Automatic session resumption now works correctly
+- ✅ No more "file or directory" errors on session start
+- ✅ Users who already ran `/AgileFlow:session-init` should re-run it to get the fix
+- ✅ Manual workaround: Run `/AgileFlow:resume` manually at session start (still works)
+
+**Files Modified**:
+- `templates/resume-session.sh` (NEW) - Shell wrapper for session resume
+- `commands/session-init.md` - Updated hook configuration logic and documentation
+
+**Note**: Slash commands like `/AgileFlow:resume` still work manually - this only affects automatic hook execution.
+
 ## [2.27.0] - 2025-12-06
 
 ### Fixed - Setup Version Synchronization
