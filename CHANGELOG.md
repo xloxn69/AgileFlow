@@ -5,6 +5,45 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.25.0] - 2025-12-06
+
+### Added - Session Harness System (Phase 2: Session Management)
+
+Completes Phase 2 of the Session Harness System with comprehensive session management including initialization, resumption, and baseline tracking.
+
+**New Commands (3)**:
+
+1. **`/AgileFlow:session-init`** - First-time session harness setup
+   - Auto-detects project type (Node.js, Python, Rust, Go) and test command
+   - Creates environment.json, session-state.json, init.sh
+   - Runs initial test verification and creates baseline git tag (optional)
+   - Configures SessionStart hook for auto-resume (optional)
+   - Interactive setup with user confirmation
+
+2. **`/AgileFlow:resume`** - Session startup routine
+   - Runs environment initialization script
+   - Verifies tests and detects regressions since last session
+   - Loads context (git history, stories, insights from previous work)
+   - Updates session-state.json and shows comprehensive summary
+   - Auto-triggered via SessionStart hook or called manually
+   - Regression detection: Alerts if tests were passing, now failing
+
+3. **`/AgileFlow:baseline [message]`** - Establish verified checkpoints
+   - Requires all tests passing and clean git working tree
+   - Creates annotated git tag with timestamp
+   - Updates environment.json and session history
+   - Used for reset points before refactors, epic completion, sprint checkpoints
+
+**Integration**: All commands work together for complete session lifecycle management. Session-init sets up infrastructure, resume handles startup, baseline creates verified checkpoints.
+
+**Benefits**: Automated session startup, regression detection, context continuity, verified checkpoints, team collaboration via shared baselines.
+
+### Technical
+
+- Commands: 38 → 41 (+3: session-init, resume, baseline)
+- Session management: Complete lifecycle support
+- Documentation: Phase 2 complete in CLAUDE.md, README.md updated
+
 ## [2.24.0] - 2025-12-06
 
 ### Added - Session Harness System (Phase 1: Foundation)
