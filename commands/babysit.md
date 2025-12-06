@@ -126,6 +126,202 @@ RESEARCH INTEGRATION
 - If none/stale (>90 days)/conflicting: propose /AgileFlow:context MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
+SESSION HARNESS & VERIFICATION PROTOCOL (v2.25.0+)
+
+**CRITICAL**: Session Harness System prevents agents from breaking functionality, claiming work is done when tests fail, or losing context between sessions.
+
+**DETECTION & INITIALIZATION**
+
+On first run, check for Session Harness:
+
+1. **Detect Session Harness**:
+   - Look for `docs/00-meta/environment.json`
+   - If exists → Session harness is active ✅
+   - If missing → Suggest `/AgileFlow:session-init` to user
+
+2. **If Not Initialized**:
+   - Explain benefits: "Session harness tracks test status across context windows, prevents regressions, and maintains baseline checkpoints."
+   - Suggest: "Run `/AgileFlow:session-init` to set up test verification? (YES/NO)"
+   - If user agrees: Run `/AgileFlow:session-init` and follow prompts
+
+**SESSION RESUME INTEGRATION**
+
+At start of each session (if harness active):
+
+1. **Auto-Resume** (if SessionStart hook configured):
+   - `/AgileFlow:resume` runs automatically
+   - Verifies environment, runs tests, loads context
+   - Shows regression warnings if tests were passing, now failing
+
+2. **Manual Resume** (if no hook):
+   - Suggest: "Run `/AgileFlow:resume` to verify environment and load context? (YES/NO)"
+   - If user agrees: Run `/AgileFlow:resume`
+
+3. **Process Resume Output**:
+   - Check test status (passing/failing/not_run)
+   - Check for regressions since last session
+   - Load Previous Story Insights if applicable
+   - Note any blocked stories
+
+**PRE-IMPLEMENTATION VERIFICATION**
+
+Before spawning dev agents or starting implementation:
+
+1. **Check Test Baseline**:
+   - Read `test_status` from story in `docs/09-agents/status.json`
+   - If `"passing"` → Safe to proceed ✅
+   - If `"failing"` → STOP. Cannot start new work with failing baseline ⚠️
+   - If `"not_run"` → Run `/AgileFlow:verify` to establish baseline first
+   - If `"skipped"` → Investigate why tests are skipped
+
+2. **Verify Story Test Status**:
+   ```bash
+   # Before assigning story US-0042 to agent
+   jq '.stories[] | select(.story_id=="US-0042") | .test_status' docs/09-agents/status.json
+   # Expected: "passing" or "not_run" (not "failing")
+   ```
+
+3. **Guide Dev Agent**:
+   When spawning agent, remind them:
+   - "Before starting: Verify test_status is 'passing' or 'not_run'"
+   - "Run `/AgileFlow:verify US-XXXX` if needed to establish baseline"
+   - "All dev agents now have verification protocol built-in (v2.26.0+)"
+
+**DURING IMPLEMENTATION**
+
+Guide dev agents to follow verification protocol:
+
+1. **Incremental Testing**:
+   - Remind: "Run tests frequently during development, not just at end"
+   - Suggest: "Use `/AgileFlow:verify US-XXXX` to check tests after each milestone"
+
+2. **Real-time Status Updates**:
+   - Monitor test_status in status.json
+   - Celebrate when tests pass: "Tests passing ✅ - ready for next step"
+   - Alert on failures: "Tests failing ⚠️ - fix before proceeding"
+
+**POST-IMPLEMENTATION VERIFICATION**
+
+After dev agent completes work:
+
+1. **Verify Tests Passing**:
+   - Run: `/AgileFlow:verify US-XXXX`
+   - Check exit code and test_status
+   - Expected: `test_status: "passing"` ✅
+
+2. **Story Completion Check**:
+   - Story can ONLY be marked `"in-review"` if `test_status: "passing"`
+   - If failing → Keep as `"in-progress"` until fixed
+   - No exceptions unless documented override
+
+3. **Override Protocol** (rare, documented):
+   - If tests fail but need to proceed → Document in Dev Agent Record
+   - Create follow-up story for test fix
+   - Append bus message explaining override
+   - Notify user of the risk
+
+**BASELINE MANAGEMENT**
+
+After major milestones:
+
+1. **Suggest Baseline Creation**:
+   - After epic complete: "All epic stories passing - create baseline? (YES/NO)"
+   - After sprint end: "Sprint complete with 12 stories - mark baseline? (YES/NO)"
+   - Before risky refactor: "Create safety checkpoint before refactor? (YES/NO)"
+
+2. **Create Baseline**:
+   - Run: `/AgileFlow:baseline "Epic EP-XXXX complete - 12 stories verified"`
+   - Requires: All tests passing, git working tree clean
+   - Creates: Git tag + metadata for reset point
+
+3. **Baseline Benefits**:
+   - Known-good state to reset to if needed
+   - Regression detection reference point
+   - Deployment readiness checkpoint
+   - Sprint/epic completion marker
+
+**INTEGRATION WITH BABYSIT WORKFLOW**
+
+Session harness integrates at key points:
+
+1. **Step 0 (Session Start)**: Run `/AgileFlow:resume` if harness active
+2. **Step 2 (Before Implementation)**: Verify test_status before assigning work
+3. **Step 7 (During Implementation)**: Guide agent on incremental testing
+4. **Step 12 (Before PR)**: Verify test_status is "passing" before in-review
+5. **Step 14 (After Completion)**: Suggest baseline if milestone reached
+
+**GUIDING DEV AGENTS ON VERIFICATION**
+
+When spawning dev agents (v2.26.0+), they have built-in verification protocol:
+
+```
+Task(
+  description: "Implement login component",
+  prompt: """
+Implement US-0042: User Login Component
+
+IMPORTANT - Verification Protocol (built-in as of v2.26.0):
+- Check test_status before starting (should be 'passing' or 'not_run')
+- Run tests incrementally during development
+- Run /AgileFlow:verify US-0042 before marking in-review
+- Story can only be in-review if test_status='passing'
+
+[Rest of implementation details...]
+""",
+  subagent_type: "agileflow-ui"
+)
+```
+
+All 26 dev agents now include verification protocol automatically.
+
+**ERROR HANDLING**
+
+If verification fails:
+
+1. **Tests Failing**:
+   - Read error output carefully
+   - For each failure: Show test, explain assertion, propose fix
+   - After fixing: Re-run `/AgileFlow:verify` to confirm
+   - Update Dev Agent Record with lessons learned
+
+2. **Environment Issues**:
+   - Check if test command is configured in `environment.json`
+   - Verify dependencies installed
+   - If project has no tests: Offer to set up with `/AgileFlow:session-init`
+
+3. **Regression Detected**:
+   - Compare test results to baseline
+   - Identify which commit introduced failure
+   - Show recent commits: `git log --oneline -5`
+   - Suggest: "Revert to baseline or fix regression before new work"
+
+**KEY PRINCIPLES**
+
+- **Tests are the contract**: Passing tests = feature works as specified
+- **Fail fast**: Catch regressions immediately, not at PR review
+- **Context preservation**: Session harness maintains progress across context windows
+- **Transparency**: Document all override decisions fully
+- **Accountability**: test_status field creates audit trail
+
+**WHEN SESSION HARNESS IS NOT ACTIVE**
+
+If `docs/00-meta/environment.json` doesn't exist:
+
+1. **Explain Benefits**:
+   - "Session harness prevents agents from claiming work is done when tests fail"
+   - "Tracks progress across context windows"
+   - "Detects regressions automatically"
+
+2. **Offer Setup**:
+   - "Initialize session harness? (YES/NO)"
+   - If YES: Run `/AgileFlow:session-init`
+   - If NO: Continue without verification (less safe)
+
+3. **Fallback Workflow**:
+   - Still run tests manually before marking in-review
+   - Document test results in commit messages
+   - Higher risk of regressions slipping through
+
 DEFINITION OF READY (Enhanced)
 - ✓ Acceptance Criteria written (Given/When/Then format)
 - ✓ Architecture Context populated with source citations (Data Models, API Specs, Components, File Locations, Testing, Constraints)
