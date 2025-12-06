@@ -5,6 +5,93 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.24.0] - 2025-12-06
+
+### Added - Session Harness System (Phase 1: Foundation)
+
+This release introduces the **Session Harness System**, inspired by Anthropic's engineering practices for long-running agent workflows. This foundational release enables test verification and session state tracking to prevent regressions and maintain progress across multiple context windows.
+
+**Core Problem Solved**:
+Without verification, agents can:
+- Break existing functionality without noticing
+- Claim features work when they don't
+- Lose context between sessions
+- Mark incomplete work as finished
+
+**Phase 1 Implementation** (Foundation):
+
+*New Command*:
+- **`/AgileFlow:verify [story_id]`**: Run project tests and update test status
+  - No args: Updates all `in_progress` stories
+  - With story_id: Updates specific story only
+  - Detects test command from `environment.json`
+  - Exit code 0 = passing, non-zero = failing
+  - Parses test output for counts (best effort)
+  - Updates `test_status` and `test_results` in status.json
+
+*New Templates*:
+- **`templates/environment.json`**: Session harness configuration
+  - Project type detection (nodejs, python, rust, go)
+  - Test command configuration
+  - Timeout and verification policy settings
+  - Baseline commit tracking
+- **`templates/session-state.json`**: Session state tracking
+  - Current and last session metadata
+  - Session history for continuity
+  - Test status verification records
+- **`templates/init.sh`**: Environment initialization script
+  - Multi-language support (npm, pip, cargo, go)
+  - Dependency installation automation
+  - Database migration support
+  - Environment variable setup
+
+*Story Schema Extensions* (optional fields):
+```yaml
+test_status: passing | failing | not_run | skipped
+test_results:
+  last_run: 2025-12-06T10:30:00Z
+  command: npm test
+  passed: 42
+  failed: 0
+  exit_code: 0
+  output_summary: "All tests passed (42/42)"
+session_metadata:
+  last_session_start: 2025-12-06T09:00:00Z
+  session_count: 3
+  agents_involved: ["agileflow-ui", "agileflow-api"]
+```
+
+*Documentation*:
+- **CLAUDE.md**: New "Session Harness System" section
+  - Data model documentation
+  - Workflow integration guidelines
+  - Verification policy explanation
+  - Implementation phases roadmap
+- **README.md**: Updated with `/AgileFlow:verify` in Quality & CI section
+- **examples/story-example.md**: Updated with test_status fields
+
+**Benefits**:
+1. **Prevents Regression**: Can't break existing features without noticing
+2. **Context Continuity**: Structured handoff between sessions
+3. **Early Failure Detection**: Catch broken tests immediately
+4. **Better Handoffs**: Know exactly where you left off
+5. **Confidence**: Know the system works before adding more
+
+**Implementation Phases**:
+- ✅ **Phase 1 (v2.24.0)**: Test status tracking, /verify command, templates
+- ⏳ **Phase 2 (v2.25.0)**: Session management (/session-init, /resume, /baseline)
+- ⏳ **Phase 3 (v2.26.0)**: Dev agent integration, verification protocols
+- ⏳ **Phase 4 (v2.27.0+)**: Advanced features (test parsing, regression detection, dashboards)
+
+**Inspiration**: Based on Anthropic's "Effective Harnesses for Long-Running Agents" engineering practices (https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
+
+### Technical
+
+- Commands: 37 → 38 (+1: verify)
+- Templates: Added 3 new session harness templates
+- Example story: Enhanced with test status fields
+- Documentation: +140 lines in CLAUDE.md
+
 ## [2.23.0] - 2025-12-05
 
 ### Changed - Major Repository Restructure and Organization

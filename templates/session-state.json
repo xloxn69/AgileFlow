@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "description": "AgileFlow session state tracking",
+  "current_session": {
+    "id": "sess-20251206-100000",
+    "started_at": "2025-12-06T10:00:00Z",
+    "baseline_verified": false,
+    "initial_test_status": "not_run",
+    "current_story": null,
+    "active_agent": null
+  },
+  "last_session": {
+    "id": null,
+    "ended_at": null,
+    "stories_completed": [],
+    "final_test_status": "not_run",
+    "commits": []
+  },
+  "session_history": []
+}
