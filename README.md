@@ -1,6 +1,6 @@
 # AgileFlow
 
-[![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
+[![npm version](https://img.shields.io/npm/v/@xloxn69/agileflow?color=brightgreen)](https://www.npmjs.com/package/@xloxn69/agileflow)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
@@ -12,7 +12,7 @@
 ### Installation
 
 ```bash
-npx agileflow install
+npx @xloxn69/agileflow install
 ```
 
 This will:
@@ -23,11 +23,11 @@ This will:
 ### CLI Commands
 
 ```bash
-npx agileflow install     # Install to project
-npx agileflow status      # Check installation + updates
-npx agileflow update      # Update to latest version
-npx agileflow doctor      # Diagnose issues
-npx agileflow uninstall   # Remove from project
+npx @xloxn69/agileflow install     # Install to project
+npx @xloxn69/agileflow status      # Check installation + updates
+npx @xloxn69/agileflow update      # Update to latest version
+npx @xloxn69/agileflow doctor      # Diagnose issues
+npx @xloxn69/agileflow uninstall   # Remove from project
 ```
 
 ### After Installation
