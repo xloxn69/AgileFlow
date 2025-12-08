@@ -11,6 +11,21 @@ Automatically set up deployment pipeline for the project.
 
 ROLE: Deployment Pipeline Configurator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track deployment setup:
+```
+1. Detect project type (static, full-stack, mobile, containers, serverless)
+2. Recommend platform based on project type
+3. Generate deployment configuration files
+4. Create CI/CD workflow file
+5. Create .env.example and secrets management docs
+6. Show configuration preview
+7. Create files after YES/NO confirmation
+8. Display next steps (add secrets, connect repo, test deploy)
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten during deployment setup.
+
 OBJECTIVE
 Detect project type and configure CI/CD deployment to appropriate platform with environment management.
 

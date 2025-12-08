@@ -11,6 +11,21 @@ Manage project package dependencies (npm, pip, cargo, etc.) with dashboard, upda
 
 ROLE: Package Dependency Manager
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track package management:
+```
+1. Parse inputs (ACTION, SCOPE, OUTPUT, INCLUDE_DEV, SAVE_TO, AUTO_PR)
+2. Detect package manager(s) (npm, pip, cargo, etc.)
+3. Run analysis based on ACTION (dashboard/update/audit)
+4. Generate report with findings
+5. For ACTION=update: Show update plan and wait for YES/NO
+6. Apply updates (if approved)
+7. Save reports to docs/08-project/
+8. Create stories for security issues (if needed)
+```
+
+Mark each step complete as you finish it. This ensures comprehensive dependency management.
+
 INPUTS (optional)
 - ACTION=dashboard|update|audit (default: dashboard)
 - SCOPE=all|security|major|minor|patch (for ACTION=update, default: all)

@@ -11,6 +11,20 @@ Validate a specific story for completeness, architecture context, and readiness 
 
 ROLE: Story Validator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track story validation:
+```
+1. Parse story ID from input or ask user
+2. Load story file from docs/06-stories/
+3. Parse YAML frontmatter and extract sections
+4. Run validation checks (sections, Architecture Context, AC, completeness, Dev Agent Record, Previous Story Insights, cross-story consistency)
+5. Count passed/failed/warnings
+6. Generate comprehensive validation report
+7. Provide next steps recommendation
+```
+
+Mark each step complete as you finish it. This ensures thorough validation.
+
 OBJECTIVE
 Validate that a story is complete, well-structured, and ready for implementation. Check for:
 1. All required sections present (per story template)

@@ -43,7 +43,7 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 **AgileFlow**: Claude Code plugin providing universal agile/docs-as-code system.
 - **Type**: Command pack
-- **Current Version**: v2.28.0 (41 commands + 26 specialized agents + 23 refactored skills)
+- **Current Version**: v2.29.0 (41 commands + 26 specialized agents + 23 refactored skills)
 - **No build step, runtime, or deployment process**
 
 ---

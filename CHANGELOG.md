@@ -5,6 +5,94 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.29.0] - 2025-12-08
+
+### Added - TODO List Tracking for Complex Commands
+
+Commands now create and track todo lists for multi-step workflows, ensuring comprehensive execution without missed steps.
+
+**What Changed**:
+Added TODO LIST TRACKING sections to 22 complex commands. Each command now:
+- Creates a todo list immediately when invoked (using TodoWrite tool)
+- Tracks progress through multi-step workflows
+- Marks each step complete as it progresses
+- Ensures nothing is forgotten in complex operations
+
+**Commands Enhanced** (22 total):
+- Core workflows: `/epic`, `/story`, `/setup`, `/babysit`, `/context` (MODE=full and MODE=research)
+- Session harness: `/session-init`, `/verify`, `/resume`, `/baseline`
+- Complex operations: `/auto`, `/sprint`, `/retro`, `/story-validate`
+- Infrastructure: `/deploy`, `/ci`, `/tests`, `/packages`
+- Documentation: `/adr`, `/handoff`, `/pr`, `/research`
+
+**Example Workflow** (`/epic` command):
+```
+1. Parse inputs (EPIC, TITLE, OWNER, GOAL, STORIES)
+2. Create docs/05-epics/<EPIC>.md from template
+3. For each story: create docs/06-stories/<EPIC>/<US_ID>-<slug>.md
+4. Merge entries into docs/09-agents/status.json
+5. Append assign lines to docs/09-agents/bus/log.jsonl
+6. Show preview and wait for YES/NO confirmation
+```
+
+**Benefits**:
+- **Comprehensive execution**: No more forgotten steps in complex workflows
+- **Progress visibility**: Users can see exactly what's happening
+- **Error recovery**: Easy to resume if interrupted
+- **Consistency**: Every command follows same tracking pattern
+
+### Improved - Research Workflow Enhancement
+
+Enhanced `/AgileFlow:context MODE=research` with complete two-step workflow:
+
+**STEP 1 - Generate Research Prompt**:
+- Creates comprehensive prompt for web AI tools (ChatGPT, Perplexity, etc.)
+- Instructs user to paste results back
+
+**STEP 2 - Store Research Results** (NEW):
+- When user returns with research, automatically:
+  - Formats into structured markdown with all sections
+  - Preserves ALL content (code snippets, main points, context)
+  - Saves to `docs/10-research/YYYYMMDD-topic-slug.md`
+  - Updates `docs/10-research/README.md` index
+  - Asks if user wants to create ADR/Epic/Story from research
+  - Auto-links research file from created ADR/Epic/Story
+
+**Format Structure**:
+```markdown
+# [Topic Title]
+- Summary (2-3 paragraphs)
+- Key Findings (with details)
+- Implementation Approach
+- Code Snippets (preserved exactly)
+- Security Considerations
+- Testing Strategy
+- Risks & Gotchas
+- ADR Recommendation
+- Story Breakdown
+- References (with URLs and dates)
+```
+
+**Integration**:
+Research files are now automatically referenced in ADRs/Epics/Stories:
+```markdown
+**Research**: See [Topic Research](../10-research/YYYYMMDD-topic-slug.md)
+```
+
+### Improved - Babysit Command Research Guidance
+
+Updated `/AgileFlow:babysit` to emphasize `/context MODE=research` as a valuable tool for avoiding debugging headaches:
+
+- Presented as helpful tip (not mandatory)
+- Focuses on practical benefit: learn patterns upfront, avoid issues later
+- Suggests using when: implementing new features, researching best practices, exploring unfamiliar tech
+- Highlights time savings from research-first approach
+
+**Example scenarios**:
+- "Implementing JWT authentication" → Research security patterns first
+- "Adding payment processing" → Research Stripe integration best practices
+- "Building real-time features" → Research WebSocket patterns and gotchas
+
 ## [2.28.0] - 2025-12-06
 
 ### Fixed - Session Harness Hook Configuration
