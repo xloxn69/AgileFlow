@@ -1,3 +1,7 @@
+# Node.js
+node_modules/
+*.tgz
+
 # OS
 .DS_Store
 .DS_Store?
