@@ -7,6 +7,33 @@
 
 **AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
 
+## Repository Structure
+
+This is a monorepo containing:
+
+- **`packages/cli/`** - The AgileFlow CLI tool (published to npm as `@xloxn69/agileflow`)
+- **`apps/website/`** - Landing page at `agileflow.projectquestorg.com`
+- **`apps/docs/`** - Documentation site at `docs.agileflow.projectquestorg.com` (powered by Fumadocs)
+
+### Development Commands
+
+```bash
+# Install all dependencies
+npm install
+
+# Run website locally (http://localhost:3000)
+npm run dev:website
+
+# Run docs locally (http://localhost:3001)
+npm run dev:docs
+
+# Test CLI locally
+npm run dev:cli -- status
+
+# Build all packages
+npm run build:all
+```
+
 ## Quick Start
 
 ### Installation
