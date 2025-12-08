@@ -19,13 +19,17 @@ export default async function Page(props: {
   const MDX = page.data.body;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
-      <DocsBody>
-        <MDX components={{ ...defaultMdxComponents }} />
-      </DocsBody>
-    </DocsPage>
+    <div className="docs-shell">
+      <div className="docs-article">
+        <DocsPage toc={page.data.toc} full={page.data.full}>
+          <DocsTitle>{page.data.title}</DocsTitle>
+          <DocsDescription>{page.data.description}</DocsDescription>
+          <DocsBody>
+            <MDX components={{ ...defaultMdxComponents }} />
+          </DocsBody>
+        </DocsPage>
+      </div>
+    </div>
   );
 }
 
