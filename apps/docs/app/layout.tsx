@@ -8,15 +8,9 @@ import './global.css';
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen font-serif antialiased">
+      <body className="flex flex-col min-h-screen">
         <RootProvider>
-          <DocsLayout
-            tree={source.pageTree}
-            {...baseOptions()}
-            sidebar={{
-              banner: undefined,
-            }}
-          >
+          <DocsLayout tree={source.pageTree} {...baseOptions()}>
             {children}
           </DocsLayout>
         </RootProvider>
