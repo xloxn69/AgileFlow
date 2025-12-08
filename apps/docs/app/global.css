@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Exact Claude design tokens */
+/* ---------- Claude-like design tokens ---------- */
 :root {
   --af-bg-page: #F4F1E6;
   --af-bg-surface: #FEFCF7;
@@ -47,20 +47,26 @@
   --af-code-border: #262933;
 }
 
+/* ---------- Global base ---------- */
 body {
   background: var(--af-bg-page);
   color: var(--af-text-main);
   font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-/* Docs shell - centered container */
+/* Top docs header / breadcrumb bar */
+.fd-nav-header {
+  background: var(--af-bg-page);
+  border-bottom: 1px solid var(--af-border-subtle);
+}
+
+/* ---------- Shell + article card ---------- */
 .docs-shell {
   max-width: 740px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 4rem;
 }
 
-/* Docs article - card on paper */
 .docs-article {
   background: var(--af-bg-surface);
   border-radius: 16px;
@@ -68,7 +74,14 @@ body {
   border: 1px solid var(--af-border-subtle);
 }
 
-/* Typography inside docs */
+/* Breadcrumb row */
+.docs-breadcrumbs {
+  font-size: 0.85rem;
+  color: var(--af-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* ---------- Typography inside article ---------- */
 .docs-article h1 {
   font-size: clamp(2.2rem, 4vw, 2.6rem);
   line-height: 1.1;
@@ -99,13 +112,16 @@ body {
   margin-bottom: 0.9rem;
 }
 
-.docs-article small,
-.docs-article .muted {
-  font-size: 0.875rem;
-  color: var(--af-text-muted);
+.docs-article ul,
+.docs-article ol {
+  margin: 0.75rem 0 1rem;
+  padding-left: 1.25rem;
 }
 
-/* Links in docs */
+.docs-article li {
+  margin-bottom: 0.4rem;
+}
+
 .docs-article a {
   color: var(--af-accent);
   text-decoration: underline;
@@ -113,20 +129,17 @@ body {
   text-underline-offset: 2px;
 }
 
-.docs-article a:hover {
-  color: var(--af-accent-soft);
-}
-
 .docs-article strong {
   font-weight: 700;
 }
 
+/* Orange emphasis spans (like 41 commands…) */
 .docs-highlight {
   color: var(--af-accent);
   font-weight: 600;
 }
 
-/* Code blocks */
+/* ---------- Code blocks ---------- */
 .docs-article pre {
   background: var(--af-code-bg);
   border-radius: 16px;
@@ -134,11 +147,6 @@ body {
   padding: 1.1rem 1.1rem;
   font-size: 0.9rem;
   overflow-x: auto;
-}
-
-[data-theme="dark"] .docs-article pre {
-  background: var(--af-code-bg);
-  border-color: var(--af-code-border);
 }
 
 .docs-article code {
@@ -153,6 +161,14 @@ body {
   font-size: 0.875em;
 }
 
+/* ---------- "What's Next?" / cards ---------- */
+.docs-card {
+  background: var(--af-bg-surface);
+  border-radius: 16px;
+  border: 1px solid var(--af-border-subtle);
+  box-shadow: 0 10px 25px rgba(15, 15, 15, 0.04); /* softer than before */
+}
+
 /* Callouts */
 .docs-callout.info {
   background: var(--af-info-bg);
@@ -162,28 +178,6 @@ body {
   font-size: 0.95rem;
   color: var(--af-info-text);
   margin: 1.2rem 0;
-}
-
-/* Header */
-.docs-header {
-  background: var(--af-bg-page);
-  border-bottom: 1px solid var(--af-border-subtle);
-  height: 56px;
-}
-
-/* Breadcrumbs */
-.docs-breadcrumbs {
-  font-size: 0.85rem;
-  color: var(--af-text-muted);
-  margin: 0.75rem 0 1.25rem;
-}
-
-.docs-breadcrumbs a {
-  color: var(--af-text-muted);
-}
-
-.docs-breadcrumbs-separator {
-  margin: 0 0.4rem;
 }
 
 /* Hide search functionality */
