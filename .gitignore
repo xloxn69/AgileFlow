@@ -41,5 +41,14 @@ logs/
 CLAUDE.md
 
 # User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
-docs/
-hooks/
+# NOTE: Not the /apps/docs/ folder, which is the documentation site
+
+# Next.js (for apps/website and apps/docs)
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Fumadocs
+.source/
