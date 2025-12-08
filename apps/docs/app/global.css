@@ -3,3 +3,89 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* Claude-inspired design tokens */
+    --background: 238 236 226; /* #EEECE2 */
+    --foreground: 61 57 41; /* #3D3929 */
+
+    --card: 255 255 255; /* #FFFFFF */
+    --card-foreground: 61 57 41;
+
+    --popover: 255 255 255;
+    --popover-foreground: 61 57 41;
+
+    --primary: 218 119 86; /* #DA7756 */
+    --primary-foreground: 255 255 255;
+
+    --secondary: 244 243 238; /* #F4F3EE */
+    --secondary-foreground: 61 57 41;
+
+    --muted: 244 243 238;
+    --muted-foreground: 177 173 161; /* #B1ADA1 */
+
+    --accent: 193 95 60; /* #C15F3C */
+    --accent-foreground: 255 255 255;
+
+    --destructive: 220 38 38;
+    --destructive-foreground: 255 255 255;
+
+    --border: 61 57 41 / 0.08;
+    --input: 61 57 41 / 0.12;
+    --ring: 218 119 86;
+
+    --radius: 10px;
+  }
+
+  .dark {
+    --background: 33 31 27; /* Dark warm brown */
+    --foreground: 238 236 226;
+
+    --card: 45 43 37;
+    --card-foreground: 238 236 226;
+
+    --popover: 45 43 37;
+    --popover-foreground: 238 236 226;
+
+    --primary: 218 119 86;
+    --primary-foreground: 255 255 255;
+
+    --secondary: 55 53 47;
+    --secondary-foreground: 238 236 226;
+
+    --muted: 55 53 47;
+    --muted-foreground: 177 173 161;
+
+    --accent: 193 95 60;
+    --accent-foreground: 255 255 255;
+
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+
+    --border: 238 236 226 / 0.12;
+    --input: 238 236 226 / 0.12;
+    --ring: 218 119 86;
+  }
+
+  body {
+    @apply bg-background text-foreground font-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Smooth, airy spacing like Claude */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    letter-spacing: -0.02em;
+  }
+
+  /* Warm, subtle borders */
+  .fd-border {
+    border-color: rgba(61, 57, 41, 0.08);
+  }
+
+  /* Claude-style rounded corners */
+  .fd-card, .fd-button, .fd-input {
+    border-radius: 10px;
+  }
+}
