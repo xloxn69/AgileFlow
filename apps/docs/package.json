@@ -3,20 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
     "build": "next build",
+    "dev": "next dev --port 3001",
     "start": "next start --port 3001",
+    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "lint": "next lint"
   },
   "dependencies": {
     "fumadocs-core": "^14.3.1",
     "fumadocs-mdx": "^11.0.2",
     "fumadocs-ui": "^14.3.1",
+    "lucide-react": "^0.555.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
