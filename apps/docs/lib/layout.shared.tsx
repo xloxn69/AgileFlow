@@ -5,6 +5,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: 'AgileFlow',
       url: 'https://agileflow.projectquestorg.com',
+      transparentMode: 'none',
     },
     links: [
       {

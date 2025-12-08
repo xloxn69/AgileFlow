@@ -88,4 +88,11 @@
   .fd-card, .fd-button, .fd-input {
     border-radius: 10px;
   }
+
+  /* Hide search functionality (we don't have a search API configured) */
+  [data-search-toggle],
+  [cmdk-root],
+  .fd-search-toggle {
+    display: none !important;
+  }
 }
