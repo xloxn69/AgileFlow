@@ -1,9 +1,0 @@
-{
-  "name": "AgileFlow",
-  "version": "2.29.0",
-  "description": "Universal agile/docs-as-code system combining Scrum, Kanban, ADRs, and docs-as-code. Framework-agnostic command pack for managing epics, stories, decisions, research, and multi-agent collaboration with automation features.",
-  "author": {
-    "name": "AgileFlow Contributors"
-  },
-  "homepage": "https://github.com/xloxn69/AgileFlow"
-}
