@@ -38,15 +38,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Apps folder (website and docs - separate from CLI package)
-apps/
-
-# Next.js build artifacts
-.next/
-out/
-.vercel/
-*.tsbuildinfo
-next-env.d.ts
-
-# Fumadocs
-.source/
+# Website (separate from CLI package)
+website/

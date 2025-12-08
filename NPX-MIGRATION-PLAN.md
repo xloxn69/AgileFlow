@@ -1,8 +1,70 @@
 # AgileFlow NPX Migration Plan
 
-**Status**: Planning
+**Status**: In Progress - Monorepo Structure Implemented
 **Created**: 2025-12-08
+**Updated**: 2025-12-08
 **Goal**: Migrate from Claude Code marketplace plugin to npx-based installation (like BMAD-METHOD)
+
+## Implementation Status
+
+### ✅ Phase 0: Monorepo Setup (COMPLETED - 2025-12-08)
+
+**Actual Structure Implemented:**
+```
+AgileFlow/                     # Monorepo root
+├── apps/
+│   ├── website/              # agileflow.projectquestorg.com
+│   │   ├── app/
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx      # Landing page
+│   │   │   └── globals.css
+│   │   ├── components/
+│   │   ├── public/
+│   │   ├── package.json
+│   │   ├── next.config.mjs
+│   │   ├── tsconfig.json
+│   │   ├── tailwind.config.ts
+│   │   └── postcss.config.mjs
+│   └── docs/                 # docs.agileflow.projectquestorg.com
+│       ├── app/
+│       │   ├── layout.tsx
+│       │   ├── page.tsx
+│       │   ├── global.css
+│       │   └── docs/
+│       │       ├── layout.tsx
+│       │       └── [[...slug]]/
+│       │           └── page.tsx
+│       ├── content/
+│       │   └── docs/
+│       │       ├── index.mdx
+│       │       └── meta.json
+│       ├── lib/
+│       │   └── source.ts
+│       ├── package.json
+│       ├── next.config.mjs
+│       ├── tsconfig.json
+│       ├── source.config.ts
+│       ├── tailwind.config.ts
+│       └── mdx-components.tsx
+├── packages/
+│   └── cli/                  # npm package (@xloxn69/agileflow)
+│       ├── src/
+│       ├── tools/
+│       ├── package.json
+│       └── .npmignore
+├── package.json              # Root workspace config
+├── .gitignore
+├── .npmignore
+└── CHANGELOG.md
+```
+
+**Domains:**
+- Website: `agileflow.projectquestorg.com`
+- Docs: `docs.agileflow.projectquestorg.com`
+
+**Deployment:**
+- Two separate Vercel projects (one per domain)
+- CLI publishes to npm registry as `@xloxn69/agileflow`
 
 ---
 
