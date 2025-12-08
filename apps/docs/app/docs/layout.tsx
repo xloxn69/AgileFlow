@@ -5,7 +5,14 @@ import type { ReactNode } from 'react';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <DocsLayout tree={source.pageTree} {...baseOptions()}>
+    <DocsLayout
+      tree={source.pageTree}
+      {...baseOptions()}
+      // Disable search since we don't have a search API configured
+      sidebar={{
+        banner: undefined,
+      }}
+    >
       {children}
     </DocsLayout>
   );
