@@ -3,15 +3,11 @@ title: Welcome to AgileFlow
 description: AI-driven agile development system for Claude Code, Cursor, Windsurf, and more
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
 
 # Welcome to AgileFlow
 
 AgileFlow is an AI-driven agile development system that brings powerful automation to your workflow with **41 commands**, **26 agents**, and **23 skills** across multiple IDEs.
-
-<Callout type="info">
-  AgileFlow supports Claude Code, Cursor, Windsurf, and more!
-</Callout>
 
 ## Quick Start
 
@@ -32,7 +28,25 @@ npx @xloxn69/agileflow install
 
 ## What's Next?
 
-- [Installation Guide](/docs/getting-started/installation)
-- [Quick Start Tutorial](/docs/getting-started/quick-start)
-- [Commands Reference](/docs/commands)
-- [Agents Reference](/docs/agents)
+<Cards>
+  <Card
+    title="Installation Guide"
+    description="Get started with AgileFlow installation"
+    href="/docs/getting-started/installation"
+  />
+  <Card
+    title="Commands Reference"
+    description="Explore all 41 commands"
+    href="/docs/commands"
+  />
+  <Card
+    title="Agents Reference"
+    description="Learn about 26 specialized agents"
+    href="/docs/agents"
+  />
+  <Card
+    title="GitHub Repository"
+    description="View source code and contribute"
+    href="https://github.com/xloxn69/AgileFlow"
+  />
+</Cards>
