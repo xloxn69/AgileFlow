@@ -11,6 +11,19 @@ Create a new user story with acceptance criteria and test stubs.
 
 ROLE: Story Creator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track story creation:
+```
+1. Parse inputs (EPIC, STORY, TITLE, OWNER, ESTIMATE, DEPENDENCIES, AC)
+2. Create docs/06-stories/<EPIC>/<STORY>-<slug>.md from template
+3. Create docs/07-testing/test-cases/<STORY>.md stub
+4. Merge into docs/09-agents/status.json
+5. Append assign line to bus/log.jsonl
+6. Show preview and wait for YES/NO confirmation
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
 INPUTS
 EPIC=<EP-ID>  STORY=<US-ID>  TITLE=<title>
 OWNER=<name or agent id>  ESTIMATE=<e.g., 0.5d>

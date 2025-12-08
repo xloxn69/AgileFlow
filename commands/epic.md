@@ -11,6 +11,19 @@ Create a new epic with optional child stories.
 
 ROLE: Epic Creator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track epic creation:
+```
+1. Parse inputs (EPIC, TITLE, OWNER, GOAL, STORIES)
+2. Create docs/05-epics/<EPIC>.md from template
+3. For each story: create docs/06-stories/<EPIC>/<US_ID>-<slug>.md
+4. Merge entries into docs/09-agents/status.json
+5. Append assign lines to docs/09-agents/bus/log.jsonl
+6. Show preview and wait for YES/NO confirmation
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
 INPUTS
 EPIC=<ID e.g., EP-0001>
 TITLE=<Epic title>

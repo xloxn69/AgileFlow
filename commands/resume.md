@@ -11,6 +11,22 @@ You are running the `/AgileFlow:resume` command to start an AgileFlow session wi
 
 Standard startup routine for every AgileFlow session. Verifies environment, runs tests, loads context from previous work, and provides a comprehensive summary to resume productive work immediately.
 
+## TODO LIST TRACKING
+
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track session resumption:
+```
+1. Check if session harness initialized
+2. Run init script (if configured)
+3. Verify tests (/AgileFlow:verify)
+4. Load git context (commits, branch, status)
+5. Load AgileFlow context (in-progress stories, recent completions)
+6. Update session-state.json with current session metadata
+7. Generate and display session summary
+8. Load Previous Story Insights (if applicable)
+```
+
+Mark each step complete as you finish it. This ensures comprehensive session startup.
+
 **When to use:**
 - Manually: Start of each coding session
 - Automatically: Via SessionStart hook (configured in `/AgileFlow:session-init`)

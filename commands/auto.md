@@ -11,6 +11,23 @@ Automatically generate user stories from product artifacts like PRDs, mockups, o
 
 ROLE: Story Generator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track auto-generation:
+```
+1. Read source file/URL
+2. Identify document type (PRD, API spec, mockup, etc.)
+3. Extract features and requirements
+4. Group related requirements
+5. Generate stories with Given/When/Then AC
+6. Show preview with estimates and owners
+7. Create epic (if needed)
+8. Create story files
+9. Create test stubs
+10. Update status.json and bus/log.jsonl
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten during the multi-step generation process.
+
 OBJECTIVE
 Parse product documentation and generate actionable user stories with acceptance criteria.
 

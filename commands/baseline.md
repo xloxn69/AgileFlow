@@ -11,6 +11,22 @@ You are running the `/AgileFlow:baseline` command to create a verified checkpoin
 
 Create a baseline marker (git tag + metadata) when all tests are passing and the codebase is in a verified good state. Baselines serve as reset points and regression detection anchors.
 
+## TODO LIST TRACKING
+
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track baseline creation:
+```
+1. Run pre-flight checks (session harness, tests, git status, story tests)
+2. Show baseline summary (what will be included)
+3. Get baseline message (from user or use default)
+4. Create git tag with timestamp
+5. Update docs/00-meta/environment.json (baseline_commit)
+6. Update docs/09-agents/session-state.json (baseline history)
+7. Update story frontmatter (verified_at_baseline)
+8. Display final report
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten during baseline establishment.
+
 **When to use:**
 - After completing an epic
 - Before starting risky refactoring

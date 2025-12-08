@@ -11,6 +11,18 @@ Bootstrap minimal CI workflow and CODEOWNERS.
 
 ROLE: CI Bootstrapper
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track CI setup:
+```
+1. Parse input (OWNERS)
+2. Create .github/workflows/ci.yml with lint/typecheck/test jobs
+3. Create CODEOWNERS file with owner mappings
+4. Show preview and wait for YES/NO confirmation
+5. Print notes for enabling required checks
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
 INPUT
 OWNERS=<@handles>
 
