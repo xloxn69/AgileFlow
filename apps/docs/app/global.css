@@ -6,90 +6,173 @@
 
 @layer base {
   :root {
-    /* Claude-inspired design tokens */
-    --background: 238 236 226; /* #EEECE2 */
-    --foreground: 61 57 41; /* #3D3929 */
+    /* Exact Claude design tokens - Light mode */
+    --af-bg-page: #F4F1E6;
+    --af-bg-surface: #FEFCF7;
+    --af-bg-subtle: #EEE7D8;
 
-    --card: 255 255 255; /* #FFFFFF */
-    --card-foreground: 61 57 41;
+    --af-text-main: #17130C;
+    --af-text-muted: #5A5240;
 
-    --popover: 255 255 255;
-    --popover-foreground: 61 57 41;
+    --af-border-subtle: #E1D7C5;
 
-    --primary: 218 119 86; /* #DA7756 */
+    --af-accent: #C15F3C;
+    --af-accent-soft: #E38A63;
+
+    --af-info-bg: #D9F3E3;
+    --af-info-text: #155B3C;
+    --af-info-border: #72C093;
+
+    --af-code-bg: #F7F3EA;
+    --af-code-border: #E2D6C2;
+
+    /* Fumadocs compatibility */
+    --background: 244 241 230; /* #F4F1E6 */
+    --foreground: 23 19 12; /* #17130C */
+    --card: 254 252 247; /* #FEFCF7 */
+    --card-foreground: 23 19 12;
+    --primary: 193 95 60; /* #C15F3C */
     --primary-foreground: 255 255 255;
-
-    --secondary: 244 243 238; /* #F4F3EE */
-    --secondary-foreground: 61 57 41;
-
-    --muted: 244 243 238;
-    --muted-foreground: 177 173 161; /* #B1ADA1 */
-
-    --accent: 193 95 60; /* #C15F3C */
-    --accent-foreground: 255 255 255;
-
-    --destructive: 220 38 38;
-    --destructive-foreground: 255 255 255;
-
-    --border: 61 57 41 / 0.08;
-    --input: 61 57 41 / 0.12;
-    --ring: 218 119 86;
-
-    --radius: 10px;
+    --muted: 238 231 216; /* #EEE7D8 */
+    --muted-foreground: 90 82 64; /* #5A5240 */
+    --border: 225 215 197; /* #E1D7C5 */
+    --ring: 193 95 60;
   }
 
+  [data-theme="dark"],
   .dark {
-    --background: 33 31 27; /* Dark warm brown */
-    --foreground: 238 236 226;
+    /* Exact Claude design tokens - Dark mode */
+    --af-bg-page: #050608;
+    --af-bg-surface: #101116;
+    --af-bg-subtle: #181A20;
 
-    --card: 45 43 37;
-    --card-foreground: 238 236 226;
+    --af-text-main: #F3EFE6;
+    --af-text-muted: #B8B0A0;
 
-    --popover: 45 43 37;
-    --popover-foreground: 238 236 226;
+    --af-border-subtle: #262933;
 
-    --primary: 218 119 86;
+    --af-accent: #E38A63;
+    --af-accent-soft: #F1A883;
+
+    --af-info-bg: #09241A;
+    --af-info-text: #7BE0A2;
+    --af-info-border: #267954;
+
+    --af-code-bg: #111318;
+    --af-code-border: #262933;
+
+    /* Fumadocs compatibility */
+    --background: 5 6 8; /* #050608 */
+    --foreground: 243 239 230; /* #F3EFE6 */
+    --card: 16 17 22; /* #101116 */
+    --card-foreground: 243 239 230;
+    --primary: 227 138 99; /* #E38A63 */
     --primary-foreground: 255 255 255;
-
-    --secondary: 55 53 47;
-    --secondary-foreground: 238 236 226;
-
-    --muted: 55 53 47;
-    --muted-foreground: 177 173 161;
-
-    --accent: 193 95 60;
-    --accent-foreground: 255 255 255;
-
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-
-    --border: 238 236 226 / 0.12;
-    --input: 238 236 226 / 0.12;
-    --ring: 218 119 86;
+    --muted: 24 26 32; /* #181A20 */
+    --muted-foreground: 184 176 160; /* #B8B0A0 */
+    --border: 38 41 51; /* #262933 */
+    --ring: 227 138 99;
   }
 
   body {
-    @apply bg-background text-foreground font-serif;
+    background: var(--af-bg-page);
+    color: var(--af-text-main);
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Smooth, airy spacing like Claude */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+  /* Typography - exact Claude scale */
+  h1 {
+    font-size: clamp(2.2rem, 4vw, 2.6rem);
+    line-height: 1.1;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
     letter-spacing: -0.02em;
   }
 
-  /* Warm, subtle borders */
-  .fd-border {
-    border-color: rgba(61, 57, 41, 0.08);
+  h2 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    font-weight: 700;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
   }
 
-  /* Claude-style rounded corners */
-  .fd-card, .fd-button, .fd-input {
-    border-radius: 10px;
+  h3 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    font-weight: 700;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
   }
 
-  /* Hide search functionality (we don't have a search API configured) */
+  p {
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 0.9rem;
+  }
+
+  /* Links with orange accent */
+  a {
+    color: var(--af-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  a:hover {
+    color: var(--af-accent-soft);
+  }
+
+  strong {
+    font-weight: 700;
+    color: var(--af-text-main);
+  }
+
+  small,
+  .text-sm {
+    font-size: 0.875rem;
+    color: var(--af-text-muted);
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--af-code-bg) !important;
+    border-radius: 16px;
+    border: 1px solid var(--af-code-border);
+    padding: 1.1rem;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    margin: 1.2rem 0;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  :not(pre) > code {
+    background: var(--af-code-bg);
+    border: 1px solid var(--af-code-border);
+    border-radius: 6px;
+    padding: 0.15rem 0.4rem;
+    font-size: 0.875em;
+  }
+
+  /* Info callouts */
+  .callout,
+  .info {
+    background: var(--af-info-bg);
+    border-radius: 16px;
+    border: 1px solid var(--af-info-border);
+    padding: 1rem 1.1rem;
+    font-size: 0.95rem;
+    color: var(--af-info-text);
+    margin: 1.2rem 0;
+  }
+
+  /* Hide search functionality */
   [data-search-toggle],
   [cmdk-root],
   .fd-search-toggle {
