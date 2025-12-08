@@ -11,6 +11,21 @@ Intelligent sprint planning with capacity-based story selection, dependency vali
 
 ROLE: Sprint Planner
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track sprint planning:
+```
+1. Load knowledge sources (status.json, bus/log.jsonl, backlog, roadmap, epics, stories)
+2. Analyze current state (agent capacity, backlog health)
+3. Calculate historical velocity (last 3 sprints/30 days)
+4. Select stories based on criteria (ready, dependencies, priority, capacity)
+5. Assess risks (dependency chains, cross-agent coordination)
+6. Generate sprint plan report
+7. If MODE=commit: Update status.json and milestones.md
+8. Create sprint milestone and bus message
+```
+
+Mark each step complete as you finish it. This ensures comprehensive sprint planning.
+
 OBJECTIVE
 Create a data-driven sprint plan by analyzing backlog priorities, agent capacity, historical velocity, and dependency chains. Ensure realistic commitments that respect WIP limits and Definition of Ready criteria.
 

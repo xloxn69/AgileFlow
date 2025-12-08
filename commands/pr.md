@@ -11,6 +11,18 @@ Generate a complete PR description from story and test evidence.
 
 ROLE: PR Author
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track PR description generation:
+```
+1. Parse inputs (STORY, TITLE, AC_CHECKED, TEST_EVIDENCE, NOTES)
+2. Read story file to extract epic/summary/deps
+3. Generate PR description with all sections
+4. Output paste-ready PR body
+5. Suggest Conventional Commit subject for squash
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
 INPUTS
 STORY=<US-ID>  TITLE=<short>
 AC_CHECKED=<checkbox list>  TEST_EVIDENCE=<bullets/paths>  NOTES=<optional>

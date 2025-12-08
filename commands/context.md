@@ -30,6 +30,20 @@ Generate comprehensive context brief for web AI tools (ChatGPT, Perplexity, Gemi
 ### Sources
 If present: status.json, bus/log.jsonl, epics/stories, ADRs, practices, architecture, roadmap/backlog/risks, research index, project manifests, CI, CHANGELOG.
 
+### TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track context generation:
+```
+1. Read existing docs/context.md (if exists)
+2. Gather sources (status.json, bus/log.jsonl, epics, stories, ADRs)
+3. Extract key information from each source
+4. Generate/update managed sections
+5. Preserve user-written content
+6. Show diff for review
+7. Apply changes after YES confirmation
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
 ### Rules
 - Update only managed sections
 - Preserve user-written content
@@ -69,7 +83,7 @@ Diff-first; YES/NO before changes.
 ---
 
 ## MODE=research
-Build a comprehensive research prompt for web AI tools.
+Build a comprehensive research prompt for web AI tools, then store results when user returns.
 
 ### Input
 - TOPIC=<free text> (required)
@@ -78,8 +92,24 @@ Build a comprehensive research prompt for web AI tools.
 ### Sources
 context.md; status.json; epics/stories; ADRs; project manifests; CI config.
 
-### Output
-A SINGLE code block prompt for web AI tools (ChatGPT, Perplexity, Gemini, Claude web, etc.) that requests:
+### TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track research workflow:
+```
+1. Generate research prompt for user to paste into ChatGPT
+2. Wait for user to return with research results
+3. Format research into structured markdown
+4. Save research to docs/10-research/YYYYMMDD-topic-slug.md
+5. Update docs/10-research/README.md index
+6. Ask user about creating ADR/Epic/Story from research
+7. Link research file from created ADR/Epic/Story (if applicable)
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten.
+
+### Workflow
+
+**STEP 1: Generate Research Prompt**
+Output a SINGLE code block prompt for web AI tools (ChatGPT, Perplexity, Gemini, Claude web, etc.) that requests:
 - TL;DR; Step-by-step plan w/ file paths; minimal runnable snippets
 - Config/keys; error handling; analytics hooks
 - Tests (unit/integration/e2e); manual checklist
@@ -91,8 +121,75 @@ A SINGLE code block prompt for web AI tools (ChatGPT, Perplexity, Gemini, Claude
 - Sourcing rules (official docs/repos; cite title/URL/date)
 - Final "Paste back to Claude Code" checklist
 
+Tell user: "Copy this prompt and paste it into ChatGPT/Perplexity. When you return with the results, paste them here and I'll save them to docs/10-research/."
+
+**STEP 2: Store Research Results (when user returns)**
+
+When user pastes research results back:
+
+1. **Format the research** into structured markdown:
+   ```markdown
+   # [Topic Title]
+
+   **Research Date**: YYYY-MM-DD
+   **Topic**: [original topic]
+   **Sources**: [List key sources cited]
+
+   ## Summary
+   [2-3 paragraph executive summary of findings]
+
+   ## Key Findings
+   - [Main point 1 with details]
+   - [Main point 2 with details]
+   - [Main point 3 with details]
+
+   ## Implementation Approach
+   [Step-by-step plan from research]
+
+   ## Code Snippets
+   ```language
+   [Preserve all code snippets exactly as provided]
+   ```
+
+   ## Security Considerations
+   [Security/privacy checklist items]
+
+   ## Testing Strategy
+   [Test approach from research]
+
+   ## Risks & Gotchas
+   [Potential issues and mitigation]
+
+   ## ADR Recommendation
+   [If research suggests architectural decision]
+
+   ## Story Breakdown
+   [If research included story suggestions]
+
+   ## References
+   - [Source 1: Title, URL, Date]
+   - [Source 2: Title, URL, Date]
+   ```
+
+2. **Save to** `docs/10-research/YYYYMMDD-<topic-slug>.md`
+
+3. **Update** `docs/10-research/README.md` with new entry (create if missing)
+
+4. **Ask user**: "Would you like me to:
+   - Create an ADR referencing this research?
+   - Create an Epic/Stories based on this research?
+   - Link this research to existing Epic/Story?"
+
+5. **If creating ADR/Epic/Story**: Add research reference at the top:
+   ```markdown
+   **Research**: See [Topic Research](../10-research/YYYYMMDD-topic-slug.md)
+   ```
+
 ### Rules
-No file writes. Copy-paste ready.
+- STEP 1: No file writes, copy-paste ready prompt only
+- STEP 2: Format and preserve ALL content (summaries retain context, code snippets, main points)
+- STEP 2: Diff-first; YES/NO before writing research file
+- STEP 2: Always link research file from ADRs/Epics/Stories that use it
 
 ---
 

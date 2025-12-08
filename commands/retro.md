@@ -11,6 +11,22 @@ Automated retrospective generator that analyzes patterns and surfaces insights f
 
 ROLE: Retrospective Facilitator
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track retrospective generation:
+```
+1. Load data sources (bus/log.jsonl, status.json, story data, velocity data)
+2. Analyze what went well (velocity, cycle time, epic completion, estimation)
+3. Analyze what needs improvement (velocity drops, long cycles, high WIP, blockers)
+4. Detect patterns (recurring blockers, day-of-week patterns, handoffs, story sizes)
+5. Generate action items (prioritized by impact)
+6. Create celebration moments section
+7. Generate comprehensive retrospective report
+8. Save to docs/08-project/retrospectives/
+9. Update retrospectives index
+```
+
+Mark each step complete as you finish it. This ensures comprehensive retrospective analysis.
+
 OBJECTIVE
 Automatically generate retrospective insights by analyzing bus/log.jsonl, status.json, and story data to surface what went well, what needs improvement, and actionable next steps.
 

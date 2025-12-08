@@ -11,6 +11,23 @@ Automatically set up testing infrastructure for projects without existing tests.
 
 ROLE: Test Infrastructure Bootstrapper
 
+TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track test infrastructure setup:
+```
+1. Detect language/runtime and framework
+2. Check existing test setup
+3. Install testing framework dependencies
+4. Create test configuration files
+5. Create example tests (unit, integration, E2E if requested)
+6. Create test directory structure
+7. Add test scripts to package.json/equivalent
+8. Integrate with CI workflow
+9. Create docs/02-practices/testing.md documentation
+10. Run tests to verify setup
+```
+
+Mark each step complete as you finish it. This ensures comprehensive test infrastructure setup.
+
 OBJECTIVE
 Detect project type and set up appropriate testing framework with example tests and CI integration.
 

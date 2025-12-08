@@ -11,6 +11,24 @@ You are running the `/AgileFlow:session-init` command to set up test verificatio
 
 First-time setup of the **Session Harness System**. Detects project configuration, creates environment files, runs initial test verification, and optionally configures automatic session resumption.
 
+## TODO LIST TRACKING
+
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track session harness initialization:
+```
+1. Run pre-flight checks (AgileFlow initialized, not already initialized)
+2. Detect project type and test framework
+3. Confirm detected settings with user
+4. Create docs/00-meta/environment.json
+5. Create docs/00-meta/init.sh
+6. Create docs/09-agents/session-state.json
+7. Run initial test verification (/AgileFlow:verify)
+8. Create baseline git tag (if tests pass)
+9. Configure SessionStart hook (optional)
+10. Display final summary
+```
+
+Mark each step complete as you finish it. This ensures nothing is forgotten during the multi-step initialization process.
+
 ## Prerequisites
 
 - AgileFlow must be initialized (`/AgileFlow:setup` must have been run)
