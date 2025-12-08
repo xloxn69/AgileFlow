@@ -1,6 +1,6 @@
 {
-  "name": "agileflow",
-  "version": "1.0.0",
+  "name": "@xloxn69/agileflow",
+  "version": "1.0.1",
   "description": "AI-driven agile development system for Claude Code, Cursor, Windsurf, and more",
   "keywords": [
     "agile",
@@ -51,7 +51,6 @@
     "ora": "^5.4.1",
     "semver": "^7.6.3"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=18.0.0"
   },
