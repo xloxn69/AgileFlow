@@ -1,6 +1,6 @@
 # AgileFlow
 
-[![npm version](https://img.shields.io/npm/v/@xloxn69/agileflow?color=brightgreen)](https://www.npmjs.com/package/@xloxn69/agileflow)
+[![npm version](https://img.shields.io/npm/v/%40xloxn69%2Fagileflow?color=brightgreen)](https://www.npmjs.com/package/@xloxn69/agileflow)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
