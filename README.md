@@ -1,37 +1,62 @@
 # AgileFlow
 
-[![Version](https://img.shields.io/badge/version-2.29.0-brightgreen)](CHANGELOG.md)
+[![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
-**Universal agile/docs-as-code system for Claude Code.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic command pack.
+**AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
 
 ## Quick Start
 
-**Step 1 - Install plugin:**
-```
-/plugin marketplace add xloxn69/AgileFlow
-/plugin install AgileFlow
+### Installation
+
+```bash
+npx agileflow install
 ```
 
-**Step 2 - Initialize system:**
+This will:
+1. Prompt you to select your IDE(s) (Claude Code, Cursor, Windsurf)
+2. Install AgileFlow core (41 commands, 26 agents, 23 skills)
+3. Configure your selected IDEs
+
+### CLI Commands
+
+```bash
+npx agileflow install     # Install to project
+npx agileflow status      # Check installation + updates
+npx agileflow update      # Update to latest version
+npx agileflow doctor      # Diagnose issues
+npx agileflow uninstall   # Remove from project
+```
+
+### After Installation
+
+**Initialize the system:**
 ```
 /AgileFlow:setup
 ```
 Scaffolds docs structure, templates, and optional CI configuration.
 
-**Step 3 - Get help:**
+**Get help:**
 ```
 /AgileFlow:help
 ```
 View system overview and available commands.
 
-**Step 4 - Use mentor (recommended):**
+**Use the mentor (recommended):**
 ```
 Use the agileflow-mentor subagent to guide me through implementing <feature>
 ```
 Interactive mentor guides you through epic/story creation, implementation, and PR preparation.
+
+### Supported IDEs
+
+| IDE | Status | Config Location |
+|-----|--------|-----------------|
+| Claude Code | ✅ Supported | `.claude/commands/agileflow/` |
+| Cursor | ✅ Supported | `.cursor/rules/agileflow/` |
+| Windsurf | ✅ Supported | `.windsurf/workflows/agileflow/` |
 
 ## Why AgileFlow?
 
