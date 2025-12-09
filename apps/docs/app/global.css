@@ -4,46 +4,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Claude Code Docs Theme - Light by default */
+/* Claude Code Docs Theme - Beige/cream background like actual site */
 :root {
-  /* Core colors - matching Claude Code docs */
-  --background: 0 0% 100%;
+  /* Core colors - matching actual Claude Code docs */
+  --background: 38 22% 95%;  /* Beige/cream background */
   --foreground: 0 0% 9%;
-  --card: 0 0% 100%;
+  --card: 38 22% 97%;  /* Slightly lighter beige for cards */
   --card-foreground: 0 0% 9%;
-  --popover: 0 0% 100%;
+  --popover: 38 22% 97%;
   --popover-foreground: 0 0% 9%;
-  --primary: 16 62% 60%;
+  --primary: 16 62% 60%;  /* Coral/orange accent */
   --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 96%;
+  --secondary: 38 22% 92%;
   --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96%;
+  --muted: 38 22% 92%;
   --muted-foreground: 0 0% 45%;
-  --accent: 0 0% 96%;
+  --accent: 38 22% 92%;
   --accent-foreground: 0 0% 9%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
+  --border: 38 22% 88%;
+  --input: 38 22% 88%;
   --ring: 16 62% 60%;
   --radius: 0.5rem;
 
-  /* Fumadocs specific - Light theme */
-  --fd-background: 0 0% 100%;
+  /* Fumadocs specific - Light beige theme */
+  --fd-background: 38 22% 95%;
   --fd-foreground: 0 0% 9%;
-  --fd-muted: 0 0% 96%;
+  --fd-muted: 38 22% 92%;
   --fd-muted-foreground: 0 0% 45%;
-  --fd-popover: 0 0% 100%;
+  --fd-popover: 38 22% 97%;
   --fd-popover-foreground: 0 0% 9%;
-  --fd-card: 0 0% 100%;
+  --fd-card: 38 22% 97%;
   --fd-card-foreground: 0 0% 9%;
-  --fd-border: 0 0% 90%;
-  --fd-input: 0 0% 90%;
+  --fd-border: 38 22% 88%;
+  --fd-input: 38 22% 88%;
   --fd-primary: 16 62% 60%;
   --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 0 0% 96%;
+  --fd-secondary: 38 22% 92%;
   --fd-secondary-foreground: 0 0% 9%;
-  --fd-accent: 0 0% 96%;
+  --fd-accent: 38 22% 92%;
   --fd-accent-foreground: 0 0% 9%;
   --fd-ring: 16 62% 60%;
 
@@ -92,9 +92,9 @@
   color-scheme: dark;
 }
 
-/* Force light theme as default */
+/* Force beige/cream theme as default */
 html {
-  background-color: hsl(0 0% 100%);
+  background-color: hsl(38 22% 95%);
   color: hsl(0 0% 9%);
 }
 
@@ -103,10 +103,10 @@ body {
   color: hsl(var(--foreground));
 }
 
-/* Header - white background with subtle border like Claude docs */
+/* Header - beige background with subtle border like Claude docs */
 header, [data-fd-nav], nav[aria-label="Main"] {
-  background-color: hsl(0 0% 100%) !important;
-  border-bottom: 1px solid hsl(0 0% 90%) !important;
+  background-color: hsl(38 22% 97%) !important;
+  border-bottom: 1px solid hsl(38 22% 88%) !important;
 }
 
 .dark header, .dark [data-fd-nav], .dark nav[aria-label="Main"] {
@@ -114,10 +114,10 @@ header, [data-fd-nav], nav[aria-label="Main"] {
   border-bottom-color: hsl(0 0% 25%) !important;
 }
 
-/* Sidebar - light gray background */
+/* Sidebar - slightly darker beige */
 aside, [data-fd-sidebar] {
-  background-color: hsl(0 0% 98%) !important;
-  border-right: 1px solid hsl(0 0% 90%) !important;
+  background-color: hsl(38 22% 92%) !important;
+  border-right: 1px solid hsl(38 22% 88%) !important;
 }
 
 .dark aside, .dark [data-fd-sidebar] {
@@ -125,11 +125,17 @@ aside, [data-fd-sidebar] {
   border-right-color: hsl(0 0% 25%) !important;
 }
 
-/* Cards - white with border */
+/* Cards - lighter beige with border */
 [data-card], .fd-card, a[class*="card"] {
-  background-color: hsl(0 0% 100%) !important;
-  border: 1px solid hsl(0 0% 90%) !important;
+  background-color: hsl(38 22% 97%) !important;
+  border: 1px solid hsl(38 22% 88%) !important;
   color: hsl(0 0% 9%) !important;
+  transition: all 0.2s ease;
+}
+
+[data-card]:hover, .fd-card:hover, a[class*="card"]:hover {
+  border-color: hsl(38 22% 85%) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .dark [data-card], .dark .fd-card, .dark a[class*="card"] {
@@ -138,10 +144,10 @@ aside, [data-fd-sidebar] {
   color: hsl(0 0% 98%) !important;
 }
 
-/* Code blocks */
+/* Code blocks - beige tinted */
 pre, code {
-  background-color: hsl(0 0% 97%) !important;
-  border: 1px solid hsl(0 0% 90%) !important;
+  background-color: hsl(38 22% 92%) !important;
+  border: 1px solid hsl(38 22% 88%) !important;
 }
 
 .dark pre, .dark code {
@@ -163,8 +169,8 @@ a:hover {
 
 /* Search button */
 button[aria-label*="Search"], [data-fd-search] {
-  background-color: hsl(0 0% 96%) !important;
-  border: 1px solid hsl(0 0% 90%) !important;
+  background-color: hsl(38 22% 92%) !important;
+  border: 1px solid hsl(38 22% 88%) !important;
 }
 
 .dark button[aria-label*="Search"], .dark [data-fd-search] {
@@ -172,9 +178,9 @@ button[aria-label*="Search"], [data-fd-search] {
   border-color: hsl(0 0% 25%) !important;
 }
 
-/* Content area */
+/* Content area - beige */
 main, article {
-  background-color: hsl(0 0% 100%);
+  background-color: hsl(38 22% 95%);
 }
 
 .dark main, .dark article {

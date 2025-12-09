@@ -5,10 +5,10 @@ import { baseOptions } from '@/lib/layout.shared';
 import type { ReactNode } from 'react';
 import './global.css';
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: ReactNode}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen bg-white text-gray-900">
+      <body className="flex flex-col min-h-screen">
         <RootProvider
           theme={{
             defaultTheme: 'light',
@@ -16,7 +16,18 @@ export default function Layout({ children }: { children: ReactNode }) {
             enableSystem: false,
           }}
         >
-          <DocsLayout tree={source.pageTree} {...baseOptions()}>
+          <DocsLayout
+            tree={source.pageTree}
+            {...baseOptions()}
+            sidebar={{
+              defaultOpenLevel: 0,
+              collapsible: true,
+              banner: undefined,
+            }}
+            containerProps={{
+              className: 'max-w-[1400px] mx-auto px-4',
+            }}
+          >
             {children}
           </DocsLayout>
         </RootProvider>
