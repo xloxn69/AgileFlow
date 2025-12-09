@@ -6,52 +6,30 @@
 
 @layer base {
   :root {
-    /* Primary Theme Colors */
-    --background: 38 38 36; /* #262624 */
-    --foreground: 195 192 182; /* #c3c0b6 */
-    --primary: 217 119 87; /* #d97757 */
-    --primary-foreground: 255 255 255; /* #ffffff */
-
-    /* Secondary & Accent Colors */
-    --secondary: 250 249 245; /* #faf9f5 */
-    --secondary-foreground: 48 48 46; /* #30302e */
-    --accent: 26 25 21; /* #1a1915 */
-    --accent-foreground: 245 244 238; /* #f5f4ee */
-
-    /* UI Component Colors */
-    --card: 38 38 36; /* #262624 */
-    --card-foreground: 250 249 245; /* #faf9f5 */
-    --popover: 48 48 46; /* #30302e */
-    --popover-foreground: 229 229 226; /* #e5e5e2 */
-    --muted: 27 27 25; /* #1b1b19 */
-    --muted-foreground: 183 181 169; /* #b7b5a9 */
-
-    /* Utility & Form Colors */
-    --border: 62 62 56; /* #3e3e38 */
-    --input: 82 81 74; /* #52514a */
-    --ring: 217 119 87; /* #d97757 */
-
-    /* Status & Feedback Colors */
-    --destructive: 239 68 68; /* #ef4444 */
-    --destructive-foreground: 255 255 255; /* #ffffff */
-
-    /* Chart & Visualization Colors */
-    --chart-1: 176 87 48; /* #b05730 */
-    --chart-2: 156 135 245; /* #9c87f5 */
-    --chart-3: 26 25 21; /* #1a1915 */
-    --chart-4: 47 43 72; /* #2f2b48 */
-    --chart-5: 180 85 45; /* #b4552d */
-
-    /* Sidebar & Navigation Colors */
-    --sidebar-background: 31 30 29; /* #1f1e1d */
-    --sidebar-foreground: 195 192 182; /* #c3c0b6 */
-    --sidebar-primary: 52 52 52; /* #343434 */
-    --sidebar-primary-foreground: 251 251 251; /* #fbfbfb */
-    --sidebar-accent: 15 15 14; /* #0f0f0e */
-    --sidebar-accent-foreground: 195 192 182; /* #c3c0b6 */
-    --sidebar-border: 235 235 235; /* #ebebeb */
-    --sidebar-ring: 181 181 181; /* #b5b5b5 */
-
+    --background: 38 38 36;
+    --foreground: 195 192 182;
+    --card: 38 38 36;
+    --card-foreground: 250 249 245;
+    --popover: 48 48 46;
+    --popover-foreground: 229 229 226;
+    --primary: 217 119 87;
+    --primary-foreground: 255 255 255;
+    --secondary: 250 249 245;
+    --secondary-foreground: 48 48 46;
+    --muted: 27 27 25;
+    --muted-foreground: 183 181 169;
+    --accent: 26 25 21;
+    --accent-foreground: 245 244 238;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 62 62 56;
+    --input: 82 81 74;
+    --ring: 217 119 87;
     --radius: 0.5rem;
+  }
+
+  body {
+    background-color: rgb(38 38 36);
+    color: rgb(195 192 182);
   }
 }
