@@ -205,3 +205,32 @@ p, li {
 .dark p, .dark li {
   color: hsl(0 0% 85%);
 }
+
+/* Claude Code Layout - Hide sidebar by default like their docs */
+@media (min-width: 1024px) {
+  /* Hide sidebar on desktop by default */
+  aside[data-fd-sidebar] {
+    display: none !important;
+  }
+
+  /* Make main content full width when sidebar is hidden */
+  main {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Center content with max width like Claude Code */
+  article {
+    max-width: 900px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
+
+/* Show hamburger menu button */
+button[aria-label*="Toggle"],
+button[aria-label*="Menu"] {
+  display: flex !important;
+}
