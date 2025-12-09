@@ -8,8 +8,14 @@ import './global.css';
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
-        <RootProvider>
+      <body className="flex flex-col min-h-screen bg-white text-gray-900">
+        <RootProvider
+          theme={{
+            defaultTheme: 'light',
+            attribute: 'class',
+            enableSystem: false,
+          }}
+        >
           <DocsLayout tree={source.pageTree} {...baseOptions()}>
             {children}
           </DocsLayout>
