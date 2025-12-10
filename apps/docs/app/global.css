@@ -4,58 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fumadocs Default Theme */
-@layer base {
-  :root {
-    /* Layout */
-    --fd-layout-width: 1400px;
-
-    /* Light theme colors - Fumadocs defaults */
-    --fd-background: 0 0% 100%;
-    --fd-foreground: 0 0% 3.9%;
-    --fd-muted: 0 0% 96.1%;
-    --fd-muted-foreground: 0 0% 45.1%;
-    --fd-popover: 0 0% 100%;
-    --fd-popover-foreground: 0 0% 3.9%;
-    --fd-card: 0 0% 100%;
-    --fd-card-foreground: 0 0% 3.9%;
-    --fd-border: 0 0% 89.8%;
-    --fd-input: 0 0% 89.8%;
-    --fd-primary: 0 0% 9%;
-    --fd-primary-foreground: 0 0% 98%;
-    --fd-secondary: 0 0% 96.1%;
-    --fd-secondary-foreground: 0 0% 9%;
-    --fd-accent: 0 0% 96.1%;
-    --fd-accent-foreground: 0 0% 9%;
-    --fd-ring: 0 0% 63.9%;
-    --fd-radius: 0.5rem;
-
-    color-scheme: light;
-  }
-
-  .dark {
-    --fd-background: 0 0% 3.9%;
-    --fd-foreground: 0 0% 98%;
-    --fd-muted: 0 0% 14.9%;
-    --fd-muted-foreground: 0 0% 63.9%;
-    --fd-popover: 0 0% 3.9%;
-    --fd-popover-foreground: 0 0% 98%;
-    --fd-card: 0 0% 3.9%;
-    --fd-card-foreground: 0 0% 98%;
-    --fd-border: 0 0% 14.9%;
-    --fd-input: 0 0% 14.9%;
-    --fd-primary: 0 0% 98%;
-    --fd-primary-foreground: 0 0% 9%;
-    --fd-secondary: 0 0% 14.9%;
-    --fd-secondary-foreground: 0 0% 98%;
-    --fd-accent: 0 0% 14.9%;
-    --fd-accent-foreground: 0 0% 98%;
-    --fd-ring: 0 0% 83.1%;
-
-    color-scheme: dark;
-  }
-}
-
 @layer base {
   * {
     @apply border-fd-border;
