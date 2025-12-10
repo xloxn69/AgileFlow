@@ -1,0 +1,165 @@
+---
+title: Installation
+description: How to install AgileFlow in your project
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# Installation
+
+This guide will walk you through installing AgileFlow in your development environment.
+
+## Quick Installation
+
+The fastest way to get started with AgileFlow is using the install command:
+
+<Tabs items={['npm', 'yarn', 'pnpm']}>
+  <Tab value="npm">
+    ```bash
+    npx @xloxn69/agileflow install
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn dlx @xloxn69/agileflow install
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm dlx @xloxn69/agileflow install
+    ```
+  </Tab>
+</Tabs>
+
+<Callout>
+  This command will set up AgileFlow in your current directory and create all necessary configuration files.
+</Callout>
+
+## What Gets Installed
+
+The installation process will create the following structure in your project:
+
+```
+.agileflow/
+├── config.json          # Main configuration
+├── epics/              # Epic definitions
+├── stories/            # User stories
+└── .meta/              # Metadata and state
+
+.claude/
+├── commands/           # Custom slash commands
+└── agents/             # Agent configurations
+```
+
+## Installation Steps
+
+<Steps>
+  <Step>
+    ### Initialize AgileFlow
+
+    Run the install command in your project root:
+
+    ```bash
+    npx @xloxn69/agileflow install
+    ```
+  </Step>
+
+  <Step>
+    ### Configure Settings
+
+    The installer will prompt you for configuration options:
+
+    - Project name
+    - Default sprint duration
+    - Team velocity (optional)
+    - Git integration preferences
+  </Step>
+
+  <Step>
+    ### Verify Installation
+
+    Check that AgileFlow is installed correctly:
+
+    ```bash
+    ls -la .agileflow/
+    ```
+
+    You should see the configuration files listed above.
+  </Step>
+</Steps>
+
+## Manual Installation
+
+If you prefer to install manually:
+
+1. **Create directories**:
+   ```bash
+   mkdir -p .agileflow/{epics,stories,.meta}
+   mkdir -p .claude/{commands,agents}
+   ```
+
+2. **Create config file**:
+   Create `.agileflow/config.json`:
+   ```json
+   {
+     "version": "1.0.0",
+     "projectName": "My Project",
+     "sprintDuration": 14,
+     "velocityTracking": true
+   }
+   ```
+
+3. **Install commands**:
+   Copy command files to `.claude/commands/`
+
+## Verifying Installation
+
+To verify that AgileFlow is installed correctly, try running:
+
+```bash
+/AgileFlow:help
+```
+
+You should see a list of available commands and agents.
+
+## Next Steps
+
+After installation:
+
+1. Complete the [Quick Start](/quick-start) tutorial
+2. Read about [Core Concepts](/concepts)
+3. Explore the [Commands Reference](/commands)
+
+<Callout type="info">
+  AgileFlow works best when integrated with your IDE. Make sure you're using Claude Code, Cursor, or Windsurf.
+</Callout>
+
+## Troubleshooting
+
+### Command not found
+
+If commands aren't recognized:
+- Ensure `.agileflow/` is in your project root
+- Restart your IDE
+- Check file permissions
+
+### Configuration errors
+
+If you see configuration errors:
+- Verify `config.json` is valid JSON
+- Check that all required fields are present
+- Review the [Configuration Guide](/configuration)
+
+## Uninstalling
+
+To remove AgileFlow:
+
+```bash
+rm -rf .agileflow .claude
+```
+
+<Callout type="warn">
+  This will delete all your epics, stories, and configuration. Make sure to backup any important data first.
+</Callout>

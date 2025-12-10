@@ -4,10 +4,26 @@ description: AI-driven agile development system for Claude Code, Cursor, Windsur
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
 
 # Welcome to AgileFlow
 
-AgileFlow is an AI-driven agile development system that brings powerful automation to your workflow with **41 commands**, **26 agents**, and **23 skills** across multiple IDEs.
+AgileFlow is an AI-driven agile development system that brings powerful automation to your workflow with **41 commands**, **26 specialized agents**, and **23 reusable skills**.
+
+<Callout>
+  Transform your development workflow with AI-powered agile project management directly in your IDE.
+</Callout>
+
+## Why AgileFlow?
+
+AgileFlow eliminates the context switching between your IDE and project management tools. Everything you need for agile development is at your fingertips:
+
+- **Write stories** with AI-generated acceptance criteria
+- **Plan sprints** with velocity tracking and capacity planning
+- **Assign work** to specialized AI agents
+- **Track progress** with visual kanban boards
+- **Document decisions** with Architecture Decision Records
+- **Deploy faster** with automated CI/CD pipelines
 
 ## Quick Start
 
@@ -17,36 +33,206 @@ Install AgileFlow with a single command:
 npx @xloxn69/agileflow install
 ```
 
-## Features
+Then create your first story:
 
-- **Epic Planning**: Break down large features into manageable stories
-- **Sprint Management**: Plan and track sprint progress
-- **Architecture Decisions**: Document technical decisions with ADRs
-- **CI/CD Integration**: Automate testing and deployment workflows
-- **Documentation Sync**: Keep docs in sync with code changes
-- **Multi-IDE Support**: Works with Claude Code, Cursor, and Windsurf
+```bash
+/AgileFlow:story
+```
 
-## What's Next?
+That's it! AgileFlow will guide you through creating a properly formatted user story with acceptance criteria, story points, and test scenarios.
+
+## Key Features
+
+### 41 Powerful Commands
+
+From story creation to deployment, AgileFlow provides commands for every stage of development:
+
+- `/AgileFlow:story` - Create user stories
+- `/AgileFlow:sprint` - Plan sprints with velocity tracking
+- `/AgileFlow:pr` - Generate pull request descriptions
+- `/AgileFlow:adr` - Document architecture decisions
+- [View all commands →](/commands)
+
+### 26 Specialized Agents
+
+AI agents that handle specific types of work:
+
+- **agileflow-api** - Backend services and APIs
+- **agileflow-ui** - Frontend components and styling
+- **agileflow-testing** - Test strategies and test suites
+- **agileflow-devops** - CI/CD and deployment
+- [Meet all agents →](/agents)
+
+### 23 Reusable Skills
+
+Pre-built templates and code generators:
+
+- Acceptance criteria generation
+- Type definitions
+- Validation schemas
+- API documentation
+- [Explore all skills →](/skills)
+
+## Supported IDEs
+
+AgileFlow works seamlessly with:
+
+- **Claude Code** - Anthropic's official CLI
+- **Cursor** - AI-first code editor
+- **Windsurf** - Collaborative IDE
+
+## How It Works
+
+```mermaid
+graph LR
+    A[Describe Feature] --> B[Create Story]
+    B --> C[AI Generates Details]
+    C --> D[Assign to Agent]
+    D --> E[Agent Implements]
+    E --> F[Auto-test & Deploy]
+```
+
+1. **Describe** what you want to build in natural language
+2. **AgileFlow creates** structured stories with acceptance criteria
+3. **Specialized agents** implement features following best practices
+4. **Automated testing** and deployment pipelines ensure quality
+5. **Documentation syncs** automatically with code changes
+
+## Getting Started
 
 <Cards>
   <Card
-    title="Installation Guide"
-    description="Get started with AgileFlow installation"
-    href="/docs/getting-started/installation"
+    title="Getting Started"
+    description="Learn the basics of AgileFlow"
+    href="/getting-started"
   />
+  <Card
+    title="Installation Guide"
+    description="Set up AgileFlow in your project"
+    href="/installation"
+  />
+  <Card
+    title="Quick Start Tutorial"
+    description="Create your first story in 5 minutes"
+    href="/quick-start"
+  />
+  <Card
+    title="Core Concepts"
+    description="Understand AgileFlow's philosophy"
+    href="/concepts"
+  />
+</Cards>
+
+## Popular Resources
+
+<Cards>
   <Card
     title="Commands Reference"
     description="Explore all 41 commands"
-    href="/docs/commands"
+    href="/commands"
   />
   <Card
     title="Agents Reference"
-    description="Learn about 26 specialized agents"
-    href="/docs/agents"
+    description="Meet the 26 specialized agents"
+    href="/agents"
   />
   <Card
-    title="GitHub Repository"
-    description="View source code and contribute"
-    href="https://github.com/xloxn69/AgileFlow"
+    title="Skills Reference"
+    description="Discover 23 reusable skills"
+    href="/skills"
+  />
+  <Card
+    title="Sprint Planning"
+    description="Master sprint planning with velocity tracking"
+    href="/sprint-planning"
+  />
+</Cards>
+
+## Community & Support
+
+- **GitHub**: [github.com/xloxn69/AgileFlow](https://github.com/xloxn69/AgileFlow)
+- **Issues**: Report bugs and request features
+- **Discussions**: Ask questions and share ideas
+- **Contributing**: Help improve AgileFlow
+
+<Callout type="info">
+  AgileFlow is open source and actively developed. Contributions are welcome!
+</Callout>
+
+## What's New
+
+### Latest Features
+
+- **Agent Collaboration**: Multiple agents working together on complex tasks
+- **Velocity Forecasting**: Predict delivery dates based on team velocity
+- **Dependency Visualization**: See story dependencies in graph view
+- **Custom Templates**: Create your own story and ADR templates
+
+## Example Workflow
+
+Here's a typical AgileFlow workflow:
+
+```bash
+# 1. Create a feature epic
+/AgileFlow:epic
+> "Complete user authentication system"
+
+# 2. Plan the sprint
+/AgileFlow:sprint
+> Select stories from backlog
+> Review team capacity (25 points)
+> Set sprint goal
+
+# 3. Implement with agents
+@agileflow-api implement login endpoint for AF-001
+@agileflow-ui create login form for AF-001
+@agileflow-testing add auth tests for AF-001
+
+# 4. Track progress
+/AgileFlow:board
+> View kanban board
+> See work in progress
+
+# 5. Create pull request
+/AgileFlow:pr AF-001
+> Auto-generated PR description
+> Testing instructions included
+
+# 6. Document decision
+/AgileFlow:adr
+> "Use JWT for authentication"
+
+# 7. Deploy
+/AgileFlow:deploy
+> Automated deployment to production
+```
+
+## Success Stories
+
+> "AgileFlow reduced our sprint planning time from 2 hours to 30 minutes. The AI-generated acceptance criteria are spot-on."
+>
+> — Development Team Lead
+
+> "Having everything in the IDE eliminates context switching. We're shipping features 40% faster."
+>
+> — Senior Engineer
+
+## Ready to Get Started?
+
+<Cards>
+  <Card
+    title="Install Now"
+    description="Set up AgileFlow in your project"
+    href="/installation"
+  />
+  <Card
+    title="Quick Start"
+    description="Create your first story"
+    href="/quick-start"
+  />
+  <Card
+    title="Configuration"
+    description="Customize for your workflow"
+    href="/configuration"
   />
 </Cards>

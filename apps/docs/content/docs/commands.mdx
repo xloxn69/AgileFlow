@@ -1,0 +1,705 @@
+---
+title: Commands Reference
+description: Complete reference for all 41 AgileFlow commands
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+# Commands Reference
+
+AgileFlow provides **41 slash commands** to streamline your development workflow. Commands are organized by category.
+
+## Story Management
+
+### /AgileFlow:story
+
+Create a new user story with AI-generated acceptance criteria.
+
+```
+/AgileFlow:story
+```
+
+**Prompts for**:
+- Feature description
+- User type
+- Business value
+
+**Generates**:
+- User story (As a/I want/So that)
+- Given/When/Then acceptance criteria
+- Story points estimate
+- Technical requirements
+- Test scenarios
+
+<Callout>
+  Stories are saved to `.agileflow/stories/` with auto-generated IDs (AF-001, AF-002, etc.)
+</Callout>
+
+### /AgileFlow:epic
+
+Create an epic with multiple related stories.
+
+```
+/AgileFlow:epic
+```
+
+**Use cases**:
+- Large features spanning multiple sprints
+- Feature sets with dependencies
+- Product initiatives
+
+**Generates**:
+- Epic structure
+- Individual stories
+- Dependency mapping
+- Milestone planning
+
+### /AgileFlow:status
+
+Update the status of a story.
+
+```
+/AgileFlow:status AF-001 in-progress
+```
+
+**Valid statuses**:
+- `backlog` - Not yet planned
+- `ready` - Ready for sprint
+- `in-progress` - Being worked on
+- `review` - In code review/testing
+- `done` - Completed
+- `blocked` - Blocked by dependency
+
+### /AgileFlow:assign
+
+Assign a story to an owner.
+
+```
+/AgileFlow:assign AF-001 --owner AG-API
+```
+
+**Owners**:
+- Agent names (AG-API, AG-UI, AG-TESTING, etc.)
+- Team member names
+- `unassigned` to clear owner
+
+## Sprint Planning
+
+### /AgileFlow:sprint
+
+Interactive sprint planning with velocity tracking.
+
+```
+/AgileFlow:sprint
+```
+
+**Features**:
+- View team velocity
+- Select stories for sprint
+- Calculate capacity
+- Set sprint goals
+- Track dependencies
+
+### /AgileFlow:board
+
+Display visual kanban board.
+
+```
+/AgileFlow:board
+```
+
+**Shows**:
+- Stories by status
+- Story points per column
+- Sprint progress
+- WIP limits (if configured)
+
+### /AgileFlow:velocity
+
+Track and analyze team velocity.
+
+```
+/AgileFlow:velocity
+```
+
+**Metrics**:
+- Average velocity (last 3/6/all sprints)
+- Velocity trend
+- Commitment reliability
+- Recommended capacity
+
+### /AgileFlow:metrics
+
+View sprint and project metrics.
+
+```
+/AgileFlow:metrics
+```
+
+**Displays**:
+- Current sprint progress
+- Velocity trends
+- Cycle time
+- Throughput
+- Blocker count
+
+## Documentation
+
+### /AgileFlow:adr
+
+Create an Architecture Decision Record.
+
+```
+/AgileFlow:adr
+```
+
+**Structure**:
+- Title: Decision being made
+- Context: Why this decision is needed
+- Decision: What you decided
+- Consequences: Trade-offs and implications
+
+**Saved to**: `docs/03-decisions/`
+
+### /AgileFlow:docs
+
+Synchronize documentation with code changes.
+
+```
+/AgileFlow:docs
+```
+
+**Actions**:
+- Updates README files
+- Syncs API documentation
+- Generates changelog entries
+- Updates code examples
+
+### /AgileFlow:readme-sync
+
+Synchronize a folder's README with its contents.
+
+```
+/AgileFlow:readme-sync path/to/folder
+```
+
+**Updates**:
+- File listings
+- Module descriptions
+- Usage examples
+- Links to documentation
+
+## Code Quality
+
+### /AgileFlow:review
+
+AI-powered code review with quality suggestions.
+
+```
+/AgileFlow:review
+```
+
+**Checks**:
+- Code style and conventions
+- Potential bugs
+- Performance issues
+- Security concerns
+- Best practices
+
+### /AgileFlow:refactor
+
+Identify and plan technical debt cleanup.
+
+```
+/AgileFlow:refactor
+```
+
+**Analyzes**:
+- Code smells
+- Duplication
+- Complexity
+- Test coverage
+- Documentation gaps
+
+### /AgileFlow:debt
+
+Track and prioritize technical debt.
+
+```
+/AgileFlow:debt
+```
+
+**Features**:
+- Debt inventory
+- Impact/effort matrix
+- Prioritization suggestions
+- Cleanup roadmap
+
+## Testing
+
+### /AgileFlow:tests
+
+Set up automated testing infrastructure.
+
+```
+/AgileFlow:tests
+```
+
+**Configures**:
+- Test framework
+- Coverage reporting
+- CI integration
+- Test patterns
+
+### /AgileFlow:verify
+
+Run project tests and update story status.
+
+```
+/AgileFlow:verify [story_id]
+```
+
+**Actions**:
+- Runs test suite
+- Updates test status on story
+- Reports failures
+- Generates coverage report
+
+## CI/CD & Deployment
+
+### /AgileFlow:ci
+
+Bootstrap CI/CD workflow.
+
+```
+/AgileFlow:ci
+```
+
+**Sets up**:
+- GitHub Actions / GitLab CI
+- Test automation
+- Linting and type checking
+- Build pipeline
+
+### /AgileFlow:deploy
+
+Configure automated deployment.
+
+```
+/AgileFlow:deploy
+```
+
+**Supports**:
+- Vercel, Netlify, AWS
+- Docker containers
+- Kubernetes
+- Custom deployment scripts
+
+### /AgileFlow:packages
+
+Manage dependencies with updates and security audits.
+
+```
+/AgileFlow:packages
+```
+
+**Features**:
+- Update outdated packages
+- Security vulnerability scan
+- Breaking change detection
+- Dependency graph
+
+## Git & Pull Requests
+
+### /AgileFlow:pr
+
+Generate pull request description from story.
+
+```
+/AgileFlow:pr AF-001
+```
+
+**Generates**:
+- PR title from story
+- Description with context
+- Testing instructions
+- Checklist
+
+### /AgileFlow:changelog
+
+Auto-generate changelog from commit history.
+
+```
+/AgileFlow:changelog
+```
+
+**Format**: Keep a Changelog
+- Added, Changed, Fixed, Deprecated, Removed, Security
+
+### /AgileFlow:baseline
+
+Mark current state as verified baseline.
+
+```
+/AgileFlow:baseline "Release 1.0"
+```
+
+**Use cases**:
+- Before major changes
+- After releases
+- Known good states
+
+## Research & Analysis
+
+### /AgileFlow:research
+
+Initialize research note with structured template.
+
+```
+/AgileFlow:research
+```
+
+**Template sections**:
+- Question/Problem
+- Context
+- Options explored
+- Findings
+- Recommendations
+- Next steps
+
+**Saved to**: `docs/research/`
+
+### /AgileFlow:impact
+
+Analyze change impact across codebase.
+
+```
+/AgileFlow:impact
+```
+
+**Analyzes**:
+- Files affected
+- Dependent modules
+- Test coverage
+- Breaking changes
+- Migration needs
+
+### /AgileFlow:deps
+
+Visualize dependency graph with critical path.
+
+```
+/AgileFlow:deps [story_id]
+```
+
+**Shows**:
+- Story dependencies
+- Dependency chain
+- Critical path
+- Circular dependencies
+- Blockers
+
+## Workflow Automation
+
+### /AgileFlow:auto
+
+Auto-generate stories from PRDs, mockups, or specs.
+
+```
+/AgileFlow:auto
+```
+
+**Input types**:
+- Product requirements documents
+- Design mockups (figma, etc.)
+- Technical specifications
+- User feedback
+
+**Generates**:
+- Epics and stories
+- Acceptance criteria
+- Priority ordering
+- Story point estimates
+
+### /AgileFlow:babysit
+
+Interactive mentor for end-to-end feature implementation.
+
+```
+/AgileFlow:babysit
+```
+
+**Guides you through**:
+- Story creation
+- Implementation
+- Testing
+- Documentation
+- Pull request
+- Deployment
+
+## Project Management
+
+### /AgileFlow:blockers
+
+Track and resolve blockers.
+
+```
+/AgileFlow:blockers
+```
+
+**Shows**:
+- Active blockers
+- Blocked stories
+- Blocker duration
+- Suggested actions
+- Owner assignment
+
+### /AgileFlow:update
+
+Generate stakeholder progress report.
+
+```
+/AgileFlow:update
+```
+
+**Includes**:
+- Sprint progress
+- Completed stories
+- Upcoming work
+- Blockers and risks
+- Velocity trends
+
+### /AgileFlow:retro
+
+Generate retrospective with Start/Stop/Continue format.
+
+```
+/AgileFlow:retro
+```
+
+**Sections**:
+- What went well (Continue)
+- What didn't work (Stop)
+- What to try (Start)
+- Action items
+
+## Configuration
+
+### /AgileFlow:setup
+
+Bootstrap entire AgileFlow system in current project.
+
+```
+/AgileFlow:setup
+```
+
+**Creates**:
+- `.agileflow/` directory structure
+- Configuration files
+- Slash commands
+- Agent contracts
+
+### /AgileFlow:agent
+
+Onboard a new agent with profile and contract.
+
+```
+/AgileFlow:agent
+```
+
+**Creates**:
+- Agent profile
+- Responsibilities
+- Skills
+- Command integration
+
+### /AgileFlow:template
+
+Create and manage custom document templates.
+
+```
+/AgileFlow:template
+```
+
+**Template types**:
+- Story templates
+- ADR templates
+- PR descriptions
+- Documentation
+
+## Utilities
+
+### /AgileFlow:help
+
+Display AgileFlow system overview and commands.
+
+```
+/AgileFlow:help
+```
+
+**Shows**:
+- Command list
+- Agent list
+- Quick start guide
+- Documentation links
+
+### /AgileFlow:diagnose
+
+System health diagnostics.
+
+```
+/AgileFlow:diagnose
+```
+
+**Checks**:
+- Configuration validity
+- File structure
+- Dependencies
+- Agent availability
+- Command registration
+
+### /AgileFlow:compress
+
+Compress status.json by removing verbose fields.
+
+```
+/AgileFlow:compress
+```
+
+**Optimizes**:
+- Removes redundant data
+- Keeps tracking metadata
+- Reduces file size
+- Maintains functionality
+
+### /AgileFlow:feedback
+
+Collect and process agent feedback.
+
+```
+/AgileFlow:feedback
+```
+
+**Gathers**:
+- Agent performance
+- Command effectiveness
+- Workflow issues
+- Improvement suggestions
+
+### /AgileFlow:handoff
+
+Document work handoff between agents.
+
+```
+/AgileFlow:handoff
+```
+
+**Records**:
+- Work completed
+- Current state
+- Next steps
+- Context for next agent
+
+### /AgileFlow:context
+
+Generate context export for web AI tools.
+
+```
+/AgileFlow:context
+```
+
+**Exports**:
+- Project structure
+- Current stories
+- Configuration
+- Recent changes
+
+### /AgileFlow:session-init
+
+Initialize session harness with test verification.
+
+```
+/AgileFlow:session-init
+```
+
+**Sets up**:
+- Session context
+- Test environment
+- Verification baseline
+- Monitoring
+
+### /AgileFlow:resume
+
+Resume work with verification and context loading.
+
+```
+/AgileFlow:resume
+```
+
+**Loads**:
+- Previous context
+- Work in progress
+- Pending actions
+- Test status
+
+### /AgileFlow:story-validate
+
+Validate story completeness before development.
+
+```
+/AgileFlow:story-validate AF-001
+```
+
+**Checks**:
+- Acceptance criteria present
+- Story points estimated
+- Dependencies identified
+- No blockers
+- Testable requirements
+
+## Command Tips
+
+<Callout type="info">
+  Most commands work with the current context. Run them from your project root for best results.
+</Callout>
+
+### Chaining Commands
+
+Some commands work well together:
+
+```bash
+# Create and assign a story
+/AgileFlow:story
+/AgileFlow:assign AF-001 --owner AG-API
+
+# Plan sprint and show board
+/AgileFlow:sprint
+/AgileFlow:board
+
+# Complete story and create PR
+/AgileFlow:status AF-001 done
+/AgileFlow:pr AF-001
+```
+
+### Global Options
+
+Many commands support:
+- `--help` - Show command help
+- `--verbose` - Detailed output
+- `--quiet` - Minimal output
+- `--dry-run` - Preview without executing
+
+## Next Steps
+
+<Cards>
+  <Card title="Agents" href="/agents">
+    Learn about the 26 specialized agents
+  </Card>
+  <Card title="Skills" href="/skills">
+    Explore the 23 reusable skills
+  </Card>
+  <Card title="Configuration" href="/configuration">
+    Configure AgileFlow for your workflow
+  </Card>
+</Cards>

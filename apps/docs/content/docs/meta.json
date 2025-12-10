@@ -1,0 +1,22 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "getting-started",
+    "installation",
+    "quick-start",
+    "---Core Concepts---",
+    "concepts",
+    "epics-and-stories",
+    "sprint-planning",
+    "---Commands---",
+    "commands",
+    "---Agents---",
+    "agents",
+    "---Skills---",
+    "skills",
+    "---Configuration---",
+    "configuration"
+  ]
+}

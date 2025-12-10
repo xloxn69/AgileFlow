@@ -4,233 +4,158 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Claude Code Docs Theme - Beige/cream background like actual site */
-:root {
-  /* Core colors - matching actual Claude Code docs */
-  --background: 38 22% 95%;  /* Beige/cream background */
-  --foreground: 0 0% 9%;
-  --card: 38 22% 97%;  /* Slightly lighter beige for cards */
-  --card-foreground: 0 0% 9%;
-  --popover: 38 22% 97%;
-  --popover-foreground: 0 0% 9%;
-  --primary: 16 62% 60%;  /* Coral/orange accent */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 38 22% 92%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 38 22% 92%;
-  --muted-foreground: 0 0% 45%;
-  --accent: 38 22% 92%;
-  --accent-foreground: 0 0% 9%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 38 22% 88%;
-  --input: 38 22% 88%;
-  --ring: 16 62% 60%;
-  --radius: 0.5rem;
+/* Fumadocs Theme Configuration */
+@layer base {
+  :root {
+    /* Layout */
+    --fd-layout-width: 1400px;
 
-  /* Fumadocs specific - Light beige theme */
-  --fd-background: 38 22% 95%;
-  --fd-foreground: 0 0% 9%;
-  --fd-muted: 38 22% 92%;
-  --fd-muted-foreground: 0 0% 45%;
-  --fd-popover: 38 22% 97%;
-  --fd-popover-foreground: 0 0% 9%;
-  --fd-card: 38 22% 97%;
-  --fd-card-foreground: 0 0% 9%;
-  --fd-border: 38 22% 88%;
-  --fd-input: 38 22% 88%;
-  --fd-primary: 16 62% 60%;
-  --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 38 22% 92%;
-  --fd-secondary-foreground: 0 0% 9%;
-  --fd-accent: 38 22% 92%;
-  --fd-accent-foreground: 0 0% 9%;
-  --fd-ring: 16 62% 60%;
+    /* Light theme colors */
+    --fd-background: 0 0% 100%;
+    --fd-foreground: 0 0% 9%;
+    --fd-muted: 0 0% 96%;
+    --fd-muted-foreground: 0 0% 45%;
+    --fd-popover: 0 0% 100%;
+    --fd-popover-foreground: 0 0% 9%;
+    --fd-card: 0 0% 100%;
+    --fd-card-foreground: 0 0% 9%;
+    --fd-border: 0 0% 90%;
+    --fd-input: 0 0% 90%;
+    --fd-primary: 16 62% 60%;
+    --fd-primary-foreground: 0 0% 100%;
+    --fd-secondary: 0 0% 96%;
+    --fd-secondary-foreground: 0 0% 9%;
+    --fd-accent: 0 0% 96%;
+    --fd-accent-foreground: 0 0% 9%;
+    --fd-ring: 16 62% 60%;
+    --fd-radius: 0.5rem;
 
-  color-scheme: light;
-}
-
-.dark {
-  --background: 0 0% 9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 16 62% 60%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 25%;
-  --input: 0 0% 25%;
-  --ring: 16 62% 60%;
-
-  --fd-background: 0 0% 9%;
-  --fd-foreground: 0 0% 98%;
-  --fd-muted: 0 0% 15%;
-  --fd-muted-foreground: 0 0% 64%;
-  --fd-popover: 0 0% 9%;
-  --fd-popover-foreground: 0 0% 98%;
-  --fd-card: 0 0% 9%;
-  --fd-card-foreground: 0 0% 98%;
-  --fd-border: 0 0% 25%;
-  --fd-input: 0 0% 25%;
-  --fd-primary: 16 62% 60%;
-  --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 0 0% 15%;
-  --fd-secondary-foreground: 0 0% 98%;
-  --fd-accent: 0 0% 15%;
-  --fd-accent-foreground: 0 0% 98%;
-  --fd-ring: 16 62% 60%;
-
-  color-scheme: dark;
-}
-
-/* Force beige/cream theme as default */
-html {
-  background-color: hsl(38 22% 95%);
-  color: hsl(0 0% 9%);
-}
-
-body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-}
-
-/* Header - beige background with subtle border like Claude docs */
-header, [data-fd-nav], nav[aria-label="Main"] {
-  background-color: hsl(38 22% 97%) !important;
-  border-bottom: 1px solid hsl(38 22% 88%) !important;
-}
-
-.dark header, .dark [data-fd-nav], .dark nav[aria-label="Main"] {
-  background-color: hsl(0 0% 9%) !important;
-  border-bottom-color: hsl(0 0% 25%) !important;
-}
-
-/* Sidebar - slightly darker beige */
-aside, [data-fd-sidebar] {
-  background-color: hsl(38 22% 92%) !important;
-  border-right: 1px solid hsl(38 22% 88%) !important;
-}
-
-.dark aside, .dark [data-fd-sidebar] {
-  background-color: hsl(0 0% 12%) !important;
-  border-right-color: hsl(0 0% 25%) !important;
-}
-
-/* Cards - lighter beige with border */
-[data-card], .fd-card, a[class*="card"] {
-  background-color: hsl(38 22% 97%) !important;
-  border: 1px solid hsl(38 22% 88%) !important;
-  color: hsl(0 0% 9%) !important;
-  transition: all 0.2s ease;
-}
-
-[data-card]:hover, .fd-card:hover, a[class*="card"]:hover {
-  border-color: hsl(38 22% 85%) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.dark [data-card], .dark .fd-card, .dark a[class*="card"] {
-  background-color: hsl(0 0% 12%) !important;
-  border-color: hsl(0 0% 25%) !important;
-  color: hsl(0 0% 98%) !important;
-}
-
-/* Code blocks - beige tinted */
-pre, code {
-  background-color: hsl(38 22% 92%) !important;
-  border: 1px solid hsl(38 22% 88%) !important;
-}
-
-.dark pre, .dark code {
-  background-color: hsl(0 0% 12%) !important;
-  border-color: hsl(0 0% 25%) !important;
-}
-
-/* Inline code */
-:not(pre) > code {
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-}
-
-/* Primary accent color for links and highlights */
-a:hover {
-  color: hsl(16 62% 60%);
-}
-
-/* Search button */
-button[aria-label*="Search"], [data-fd-search] {
-  background-color: hsl(38 22% 92%) !important;
-  border: 1px solid hsl(38 22% 88%) !important;
-}
-
-.dark button[aria-label*="Search"], .dark [data-fd-search] {
-  background-color: hsl(0 0% 15%) !important;
-  border-color: hsl(0 0% 25%) !important;
-}
-
-/* Content area - beige */
-main, article {
-  background-color: hsl(38 22% 95%);
-}
-
-.dark main, .dark article {
-  background-color: hsl(0 0% 9%);
-}
-
-/* Typography - match Claude Code docs */
-h1, h2, h3, h4, h5, h6 {
-  color: hsl(0 0% 9%);
-  font-weight: 600;
-}
-
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-  color: hsl(0 0% 98%);
-}
-
-/* Paragraph text */
-p, li {
-  color: hsl(0 0% 20%);
-}
-
-.dark p, .dark li {
-  color: hsl(0 0% 85%);
-}
-
-/* Claude Code Layout - Hide sidebar by default like their docs */
-@media (min-width: 1024px) {
-  /* Hide sidebar on desktop by default */
-  aside[data-fd-sidebar] {
-    display: none !important;
+    color-scheme: light;
   }
 
-  /* Make main content full width when sidebar is hidden */
-  main {
-    margin-left: 0 !important;
-    max-width: 100% !important;
-  }
+  .dark {
+    --fd-background: 0 0% 3%;
+    --fd-foreground: 0 0% 98%;
+    --fd-muted: 0 0% 10%;
+    --fd-muted-foreground: 0 0% 64%;
+    --fd-popover: 0 0% 5%;
+    --fd-popover-foreground: 0 0% 98%;
+    --fd-card: 0 0% 5%;
+    --fd-card-foreground: 0 0% 98%;
+    --fd-border: 0 0% 15%;
+    --fd-input: 0 0% 15%;
+    --fd-primary: 16 62% 60%;
+    --fd-primary-foreground: 0 0% 100%;
+    --fd-secondary: 0 0% 10%;
+    --fd-secondary-foreground: 0 0% 98%;
+    --fd-accent: 0 0% 10%;
+    --fd-accent-foreground: 0 0% 98%;
+    --fd-ring: 16 62% 60%;
 
-  /* Center content with max width like Claude Code */
-  article {
-    max-width: 900px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    color-scheme: dark;
   }
 }
 
-/* Show hamburger menu button */
-button[aria-label*="Toggle"],
-button[aria-label*="Menu"] {
-  display: flex !important;
+@layer base {
+  * {
+    @apply border-fd-border;
+  }
+
+  body {
+    @apply bg-fd-background text-fd-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Typography */
+@layer base {
+  h1 {
+    @apply scroll-m-20 text-4xl font-bold tracking-tight;
+  }
+
+  h2 {
+    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+  }
+
+  h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+
+  h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+
+  p {
+    @apply leading-7 [&:not(:first-child)]:mt-6;
+  }
+
+  blockquote {
+    @apply mt-6 border-l-2 pl-6 italic;
+  }
+
+  code {
+    @apply relative rounded bg-fd-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+  }
+
+  pre code {
+    @apply bg-transparent p-0;
+  }
+}
+
+/* Custom Card Hover Effects */
+@layer components {
+  [data-card] {
+    @apply transition-all duration-200 hover:border-fd-primary/50 hover:shadow-md;
+  }
+}
+
+/* Links */
+@layer base {
+  a {
+    @apply text-fd-primary underline-offset-4 hover:underline;
+  }
+}
+
+/* Code Blocks - Better styling */
+@layer base {
+  pre {
+    @apply my-6 overflow-x-auto rounded-lg border bg-fd-muted p-4;
+  }
+}
+
+/* Tables */
+@layer base {
+  table {
+    @apply w-full border-collapse;
+  }
+
+  th {
+    @apply border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right;
+  }
+
+  td {
+    @apply border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+  }
+
+  tr {
+    @apply m-0 border-t p-0 even:bg-fd-muted;
+  }
+}
+
+/* Lists */
+@layer base {
+  ul {
+    @apply my-6 ml-6 list-disc [&>li]:mt-2;
+  }
+
+  ol {
+    @apply my-6 ml-6 list-decimal [&>li]:mt-2;
+  }
+}
+
+/* Horizontal Rule */
+@layer base {
+  hr {
+    @apply my-8 border-fd-border;
+  }
 }

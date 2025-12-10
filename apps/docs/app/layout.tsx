@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: ReactNode}) {
           theme={{
             defaultTheme: 'light',
             attribute: 'class',
-            enableSystem: false,
+            enableSystem: true,
           }}
         >
           <DocsLayout
@@ -23,9 +23,6 @@ export default function Layout({ children }: { children: ReactNode}) {
               defaultOpenLevel: 0,
               collapsible: true,
               banner: undefined,
-            }}
-            containerProps={{
-              className: 'max-w-[1400px] mx-auto px-4',
             }}
           >
             {children}
