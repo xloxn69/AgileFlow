@@ -37,9 +37,6 @@ logs/
 .claude/context.log
 .claude/hook.log
 
-# CLAUDE.md (plugin development guidance - not committed)
-CLAUDE.md
-
 # User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
 # NOTE: Not the /apps/docs/ folder, which is the documentation site
 
