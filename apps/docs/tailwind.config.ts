@@ -12,7 +12,7 @@ const config: Config = {
   ],
   presets: [
     createPreset({
-      preset: 'default',
+      preset: 'neutral',
     }),
   ],
 };
