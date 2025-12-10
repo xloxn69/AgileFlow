@@ -1,0 +1,446 @@
+---
+title: Sprint Planning
+description: Learn how to plan and manage sprints with AgileFlow
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# Sprint Planning
+
+Master sprint planning with AgileFlow's velocity tracking and capacity planning features.
+
+## What is a Sprint?
+
+A **sprint** is a time-boxed period (typically 1-2 weeks) where your team commits to completing a set of user stories.
+
+### Sprint Goals
+
+Every sprint should have:
+- **Clear objectives**: What you'll deliver
+- **Committed stories**: Work the team will complete
+- **Capacity plan**: Realistic workload based on velocity
+- **Definition of done**: Quality criteria
+
+## Planning a Sprint
+
+<Steps>
+  <Step>
+    ### Start Sprint Planning
+
+    Run the sprint planning command:
+    ```
+    /AgileFlow:sprint
+    ```
+
+    AgileFlow will guide you through the process.
+  </Step>
+
+  <Step>
+    ### Review Velocity
+
+    AgileFlow shows your team's historical velocity:
+    ```
+    Previous Sprints:
+    - Sprint 1: 23 points
+    - Sprint 2: 27 points
+    - Sprint 3: 25 points
+
+    Average Velocity: 25 points
+    Recommended Capacity: 23-27 points
+    ```
+  </Step>
+
+  <Step>
+    ### Select Stories
+
+    Choose stories from the backlog. AgileFlow helps you:
+    - See story dependencies
+    - Track total story points
+    - Warn when approaching capacity
+    - Suggest optimal story order
+  </Step>
+
+  <Step>
+    ### Set Sprint Goal
+
+    Define what this sprint will achieve:
+    ```
+    Sprint Goal: Complete user authentication system
+    - User login (AF-001)
+    - Password reset (AF-002)
+    - Email verification (AF-003)
+    ```
+  </Step>
+</Steps>
+
+## Sprint Capacity
+
+### Calculating Capacity
+
+Capacity is the amount of work your team can complete in a sprint.
+
+Factors affecting capacity:
+- **Team size**: Number of developers
+- **Sprint duration**: Days available
+- **Availability**: Holidays, vacation, meetings
+- **Historical velocity**: Past performance
+
+Example calculation:
+```
+Team: 3 developers
+Sprint: 10 working days
+Availability: 80% (account for meetings, etc.)
+Historical velocity: 25 points/sprint
+
+Recommended capacity: 23-27 points
+```
+
+<Callout>
+  AgileFlow calculates capacity automatically based on your team's velocity.
+</Callout>
+
+### Capacity Warnings
+
+AgileFlow warns you if:
+- **Over-committed**: More than 110% of average velocity
+- **Under-committed**: Less than 70% of average velocity
+- **Unbalanced**: Some team members overloaded
+- **Dependencies blocked**: Stories depend on incomplete work
+
+## Velocity Tracking
+
+### What is Velocity?
+
+**Velocity** is the average number of story points your team completes per sprint.
+
+### Tracking Velocity
+
+AgileFlow tracks velocity automatically:
+
+```markdown
+Sprint 1: 23 points completed
+Sprint 2: 27 points completed
+Sprint 3: 25 points completed
+Sprint 4: 26 points completed
+
+Rolling average (last 3 sprints): 26 points
+Overall average: 25.25 points
+```
+
+### Using Velocity
+
+Use velocity to:
+
+1. **Plan sprints**: Don't commit to more than your average velocity
+2. **Forecast deliveries**: Estimate when epics will complete
+3. **Identify trends**: Improving or declining performance
+4. **Set expectations**: Communicate realistic timelines
+
+<Callout type="info">
+  Velocity should be used for planning, not measuring individual performance.
+</Callout>
+
+## Sprint Structure
+
+### Daily Workflow
+
+During the sprint:
+
+1. **Daily standup** (optional): Brief sync on progress
+2. **Work on stories**: Move stories through workflow
+3. **Update status**: Keep board current
+4. **Address blockers**: Resolve issues quickly
+
+### Story Status Updates
+
+```bash
+# Start working on a story
+/AgileFlow:status AF-001 in-progress
+
+# Move to code review
+/AgileFlow:status AF-001 review
+
+# Mark as done
+/AgileFlow:status AF-001 done
+```
+
+### Mid-Sprint Adjustments
+
+If needed, adjust the sprint:
+
+- **Add stories**: If completing ahead of schedule
+- **Remove stories**: If blocked or over-committed
+- **Re-prioritize**: Based on new information
+
+<Callout type="warn">
+  Frequent mid-sprint changes indicate planning issues. Review your estimation process.
+</Callout>
+
+## Sprint Board
+
+AgileFlow provides a visual sprint board:
+
+```
+/AgileFlow:board
+```
+
+Shows:
+```
+┌─────────────┬──────────────┬─────────┬──────┐
+│   Backlog   │ In Progress  │ Review  │ Done │
+├─────────────┼──────────────┼─────────┼──────┤
+│ AF-004 (3)  │ AF-001 (5)   │ AF-002  │      │
+│ AF-005 (5)  │ AF-003 (3)   │  (5)    │      │
+│ AF-006 (8)  │              │         │      │
+└─────────────┴──────────────┴─────────┴──────┘
+
+Sprint: Sprint 4
+Capacity: 25 points
+Committed: 21 points
+Completed: 0 points
+Remaining: 21 points
+```
+
+## Sprint Metrics
+
+### Key Metrics
+
+AgileFlow tracks:
+
+| Metric | Description |
+|--------|-------------|
+| **Velocity** | Points completed per sprint |
+| **Commitment Reliability** | % of committed stories completed |
+| **Cycle Time** | Days from start to done |
+| **Lead Time** | Days from created to done |
+| **Throughput** | Stories completed per sprint |
+
+### Viewing Metrics
+
+```bash
+/AgileFlow:metrics
+```
+
+Shows:
+```markdown
+## Sprint 4 Metrics
+
+**Velocity**: 26 points
+**Commitment**: 21/25 points committed (84%)
+**Cycle Time**: 3.2 days average
+**Throughput**: 7 stories completed
+**Blockers**: 1 active blocker
+
+## Trends
+- Velocity: ↑ (up from 25)
+- Cycle Time: → (stable)
+- Commitment Reliability: ↓ (down from 92%)
+```
+
+## Sprint Ceremonies
+
+### Sprint Planning
+
+**When**: Start of sprint
+**Duration**: 1-2 hours
+**Participants**: Whole team
+
+**Agenda**:
+1. Review sprint goal
+2. Discuss top backlog items
+3. Estimate and commit to stories
+4. Verify capacity
+
+### Daily Standup (Optional)
+
+**When**: Daily
+**Duration**: 15 minutes
+**Participants**: Development team
+
+**Format**:
+- What I completed yesterday
+- What I'm working on today
+- Any blockers
+
+<Callout>
+  AgileFlow works well with or without daily standups. Update story status regularly instead.
+</Callout>
+
+### Sprint Review
+
+**When**: End of sprint
+**Duration**: 1 hour
+**Participants**: Team + stakeholders
+
+**Agenda**:
+1. Demo completed work
+2. Review sprint goal achievement
+3. Gather feedback
+4. Update backlog based on learnings
+
+### Sprint Retrospective
+
+**When**: End of sprint
+**Duration**: 1 hour
+**Participants**: Development team
+
+**Agenda**:
+1. What went well
+2. What could improve
+3. Action items for next sprint
+
+Use the retro command:
+```
+/AgileFlow:retro
+```
+
+## Best Practices
+
+### 1. Set Realistic Goals
+
+<Callout type="info">
+  Commit to slightly less than your average velocity to account for unknowns.
+</Callout>
+
+Don't:
+- Overcommit to please stakeholders
+- Ignore historical velocity
+- Add stories mid-sprint frequently
+
+Do:
+- Use velocity as a guide
+- Leave buffer for unexpected work
+- Protect team capacity
+
+### 2. Focus on Completion
+
+Prioritize completing stories over starting new ones:
+- Better to finish 80% of committed work than start 100%
+- Partial stories provide no value
+- Reduce work-in-progress
+
+### 3. Track Blockers
+
+Address blockers immediately:
+```bash
+/AgileFlow:blockers
+```
+
+Shows:
+```markdown
+## Active Blockers
+
+**AF-002**: Waiting on API access
+- **Blocked since**: 2 days
+- **Owner**: DevOps team
+- **Action**: Follow up with platform team
+```
+
+### 4. Review and Adapt
+
+After each sprint:
+- Review what worked
+- Adjust estimation if needed
+- Improve processes
+- Celebrate wins
+
+### 5. Maintain Backlog Health
+
+Keep backlog refined:
+- Top stories have clear acceptance criteria
+- Dependencies are identified
+- Estimates are recent
+- Priorities are current
+
+## Advanced Sprint Planning
+
+### Capacity by Team Member
+
+Plan capacity per person:
+
+```markdown
+## Sprint 4 Capacity
+
+**Alice** (Senior): 10 points
+- AF-001: User Login (5)
+- AF-004: OAuth (5)
+
+**Bob** (Mid): 8 points
+- AF-002: Password Reset (5)
+- AF-005: UI Polish (3)
+
+**Carol** (Junior): 7 points
+- AF-003: Email Templates (3)
+- AF-006: Documentation (2)
+- AF-007: Testing (2)
+
+Total: 25 points
+```
+
+### Risk Management
+
+Identify risky stories:
+- New technology
+- External dependencies
+- Unclear requirements
+- Complex integration
+
+Mark risky stories:
+```markdown
+**AF-010**: Payment Integration
+**Risk**: High
+**Mitigation**: Spike story in previous sprint
+```
+
+### Sprint Goals
+
+Write SMART sprint goals:
+- **Specific**: Clear deliverables
+- **Measurable**: Concrete success criteria
+- **Achievable**: Within team capacity
+- **Relevant**: Aligned with product roadmap
+- **Time-bound**: Fits in sprint duration
+
+Example:
+```markdown
+Sprint Goal: Launch beta user authentication
+
+Success Criteria:
+- Users can register and login
+- Password reset works end-to-end
+- All auth flows tested
+- Security review complete
+```
+
+## Troubleshooting
+
+### Velocity Too Low
+
+If velocity is consistently low:
+1. Check if stories are too large
+2. Look for hidden work not captured
+3. Identify team blockers
+4. Review estimation accuracy
+
+### Velocity Inconsistent
+
+If velocity varies widely:
+1. Ensure consistent estimation
+2. Account for team changes
+3. Track external interruptions
+4. Review sprint scope changes
+
+### Missing Sprint Goals
+
+If you rarely achieve sprint goals:
+1. Reduce committed points by 20%
+2. Improve story refinement
+3. Address chronic blockers
+4. Review mid-sprint changes
+
+## Next Steps
+
+- Explore [Commands](/commands) for sprint management
+- Learn about [Metrics](/concepts#sprint-metrics) tracking
+- Read about [Velocity](/concepts#velocity-tracking) calculation
