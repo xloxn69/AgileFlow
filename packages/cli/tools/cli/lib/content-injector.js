@@ -29,6 +29,11 @@ function generateAgentList(agentsDir) {
     try {
       const frontmatter = yaml.load(match[1]);
 
+      // Skip if frontmatter is null or not an object
+      if (!frontmatter || typeof frontmatter !== 'object') {
+        continue;
+      }
+
       // Handle tools field - can be array or string
       let tools = frontmatter.tools || [];
       if (typeof tools === 'string') {
@@ -42,7 +47,8 @@ function generateAgentList(agentsDir) {
         model: frontmatter.model || 'haiku'
       });
     } catch (err) {
-      console.warn(`Warning: Could not parse frontmatter in ${file}`);
+      // Silently skip files with parsing errors
+      continue;
     }
   }
 
@@ -83,13 +89,21 @@ function generateCommandList(commandsDir) {
     try {
       const frontmatter = yaml.load(match[1]);
       const cmdName = path.basename(file, '.md');
+
+      // Skip if frontmatter is null or not an object
+      if (!frontmatter || typeof frontmatter !== 'object') {
+        continue;
+      }
+
       commands.push({
         name: cmdName,
         description: frontmatter.description || '',
         argumentHint: frontmatter['argument-hint'] || ''
       });
     } catch (err) {
-      console.warn(`Warning: Could not parse frontmatter in ${file}`);
+      // Silently skip files with parsing errors - they might be generated files
+      // with content that looks like frontmatter but isn't
+      continue;
     }
   }
 
