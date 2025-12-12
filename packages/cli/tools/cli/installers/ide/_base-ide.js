@@ -67,8 +67,10 @@ class BaseIdeSetup {
    */
   injectDynamicContent(content, agileflowDir) {
     const { injectContent } = require('../../lib/content-injector');
-    const agentsDir = path.join(agileflowDir, 'src', 'core', 'agents');
-    const commandsDir = path.join(agileflowDir, 'src', 'core', 'commands');
+    // agileflowDir is the user's .agileflow installation directory
+    // which has agents/ and commands/ at the root level (not src/core/)
+    const agentsDir = path.join(agileflowDir, 'agents');
+    const commandsDir = path.join(agileflowDir, 'commands');
 
     return injectContent(content, agentsDir, commandsDir);
   }
