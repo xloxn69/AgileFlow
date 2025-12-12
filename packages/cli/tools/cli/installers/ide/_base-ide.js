@@ -66,7 +66,7 @@ class BaseIdeSetup {
    * @returns {string} Content with placeholders replaced
    */
   injectDynamicContent(content, agileflowDir) {
-    const { injectContent } = require('../lib/content-injector');
+    const { injectContent } = require('../../lib/content-injector');
     const agentsDir = path.join(agileflowDir, 'src', 'core', 'agents');
     const commandsDir = path.join(agileflowDir, 'src', 'core', 'commands');
 
