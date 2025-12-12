@@ -7,47 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.31.0] - 2025-12-12
 
-### Added - Automatic Docs Structure & Customizable Folder Names
+### Added - Dynamic Content Injection System
 
-Implemented automatic documentation structure creation during installation with support for custom folder names.
+Implemented placeholder-based dynamic content injection system to keep command files automatically updated with current agents and commands.
 
 **Problem Solved**:
-Previously, users had to run two separate commands: `npm install agileflow` followed by `/AgileFlow:setup` to create the docs/ structure. Additionally, all documentation references were hardcoded to "docs/" with no ability to customize.
+Command files (like `babysit.md`, `help.md`) had hardcoded agent and command lists that required manual updates when adding/removing agents or commands. This caused maintenance burden and risk of outdated information.
 
 **Solution**:
-- `npx agileflow install` now automatically creates the complete docs/ structure
-- `npx agileflow update` now ensures all docs/ files exist (idempotent)
-- Users can specify a custom docs folder name (e.g., "documentation", "project-docs")
-- All command/agent/skill .md files are updated to reference the custom folder name
+- Source files use placeholders: `<!-- {{AGENT_LIST}} -->` and `<!-- {{COMMAND_LIST}} -->`
+- New content-injector module scans agents/ and commands/ directories
+- During installation, placeholders are replaced with current agent/command lists
+- Installed files always have up-to-date information (50 agents, 39 commands)
 
-**New Features**:
-- **Automatic Docs Creation**: Full docs/ directory structure created during install
-- **Idempotent Updates**: Missing files/folders created without overwriting existing content
-- **Custom Folder Names**: Choose any folder name instead of hardcoded "docs/"
-- **Reference Replacement**: All "docs/" references in .md files updated to custom name
-- **Persistent Configuration**: Folder name stored in agileflow-metadata.json
+**Implementation**:
+- `tools/cli/lib/content-injector.js` - Scans frontmatter and generates formatted lists
+- Base IDE installer enhanced with `injectDynamicContent()` method
+- All 3 IDE installers updated (Claude Code, Cursor, Windsurf)
+- `babysit.md` and `help.md` converted to use placeholders
 
-**Directory Structure Created**:
+**Benefits**:
+- Zero maintenance: Add/remove agents → automatically reflected in installed files
+- Always current: No manual updates needed
+- Clean source: Source files are minimal and readable
+- Works everywhere: All IDEs get the same dynamic injection
+
+### Changed - Brand Identity Update
+
+Updated ASCII logo and brand color for improved visual identity.
+
+**Changes**:
+- **New ASCII Logo**: Replaced old text-based logo with bold Unicode block-style logo
+- **Brand Color**: Changed from cyan to custom brand color `#C15F3C` (burnt orange/terracotta)
+
+**Files Updated**:
+- `ui.js` - Logo display and section headers
+- `docs-setup.js` - Docs structure creation messages
+- All IDE installers (claude-code.js, cursor.js, windsurf.js) - Setup messages
+
+**New Logo**:
 ```
-docs/
-├── 00-meta/           (templates, guides, scripts, metadata)
-├── 01-brainstorming/  (ideas, sketches)
-├── 02-practices/      (testing, git, ci, security)
-├── 03-decisions/      (ADRs)
-├── 04-architecture/   (system design)
-├── 05-epics/          (epic planning)
-├── 06-stories/        (user stories)
-├── 07-testing/        (test cases, acceptance)
-├── 08-project/        (roadmap, backlog, milestones)
-├── 09-agents/         (status.json, bus/)
-└── 10-research/       (research notes)
+ █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗
+██╔══██╗██╔════╝ ██║██║     ██╔════╝██╔════╝██║     ██╔═══██╗██║    ██║
+███████║██║  ███╗██║██║     █████╗  █████╗  ██║     ██║   ██║██║ █╗ ██║
+██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║
+██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝
+╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝
 ```
 
-**Files Created**:
-- README.md in every directory with usage guidance
-- agileflow-metadata.json with version and configuration
-- status.json for agent tracking
-- Basic practice files (testing.md, git-branching.md, etc.)
+### Improved - CLAUDE.md Documentation
+
+Enhanced version management workflow documentation with clearer tag creation reminders.
+
+**Changes**:
+- Added prominent warnings with emojis to ensure tags are created after pushing
+- Emphasized that npm publish is triggered by git tags (not direct pushes)
+- Added step-by-step checklist for release process
+- Clarified that GitHub Actions handles npm publishing automatically
 - .gitignore entries for secrets
 
 **Usage**:
