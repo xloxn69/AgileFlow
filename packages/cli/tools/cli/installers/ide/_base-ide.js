@@ -60,6 +60,20 @@ class BaseIdeSetup {
   }
 
   /**
+   * Inject dynamic content into template (agent lists, command lists)
+   * @param {string} content - Template file content
+   * @param {string} agileflowDir - AgileFlow installation directory
+   * @returns {string} Content with placeholders replaced
+   */
+  injectDynamicContent(content, agileflowDir) {
+    const { injectContent } = require('../lib/content-injector');
+    const agentsDir = path.join(agileflowDir, 'src', 'core', 'agents');
+    const commandsDir = path.join(agileflowDir, 'src', 'core', 'commands');
+
+    return injectContent(content, agentsDir, commandsDir);
+  }
+
+  /**
    * Main setup method - must be implemented by subclasses
    * @param {string} projectDir - Project directory
    * @param {string} agileflowDir - AgileFlow installation directory

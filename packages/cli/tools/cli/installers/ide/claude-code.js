@@ -49,6 +49,9 @@ class ClaudeCodeSetup extends BaseIdeSetup {
         // Read the original command content
         let content = await this.readFile(command.path);
 
+        // Inject dynamic content (agent lists, command lists)
+        content = this.injectDynamicContent(content, agileflowDir);
+
         // Replace docs/ references with custom folder name
         content = this.replaceDocsReferences(content);
 
