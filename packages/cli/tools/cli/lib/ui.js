@@ -18,12 +18,12 @@ const packageJson = require(packageJsonPath);
  */
 function displayLogo() {
   const logo = `
-   _____         _ __    ________
-  /  _  \\   ____/  |  \\_/   ____/
- /  /_\\  \\ / ___\\  |  |\\____  \\  ____  _  __
-/    |    \\  \\___|__|__/       \\/ __ \\/ \\/ /
-\\____|____/\\____/____ /_______/\\____/ \\__/
-                                              `;
+     _         _ _      _____ _
+    / \\   __ _(_) | ___|  ___| | _____      __
+   / _ \\ / _\` | | |/ _ \\ |_  | |/ _ \\ \\ /\\ / /
+  / ___ \\ (_| | | |  __/  _| | | (_) \\ V  V /
+ /_/   \\_\\__, |_|_|\\___|_|   |_|\\___/ \\_/\\_/
+         |___/                                `;
   console.log(chalk.cyan(logo));
   console.log(chalk.dim(`  AgileFlow v${packageJson.version} - AI-Driven Agile Development\n`));
 }
@@ -152,6 +152,18 @@ async function promptInstall() {
         return true;
       },
     },
+    {
+      type: 'input',
+      name: 'docsFolder',
+      message: 'Documentation folder name:',
+      default: 'docs',
+      validate: (input) => {
+        if (!/^[a-zA-Z0-9._-]+$/.test(input)) {
+          return 'Folder name can only contain letters, numbers, dots, underscores, and hyphens';
+        }
+        return true;
+      },
+    },
   ]);
 
   return {
@@ -159,6 +171,7 @@ async function promptInstall() {
     ides: answers.ides,
     userName: answers.userName,
     agileflowFolder: answers.agileflowFolder,
+    docsFolder: answers.docsFolder,
   };
 }
 
