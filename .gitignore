@@ -31,6 +31,12 @@ logs/
 !.env.example
 .npmrc
 
+# Internal Development Docs (not for users)
+CLAUDE.md
+
+# Playwright MCP (local dev tool)
+.playwright-mcp/
+
 # Claude Settings (user-specific files only)
 # NOTE: .claude/settings.json is NOT gitignored (project-level config)
 .claude/settings.local.json
