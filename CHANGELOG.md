@@ -5,6 +5,98 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.30.0] - 2025-12-12
+
+### Added - Content Generation System
+
+Implemented automated content generation system to eliminate manual synchronization debt across AgileFlow documentation and command files.
+
+**Problem Solved**:
+Previously, adding new commands, agents, or skills required manually updating multiple files (help.md, babysit.md, README.md, SUBAGENTS.md). This created sync debt where documentation would become outdated.
+
+**Solution**:
+Frontmatter-driven metadata extraction with automated content injection using AUTOGEN markers.
+
+**Architecture**:
+```
+scripts/generators/
+├── index.js                 # Orchestrator (runs all generators)
+├── command-registry.js      # Scans commands/*.md for frontmatter
+├── agent-registry.js        # Scans agents/*.md for frontmatter
+├── skill-registry.js        # Scans skills/*/SKILL.md for frontmatter
+├── inject-help.js           # Generates command list for help.md
+├── inject-babysit.js        # Generates agent list for babysit.md
+└── inject-readme.js         # Generates stats/tables for README.md
+```
+
+**Usage**:
+```bash
+# Run all generators at once
+bash packages/cli/scripts/generate-all.sh
+
+# Or run individually
+node packages/cli/scripts/generators/index.js
+```
+
+**Files with AUTOGEN Markers**:
+- `commands/help.md` - Auto-generates command list (41 commands, grouped by category)
+- `commands/babysit.md` - Auto-generates agent list (26 agents with descriptions, tools, categories)
+- `README.md` - Auto-generates stats (41 commands, 26 agents, 23 skills)
+
+**Benefits**:
+- **Zero sync debt**: One source of truth (frontmatter metadata)
+- **Automatic updates**: Adding new command/agent/skill automatically updates all references
+- **Less manual work**: No more editing multiple files for same change
+- **Consistency**: Generated content always matches actual code
+
+**When to Run**:
+After adding/removing/renaming commands, agents, or skills, or after changing descriptions/metadata.
+
+**Developer Notes**:
+Do not manually edit content between AUTOGEN markers - changes will be overwritten on next generation.
+
+### Changed - Agent Naming Convention
+
+Removed `agileflow-` prefix from all 26 agent filenames for cleaner, more concise naming.
+
+**Before**: `agileflow-ui.md`, `agileflow-api.md`, `agileflow-ci.md`
+**After**: `ui.md`, `api.md`, `ci.md`
+
+**Files Renamed** (26 agents):
+- Core: ui, api, ci, devops, security, database, testing, qa
+- Specialized: performance, mobile, integrations, refactor, design
+- Advanced: accessibility, analytics, datamigration, monitoring, compliance
+- Planning: epic-planner, adr-writer, research, product, mentor
+- Template: context7
+
+**References Updated** (46 files):
+All command files, README.md, SUBAGENTS.md, and CLAUDE.md updated to use new agent names.
+
+**Rationale**:
+The `agileflow-` prefix was redundant since all agents are already scoped within the AgileFlow system. Shorter names improve readability and reduce verbosity in command invocations.
+
+### Changed - Repository Migration
+
+Migrated repository from `xloxn69/AgileFlow` to `projectquestorg/AgileFlow`.
+
+**Updated**:
+- Package name: `@xloxn69/agileflow` → `agileflow`
+- Repository URLs: Updated in package.json, README.md
+- All documentation references to new repository URL
+
+### Improved - Documentation Cleanup
+
+**README.md**:
+- Removed "Repository Structure" section (monorepo details no longer needed)
+- Removed development commands (npm run dev:website, dev:docs, build:all)
+- Streamlined to focus on user-facing features and installation
+
+**CLAUDE.md**:
+- Added "Content Generation System (v2.30.0+)" section
+- Documented registry scanners, content injectors, and orchestration
+- Added workflow examples for adding new agents with auto-generation
+- Clarified when to run generators and how AUTOGEN markers work
+
 ## [2.29.0] - 2025-12-08
 
 ### Added - TODO List Tracking for Complex Commands
@@ -200,24 +292,24 @@ All implementation agents now include SESSION HARNESS & VERIFICATION PROTOCOL se
 - **Session Resume**: Load context from previous sessions and detect regressions
 
 **Updated Agents**:
-1. agileflow-ui (UI/presentation layer)
-2. agileflow-api (Backend services)
-3. agileflow-ci (CI/CD & quality)
-4. agileflow-devops (DevOps & automation)
-5. agileflow-security (Security specialist)
-6. agileflow-database (Database & data layer)
-7. agileflow-testing (Testing specialist)
-8. agileflow-performance (Performance optimization)
-9. agileflow-mobile (Mobile development)
-10. agileflow-integrations (Third-party integrations)
-11. agileflow-refactor (Refactoring specialist)
-12. agileflow-design (Design systems)
-13. agileflow-accessibility (Accessibility compliance)
-14. agileflow-analytics (Analytics implementation)
-15. agileflow-datamigration (Data migration specialist)
-16. agileflow-monitoring (Monitoring & observability)
-17. agileflow-compliance (Compliance specialist)
-18. agileflow-qa (QA & test planning)
+1. ui (UI/presentation layer)
+2. api (Backend services)
+3. ci (CI/CD & quality)
+4. devops (DevOps & automation)
+5. security (Security specialist)
+6. database (Database & data layer)
+7. testing (Testing specialist)
+8. performance (Performance optimization)
+9. mobile (Mobile development)
+10. integrations (Third-party integrations)
+11. refactor (Refactoring specialist)
+12. design (Design systems)
+13. accessibility (Accessibility compliance)
+14. analytics (Analytics implementation)
+15. datamigration (Data migration specialist)
+16. monitoring (Monitoring & observability)
+17. compliance (Compliance specialist)
+18. qa (QA & test planning)
 
 **Command Updates**:
 - **`/AgileFlow:babysit`**: Enhanced with comprehensive session harness integration
@@ -368,7 +460,7 @@ test_results:
 session_metadata:
   last_session_start: 2025-12-06T09:00:00Z
   session_count: 3
-  agents_involved: ["agileflow-ui", "agileflow-api"]
+  agents_involved: ["ui", "api"]
 ```
 
 *Documentation*:
@@ -725,7 +817,7 @@ Users who relied on GitHub/Notion sync can:
 - Deleted: `.mcp.json.example`, `.env.example`, `scripts/validate-mcp-tokens.sh`
 - Deleted: `templates/mcp-wrapper-load-env.sh`, `templates/mcp-wrapper-postgres.sh`, `templates/MCP-WRAPPER-SCRIPTS.md`
 - Cleaned: `commands/setup.md` (788 lines removed), `CLAUDE.md` (160 lines), `README.md` (171 lines)
-- Cleaned: `commands/babysit.md` (66 lines), `commands/diagnose.md` (50 lines), `SUBAGENTS.md`, `agents/agileflow-mentor.md` (60 lines)
+- Cleaned: `commands/babysit.md` (66 lines), `commands/diagnose.md` (50 lines), `SUBAGENTS.md`, `agents/mentor.md` (60 lines)
 
 **Command Count**:
 - Before: 38 commands
@@ -766,7 +858,7 @@ This release refactors all 23 skills to follow Anthropic's official skills speci
 *Complex Skills* (8 skills - simplified structure):
 - agileflow-story-writer (228 → 163 lines, 28% reduction)
 - agileflow-acceptance-criteria (217 → 156 lines, 28% reduction)
-- agileflow-epic-planner (243 → 184 lines, 24% reduction)
+- epic-planner (243 → 184 lines, 24% reduction)
 - agileflow-sprint-planner (246 → 212 lines, 13% reduction)
 - agileflow-retro-facilitator (305 → 281 lines, 8% reduction)
 - agileflow-adr (216 → 147 lines, 32% reduction)
@@ -1096,11 +1188,11 @@ This release addresses inconsistencies identified in a comprehensive audit of Ag
 - `README.md` - Corrected command/subagent counts (2 locations)
 - `CLAUDE.md` - Added Command Safety Policy and Test Coverage Policy sections + updated counts
 - `commands/notion.md` - Clarified v2.3.0 correction is historical reference
-- `agents/agileflow-mentor.md` - Added Execution Policy one-liner
-- `agents/agileflow-epic-planner.md` - Added Execution Policy one-liner
-- `agents/agileflow-ui.md` - Added Execution Policy one-liner
-- `agents/agileflow-api.md` - Added Execution Policy one-liner
-- `agents/agileflow-ci.md` - Added Execution Policy one-liner
+- `agents/mentor.md` - Added Execution Policy one-liner
+- `agents/epic-planner.md` - Added Execution Policy one-liner
+- `agents/ui.md` - Added Execution Policy one-liner
+- `agents/api.md` - Added Execution Policy one-liner
+- `agents/ci.md` - Added Execution Policy one-liner
 - `scripts/validate-counts.sh` - NEW: Automated count validation script
 - `CHANGELOG.md` - This entry
 
@@ -1681,14 +1773,14 @@ Implemented first-class hooks system following dotai's pattern for event-driven 
 Continued expansion of agent ecosystem from 17 to 25 specialized agents. This release adds critical domain coverage for production operations, quality assurance, and organizational compliance.
 
 **New Agents (8 total)**:
-1. **agileflow-documentation** - Technical docs, API documentation, user guides, README maintenance, documentation architecture
-2. **agileflow-monitoring** - Logging, metrics, alerting, dashboards, observability, SLOs, incident response
-3. **agileflow-compliance** - GDPR, HIPAA, SOC2, PCI-DSS, CCPA, audit trails, regulatory compliance
-4. **agileflow-design** - Design systems, component design, design tokens, visual design, accessibility-first design
-5. **agileflow-accessibility** - WCAG compliance, inclusive design, a11y testing, assistive technology support
-6. **agileflow-analytics** - Event tracking, product analytics, user behavior analysis, metrics dashboards, A/B testing
-7. **agileflow-datamigration** - Zero-downtime migrations, data validation, rollback strategies, schema evolution
-8. **agileflow-qa** - Test strategy, quality metrics, regression testing, release readiness, UAT coordination
+1. **documentation** - Technical docs, API documentation, user guides, README maintenance, documentation architecture
+2. **monitoring** - Logging, metrics, alerting, dashboards, observability, SLOs, incident response
+3. **compliance** - GDPR, HIPAA, SOC2, PCI-DSS, CCPA, audit trails, regulatory compliance
+4. **design** - Design systems, component design, design tokens, visual design, accessibility-first design
+5. **accessibility** - WCAG compliance, inclusive design, a11y testing, assistive technology support
+6. **analytics** - Event tracking, product analytics, user behavior analysis, metrics dashboards, A/B testing
+7. **datamigration** - Zero-downtime migrations, data validation, rollback strategies, schema evolution
+8. **qa** - Test strategy, quality metrics, regression testing, release readiness, UAT coordination
 
 **Why These Agents**:
 - **Documentation**: Knowledge transfer critical - users need guides, examples, API docs
@@ -1720,14 +1812,14 @@ Continued expansion of agent ecosystem from 17 to 25 specialized agents. This re
 Expanded agent team from 9 to 17 specialized agents. Each agent focuses deeply on their domain and can be spawned independently while preserving context.
 
 **New Agents (8 total)**:
-1. **agileflow-security** - Vulnerability analysis, threat modeling, compliance, authentication patterns
-2. **agileflow-database** - Schema design, migrations, query optimization, data integrity
-3. **agileflow-testing** - Test strategy, patterns, coverage, anti-pattern elimination (different from CI)
-4. **agileflow-product** - Requirements analysis, user stories, acceptance criteria (upstream of epic-planner)
-5. **agileflow-performance** - Profiling, benchmarking, optimization, scalability analysis
-6. **agileflow-mobile** - React Native, Flutter, native modules, mobile UX patterns
-7. **agileflow-integrations** - Third-party APIs, webhooks, payment processors, authentication providers
-8. **agileflow-refactor** - Technical debt cleanup, code quality, legacy modernization
+1. **security** - Vulnerability analysis, threat modeling, compliance, authentication patterns
+2. **database** - Schema design, migrations, query optimization, data integrity
+3. **testing** - Test strategy, patterns, coverage, anti-pattern elimination (different from CI)
+4. **product** - Requirements analysis, user stories, acceptance criteria (upstream of epic-planner)
+5. **performance** - Profiling, benchmarking, optimization, scalability analysis
+6. **mobile** - React Native, Flutter, native modules, mobile UX patterns
+7. **integrations** - Third-party APIs, webhooks, payment processors, authentication providers
+8. **refactor** - Technical debt cleanup, code quality, legacy modernization
 
 **Agent Spawning Documentation**:
 - Updated `/babysit` with comprehensive agent spawning guidance
@@ -1806,7 +1898,7 @@ Implemented key patterns for improved dev agent context awareness and knowledge 
 
 ### Changed - Epic Planner Agent Enhanced
 
-Updated `agileflow-epic-planner` agent with new Architecture Context Extraction workflow:
+Updated `epic-planner` agent with new Architecture Context Extraction workflow:
 
 **New ARCHITECTURE CONTEXT EXTRACTION Section** (for story creation):
 - Documents pattern for extracting architecture context
@@ -1905,7 +1997,7 @@ Adopted the official Claude Code plugin format used by Anthropic's official plug
 
 ### Added
 
-**New Subagent: agileflow-context7 (Documentation Specialist)**
+**New Subagent: context7 (Documentation Specialist)**
 
 Added 9th subagent specialized in fetching and presenting current documentation through Context7:
 
@@ -1924,13 +2016,13 @@ Added 9th subagent specialized in fetching and presenting current documentation 
 
 **Example Invocations**:
 ```
-Use the agileflow-context7 agent to fetch the latest React hooks documentation
-Use the agileflow-context7 agent to get current Express.js authentication setup guides
-Use the agileflow-context7 agent to find MongoDB and Mongoose best practices
+Use the context7 agent to fetch the latest React hooks documentation
+Use the context7 agent to get current Express.js authentication setup guides
+Use the context7 agent to find MongoDB and Mongoose best practices
 ```
 
 **Files Added**:
-- `agents/agileflow-context7.md` - Complete Context7 specialist agent definition
+- `agents/context7.md` - Complete Context7 specialist agent definition
 
 **Why This Matters**: With Context7 lookups now isolated in a dedicated agent, the main AgileFlow conversation can focus on implementation strategy and code work rather than documentation overhead. This significantly improves token efficiency and keeps decision history focused on actual development decisions.
 
@@ -2063,7 +2155,7 @@ This is a breaking change if you have scripts or documentation referencing old c
 - **Example**: "When user logs in with wrong password" → AC with happy path, errors, edge cases
 - **Coverage**: Ensures happy path, error handling, permissions, responsive behavior
 
-**6. agileflow-epic-planner** 🗺️
+**6. epic-planner** 🗺️
 - **Auto-activates when**: User describes large features spanning multiple sprints
 - **What it does**: Breaks down initiatives into epics with milestones and story groupings
 - **Files**: SKILL.md, templates/epic-template.md
@@ -2116,7 +2208,7 @@ skills/
 ├── agileflow-acceptance-criteria/
 │   ├── SKILL.md
 │   └── examples/
-├── agileflow-epic-planner/
+├── epic-planner/
 │   ├── SKILL.md
 │   └── templates/epic-template.md
 ├── agileflow-sprint-planner/
@@ -2411,13 +2503,13 @@ CONTEXT7_API_KEY=your_context7_api_key_here
 ### Fixed
 
 **Updated All Agent Prompts** (8 files):
-- `agents/agileflow-mentor.md` - 8 old command references fixed
-- `agents/agileflow-devops.md` - 7 old command references fixed
-- `agents/agileflow-adr-writer.md` - 6 old command references fixed
-- `agents/agileflow-epic-planner.md` - 4 old command references fixed
-- `agents/agileflow-ci.md` - 3 old command references fixed
-- `agents/agileflow-api.md` - 3 old command references fixed
-- `agents/agileflow-ui.md` - 3 old command references fixed
+- `agents/mentor.md` - 8 old command references fixed
+- `agents/devops.md` - 7 old command references fixed
+- `agents/adr-writer.md` - 6 old command references fixed
+- `agents/epic-planner.md` - 4 old command references fixed
+- `agents/ci.md` - 3 old command references fixed
+- `agents/api.md` - 3 old command references fixed
+- `agents/ui.md` - 3 old command references fixed
 - `commands/blockers.md` - 3 old command references fixed
 
 **All Instances Fixed**:
@@ -2453,7 +2545,7 @@ CONTEXT7_API_KEY=your_context7_api_key_here
 - Bulk replacement with sed: `chatgpt-research → chatgpt MODE=research`
 - Bulk replacement with sed: `dependency-update → packages ACTION=update`
 - Bulk replacement with sed: `dependencies-dashboard → packages ACTION=dashboard`
-- Manual fix: agileflow-devops.md line 219 (documentation comment)
+- Manual fix: devops.md line 219 (documentation comment)
 
 **Validation**: Grepped entire codebase to confirm no old syntax remains outside CHANGELOG.md.
 
@@ -2938,16 +3030,16 @@ Added **Section 9: MCP Security Validation (CRITICAL)** with 6 new checks:
 
 Since 99% of users only use `/AgileFlow:babysit`, which can orchestrate everything, we removed redundant command shortcuts:
 
-- **`/AgileFlow:agent-ui`** - Redundant (just invoked agileflow-ui subagent, which `/babysit` can do directly)
-- **`/AgileFlow:agent-api`** - Redundant (just invoked agileflow-api subagent, which `/babysit` can do directly)
-- **`/AgileFlow:agent-ci`** - Redundant (just invoked agileflow-ci subagent, which `/babysit` can do directly)
+- **`/AgileFlow:agent-ui`** - Redundant (just invoked ui subagent, which `/babysit` can do directly)
+- **`/AgileFlow:agent-api`** - Redundant (just invoked api subagent, which `/babysit` can do directly)
+- **`/AgileFlow:agent-ci`** - Redundant (just invoked ci subagent, which `/babysit` can do directly)
 - **`/AgileFlow:readme-sync`** - Redundant (narrow scope, superseded by `/docs-sync` and `/babysit`)
 
 **Why remove them?**
 - The `/babysit` command already has full access to all 8 subagents via the Task tool
 - These were just thin wrappers with no additional functionality
 - Simplifies the command surface area
-- **All 8 subagents remain** - they're the real power (agileflow-ui, agileflow-api, agileflow-ci, agileflow-mentor, agileflow-epic-planner, agileflow-adr-writer, agileflow-research, agileflow-devops)
+- **All 8 subagents remain** - they're the real power (ui, api, ci, mentor, epic-planner, adr-writer, research, devops)
 
 ### Changed
 
@@ -3004,7 +3096,7 @@ Added **README.MD MAINTENANCE** sections to proactively update documentation:
 - Includes examples of README updates for common scenarios
 - **CRITICAL**: "Do NOT wait for user to ask - proactively suggest README updates after significant work"
 
-**In `agileflow-ui` subagent**:
+**In `ui` subagent**:
 - Added "README.MD MAINTENANCE (Proactive - CRITICAL PRIORITY for UI work)" section
 - UI-specific guidance: design system docs, component catalogs, styling conventions
 - Emphasizes documenting theming, dark mode, component props, accessibility
@@ -3412,14 +3504,14 @@ This is a major enhancement to agent intelligence and coordination. All 8 agents
 ### Changed
 
 - All 8 agent prompts completely rewritten with enhanced intelligence
-- `agents/agileflow-mentor.md` - Added shared vocabulary, dependency protocols, proactive FIRST ACTION
-- `agents/agileflow-ui.md` - Added vocabulary, AG-API coordination, dependency handling, proactive status
-- `agents/agileflow-api.md` - Added vocabulary, AG-UI unblocking patterns, proactive blocker detection
-- `agents/agileflow-ci.md` - Added vocabulary, health checks, proactive audit offers
-- `agents/agileflow-devops.md` - Added vocabulary, security scans, proactive vulnerability alerts
-- `agents/agileflow-epic-planner.md` - Added vocabulary, capacity checks, auto-sync
-- `agents/agileflow-adr-writer.md` - Added vocabulary, research integration, proactive context
-- `agents/agileflow-research.md` - Added vocabulary, stale research detection, agent coordination
+- `agents/mentor.md` - Added shared vocabulary, dependency protocols, proactive FIRST ACTION
+- `agents/ui.md` - Added vocabulary, AG-API coordination, dependency handling, proactive status
+- `agents/api.md` - Added vocabulary, AG-UI unblocking patterns, proactive blocker detection
+- `agents/ci.md` - Added vocabulary, health checks, proactive audit offers
+- `agents/devops.md` - Added vocabulary, security scans, proactive vulnerability alerts
+- `agents/epic-planner.md` - Added vocabulary, capacity checks, auto-sync
+- `agents/adr-writer.md` - Added vocabulary, research integration, proactive context
+- `agents/research.md` - Added vocabulary, stale research detection, agent coordination
 - Plugin version bumped to 2.7.0 (minor release - enhanced agent intelligence)
 
 ### Technical
@@ -3484,7 +3576,7 @@ Updated all agent slash commands (`/agent-ui`, `/agent-api`, `/agent-ci`) to ful
 
 **CLAUDE.md Maintenance for All Core Agents**
 
-All three core agents (`agileflow-ui`, `agileflow-api`, `agileflow-ci`) now proactively maintain CLAUDE.md:
+All three core agents (`ui`, `api`, `ci`) now proactively maintain CLAUDE.md:
 
 - **UI Agent** - Documents after:
   - Establishing design system → Token structure and usage
@@ -3513,9 +3605,9 @@ All three core agents (`agileflow-ui`, `agileflow-api`, `agileflow-ci`) now proa
 
 ### Changed
 
-- `agents/agileflow-ui.md` - Added CLAUDE.md maintenance section and updated workflow
-- `agents/agileflow-api.md` - Added CLAUDE.md maintenance section and updated workflow
-- `agents/agileflow-ci.md` - Added CLAUDE.md maintenance section and updated workflow
+- `agents/ui.md` - Added CLAUDE.md maintenance section and updated workflow
+- `agents/api.md` - Added CLAUDE.md maintenance section and updated workflow
+- `agents/ci.md` - Added CLAUDE.md maintenance section and updated workflow
 - `commands/agent-ui.md` - Completely rewritten to match full agent capabilities
 - `commands/agent-api.md` - Completely rewritten to match full agent capabilities
 - `commands/agent-ci.md` - Completely rewritten to match full agent capabilities
@@ -3534,7 +3626,7 @@ All three core agents (`agileflow-ui`, `agileflow-api`, `agileflow-ci`) now proa
 
 **UI Agent: Proactive Design System Initialization**
 
-The `agileflow-ui` subagent now automatically detects and creates design systems:
+The `ui` subagent now automatically detects and creates design systems:
 
 - ✅ **Automatic Detection** - Checks for existing design systems before first UI story
   - Scans common locations: `src/styles/`, `src/theme/`, `tailwind.config.js`
@@ -3603,12 +3695,12 @@ Updated `/babysit` command to reference GitHub MCP configuration (migrated from 
 ### Changed
 
 - `commands/babysit.md` - Updated all GitHub integration references to use MCP
-- `agents/agileflow-ui.md` - Added design system initialization workflow
+- `agents/ui.md` - Added design system initialization workflow
 - Plugin version bumped to 2.5.0 (minor release - new UI agent capability)
 
 ### Technical
 
-- Added "DESIGN SYSTEM INITIALIZATION" section to agileflow-ui agent
+- Added "DESIGN SYSTEM INITIALIZATION" section to ui agent
 - Updated UI agent SCOPE to include design tokens and theme files
 - Updated UI agent WORKFLOW to check design system proactively
 - Updated UI agent QUALITY CHECKLIST to enforce design token usage
@@ -3826,7 +3918,7 @@ If you followed v2.3.1 docs and used `${NOTION_TOKEN}`:
 - `commands/setup-system.md` - Removed OAuth, added token-based setup
 - `README.md` - Removed OAuth claims, clarified token requirement
 - `commands/babysit.md` - Detection still via .mcp.json (correct)
-- `agents/agileflow-mentor.md` - Detection still via .mcp.json (correct)
+- `agents/mentor.md` - Detection still via .mcp.json (correct)
 
 **Apologies for the confusion** - The initial v2.3.0 release incorrectly claimed OAuth support. This correction was made the same day after user testing revealed the error.
 
@@ -3942,7 +4034,7 @@ Your existing database IDs are preserved - no need to recreate databases!
 - Updated `README.md` to remove OAuth claims, clarify token requirement
 - Updated `.mcp.json` to use @notionhq/notion-mcp-server with env var substitution
 - Documented MCP tool advantages over direct API calls
-- Updated `/babysit` and `agileflow-mentor` to detect Notion via .mcp.json
+- Updated `/babysit` and `mentor` to detect Notion via .mcp.json
 - Command count remains at 41 in all documentation
 
 ## [2.2.0] - 2025-10-17
@@ -3991,7 +4083,7 @@ Your existing database IDs are preserved - no need to recreate databases!
   - Story-level and epic-level dependency tracking
   - Actionable recommendations for optimal work ordering
 
-**Enhanced /AgileFlow:babysit and agileflow-mentor**:
+**Enhanced /AgileFlow:babysit and mentor**:
 - Added full command catalog to knowledge index (all 41 commands)
 - Explicit SlashCommand tool usage instructions
 - Autonomous command execution capabilities
@@ -4099,7 +4191,7 @@ Your existing database IDs are preserved - no need to recreate databases!
 - `/stakeholder-update` - Generate stakeholder communication reports
 
 **New Subagent**:
-- `agileflow-devops` - DevOps & Automation specialist subagent
+- `devops` - DevOps & Automation specialist subagent
   - Manages all 13 new automation commands
   - Handles dependencies, deployment, testing, code quality
   - Tracks technical debt and generates reports
@@ -4108,10 +4200,10 @@ Your existing database IDs are preserved - no need to recreate databases!
 **Enhanced Subagents**:
 - Converted agents to proper Claude Code subagent format with YAML frontmatter
 - All subagents now operate in separate context windows
-- Added `agileflow-mentor` (replaces `/babysit` command functionality)
-- Added `agileflow-epic-planner` for feature planning
-- Added `agileflow-adr-writer` for decision documentation
-- Added `agileflow-research` for technical research
+- Added `mentor` (replaces `/babysit` command functionality)
+- Added `epic-planner` for feature planning
+- Added `adr-writer` for decision documentation
+- Added `research` for technical research
 
 ### Changed
 - Upgraded from 3 agents to 8 specialized subagents

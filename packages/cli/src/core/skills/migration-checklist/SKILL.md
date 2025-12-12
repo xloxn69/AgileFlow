@@ -26,7 +26,7 @@ Generates comprehensive migration checklist including:
 - **Cleanup procedures** (remove old schema/data)
 - **Communication timeline**
 
-Coordinates with agileflow-datamigration agent for detailed migration planning.
+Coordinates with datamigration agent for detailed migration planning.
 
 ## Output
 Ready-to-execute migration checklist
