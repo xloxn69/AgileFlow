@@ -18,13 +18,13 @@ const packageJson = require(packageJsonPath);
  */
 function displayLogo() {
   const logo = `
-     _         _ _      _____ _
-    / \\   __ _(_) | ___|  ___| | _____      __
-   / _ \\ / _\` | | |/ _ \\ |_  | |/ _ \\ \\ /\\ / /
-  / ___ \\ (_| | | |  __/  _| | | (_) \\ V  V /
- /_/   \\_\\__, |_|_|\\___|_|   |_|\\___/ \\_/\\_/
-         |___/                                `;
-  console.log(chalk.cyan(logo));
+ █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗
+██╔══██╗██╔════╝ ██║██║     ██╔════╝██╔════╝██║     ██╔═══██╗██║    ██║
+███████║██║  ███╗██║██║     █████╗  █████╗  ██║     ██║   ██║██║ █╗ ██║
+██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║
+██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝
+╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ `;
+  console.log(chalk.hex('#C15F3C')(logo));
   console.log(chalk.dim(`  AgileFlow v${packageJson.version} - AI-Driven Agile Development\n`));
 }
 
@@ -34,7 +34,7 @@ function displayLogo() {
  * @param {string} subtitle - Optional subtitle
  */
 function displaySection(title, subtitle = null) {
-  console.log(chalk.bold.cyan(`\n${title}`));
+  console.log(chalk.bold.hex('#C15F3C')(`\n${title}`));
   if (subtitle) {
     console.log(chalk.dim(subtitle));
   }
