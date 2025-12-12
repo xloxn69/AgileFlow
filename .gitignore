@@ -25,8 +25,11 @@ logs/
 # MCP Configuration (contains secrets)
 .mcp.json
 
-# Environment
+# Environment and Secrets
 .env
+.env.*
+!.env.example
+.npmrc
 
 # Claude Settings (user-specific files only)
 # NOTE: .claude/settings.json is NOT gitignored (project-level config)
