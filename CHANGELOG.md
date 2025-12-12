@@ -5,6 +5,20 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.3] - 2025-12-12
+
+### Fixed - Directory Path for Dynamic Content Injection
+
+**Issue**: IDE setup failed with "ENOENT: no such file or directory, scandir '/home/coder/.agileflow/src/core/agents'" error.
+
+**Root Cause**: The `injectDynamicContent()` method was looking for `src/core/agents/` and `src/core/commands/` subdirectories, but the user's `.agileflow` installation has a flat structure with `agents/` and `commands/` at the root level.
+
+**Fix**: Updated directory paths in `injectDynamicContent()` from:
+- `path.join(agileflowDir, 'src', 'core', 'agents')` → `path.join(agileflowDir, 'agents')`
+- `path.join(agileflowDir, 'src', 'core', 'commands')` → `path.join(agileflowDir, 'commands')`
+
+**Impact**: v2.32.2 could load the module but failed to scan agent/command directories. v2.32.3 resolves this completely.
+
 ## [2.32.2] - 2025-12-12
 
 ### Fixed - Module Require Path
@@ -15,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Fix**: Updated require path to correctly go up two directory levels from `tools/cli/installers/ide/` to `tools/cli/lib/`.
 
-**Impact**: v2.32.0 and v2.32.1 installations failed during IDE setup. v2.32.2 resolves this completely.
+**Impact**: v2.32.0 and v2.32.1 installations failed during IDE setup. v2.32.2 resolves this (but has directory path issue, use v2.32.3).
 
 ## [2.32.1] - 2025-12-12
 
