@@ -74,7 +74,7 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 - **Package**: `agileflow`
 - **Type**: npm CLI tool + IDE command pack
-- **Current Version**: v2.30.0
+- **Current Version**: v2.31.0
 - **Distribution**: npm registry
 - **Structure**: Monorepo (CLI package + docs + website)
 
