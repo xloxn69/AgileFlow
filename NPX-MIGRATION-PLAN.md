@@ -47,7 +47,7 @@ AgileFlow/                     # Monorepo root
 │       ├── tailwind.config.ts
 │       └── mdx-components.tsx
 ├── packages/
-│   └── cli/                  # npm package (@xloxn69/agileflow)
+│   └── cli/                  # npm package (agileflow)
 │       ├── src/
 │       ├── tools/
 │       ├── package.json
@@ -64,7 +64,7 @@ AgileFlow/                     # Monorepo root
 
 **Deployment:**
 - Two separate Vercel projects (one per domain)
-- CLI publishes to npm registry as `@xloxn69/agileflow`
+- CLI publishes to npm registry as `agileflow`
 
 ---
 
@@ -277,7 +277,7 @@ AgileFlow/
   "keywords": ["agile", "ai", "claude", "cursor", "windsurf", "development"],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xloxn69/AgileFlow.git"
+    "url": "git+https://github.com/projectquestorg/AgileFlow.git"
   },
   "license": "MIT",
   "engines": {
@@ -303,7 +303,7 @@ AgileFlow/
 
 | IDE | Priority | Config Path | Format | Notes |
 |-----|----------|-------------|--------|-------|
-| Claude Code | P0 | `.claude/commands/agileflow/` | `.md` | Primary target |
+| Claude Code | P0 | `.claude/commands/AgileFlow/` | `.md` | Primary target |
 | Cursor | P0 | `.cursor/rules/agileflow/` | `.mdc` | Large user base |
 | Windsurf | P1 | `.windsurf/workflows/agileflow/` | `.md` | Growing popularity |
 
@@ -552,7 +552,7 @@ Core:         ✓ Installed
   • 23 skills
 
 Configured IDEs:
-  ✓ Claude Code (.claude/commands/agileflow/)
+  ✓ Claude Code (.claude/commands/AgileFlow/)
   ✓ Cursor (.cursor/rules/agileflow/)
 
 Update available: 3.1.0 (run 'npx agileflow update')
@@ -587,7 +587,7 @@ $ npx agileflow uninstall
 
 Removing AgileFlow...
   ✓ Removed .agileflow/
-  ✓ Removed .claude/commands/agileflow/
+  ✓ Removed .claude/commands/AgileFlow/
   ✓ Removed .cursor/rules/agileflow/
 
 AgileFlow has been uninstalled.
@@ -904,7 +904,7 @@ jobs:
 ### Claude Code Installer Pattern
 
 ```javascript
-// .claude/commands/agileflow/command-name.md
+// .claude/commands/AgileFlow/command-name.md
 class ClaudeCodeSetup extends BaseIdeSetup {
   constructor() {
     super('claude-code', 'Claude Code', true);
@@ -913,7 +913,7 @@ class ClaudeCodeSetup extends BaseIdeSetup {
   }
 
   async setup(projectDir, agileflowDir, options) {
-    // Create .claude/commands/agileflow/
+    // Create .claude/commands/AgileFlow/
     // Copy command launchers as .md files
     // Commands are invoked via /agileflow:command-name
   }

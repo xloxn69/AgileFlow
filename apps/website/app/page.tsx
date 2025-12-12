@@ -15,7 +15,7 @@ export default function Home() {
 
           <div className="bg-slate-800/50 rounded-lg p-6 max-w-2xl mx-auto border border-slate-700">
             <code className="text-green-400 text-lg">
-              npx @xloxn69/agileflow install
+              npx agileflow install
             </code>
           </div>
 

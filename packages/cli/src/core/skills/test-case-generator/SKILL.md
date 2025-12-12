@@ -25,7 +25,7 @@ Converts Given/When/Then acceptance criteria into:
 
 Generates test case names, setup steps, assertions, and expected results.
 
-Coordinates with agileflow-testing and agileflow-qa agents.
+Coordinates with testing and qa agents.
 
 ## Output
 Test case stub at docs/07-testing/test-cases/<STORY_ID>.md

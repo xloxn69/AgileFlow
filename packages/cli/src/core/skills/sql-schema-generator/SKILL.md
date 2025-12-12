@@ -29,7 +29,7 @@ Also generates:
 - **Rollback procedures**
 - **Data migration scripts** if needed
 
-Coordinates with agileflow-database agent.
+Coordinates with database agent.
 
 ## Output
 SQL migration files in migrations/ directory

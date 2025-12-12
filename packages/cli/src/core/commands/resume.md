@@ -216,7 +216,7 @@ Compile and display comprehensive summary:
 
 → In Progress (1):
   US-0043: Add user profile settings page
-  Owner: agileflow-ui
+  Owner: ui
   Started: 2 hours ago
   Tests: ✅ passing
 
@@ -230,7 +230,7 @@ Ready Queue (5):
 Blocked (1):
   US-0049: Deploy to production
   Blocker: Waiting on US-0043 completion
-  Owner: agileflow-devops
+  Owner: devops
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🧪 Test Status
@@ -306,7 +306,7 @@ If session harness not initialized, provide basic context:
 
 In Progress (1):
   US-0043: Add user profile settings page
-  Owner: agileflow-ui
+  Owner: ui
 
 Ready Queue (5):
   US-0044, US-0045, US-0046, US-0047, US-0048

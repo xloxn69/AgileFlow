@@ -149,7 +149,7 @@ Before creating story:
 
 ## Integration
 
-- **agileflow-epic-planner**: Stories are part of epics
+- **epic-planner**: Stories are part of epics
 - **agileflow-sprint-planner**: Stories selected for sprints
 - **agileflow-acceptance-criteria**: AC skill enhances AC sections
 - **agileflow-adr**: Reference architectural decisions in technical notes

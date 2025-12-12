@@ -52,7 +52,7 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: 'GitHub',
-        url: 'https://github.com/xloxn69/AgileFlow',
+        url: 'https://github.com/projectquestorg/AgileFlow',
         active: 'none',
       },
     ],
