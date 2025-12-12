@@ -5,6 +5,21 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.4] - 2025-12-12
+
+### Improved - Error Handling
+
+**Issue**: During installation, harmless warnings appeared: "Warning: Could not parse frontmatter in baseline.md" and "Warning: Could not parse frontmatter in verify.md".
+
+**Root Cause**: The content-injector scans all command files to generate the command list, and some files have complex content that triggers parsing warnings even though the frontmatter is valid.
+
+**Fix**:
+- Improved error handling to silently skip files with null/invalid frontmatter
+- Added validation check: `if (!frontmatter || typeof frontmatter !== 'object') continue;`
+- Removed noisy console warnings that confused users
+
+**Impact**: Installation output is now clean with no confusing warnings. Functionality unchanged.
+
 ## [2.32.3] - 2025-12-12
 
 ### Fixed - Directory Path for Dynamic Content Injection
