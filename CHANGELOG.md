@@ -5,6 +5,97 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.31.0] - 2025-12-12
+
+### Added - Automatic Docs Structure & Customizable Folder Names
+
+Implemented automatic documentation structure creation during installation with support for custom folder names.
+
+**Problem Solved**:
+Previously, users had to run two separate commands: `npm install agileflow` followed by `/AgileFlow:setup` to create the docs/ structure. Additionally, all documentation references were hardcoded to "docs/" with no ability to customize.
+
+**Solution**:
+- `npx agileflow install` now automatically creates the complete docs/ structure
+- `npx agileflow update` now ensures all docs/ files exist (idempotent)
+- Users can specify a custom docs folder name (e.g., "documentation", "project-docs")
+- All command/agent/skill .md files are updated to reference the custom folder name
+
+**New Features**:
+- **Automatic Docs Creation**: Full docs/ directory structure created during install
+- **Idempotent Updates**: Missing files/folders created without overwriting existing content
+- **Custom Folder Names**: Choose any folder name instead of hardcoded "docs/"
+- **Reference Replacement**: All "docs/" references in .md files updated to custom name
+- **Persistent Configuration**: Folder name stored in agileflow-metadata.json
+
+**Directory Structure Created**:
+```
+docs/
+├── 00-meta/           (templates, guides, scripts, metadata)
+├── 01-brainstorming/  (ideas, sketches)
+├── 02-practices/      (testing, git, ci, security)
+├── 03-decisions/      (ADRs)
+├── 04-architecture/   (system design)
+├── 05-epics/          (epic planning)
+├── 06-stories/        (user stories)
+├── 07-testing/        (test cases, acceptance)
+├── 08-project/        (roadmap, backlog, milestones)
+├── 09-agents/         (status.json, bus/)
+└── 10-research/       (research notes)
+```
+
+**Files Created**:
+- README.md in every directory with usage guidance
+- agileflow-metadata.json with version and configuration
+- status.json for agent tracking
+- Basic practice files (testing.md, git-branching.md, etc.)
+- .gitignore entries for secrets
+
+**Usage**:
+```bash
+# Install with custom folder name
+npx agileflow install
+# Prompts: "Documentation folder name: [docs]"
+# Enter: "project-docs"
+
+# Result: All commands reference "project-docs/" instead of "docs/"
+# Example: /AgileFlow:epic creates files in "project-docs/05-epics/"
+```
+
+**Technical Implementation**:
+- New module: `tools/cli/lib/docs-setup.js` (idempotent structure creator)
+- Updated: `install.js` to call docs-setup after IDE configuration
+- Updated: `update.js` to create missing docs files
+- Updated: All IDE installers (Claude Code, Cursor, Windsurf) to replace "docs/" references
+- Base IDE class: New `replaceDocsReferences()` method for content transformation
+
+### Fixed - Cursor IDE Configuration Path
+
+**Issue**: Cursor installer was using `.cursor/rules/` (deprecated) instead of `.cursor/commands/` per official Cursor documentation.
+
+**Fix**:
+- Changed Cursor installer from `.cursor/rules/agileflow/*.mdc` to `.cursor/commands/AgileFlow/*.md`
+- Updated cleanup to remove old `.cursor/rules/agileflow/` directory
+- Now uses plain Markdown files like Claude Code
+
+**Reference**: Cursor official docs state "Commands are defined as plain Markdown files that can be stored in three locations: Project commands: Stored in the .cursor/commands directory"
+
+### Changed
+
+**Installation Flow**:
+- `npx agileflow install` now creates both IDE config AND docs structure in one step
+- No need to run `/AgileFlow:setup` separately
+- Prompts for docs folder name during installation
+
+**Update Flow**:
+- `npx agileflow update` now ensures docs structure is complete
+- Reads existing docs folder name from metadata
+- Creates any missing README files or directories
+
+**IDE Installers**:
+- All installers now copy full command/agent/skill content (not launcher stubs)
+- All installers apply docs folder name replacement to .md files
+- Commands/agents/skills work offline without needing to reference source files
+
 ## [2.30.0] - 2025-12-12
 
 ### Added - Content Generation System

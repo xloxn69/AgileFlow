@@ -15,6 +15,7 @@ class IdeManager {
   constructor() {
     this.handlers = new Map();
     this.agileflowFolder = '.agileflow';
+    this.docsFolder = 'docs';
     this.loadHandlers();
   }
 
@@ -27,6 +28,19 @@ class IdeManager {
     for (const handler of this.handlers.values()) {
       if (typeof handler.setAgileflowFolder === 'function') {
         handler.setAgileflowFolder(folderName);
+      }
+    }
+  }
+
+  /**
+   * Set the docs folder name for all IDE handlers
+   * @param {string} folderName - The docs folder name
+   */
+  setDocsFolder(folderName) {
+    this.docsFolder = folderName;
+    for (const handler of this.handlers.values()) {
+      if (typeof handler.setDocsFolder === 'function') {
+        handler.setDocsFolder(folderName);
       }
     }
   }

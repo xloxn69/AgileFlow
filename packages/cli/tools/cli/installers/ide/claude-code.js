@@ -46,11 +46,14 @@ class ClaudeCodeSetup extends BaseIdeSetup {
       const commands = await this.scanDirectory(commandsSource, '.md');
 
       for (const command of commands) {
-        // Create launcher file that references the command
-        const launcherContent = await this.createCommandLauncher(command, agileflowDir, projectDir);
-        const targetPath = path.join(agileflowCommandsDir, `${command.name}.md`);
+        // Read the original command content
+        let content = await this.readFile(command.path);
 
-        await this.writeFile(targetPath, launcherContent);
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        const targetPath = path.join(agileflowCommandsDir, `${command.name}.md`);
+        await this.writeFile(targetPath, content);
         commandCount++;
       }
     }
@@ -67,11 +70,14 @@ class ClaudeCodeSetup extends BaseIdeSetup {
       const agents = await this.scanDirectory(agentsSource, '.md');
 
       for (const agent of agents) {
-        // Create launcher file that references the agent
-        const launcherContent = await this.createAgentLauncher(agent, agileflowDir, projectDir);
-        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.md`);
+        // Read the original agent content
+        let content = await this.readFile(agent.path);
 
-        await this.writeFile(targetPath, launcherContent);
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.md`);
+        await this.writeFile(targetPath, content);
         agentCount++;
       }
     }
@@ -86,88 +92,6 @@ class ClaudeCodeSetup extends BaseIdeSetup {
       commands: commandCount,
       agents: agentCount,
     };
-  }
-
-  /**
-   * Create a command launcher file
-   * @param {Object} command - Command info
-   * @param {string} agileflowDir - AgileFlow directory
-   * @param {string} projectDir - Project directory
-   * @returns {Promise<string>} Launcher content
-   */
-  async createCommandLauncher(command, agileflowDir, projectDir) {
-    // Read the original command file
-    const content = await this.readFile(command.path);
-
-    // Extract description from frontmatter if present
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let description = command.name;
-
-    if (frontmatterMatch) {
-      const descMatch = frontmatterMatch[1].match(/description:\s*["']?([^"'\n]+)["']?/);
-      if (descMatch) {
-        description = descMatch[1];
-      }
-    }
-
-    // Create launcher that loads the full command
-    const relativePath = path.relative(projectDir, command.path);
-
-    return `---
-description: "${description}"
----
-
-# ${command.name}
-
-Load and execute the AgileFlow command.
-
-\`\`\`
-Read and follow the instructions in: ${relativePath}
-\`\`\`
-`;
-  }
-
-  /**
-   * Create an agent launcher file
-   * @param {Object} agent - Agent info
-   * @param {string} agileflowDir - AgileFlow directory
-   * @param {string} projectDir - Project directory
-   * @returns {Promise<string>} Launcher content
-   */
-  async createAgentLauncher(agent, agileflowDir, projectDir) {
-    // Read the original agent file
-    const content = await this.readFile(agent.path);
-
-    // Extract metadata from frontmatter
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let description = agent.name;
-    let name = agent.name;
-
-    if (frontmatterMatch) {
-      const descMatch = frontmatterMatch[1].match(/description:\s*["']?([^"'\n]+)["']?/);
-      const nameMatch = frontmatterMatch[1].match(/name:\s*["']?([^"'\n]+)["']?/);
-
-      if (descMatch) description = descMatch[1];
-      if (nameMatch) name = nameMatch[1];
-    }
-
-    // Create launcher that loads the full agent
-    const relativePath = path.relative(projectDir, agent.path);
-
-    return `---
-description: "${description}"
----
-
-# ${name}
-
-Activate the AgileFlow agent.
-
-\`\`\`
-Read and fully embody the agent defined in: ${relativePath}
-
-Follow all instructions, adopt the persona, and use the specified tools.
-\`\`\`
-`;
   }
 }
 
