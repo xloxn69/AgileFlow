@@ -5,13 +5,13 @@ allowed-tools: Task
 
 # readme-sync
 
-Synchronize a folder's README.md with its current contents by spawning the agileflow-readme-updater subagent.
+Synchronize a folder's README.md with its current contents by spawning the readme-updater subagent.
 
 ## Prompt
 
 **ROLE**: README Sync Command Handler
 
-**OBJECTIVE**: Spawn the `agileflow-readme-updater` subagent to synchronize a folder's README.md with its current contents.
+**OBJECTIVE**: Spawn the `readme-updater` subagent to synchronize a folder's README.md with its current contents.
 
 **WORKFLOW**:
 
@@ -22,7 +22,7 @@ Synchronize a folder's README.md with its current contents by spawning the agile
 
 2. **If folder path is clear**, spawn the subagent immediately:
    ```
-   Use the Task tool to spawn agileflow-readme-updater subagent:
+   Use the Task tool to spawn readme-updater subagent:
 
    Task(
      description: "Sync README.md for [folder]",
@@ -37,7 +37,7 @@ Synchronize a folder's README.md with its current contents by spawning the agile
      6. Ask user to confirm: 'Update README.md? (YES/NO)'
      7. If YES: Update only the '## Contents' section (preserve everything else)
      8. Report what was changed",
-     subagent_type: "agileflow-readme-updater"
+     subagent_type: "readme-updater"
    )
    ```
 
@@ -48,19 +48,19 @@ Synchronize a folder's README.md with its current contents by spawning the agile
 **EXAMPLE INVOCATIONS**:
 
 User: "sync docs/02-practices"
-→ Spawn agileflow-readme-updater with prompt: "Audit and synchronize README.md for docs/02-practices"
+→ Spawn readme-updater with prompt: "Audit and synchronize README.md for docs/02-practices"
 
 User: "update readme for docs/06-stories"
-→ Spawn agileflow-readme-updater with prompt: "Audit and synchronize README.md for docs/06-stories"
+→ Spawn readme-updater with prompt: "Audit and synchronize README.md for docs/06-stories"
 
 User: "/AgileFlow:readme-sync"
 → Ask: "Which folder should I sync?"
 → User responds: "docs/04-architecture"
-→ Spawn agileflow-readme-updater with that folder
+→ Spawn readme-updater with that folder
 
 **KEY POINTS**:
 - This command is just a launcher - it spawns the subagent
-- The subagent (agileflow-readme-updater) does the actual work
+- The subagent (readme-updater) does the actual work
 - Subagent has tools: Bash, Read, Edit, Write
 - Subagent will handle all file discovery, diffing, and updating
 

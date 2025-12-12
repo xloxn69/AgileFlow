@@ -139,9 +139,9 @@ AgileFlow is configured via `.agileflow/config.json`:
     "defaultOwner": "unassigned",
     "autoAssign": false,
     "agentPreferences": {
-      "backend": "agileflow-api",
-      "frontend": "agileflow-ui",
-      "testing": "agileflow-testing"
+      "backend": "api",
+      "frontend": "ui",
+      "testing": "testing"
     }
   }
 }
@@ -161,11 +161,11 @@ Configure which agent handles which types of work:
 {
   "agents": {
     "routing": {
-      "api": "agileflow-api",
-      "ui": "agileflow-ui",
-      "database": "agileflow-database",
-      "testing": "agileflow-testing",
-      "docs": "agileflow-documentation"
+      "api": "api",
+      "ui": "ui",
+      "database": "database",
+      "testing": "testing",
+      "docs": "documentation"
     }
   }
 }

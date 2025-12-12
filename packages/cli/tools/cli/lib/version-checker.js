@@ -17,7 +17,7 @@ const packageJson = require(packageJsonPath);
  * @param {string} packageName - Package name
  * @returns {Promise<string|null>} Latest version or null
  */
-async function getLatestVersion(packageName = '@xloxn69/agileflow') {
+async function getLatestVersion(packageName = 'agileflow') {
   return new Promise((resolve) => {
     const url = `https://registry.npmjs.org/${packageName}/latest`;
 

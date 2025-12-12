@@ -330,7 +330,7 @@ IMPORTANT - Verification Protocol (built-in as of v2.26.0):
 
 [Rest of implementation details...]
 """,
-  subagent_type: "agileflow-ui"
+  subagent_type: "ui"
 )
 ```
 
@@ -513,98 +513,179 @@ Task(
 Task(
   description: "Create authentication epic",
   prompt: "Create EP-0001 for user authentication system with login, logout, password reset stories",
-  subagent_type: "agileflow-epic-planner"
+  subagent_type: "epic-planner"
 )
 
 # Spawn mentor to implement feature
 Task(
   description: "Implement user login story",
   prompt: "Guide implementation of US-0001: User Login API endpoint with JWT auth",
-  subagent_type: "agileflow-mentor"
+  subagent_type: "mentor"
 )
 
 # Spawn research agent for technical questions
 Task(
   description: "Research JWT best practices",
   prompt: "Research and document best practices for JWT token refresh, expiration, and security",
-  subagent_type: "agileflow-research"
+  subagent_type: "research"
 )
 ```
 
-**AVAILABLE AGENTS** (9 total):
+<!-- AUTOGEN:AGENT_LIST:START -->
+<!-- Auto-generated on 2025-12-12. Do not edit manually. -->
 
-1. **agileflow-epic-planner** (model: sonnet)
-   - **Purpose**: Break down large features into epics and stories
-   - **Use when**: Planning a new feature or epic
-   - **Specialization**: Epic decomposition, acceptance criteria, estimation, dependency mapping
-   - **Output**: Epic file, multiple story files, test stubs, status.json updates
+**AVAILABLE AGENTS** (26 total):
 
-2. **agileflow-mentor** (model: sonnet)
-   - **Purpose**: End-to-end feature implementation guidance
-   - **Use when**: Ready to implement a story, need step-by-step guidance
-   - **Specialization**: Implementation planning, code guidance, testing, documentation
-   - **Output**: Code changes, tests, PR description, status updates
+1. **adr-writer** (model: haiku)
+   - **Purpose**: Architecture Decision Record specialist. Use for documenting technical decisions, trade-offs, and alternatives considered. Ensures decisions are recorded for future reference.
+   - **Tools**: Read, Write, Edit, Glob, Grep
+   - **Category**: Architecture & Design
 
-3. **agileflow-ui** (model: haiku)
-   - **Purpose**: Frontend component implementation
-   - **Use when**: Building UI components, styling, accessibility
-   - **Specialization**: React/Vue components, styling, design systems, accessibility
-   - **Output**: Component code, tests, style files, documentation
+2. **design** (model: haiku)
+   - **Purpose**: Design specialist for UI/UX design systems, visual design, design patterns, design documentation, and design-driven development.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Architecture & Design
 
-4. **agileflow-api** (model: haiku)
-   - **Purpose**: Backend API implementation
-   - **Use when**: Building API endpoints, business logic, database layer
-   - **Specialization**: REST/GraphQL APIs, data models, database access, validation
-   - **Output**: API routes, controllers, models, tests
+3. **epic-planner** (model: sonnet)
+   - **Purpose**: Epic and story planning specialist. Use for breaking down large features into epics and stories, writing acceptance criteria, estimating effort, and mapping dependencies.
+   - **Tools**: Read, Write, Edit, Glob, Grep
+   - **Category**: Architecture & Design
 
-5. **agileflow-ci** (model: haiku)
-   - **Purpose**: CI/CD pipelines and quality tools
-   - **Use when**: Setting up testing, linting, coverage, workflows
-   - **Specialization**: GitHub Actions, test infrastructure, code quality, coverage
-   - **Output**: Workflow files, test configuration, quality gates
+4. **product** (model: haiku)
+   - **Purpose**: Product specialist for requirements analysis, user stories, acceptance criteria clarity, and feature validation before epic planning.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Architecture & Design
 
-6. **agileflow-devops** (model: haiku)
-   - **Purpose**: DevOps, deployment, and infrastructure
-   - **Use when**: Deployment setup, dependency management, infrastructure
-   - **Specialization**: Docker, Kubernetes, dependencies, deployment, changelog
-   - **Output**: Deployment configs, dependency updates, infrastructure code
+5. **analytics** (model: haiku)
+   - **Purpose**: Analytics specialist for event tracking, data analysis, metrics dashboards, user behavior analysis, and data-driven insights.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Compliance & Governance
 
-7. **agileflow-research** (model: haiku)
-   - **Purpose**: Technical research and knowledge gathering
-   - **Use when**: Need to research technologies, patterns, best practices
-   - **Specialization**: Web search, research synthesis, documentation
-   - **Output**: Research notes, summaries, curated findings
+6. **compliance** (model: haiku)
+   - **Purpose**: Compliance specialist for regulatory compliance, GDPR, HIPAA, SOC2, audit trails, legal requirements, and compliance documentation.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Compliance & Governance
 
-8. **agileflow-adr-writer** (model: haiku)
-   - **Purpose**: Architecture Decision Records
-   - **Use when**: Major decisions made, need documentation
-   - **Specialization**: ADR writing, decision documentation, trade-off analysis
-   - **Output**: ADR files in docs/03-decisions/
+7. **api** (model: haiku)
+   - **Purpose**: Services/data layer specialist. Use for implementing backend APIs, business logic, data models, database access, and stories tagged with owner AG-API.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Core Development
 
-9. **agileflow-context7** (model: haiku)
-   - **Purpose**: Documentation specialist via Context7
-   - **Use when**: Need current docs, API references, documentation lookup
-   - **Specialization**: Documentation fetching, API reference lookup
-   - **Output**: Documentation summaries, contextual information
+8. **ci** (model: haiku)
+   - **Purpose**: CI/CD and quality specialist. Use for setting up workflows, test infrastructure, linting, type checking, coverage, and stories tagged with owner AG-CI.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Core Development
+
+9. **database** (model: haiku)
+   - **Purpose**: Database specialist for schema design, migrations, query optimization, data modeling, and database-intensive features.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Core Development
+
+10. **devops** (model: haiku)
+   - **Purpose**: DevOps and automation specialist. Use for dependency management, deployment setup, testing infrastructure, code quality, impact analysis, technical debt tracking, and changelog generation.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
+   - **Category**: Core Development
+
+11. **ui** (model: haiku)
+   - **Purpose**: UI/presentation layer specialist. Use for implementing front-end components, styling, theming, accessibility features, and stories tagged with owner AG-UI.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Core Development
+
+12. **documentation** (model: haiku)
+   - **Purpose**: Documentation specialist for technical docs, API documentation, user guides, tutorials, and documentation maintenance.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Documentation & Knowledge
+
+13. **readme-updater** (model: haiku)
+   - **Purpose**: README specialist for auditing and updating all documentation files across project folders.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Documentation & Knowledge
+
+14. **research** (model: haiku)
+   - **Purpose**: Research specialist. Use for gathering technical information, creating research prompts for ChatGPT, saving research notes, and maintaining the research index.
+   - **Tools**: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
+   - **Category**: Documentation & Knowledge
+
+15. **monitoring** (model: haiku)
+   - **Purpose**: Monitoring specialist for observability, logging strategies, alerting rules, metrics dashboards, and production visibility.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Maintenance & Optimization
+
+16. **performance** (model: haiku)
+   - **Purpose**: Performance specialist for optimization, profiling, benchmarking, scalability, and performance-critical features.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Maintenance & Optimization
+
+17. **refactor** (model: haiku)
+   - **Purpose**: Refactoring specialist for technical debt cleanup, legacy code modernization, codebase health, and code quality improvements.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Maintenance & Optimization
+
+18. **mentor** (model: sonnet)
+   - **Purpose**: End-to-end implementation mentor. Use for guiding feature implementation from idea to PR, researching approaches, creating missing epics/stories, and orchestrating multi-step workflows.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Mentorship
+
+19. **accessibility** (model: haiku)
+   - **Purpose**: Accessibility specialist for WCAG compliance, inclusive design, assistive technology support, and accessibility testing.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Quality & Testing
+
+20. **qa** (model: haiku)
+   - **Purpose**: QA specialist for test strategy, test planning, quality metrics, regression testing, and release readiness validation.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Quality & Testing
+
+21. **security** (model: haiku)
+   - **Purpose**: Security specialist for vulnerability analysis, authentication patterns, authorization, compliance, and security reviews before release.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Quality & Testing
+
+22. **testing** (model: haiku)
+   - **Purpose**: Testing specialist for test strategy, test patterns, coverage optimization, and comprehensive test suite design (different from CI infrastructure).
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Quality & Testing
+
+23. **context7** (model: haiku)
+   - **Purpose**: Use this agent when you need to fetch and utilize documentation from Context7 for specific libraries or frameworks to get current, accurate documentation without consuming main context tokens.
+   - **Tools**: Read, Write, Edit, Bash
+   - **Category**: Specialized Development
+
+24. **datamigration** (model: haiku)
+   - **Purpose**: Data migration specialist for zero-downtime migrations, data validation, rollback strategies, and large-scale data movements.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Specialized Development
+
+25. **integrations** (model: haiku)
+   - **Purpose**: Integration specialist for third-party APIs, webhooks, payment processors, external services, and API connectivity.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Specialized Development
+
+26. **mobile** (model: haiku)
+   - **Purpose**: Mobile specialist for React Native, Flutter, cross-platform mobile development, and mobile-specific features.
+   - **Tools**: Read, Write, Edit, Bash, Glob, Grep
+   - **Category**: Specialized Development
+
+<!-- AUTOGEN:AGENT_LIST:END -->
 
 **WHEN TO SPAWN AGENTS** (Use liberally!):
 
 **Planning Phase**:
-- Spawn agileflow-epic-planner for any new feature request
-- Spawn agileflow-research if tech stack is unfamiliar
-- Spawn agileflow-adr-writer for major architectural decisions
+- Spawn epic-planner for any new feature request
+- Spawn research if tech stack is unfamiliar
+- Spawn adr-writer for major architectural decisions
 
 **Implementation Phase** (THIS IS WHERE AGENTS SHINE):
-- Spawn agileflow-ui for component work (preserves your context for orchestration)
-- Spawn agileflow-api for backend work (API specialist can focus deeply)
-- Spawn agileflow-mentor for complex features (guide user through implementation)
-- Spawn agileflow-ci for test setup (specialist in test infrastructure)
-- Spawn agileflow-devops for deployment (infrastructure specialist)
+- Spawn ui for component work (preserves your context for orchestration)
+- Spawn api for backend work (API specialist can focus deeply)
+- Spawn mentor for complex features (guide user through implementation)
+- Spawn ci for test setup (specialist in test infrastructure)
+- Spawn devops for deployment (infrastructure specialist)
 
 **Quality & Documentation Phase**:
-- Spawn agileflow-adr-writer for decisions
-- Spawn agileflow-research for documentation gaps
-- Spawn agileflow-context7 for API references
+- Spawn adr-writer for decisions
+- Spawn research for documentation gaps
+- Spawn context7 for API references
 
 **CONTEXT PRESERVATION BENEFIT**:
 
@@ -636,22 +717,22 @@ babysit (light, orchestration only)
    ↓
 2. Babysit (light mode): Validates epic/stories exist
    ↓
-3. Babysit spawns agileflow-epic-planner:
+3. Babysit spawns epic-planner:
    "Create stories for user login, password reset, token refresh"
    ↓
 4. Epic planner returns: 3 stories with Architecture Context
    ↓
-5. Babysit spawns agileflow-ui:
+5. Babysit spawns ui:
    "Implement login form component for US-0001"
    ↓
 6. UI agent returns: Login component + tests
    ↓
-7. Babysit spawns agileflow-api:
+7. Babysit spawns api:
    "Implement /api/auth/login endpoint for US-0001"
    ↓
 8. API agent returns: Login endpoint + tests
    ↓
-9. Babysit spawns agileflow-ci:
+9. Babysit spawns ci:
    "Add test coverage for authentication"
    ↓
 10. CI agent returns: Updated test config + coverage gates

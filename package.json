@@ -1,6 +1,6 @@
 {
   "name": "agileflow-monorepo",
-  "version": "1.0.1",
+  "version": "2.30.0",
   "private": true,
   "description": "AgileFlow monorepo - CLI, website, and documentation",
   "workspaces": [
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xloxn69/AgileFlow.git"
+    "url": "git+https://github.com/projectquestorg/AgileFlow.git"
   },
   "author": "AgileFlow Contributors",
   "license": "MIT",

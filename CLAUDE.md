@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-AgileFlow plugin guidance for Claude Code (claude.ai/code).
+AgileFlow CLI package guidance for Claude Code (claude.ai/code).
 
 ---
 
@@ -31,63 +31,355 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 
 ### Version Management
 **ALWAYS update these 3 files together for ANY release:**
-1. `.claude-plugin/plugin.json` → `"version": "X.Y.Z"`
-2. `.claude-plugin/marketplace.json` → `"description"` (mentions version)
+1. `packages/cli/package.json` → `"version": "X.Y.Z"`
+2. Root `package.json` → `"version": "X.Y.Z"`
 3. `CHANGELOG.md` → Add `[X.Y.Z]` section at top
 
-**ALWAYS PUSH TO GITHUB IMMEDIATELY** - Marketplace reads from GitHub, not local files.
+**ALWAYS PUSH TO GITHUB IMMEDIATELY** - npm registry reads from GitHub releases.
 
 ---
 
 ## Repository Overview
 
-**AgileFlow**: Claude Code plugin providing universal agile/docs-as-code system.
-- **Type**: Command pack
-- **Current Version**: v2.29.0 (41 commands + 26 specialized agents + 23 refactored skills)
-- **No build step, runtime, or deployment process**
+**AgileFlow**: npm package providing AI-driven agile development system for Claude Code, Cursor, Windsurf, and other AI IDEs.
 
----
-
-## Policies
-
-### Command Safety
-- **Slash commands**: Autonomous (no asking)
-- **File operations**: Require diff + YES/NO confirmation, keep JSON valid
-- **Shell operations**: Safe commands autonomous, dangerous require confirmation
-
-### Test Coverage
-- **Global**: 80% overall, 100% critical paths
-- **Component**: Unit 80%+, Integration 60%+, E2E 30%+
-- **New code**: Aim for 90%+
-- **CI**: Fails if <80%
+- **Package**: `agileflow`
+- **Type**: npm CLI tool + IDE command pack
+- **Current Version**: v2.30.0
+- **Distribution**: npm registry
+- **Structure**: Monorepo (CLI package + docs + website)
 
 ---
 
 ## Architecture
 
-### Structure
+### Monorepo Structure
 ```
 AgileFlow/
-├── .claude-plugin/          # plugin.json, marketplace.json
-├── commands/                # 41 slash commands (*.md, auto-discovered)
-├── agents/                  # 26 subagents (*.md, auto-discovered)
-├── skills/                  # 23 skills (*/SKILL.md, auto-discovered)
-├── scripts/                 # Helper scripts (get-env.js, archive, compress)
-├── templates/               # Document templates
-├── CHANGELOG.md
-└── README.md
+├── packages/
+│   └── cli/                           # Main package (agileflow)
+│       ├── package.json               # Package metadata, version
+│       ├── src/core/
+│       │   ├── commands/              # 41 slash commands (*.md)
+│       │   ├── agents/                # 26 specialized agents (*.md)
+│       │   ├── skills/                # 23 skills (*/SKILL.md)
+│       │   └── templates/             # Document templates
+│       ├── scripts/
+│       │   └── generators/            # Content generation system
+│       │       ├── command-registry.js
+│       │       ├── agent-registry.js
+│       │       ├── skill-registry.js
+│       │       ├── inject-help.js
+│       │       ├── inject-babysit.js
+│       │       ├── inject-readme.js
+│       │       ├── index.js
+│       │       └── generate-all.sh
+│       └── tools/                     # CLI entry points, installers
+│           ├── agileflow-npx.js       # npx entry point
+│           ├── postinstall.js         # Auto-setup on npm install
+│           └── cli/                   # CLI commands (install, status, update)
+├── apps/
+│   ├── website/                       # Landing page
+│   └── docs/                          # Documentation site (Fumadocs)
+├── package.json                       # Root workspace config
+├── CHANGELOG.md                       # Version history
+└── README.md                          # User-facing docs
 ```
 
 ### Key Concepts
-- **Slash Commands**: Stateless actions in `commands/*.md`, auto-discovered
-- **Subagents**: Specialized agents in `agents/*.md` with YAML frontmatter, auto-discovered
-- **Skills**: Auto-loaded from `skills/*/SKILL.md`, auto-discovered
+- **Slash Commands**: Stateless actions in `packages/cli/src/core/commands/*.md`
+- **Subagents**: Specialized agents in `packages/cli/src/core/agents/*.md` with YAML frontmatter
+- **Skills**: Auto-loaded from `packages/cli/src/core/skills/*/SKILL.md`
+- **Content Generation**: Frontmatter metadata → Auto-generated docs (v2.30.0+)
 - **AgileFlow System**: Created by `/AgileFlow:setup` in user projects (NOT this repo)
 
 ### Critical Files
-- **plugin.json**: Version is single source of truth, auto-discovers commands/agents/skills
-- **marketplace.json**: Must sync with plugin.json version
-- **CHANGELOG.md**: Keep a Changelog format, matches plugin.json version
+- **packages/cli/package.json**: Package version (single source of truth for npm)
+- **Root package.json**: Monorepo version (kept in sync)
+- **CHANGELOG.md**: Keep a Changelog format, matches package versions
+
+---
+
+## Development Tasks
+
+### Updating Package Version (2.29.0 → 2.30.0)
+
+```bash
+# 1. Edit 3 files (version must match across all)
+packages/cli/package.json    # "version": "2.30.0"
+package.json                 # "version": "2.30.0" (root monorepo)
+CHANGELOG.md                 # Add [2.30.0] section at top
+
+# 2. Run content generators (updates counts, lists)
+bash packages/cli/scripts/generate-all.sh
+
+# 3. Verify changes
+git diff
+
+# 4. Commit
+git add -A
+git commit -m "chore: bump version to v2.30.0"
+
+# 5. Push immediately (CRITICAL)
+git push origin main
+```
+
+### Adding New Command
+
+```bash
+# 1. Create command file
+cat > packages/cli/src/core/commands/new-command.md << 'EOF'
+---
+description: Brief description of what this command does
+argument-hint: [ARG1] [ARG2] (optional)
+---
+
+# /AgileFlow:new-command
+
+[Command implementation details here]
+EOF
+
+# 2. Run content generators (auto-updates /help, README)
+bash packages/cli/scripts/generate-all.sh
+
+# 3. Bump version in 3 files, update CHANGELOG
+# (see "Updating Package Version" above)
+```
+
+### Adding New Agent
+
+```bash
+# 1. Create agent file (NO agileflow- prefix)
+cat > packages/cli/src/core/agents/translator.md << 'EOF'
+---
+name: translator
+description: i18n and localization specialist
+tools:
+  - Read
+  - Write
+  - Edit
+model: haiku
+color: purple
+---
+
+# Translator Agent
+
+[Agent implementation details here]
+EOF
+
+# 2. Run content generators (auto-updates /babysit, README)
+bash packages/cli/scripts/generate-all.sh
+
+# 3. Bump version in 3 files, update CHANGELOG
+```
+
+### Adding New Skill
+
+```bash
+# 1. Create skill directory and SKILL.md
+mkdir -p packages/cli/src/core/skills/new-skill
+cat > packages/cli/src/core/skills/new-skill/SKILL.md << 'EOF'
+---
+name: new-skill
+description: Brief description under 150 chars
+---
+
+# Skill Implementation
+
+[Skill details here - keep to 80-280 lines total]
+EOF
+
+# 2. Run content generators
+bash packages/cli/scripts/generate-all.sh
+
+# 3. Bump version in 3 files, update CHANGELOG
+```
+
+### Creating GitHub Releases
+
+**CRITICAL POLICY**: Create a GitHub release for EVERY significant update (new features, major improvements, multi-phase work).
+
+**WHEN TO CREATE RELEASES**:
+- ✅ After completing an entire phase/feature (e.g., "Phase 3 complete" not "Phase 3 started")
+- ✅ After all files updated (version bumped, CHANGELOG updated, README updated, generators run, committed, pushed)
+- ✅ When the work is FULLY DONE and documented
+- ❌ NOT before completing all steps
+- ❌ NOT while work is in progress
+- ❌ NOT without updating README.md with new features
+
+**Release Title Specificity**:
+- ✅ **GOOD**: "Release v2.30.0 - Content Generation System"
+- ✅ **GOOD**: "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
+- ❌ **BAD**: "Release v2.30.0 - Improvements" (too generic)
+- ❌ **BAD**: "Release v2.30.0 - Updates" (vague)
+
+**Release Process**:
+```bash
+# 1. ONLY run this AFTER all work is complete:
+#    - Version bumped in 3 files (2 package.json + CHANGELOG.md)
+#    - CHANGELOG.md updated with detailed entry
+#    - README.md updated with new feature documentation
+#    - Content generators run (bash packages/cli/scripts/generate-all.sh)
+#    - Changes committed and pushed to GitHub
+
+# 2. Create and push git tag
+git tag -a v2.30.0 -m "Release v2.30.0 - Content Generation System"
+git push origin v2.30.0
+
+# 3. Extract changelog notes for this version
+awk '/## \[2.30.0\]/,/## \[2.29.0\]/ {if (/## \[2.29.0\]/) exit; print}' CHANGELOG.md > /tmp/v2.30.0-notes.txt
+
+# 4. Create GitHub release
+gh release create v2.30.0 \
+  --title "Release v2.30.0 - Content Generation System" \
+  --notes-file /tmp/v2.30.0-notes.txt \
+  --latest
+
+# 5. Publish to npm (if needed)
+cd packages/cli
+npm publish --access public
+```
+
+**Release Checklist**:
+- [ ] All implementation work complete
+- [ ] Version bumped in packages/cli/package.json, root package.json, CHANGELOG.md
+- [ ] CHANGELOG.md updated with detailed entry
+- [ ] README.md updated with new feature documentation
+- [ ] Content generators run (generate-all.sh)
+- [ ] All changes committed and pushed to GitHub
+- [ ] Release title is SPECIFIC about what was completed in THIS version
+- [ ] Git tag created and pushed
+- [ ] GitHub release created with extracted changelog notes
+- [ ] npm publish complete (if needed)
+
+---
+
+## Content Generation System (v2.30.0+)
+
+AgileFlow uses a **content generation system** to keep plugin files synchronized with metadata from frontmatter. This eliminates manual sync debt when adding/removing/renaming commands, agents, or skills.
+
+### Problem Solved
+- Manual sync: Add command → Update /babysit → Update /help → Update README → Easy to forget
+- Duplication: Agent list appears in multiple files, all must stay in sync
+- Human error: Forget to update counts, descriptions, tool lists
+
+### Solution
+Single source of truth (frontmatter) → Auto-generate content
+
+### Architecture
+```
+packages/cli/scripts/generators/
+├── command-registry.js   # Scans commands/, extracts metadata
+├── agent-registry.js     # Scans agents/, extracts metadata
+├── skill-registry.js     # Scans skills/, extracts metadata
+├── inject-help.js        # Generates command list for /help
+├── inject-babysit.js     # Generates agent list for /babysit
+├── inject-readme.js      # Generates stats/tables for README
+├── index.js              # Orchestrator (runs all generators)
+└── generate-all.sh       # Shell wrapper
+```
+
+### How It Works
+1. Scanners read frontmatter from all commands/agents/skills
+2. Generators create formatted content (tables, lists, stats)
+3. Content injected between `<!-- AUTOGEN:NAME:START/END -->` markers
+4. Original files updated in-place
+
+### Usage
+```bash
+# Regenerate all content
+bash packages/cli/scripts/generate-all.sh
+
+# Or run specific generator
+node packages/cli/scripts/generators/inject-help.js
+```
+
+### When to Run
+- After adding/removing commands, agents, or skills
+- After changing command/agent descriptions
+- After changing tool lists or models
+- Before committing changes
+
+### AUTOGEN Markers
+- `packages/cli/src/core/commands/help.md` → `<!-- AUTOGEN:COMMAND_LIST:START/END -->`
+- `packages/cli/src/core/commands/babysit.md` → `<!-- AUTOGEN:AGENT_LIST:START/END -->`
+- `README.md` → `<!-- AUTOGEN:STATS:START/END -->`
+
+### Benefits
+- **Zero sync debt**: Frontmatter is single source of truth
+- **Automatic updates**: Command counts, agent lists always current
+- **Less manual work**: No more updating 5 files for one change
+- **Consistent formatting**: Generated content follows templates
+
+### Developer Notes
+- Do NOT manually edit content between AUTOGEN markers
+- ALWAYS regenerate after metadata changes
+- Markers are added automatically by generators if missing
+
+---
+
+## User Project Systems
+
+The following sections describe systems that AgileFlow creates in **user projects** (not this repository). These are created when users run `/AgileFlow:setup` in their own codebases.
+
+### Hooks System (v2.19.0+)
+
+Event-driven automation via `.claude/settings.json` (project-level, committed) and `.claude/settings.local.json` (user-specific, gitignored).
+
+**Events**: SessionStart, UserPromptSubmit, Stop
+
+**Format**:
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "matcher": "",
+      "hooks": [{"type": "command", "command": "echo 'AgileFlow loaded'"}]
+    }]
+  }
+}
+```
+
+**Best Practices**: Keep fast, use background jobs (`command &`), log to files, test incrementally
+
+### Auto-Archival System (v2.19.4+)
+
+Manages `docs/09-agents/status.json` size to prevent "file too large" errors (>25k tokens).
+
+**Solution**: `status.json` (active work + recent completions) + `status-archive.json` (older completions)
+
+**Configuration**: `docs/00-meta/agileflow-metadata.json` → `archival.threshold_days` (3/7/14/30/custom)
+
+### Status.json Compression (v2.20.0+)
+
+**Command**: `/AgileFlow:compress`
+
+**What it does**: Strips verbose fields (description, AC, architectureContext, devAgentRecord, etc.), keeps tracking metadata. 80-90% size reduction.
+
+**Archival vs Compression**:
+- **Archival**: Move old completed stories (50-70% savings, automatic)
+- **Compression**: Strip verbose fields (80-90% savings, manual)
+- **Best practice**: Use BOTH
+
+### Session Harness System (v2.24.0+)
+
+Ensures test verification and session continuity for long-running projects.
+
+**Core Problem**: Without verification, agents can break existing functionality, claim features work when they don't, lose context between sessions.
+
+**Solution**: Test Status Tracking + Session State + Environment Init
+
+**Commands**:
+- `/AgileFlow:verify [story_id]` - Run tests and update test_status
+- `/AgileFlow:session-init` - First-time harness setup
+- `/AgileFlow:resume` - Session startup routine
+- `/AgileFlow:baseline [message]` - Establish known-good state
+
+**Phases**:
+- ✅ Phase 1 (v2.24.0): Test status tracking, /verify command
+- ✅ Phase 2 (v2.25.0): Session management, /session-init, /resume, /baseline
+- ✅ Phase 3 (v2.26.0): Dev agent integration (18 agents), verification protocols
+- ⏳ Phase 4 (v2.27.0+): Advanced features (test parsing, regression detection, dashboards)
 
 ---
 
@@ -113,7 +405,7 @@ Story US-0001 completes → Dev Agent Record → Story US-0002 created with US-0
 
 ### Epic Creation with Architecture Context
 ```
-User: "Build user auth" → /AgileFlow:epic-new → Epic Planner creates EP-XXXX
+User: "Build user auth" → /AgileFlow:epic → Epic Planner creates EP-XXXX
 → Breaks into stories (US-0001, US-0002, etc.)
 → Extract architecture context from docs/04-architecture/
 → Cite sources → Populate Architecture Context → Create test stubs
@@ -132,347 +424,6 @@ User: "Build user auth" → /AgileFlow:epic-new → Epic Planner creates EP-XXXX
 
 ---
 
-## Development Tasks
-
-### Updating Plugin Version (v2.3.1 → v2.3.2)
-```bash
-# 1. Edit 3 files
-.claude-plugin/plugin.json       # "version": "2.3.2"
-.claude-plugin/marketplace.json  # Update description
-CHANGELOG.md                     # Add [2.3.2] section at top
-
-# 2. Commit
-git add .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md
-git commit -m "chore: bump version to v2.3.2"
-
-# 3. Push immediately (CRITICAL)
-git push origin main
-
-# 4. Verify
-grep -n "2.3.2" .claude-plugin/plugin.json .claude-plugin/marketplace.json CHANGELOG.md
-
-# 5. Validate (CRITICAL)
-bash scripts/validate-plugin.sh
-```
-
-### Creating GitHub Releases (v2.23.0+)
-
-**CRITICAL POLICY**: Create a GitHub release for EVERY significant update (new features, major improvements, multi-phase work).
-
-**WHEN TO CREATE RELEASES**:
-- ✅ After completing an entire phase/feature (e.g., "Phase 3 complete" not "Phase 3 started")
-- ✅ After all files updated (version bumped, CHANGELOG updated, README updated, validation passed, committed, pushed)
-- ✅ When the work is FULLY DONE and documented
-- ❌ NOT before completing all steps
-- ❌ NOT while work is in progress
-- ❌ NOT without updating README.md with new features
-
-**RELEASE TITLE SPECIFICITY**:
-- ✅ **GOOD**: "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
-- ✅ **GOOD**: "Release v2.24.0 - Session Harness Phase 1 (Foundation)"
-- ❌ **BAD**: "Release v2.26.0 - Session Harness System" (too generic, doesn't say what was completed)
-- ❌ **BAD**: "Release v2.26.0 - Implemented Session Harness" (vague, no phase context)
-
-**Be specific about what was ACTUALLY completed in THIS release**, not the whole feature/system.
-
-**Manual Release Process**:
-```bash
-# 1. ONLY run this AFTER all work is complete:
-#    - Version bumped in 3 files (plugin.json, marketplace.json, README.md)
-#    - CHANGELOG.md updated with detailed entry
-#    - README.md updated with new feature documentation
-#    - Validation passed (bash scripts/validate-plugin.sh)
-#    - Changes committed and pushed to GitHub
-
-# 2. Create and push git tag
-git tag -a v2.26.0 -m "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
-git push origin v2.26.0
-
-# 3. Extract changelog notes for this version
-awk '/## \[2.26.0\]/,/## \[2.25.0\]/ {if (/## \[2.25.0\]/) exit; print}' CHANGELOG.md > /tmp/v2.26.0-notes.txt
-
-# 4. Create GitHub release with specific title
-gh release create v2.26.0 \
-  --title "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)" \
-  --notes-file /tmp/v2.26.0-notes.txt \
-  --latest
-```
-
-**Automated**: GitHub Actions → Run "Release Pipeline" workflow → Enter version
-
-**Example Complete Workflow** (Session Harness Phase 3):
-```bash
-# Step 1: Complete all implementation work (18 agents updated, babysit updated)
-# Step 2: Update version in 3 files
-# Step 3: Write detailed CHANGELOG.md entry
-# Step 4: Add feature documentation to README.md
-# Step 5: Run validation
-bash scripts/validate-plugin.sh
-# Step 6: Commit and push
-git add -A
-git commit -m "feat: complete session harness phase 3 (dev agent integration)"
-git push origin main
-# Step 7: Update README.md with session harness system documentation
-git add README.md
-git commit -m "docs: add session harness system section to README"
-git push origin main
-# Step 8: NOW create the release (all work is done)
-git tag -a v2.26.0 -m "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)"
-git push origin v2.26.0
-awk '/## \[2.26.0\]/,/## \[2.25.0\]/ {if (/## \[2.25.0\]/) exit; print}' CHANGELOG.md > /tmp/v2.26.0-notes.txt
-gh release create v2.26.0 --title "Release v2.26.0 - Session Harness Phase 3 (Dev Agent Integration)" --notes-file /tmp/v2.26.0-notes.txt --latest
-```
-
-**Release Checklist**:
-- [ ] All implementation work complete
-- [ ] Version bumped in plugin.json, marketplace.json, README.md
-- [ ] CHANGELOG.md updated with detailed entry
-- [ ] README.md updated with new feature documentation
-- [ ] Validation passed (bash scripts/validate-plugin.sh)
-- [ ] All changes committed and pushed to GitHub
-- [ ] Release title is SPECIFIC about what was completed in THIS version
-- [ ] Git tag created and pushed
-- [ ] GitHub release created with extracted changelog notes
-
-### Adding New Command
-1. Create `commands/new-command.md` (auto-discovered)
-2. Add frontmatter: `description`, `argument-hint`
-3. Update README.md
-4. Bump version in 3 files, update CHANGELOG
-
-### Adding New Subagent
-1. Create `agents/agileflow-newagent.md` (auto-discovered)
-2. Add frontmatter: `name`, `description`, `tools`, `model` (haiku/sonnet), `color`
-3. Update README.md, SUBAGENTS.md
-4. Bump version in 3 files, update CHANGELOG
-
-### Adding New Skill (v2.21.0+)
-1. Create `skills/new-skill/SKILL.md` (auto-discovered)
-2. Frontmatter: `name`, `description` (<150 chars)
-3. Follow minimal structure (see `templates/skill-template.md`): 80-150 lines (simple) or 130-280 lines (complex)
-4. Update README.md
-5. Bump version in 3 files, update CHANGELOG
-
-**Removed in v2.21.0**: `allowed-tools`, ROLE, OBJECTIVE, INPUTS, FIRST ACTION, OUTPUTS sections
-
----
-
-## Hooks System (v2.19.0+)
-
-Event-driven automation via `.claude/settings.json` (project-level, committed) and `.claude/settings.local.json` (user-specific, gitignored).
-
-**Events**: SessionStart, UserPromptSubmit, Stop
-
-**Format**:
-```json
-{
-  "hooks": {
-    "SessionStart": [{
-      "matcher": "",
-      "hooks": [{"type": "command", "command": "echo 'AgileFlow loaded'"}]
-    }]
-  }
-}
-```
-
-**Dynamic Env Vars**: `scripts/get-env.js` loads from settings.json/settings.local.json
-```json
-{"env": {"USER_NAME": "Alice"}}
-# Usage: $(node scripts/get-env.js USER_NAME 'Default')
-```
-
-**Best Practices**: Keep fast, use background jobs (`command &`), log to files, test incrementally
-
----
-
-## Auto-Archival System (v2.19.4+)
-
-Manages `docs/09-agents/status.json` size to prevent "file too large" errors (>25k tokens).
-
-**Solution**: `status.json` (active work + recent completions) + `status-archive.json` (older completions)
-
-**How**: `scripts/archive-completed-stories.sh N` moves completed stories >N days old to archive. Runs via SessionStart hook (configured during `/AgileFlow:setup`).
-
-**Configuration**: `docs/00-meta/agileflow-metadata.json` → `archival.threshold_days` (3/7/14/30/custom)
-
-**Manual**: `bash scripts/archive-completed-stories.sh 7`
-
-**Troubleshooting**: If agents fail with "file too large", run manual archival, reduce threshold, verify hook exists
-
----
-
-## Status.json Compression (v2.20.0+)
-
-Reduces status.json size when archival alone isn't enough.
-
-**Command**: `/AgileFlow:compress`
-
-**What it does**: Strips verbose fields (description, AC, architectureContext, devAgentRecord, etc.), keeps tracking metadata (story_id, status, owner, timestamps, dependencies). 80-90% size reduction.
-
-**When to use**: status.json >25000 tokens despite archival, agents fail, verbose imports
-
-**Workflow**: First archival → If still large, compression → Result: <25000 tokens
-
-**Safety**: Backup saved to `status.json.backup`, full content remains in `docs/06-stories/` markdown files
-
-**Archival vs Compression**:
-- **Archival**: Move old completed stories (50-70% savings, automatic)
-- **Compression**: Strip verbose fields (80-90% savings, manual)
-- **Best practice**: Use BOTH
-
----
-
-## Session Harness System (v2.24.0+)
-
-Ensures test verification and session continuity for long-running projects. Inspired by Anthropic's engineering practices for maintaining progress across multiple context windows.
-
-### Core Problem Solved
-Without verification, agents can:
-- Break existing functionality without noticing
-- Claim features work when they don't
-- Lose context between sessions
-- Mark incomplete work as finished
-
-### Solution: Test Verification + Session State
-
-**Test Status Tracking**: Every story tracks whether tests pass/fail
-**Session State**: Structured handoff between sessions
-**Environment Init**: Standardized setup for consistency
-
-### Data Model
-
-**Story frontmatter additions** (optional fields):
-```yaml
-test_status: passing | failing | not_run | skipped
-test_results:
-  last_run: 2025-12-06T10:30:00Z
-  command: npm test
-  passed: 42
-  failed: 0
-  exit_code: 0
-  output_summary: "All tests passed (42/42)"
-session_metadata:
-  last_session_start: 2025-12-06T09:00:00Z
-  session_count: 3
-  agents_involved: ["agileflow-ui", "agileflow-api"]
-```
-
-**Environment configuration** (`docs/00-meta/environment.json`):
-```json
-{
-  "project_type": "nodejs",
-  "init_script": "./docs/00-meta/init.sh",
-  "test_command": "npm test",
-  "test_timeout_ms": 60000,
-  "verification_policy": "warn",
-  "baseline_commit": "abc123",
-  "baseline_established": "2025-12-01T10:00:00Z"
-}
-```
-
-**Session state** (`docs/09-agents/session-state.json`):
-```json
-{
-  "current_session": {
-    "id": "sess-20251206-100000",
-    "started_at": "2025-12-06T10:00:00Z",
-    "baseline_verified": true,
-    "initial_test_status": "passing",
-    "current_story": "US-0042"
-  },
-  "last_session": {
-    "stories_completed": ["US-0041"],
-    "final_test_status": "passing"
-  }
-}
-```
-
-### Commands
-
-**`/AgileFlow:verify [story_id]`**: Run tests and update test_status (Phase 1)
-- No args: Update all in_progress stories
-- With story_id: Update specific story
-- Exit code 0 = passing, non-zero = failing
-- Parses output for test counts (best effort)
-
-**`/AgileFlow:session-init`**: First-time harness setup (Phase 2)
-- Detects project type and test framework
-- Creates environment.json, session-state.json, init.sh
-- Runs initial test verification
-- Creates baseline git tag
-- Configures SessionStart hook (optional)
-
-**`/AgileFlow:resume`**: Session startup routine (Phase 2)
-- Runs init script (environment setup)
-- Verifies tests and detects regressions
-- Loads context from previous sessions
-- Shows comprehensive session summary
-- Auto-runs via SessionStart hook (if enabled)
-
-**`/AgileFlow:baseline [message]`**: Establish known-good state (Phase 2)
-- Requires all tests passing
-- Creates git tag with baseline marker
-- Updates environment.json with baseline commit
-- Records in session history
-- Used for reset points and regression tracking
-
-### Workflow Integration
-
-**Before Implementation**:
-```
-1. Check test_status from status.json
-2. If failing: Fix or document override
-3. If not_run: Run /AgileFlow:verify
-4. Proceed only with passing tests (or documented exception)
-```
-
-**After Implementation**:
-```
-1. Run /AgileFlow:verify
-2. Update test_status based on results
-3. Only mark story "completed" if test_status="passing"
-4. Document failures in Dev Agent Record
-```
-
-**Session Startup** (when implemented):
-```
-1. Run init script (environment setup)
-2. Run tests (verify baseline)
-3. Load context (last completed stories)
-4. Show summary (current state, insights)
-```
-
-### Verification Policy
-
-**warn** (default): Show test failures, allow override with confirmation
-**block**: Require passing tests before proceeding
-**skip**: No test verification (not recommended)
-
-Set in `environment.json` → `verification_policy`
-
-### Templates
-
-- `templates/environment.json`: Session harness config
-- `templates/session-state.json`: Session tracking
-- `templates/init.sh`: Environment initialization script
-
-### Benefits
-
-1. **Prevents Regression**: Can't break existing features without noticing
-2. **Context Continuity**: Structured handoff between sessions
-3. **Early Failure Detection**: Catch broken tests immediately
-4. **Better Handoffs**: Know exactly where you left off
-5. **Confidence**: Know the system works before adding more
-
-### Phases
-
-- ✅ **Phase 1 (v2.24.0)**: Test status tracking, /verify command, templates
-- ✅ **Phase 2 (v2.25.0)**: Session management, /session-init, /resume, /baseline
-- ✅ **Phase 3 (v2.26.0)**: Dev agent integration (18 agents), verification protocols, /babysit integration
-- ⏳ **Phase 4 (v2.27.0+)**: Advanced features (test parsing, regression detection, dashboards)
-
----
-
 ## Story Template (v2.16.0+)
 
 ### Frontmatter
@@ -483,36 +434,25 @@ story_id, epic, title, owner, status, estimate, created, updated, dependencies
 ### Sections
 - **Description**: What/why
 - **Acceptance Criteria**: Given/When/Then (2-5 criteria)
-- **Architecture Context** (NEW): 6 subsections extracted by Epic Planner, all with source citations
+- **Architecture Context**: 6 subsections extracted by Epic Planner, all with source citations
 - **Technical Notes**: Hints, edge cases
 - **Testing Strategy**: Points to `docs/07-testing/test-cases/<US_ID>.md`
 - **Dependencies**: Other stories
-- **Dev Agent Record** (NEW): 6 subsections for knowledge transfer
-- **Previous Story Insights** (NEW): Lessons from previous story in epic
-
-**Example**: `examples/story-example.md`
-
----
-
-## Development Workflow
-
-### Implementation Steps
-1. **Validate**: `/AgileFlow:story-validate US-XXXX` (check Architecture Context, AC, sections)
-2. **Read**: Story's Architecture Context (NOT full docs)
-3. **Check**: Previous Story Insights (if not first in epic)
-4. **Implement**: Architecture Context = single source of truth
-5. **Record**: Populate Dev Agent Record (model, notes, issues, lessons, files, debug refs)
-6. **Flow**: Lessons automatically flow to next story
+- **Dev Agent Record**: 6 subsections for knowledge transfer
+- **Previous Story Insights**: Lessons from previous story in epic
 
 ---
 
 ## Documentation Standards
 
 ### Command Format
-Markdown with heading, description, prompt, examples, technical notes
+Markdown with YAML frontmatter (`description`, `argument-hint`), heading, prompt, examples, technical notes
 
-### Subagent Format
-Markdown with YAML frontmatter, role, objective, knowledge sources, constraints, quality checklist, communication protocols
+### Agent Format
+Markdown with YAML frontmatter (`name`, `description`, `tools`, `model`, `color`), role, objective, knowledge sources, constraints, quality checklist
+
+### Skill Format
+Markdown with YAML frontmatter (`name`, `description`), minimal structure (80-280 lines)
 
 ### Version Updates
 Keep a Changelog format, categories (Added/Changed/Fixed/Improved/Technical), ISO dates, detailed context
@@ -525,7 +465,7 @@ Keep a Changelog format, categories (Added/Changed/Fixed/Improved/Technical), IS
 
 **Commits**: Conventional Commits, NO AI ATTRIBUTION, ALWAYS PUSH AFTER COMMITTING
 
-**Never commit**: `.env`
+**Never commit**: `.env`, `.mcp.json`, secrets
 
 ---
 
@@ -550,13 +490,20 @@ Populated DURING implementation. Lessons Learned for NEXT story (not just docs).
 
 ## Important Notes
 
-### This is a Plugin, Not an Application
-- No package.json, build process, tests, runtime
-- Markdown files are source and distribution
-- Commands execute within Claude Code context
+### This is an npm Package
+- **Type**: npm CLI tool + IDE command pack
+- **Distribution**: Published to npm as `agileflow`
+- **Installation**: `npm install --save-dev agileflow` or `npx agileflow install`
+- **Monorepo**: Contains CLI package, docs site, landing page
+- **Build**: No build step for CLI (markdown files), build step for docs/website (Next.js)
 
-### User Projects vs Plugin Repository
-Plugin creates structure in user projects (`docs/` directories). This repo only contains command/subagent/skill definitions and templates.
+### Repository vs User Projects
+- **This Repository**: Contains CLI tool source code (commands, agents, skills, templates)
+- **User Projects**: Where AgileFlow creates `docs/` structure via `/AgileFlow:setup`
+- **Separation**: This repo develops the tool, user projects consume the tool
 
 ### Version Sync is Critical
-3 files must match: `plugin.json`, `marketplace.json`, `CHANGELOG.md`. Update all in same commit.
+3 files must match: `packages/cli/package.json`, root `package.json`, `CHANGELOG.md`. Update all in same commit.
+
+### Content Generation is Automated
+After adding/removing/renaming commands/agents/skills, ALWAYS run `bash packages/cli/scripts/generate-all.sh` before committing. This ensures documentation stays synchronized with code.

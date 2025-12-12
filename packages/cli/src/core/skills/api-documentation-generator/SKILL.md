@@ -25,7 +25,7 @@ Generates OpenAPI 3.0 specification snippets including:
 - **Authentication** requirements
 - **Status codes** and descriptions
 
-Coordinates with agileflow-documentation agent for full API docs.
+Coordinates with documentation agent for full API docs.
 
 ## Output
 OpenAPI YAML/JSON snippet ready for integration into spec

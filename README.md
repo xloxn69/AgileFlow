@@ -1,45 +1,39 @@
 # AgileFlow
 
-[![npm version](https://img.shields.io/npm/v/%40xloxn69%2Fagileflow?color=brightgreen)](https://www.npmjs.com/package/@xloxn69/agileflow)
-[![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
-[![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
-[![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
+<!-- AUTOGEN:STATS:START -->
+<!-- Auto-generated on 2025-12-12. Do not edit manually. -->
+
+- **41** slash commands
+- **26** specialized agents
+- **23** code generation skills
+<!-- AUTOGEN:STATS:END -->
 
 **AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
-
-## Repository Structure
-
-This is a monorepo containing:
-
-- **`packages/cli/`** - The AgileFlow CLI tool (published to npm as `@xloxn69/agileflow`)
-- **`apps/website/`** - Landing page at `agileflow.projectquestorg.com`
-- **`apps/docs/`** - Documentation site at `docs.agileflow.projectquestorg.com` (powered by Fumadocs)
-
-### Development Commands
-
-```bash
-# Install all dependencies
-npm install
-
-# Run website locally (http://localhost:3000)
-npm run dev:website
-
-# Run docs locally (http://localhost:3001)
-npm run dev:docs
-
-# Test CLI locally
-npm run dev:cli -- status
-
-# Build all packages
-npm run build:all
-```
 
 ## Quick Start
 
 ### Installation
 
+#### Option 1: Add to package.json (Recommended - Auto-Setup)
+
 ```bash
-npx @xloxn69/agileflow install
+npm install --save-dev agileflow
+```
+
+AgileFlow will automatically set up when installed! The postinstall script will:
+1. Detect your IDE (Claude Code, Cursor, or Windsurf)
+2. Install AgileFlow core (41 commands, 26 agents, 23 skills)
+3. Configure your IDE automatically
+
+To skip auto-install, set the environment variable:
+```bash
+AGILEFLOW_SKIP_INSTALL=true npm install agileflow
+```
+
+#### Option 2: One-time setup with npx
+
+```bash
+npx agileflow install
 ```
 
 This will:
@@ -50,11 +44,11 @@ This will:
 ### CLI Commands
 
 ```bash
-npx @xloxn69/agileflow install     # Install to project
-npx @xloxn69/agileflow status      # Check installation + updates
-npx @xloxn69/agileflow update      # Update to latest version
-npx @xloxn69/agileflow doctor      # Diagnose issues
-npx @xloxn69/agileflow uninstall   # Remove from project
+npx agileflow install     # Install to project
+npx agileflow status      # Check installation + updates
+npx agileflow update      # Update to latest version
+npx agileflow doctor      # Diagnose issues
+npx agileflow uninstall   # Remove from project
 ```
 
 ### After Installation
@@ -73,7 +67,7 @@ View system overview and available commands.
 
 **Use the mentor (recommended):**
 ```
-Use the agileflow-mentor subagent to guide me through implementing <feature>
+Use the mentor subagent to guide me through implementing <feature>
 ```
 Interactive mentor guides you through epic/story creation, implementation, and PR preparation.
 
@@ -81,7 +75,7 @@ Interactive mentor guides you through epic/story creation, implementation, and P
 
 | IDE | Status | Config Location |
 |-----|--------|-----------------|
-| Claude Code | ✅ Supported | `.claude/commands/agileflow/` |
+| Claude Code | ✅ Supported | `.claude/commands/AgileFlow/` |
 | Cursor | ✅ Supported | `.cursor/rules/agileflow/` |
 | Windsurf | ✅ Supported | `.windsurf/workflows/agileflow/` |
 
@@ -185,57 +179,57 @@ docs/
 </details>
 
 <details>
-<summary><strong>🤖 Subagents</strong> (27 specialized agents - click to expand)</summary>
+<summary><strong>🤖 Subagents</strong> (26 specialized agents - click to expand)</summary>
 
-AgileFlow includes **27 specialized subagents** that operate in separate context windows for focused work. See [SUBAGENTS.md](SUBAGENTS.md) for complete documentation.
+AgileFlow includes **26 specialized subagents** that operate in separate context windows for focused work. See [SUBAGENTS.md](SUBAGENTS.md) for complete documentation.
 
 ### Core Implementation Agents
 
-**`agileflow-ui`** - UI/Presentation Layer Specialist
+**`ui`** - UI/Presentation Layer Specialist
 - Front-end components, styling, theming, accessibility (WCAG 2.1 AA)
-- Invocation: "Use the agileflow-ui subagent to implement this UI feature"
+- Invocation: "Use the ui subagent to implement this UI feature"
 
-**`agileflow-api`** - Services/Data Layer Specialist
+**`api`** - Services/Data Layer Specialist
 - Backend APIs, business logic, data models, API tests
-- Invocation: "Use the agileflow-api subagent to implement this API endpoint"
+- Invocation: "Use the api subagent to implement this API endpoint"
 
-**`agileflow-ci`** - CI/CD & Quality Specialist
+**`ci`** - CI/CD & Quality Specialist
 - CI/CD pipelines, linting, type checking, test coverage
-- Invocation: "Use the agileflow-ci subagent to set up the test pipeline"
+- Invocation: "Use the ci subagent to set up the test pipeline"
 
 ### Orchestration & Planning Agents
 
-**`agileflow-mentor`** - End-to-End Implementation Mentor
+**`mentor`** - End-to-End Implementation Mentor
 - Guides feature implementation from idea to PR
-- Invocation: "Use the agileflow-mentor subagent to guide me through this feature"
+- Invocation: "Use the mentor subagent to guide me through this feature"
 
-**`agileflow-epic-planner`** - Epic & Story Planning Specialist
+**`epic-planner`** - Epic & Story Planning Specialist
 - Breaks down features into epics and stories with acceptance criteria
-- Invocation: "Use the agileflow-epic-planner subagent to plan this feature"
+- Invocation: "Use the epic-planner subagent to plan this feature"
 
-**`agileflow-adr-writer`** - Architecture Decision Record Specialist
+**`adr-writer`** - Architecture Decision Record Specialist
 - Documents technical decisions, trade-offs, alternatives
-- Invocation: "Use the agileflow-adr-writer subagent to document this decision"
+- Invocation: "Use the adr-writer subagent to document this decision"
 
-**`agileflow-research`** - Research & Knowledge Management Specialist
+**`research`** - Research & Knowledge Management Specialist
 - Conducts technical research, builds research prompts, saves notes
-- Invocation: "Use the agileflow-research subagent to research authentication approaches"
+- Invocation: "Use the research subagent to research authentication approaches"
 
 ### Additional Specialized Agents
-- `agileflow-devops` - DevOps & Automation
-- `agileflow-security` - Security & Compliance
-- `agileflow-database` - Database & Data Layer
-- `agileflow-testing` - Testing & QA Automation
-- `agileflow-product` - Product Management & Prioritization
-- `agileflow-performance` - Performance Optimization
-- `agileflow-mobile` - Mobile Development
-- `agileflow-integrations` - Third-Party Integrations
-- `agileflow-refactor` - Code Refactoring & Technical Debt
-- `agileflow-design` - Design Systems & UI/UX
-- `agileflow-accessibility` - Accessibility Compliance (WCAG)
-- `agileflow-analytics` - Analytics & Metrics Implementation
-- `agileflow-data-migration` - Data Migration & ETL
-- `agileflow-qa` - Quality Assurance & Test Planning
+- `devops` - DevOps & Automation
+- `security` - Security & Compliance
+- `database` - Database & Data Layer
+- `testing` - Testing & QA Automation
+- `product` - Product Management & Prioritization
+- `performance` - Performance Optimization
+- `mobile` - Mobile Development
+- `integrations` - Third-Party Integrations
+- `refactor` - Code Refactoring & Technical Debt
+- `design` - Design Systems & UI/UX
+- `accessibility` - Accessibility Compliance (WCAG)
+- `analytics` - Analytics & Metrics Implementation
+- `datamigration` - Data Migration & ETL
+- `qa` - Quality Assurance & Test Planning
 - And more...
 
 **When to Use Subagents:**
@@ -269,7 +263,7 @@ Skills are **context-aware helpers** that activate automatically based on keywor
 Auto-formatted outputs following AgileFlow templates:
 - `agileflow-story-writer` - Converts discussions to user stories
 - `agileflow-acceptance-criteria` - Generates Given/When/Then AC
-- `agileflow-epic-planner` - Breaks features into epics/stories
+- `epic-planner` - Breaks features into epics/stories
 - `agileflow-sprint-planner` - Plans sprints with velocity
 - `agileflow-retro-facilitator` - Structures retrospectives
 - `agileflow-adr` - Captures architectural decisions
@@ -380,7 +374,7 @@ Hooks are automatic triggers that execute commands in response to events:
 
 ### Daily Workflow
 
-1. **Pick a story** - Use `agileflow-mentor` or check `docs/09-agents/status.json`
+1. **Pick a story** - Use `mentor` or check `docs/09-agents/status.json`
 2. **Implement to AC** - Follow acceptance criteria
 3. **Write tests** - Reference `docs/07-testing/test-cases/<STORY_ID>.md`
 4. **Update status** - Use `/AgileFlow:status`
@@ -471,12 +465,12 @@ Session Harness System tracks test status, verifies baselines, and maintains ses
 
 **Agent Integration (v2.26.0):**
 All 18 dev agents now include verification protocol:
-- agileflow-ui, agileflow-api, agileflow-ci, agileflow-devops
-- agileflow-security, agileflow-database, agileflow-testing
-- agileflow-performance, agileflow-mobile, agileflow-integrations
-- agileflow-refactor, agileflow-design, agileflow-accessibility
-- agileflow-analytics, agileflow-datamigration, agileflow-monitoring
-- agileflow-compliance, agileflow-qa
+- ui, api, ci, devops
+- security, database, testing
+- performance, mobile, integrations
+- refactor, design, accessibility
+- analytics, datamigration, monitoring
+- compliance, qa
 
 **Learn More:** See CLAUDE.md "Session Harness System" section for complete documentation.
 
@@ -536,4 +530,4 @@ MIT
 
 ## Support
 
-For issues or questions, please visit the [GitHub repository](https://github.com/xloxn69/AgileFlow).
+For issues or questions, please visit the [GitHub repository](https://github.com/projectquestorg/AgileFlow).

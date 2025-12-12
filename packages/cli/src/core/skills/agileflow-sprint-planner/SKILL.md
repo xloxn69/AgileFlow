@@ -199,7 +199,7 @@ Before finalizing sprint plan:
 ## Integration
 
 - **agileflow-story-writer**: Ensures stories are well-formed
-- **agileflow-epic-planner**: Pulls stories from epic milestones
+- **epic-planner**: Pulls stories from epic milestones
 - **agileflow-retro-facilitator**: Uses retro insights for planning
 
 ## Notes

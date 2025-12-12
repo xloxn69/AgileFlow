@@ -25,7 +25,7 @@ Generates deployment guide including:
 - **Communication plan** (who to notify)
 - **Estimated timeline**
 
-References agileflow-monitoring for setup and rollback procedures.
+References monitoring for setup and rollback procedures.
 
 ## Output
 Ready-to-follow deployment guide

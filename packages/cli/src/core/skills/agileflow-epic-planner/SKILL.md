@@ -1,5 +1,5 @@
 ---
-name: agileflow-epic-planner
+name: epic-planner
 description: Breaks down large features into properly-scoped epics with milestones and story groupings. Loads when user describes major features or initiatives.
 ---
 

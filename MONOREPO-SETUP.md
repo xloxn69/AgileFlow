@@ -47,7 +47,7 @@ AgileFlow/
 │   └── cli/                  # CLI package (npm)
 │       ├── src/              # CLI source code
 │       ├── tools/            # CLI tools
-│       ├── package.json      # @xloxn69/agileflow
+│       ├── package.json      # agileflow
 │       └── .npmignore
 │
 ├── package.json              # Root workspace config
@@ -61,7 +61,7 @@ AgileFlow/
 
 - **Website**: `agileflow.projectquestorg.com`
 - **Docs**: `docs.agileflow.projectquestorg.com`
-- **npm**: `@xloxn69/agileflow`
+- **npm**: `agileflow`
 
 ## Technology Stack
 
@@ -152,7 +152,7 @@ Two separate Vercel projects:
 ### npm (CLI)
 
 CLI package publishes from `packages/cli/`:
-- Package: `@xloxn69/agileflow`
+- Package: `agileflow`
 - Current version: `1.0.1`
 - The `apps/` folder is excluded via `.npmignore`
 

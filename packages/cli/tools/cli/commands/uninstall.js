@@ -86,7 +86,7 @@ module.exports = {
  */
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
-    'claude-code': '.claude/commands/agileflow',
+    'claude-code': '.claude/commands/AgileFlow',
     'cursor': '.cursor/rules/agileflow',
     'windsurf': '.windsurf/workflows/agileflow',
   };

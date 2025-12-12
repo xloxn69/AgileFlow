@@ -1,6 +1,6 @@
 {
-  "name": "@xloxn69/agileflow",
-  "version": "1.0.1",
+  "name": "agileflow",
+  "version": "2.30.1",
   "description": "AI-driven agile development system for Claude Code, Cursor, Windsurf, and more",
   "keywords": [
     "agile",
@@ -13,13 +13,13 @@
     "agents",
     "workflows"
   ],
-  "homepage": "https://github.com/xloxn69/AgileFlow#readme",
+  "homepage": "https://github.com/projectquestorg/AgileFlow#readme",
   "bugs": {
-    "url": "https://github.com/xloxn69/AgileFlow/issues"
+    "url": "https://github.com/projectquestorg/AgileFlow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xloxn69/AgileFlow.git"
+    "url": "git+https://github.com/projectquestorg/AgileFlow.git"
   },
   "license": "MIT",
   "author": "AgileFlow Contributors",
@@ -35,6 +35,7 @@
     "README.md"
   ],
   "scripts": {
+    "postinstall": "node tools/postinstall.js",
     "agileflow": "node tools/agileflow-npx.js",
     "agileflow:install": "node tools/cli/agileflow-cli.js install",
     "agileflow:status": "node tools/cli/agileflow-cli.js status",
