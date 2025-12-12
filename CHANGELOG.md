@@ -55,34 +55,17 @@ Updated ASCII logo and brand color for improved visual identity.
 ╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝
 ```
 
-### Improved - CLAUDE.md Documentation
+## [2.30.0] - 2025-12-11
 
-Enhanced version management workflow documentation with clearer tag creation reminders.
+### Added - Automatic Docs Structure & Customizable Folder Names
 
-**Changes**:
-- Added prominent warnings with emojis to ensure tags are created after pushing
-- Emphasized that npm publish is triggered by git tags (not direct pushes)
-- Added step-by-step checklist for release process
-- Clarified that GitHub Actions handles npm publishing automatically
-- .gitignore entries for secrets
+**Problem Solved**:
+Previously, users had to run two separate commands to get started. This release streamlines onboarding.
 
-**Usage**:
-```bash
-# Install with custom folder name
-npx agileflow install
-# Prompts: "Documentation folder name: [docs]"
-# Enter: "project-docs"
-
-# Result: All commands reference "project-docs/" instead of "docs/"
-# Example: /AgileFlow:epic creates files in "project-docs/05-epics/"
-```
-
-**Technical Implementation**:
-- New module: `tools/cli/lib/docs-setup.js` (idempotent structure creator)
-- Updated: `install.js` to call docs-setup after IDE configuration
-- Updated: `update.js` to create missing docs files
-- Updated: All IDE installers (Claude Code, Cursor, Windsurf) to replace "docs/" references
-- Base IDE class: New `replaceDocsReferences()` method for content transformation
+**Solution**:
+- `npx agileflow install` now creates both IDE config AND docs structure
+- Users can customize the docs folder name during installation
+- `npx agileflow update` ensures all docs files exist (idempotent)
 
 ### Fixed - Cursor IDE Configuration Path
 
