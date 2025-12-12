@@ -35,7 +35,21 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 2. Root `package.json` → `"version": "X.Y.Z"`
 3. `CHANGELOG.md` → Add `[X.Y.Z]` section at top
 
-**ALWAYS PUSH TO GITHUB IMMEDIATELY** - npm registry reads from GitHub releases.
+**CRITICAL WORKFLOW - ALWAYS FOLLOW THESE STEPS IN ORDER:**
+1. Commit changes with version update
+2. Push to GitHub immediately
+3. Create git tag and push
+4. Create GitHub release
+5. **PUBLISH TO NPM** - `cd packages/cli && npm publish --access public`
+
+**NEVER skip the npm publish step** - users install via npm, not GitHub.
+
+**NPM Authentication**:
+- Token stored in: `~/.npmrc`
+- Format: `//registry.npmjs.org/:_authToken=<npm_token>`
+- This file persists across sessions and is NOT committed to git
+- If publish fails with auth error, the token is already configured in ~/.npmrc
+- Token is pre-configured and should work without additional setup
 
 ---
 
@@ -235,7 +249,7 @@ gh release create v2.30.0 \
   --notes-file /tmp/v2.30.0-notes.txt \
   --latest
 
-# 5. Publish to npm (if needed)
+# 5. Publish to npm (REQUIRED - NEVER skip this step)
 cd packages/cli
 npm publish --access public
 ```
@@ -250,7 +264,7 @@ npm publish --access public
 - [ ] Release title is SPECIFIC about what was completed in THIS version
 - [ ] Git tag created and pushed
 - [ ] GitHub release created with extracted changelog notes
-- [ ] npm publish complete (if needed)
+- [ ] **npm publish complete (REQUIRED - users install from npm)**
 
 ---
 
