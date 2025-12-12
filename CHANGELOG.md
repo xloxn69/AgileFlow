@@ -5,6 +5,50 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.32.0] - 2025-12-12
+
+### Added - Automated Release System
+
+Introduced automated release script to eliminate manual steps and reduce cognitive strain.
+
+**Problem Solved**:
+Manual release process required remembering 10+ steps: version bumping (3 files), committing, pushing, tagging, creating GitHub release, extracting changelog notes. Easy to forget tag creation, leading to failed npm publishes.
+
+**Solution**:
+- New automated script: `scripts/release.sh`
+- Single command handles entire release process
+- Automatic version bumping in all 3 files
+- Automatic tag creation and push (triggers GitHub Actions npm publish)
+- Automatic changelog extraction
+- Automatic GitHub release creation
+
+**Benefits**:
+- Zero forgotten steps
+- Consistent releases every time
+- No more manual tag creation
+- No more remembering version sync
+- Massively reduced cognitive strain
+
+**Usage**:
+```bash
+./scripts/release.sh 2.32.0 "Feature Name"
+```
+
+### Changed - Repository Cleanup
+
+**Removed**:
+- Duplicate `/docs` folder (27 files, 7,570 lines)
+- Only `/apps/docs` (Fumadocs site) remains
+
+**Gitignored**:
+- `CLAUDE.md` - Internal development documentation (not for users)
+- `.playwright-mcp/` - Local development tool
+
+**Benefits**:
+- Cleaner monorepo structure
+- No confusion between duplicate docs folders
+- Internal docs stay private
+
 ## [2.31.0] - 2025-12-12
 
 ### Added - Dynamic Content Injection System
