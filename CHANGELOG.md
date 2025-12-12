@@ -5,7 +5,7 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.32.1] - 2025-12-12
+## [2.32.2] - 2025-12-12
 
 ### Fixed - Module Require Path
 
@@ -15,7 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Fix**: Updated require path to correctly go up two directory levels from `tools/cli/installers/ide/` to `tools/cli/lib/`.
 
-**Impact**: v2.32.0 installations failed during IDE setup. v2.32.1 resolves this completely.
+**Impact**: v2.32.0 and v2.32.1 installations failed during IDE setup. v2.32.2 resolves this completely.
+
+## [2.32.1] - 2025-12-12
+
+### Changed
+
+**Note**: This version was released with incomplete fix. Please use v2.32.2 instead.
 
 ## [2.32.0] - 2025-12-12
 
