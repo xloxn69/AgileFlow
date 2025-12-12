@@ -35,12 +35,18 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 2. Root `package.json` → `"version": "X.Y.Z"`
 3. `CHANGELOG.md` → Add `[X.Y.Z]` section at top
 
-**CRITICAL WORKFLOW - ALWAYS FOLLOW THESE STEPS IN ORDER:**
-1. Commit changes with version update
-2. Push to GitHub immediately
-3. Create git tag and push
-4. Create GitHub release
-5. **GitHub Actions automatically publishes to npm** (no manual step needed!)
+**🚨 CRITICAL WORKFLOW - ALWAYS FOLLOW THESE STEPS IN ORDER 🚨**
+
+**IMPORTANT**: After EVERY feature/fix commit, you MUST create a version tag to trigger npm publish!
+
+1. **Bump version** in 3 files (packages/cli/package.json, root package.json, CHANGELOG.md)
+2. **Commit** changes with version update
+3. **Push** to GitHub immediately: `git push origin main`
+4. **🚨 IMMEDIATELY CREATE AND PUSH TAG 🚨**: `git tag -a vX.Y.Z -m "Release vX.Y.Z - Feature Name" && git push origin vX.Y.Z`
+5. **Create GitHub release** (optional but recommended)
+6. **GitHub Actions automatically publishes to npm** - triggered by tag push!
+
+**❌ DO NOT FORGET STEP 4** - Without the tag, npm won't publish!
 
 **Automated npm Publishing**:
 - GitHub Action triggers on git tags matching `v*.*.*`
