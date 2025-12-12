@@ -19,6 +19,7 @@ class BaseIdeSetup {
     this.preferred = preferred;
     this.configDir = null; // Override in subclasses
     this.agileflowFolder = '.agileflow';
+    this.docsFolder = 'docs';
   }
 
   /**
@@ -27,6 +28,35 @@ class BaseIdeSetup {
    */
   setAgileflowFolder(folderName) {
     this.agileflowFolder = folderName;
+  }
+
+  /**
+   * Set the docs folder name
+   * @param {string} folderName - The docs folder name
+   */
+  setDocsFolder(folderName) {
+    this.docsFolder = folderName;
+  }
+
+  /**
+   * Replace docs/ references in content with custom folder name
+   * @param {string} content - File content
+   * @returns {string} Updated content
+   */
+  replaceDocsReferences(content) {
+    if (this.docsFolder === 'docs') {
+      return content; // No replacement needed
+    }
+
+    // Replace all variations of docs/ references
+    return content
+      .replace(/docs\//g, `${this.docsFolder}/`)
+      .replace(/`docs\//g, `\`${this.docsFolder}/`)
+      .replace(/"docs\//g, `"${this.docsFolder}/`)
+      .replace(/'docs\//g, `'${this.docsFolder}/`)
+      .replace(/\(docs\//g, `(${this.docsFolder}/`)
+      .replace(/docs\/\)/g, `${this.docsFolder}/)`)
+      .replace(/\bdocs\b(?!\.)/g, this.docsFolder); // Replace standalone "docs" word
   }
 
   /**

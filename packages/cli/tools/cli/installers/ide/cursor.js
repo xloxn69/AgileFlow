@@ -1,8 +1,8 @@
 /**
  * AgileFlow CLI - Cursor IDE Installer
  *
- * Installs AgileFlow rules for Cursor IDE.
- * Cursor uses .mdc (Markdown with Context) files in .cursor/rules/
+ * Installs AgileFlow commands for Cursor IDE.
+ * Cursor uses plain Markdown files in .cursor/commands/
  */
 
 const path = require('node:path');
@@ -15,9 +15,9 @@ const { BaseIdeSetup } = require('./_base-ide');
  */
 class CursorSetup extends BaseIdeSetup {
   constructor() {
-    super('cursor', 'Cursor', true);
+    super('cursor', 'Cursor', false);
     this.configDir = '.cursor';
-    this.rulesDir = 'rules';
+    this.commandsDir = 'commands';
   }
 
   /**
@@ -32,12 +32,12 @@ class CursorSetup extends BaseIdeSetup {
     // Clean up old installation first
     await this.cleanup(projectDir);
 
-    // Create .cursor/rules/agileflow directory
+    // Create .cursor/commands/AgileFlow directory
     const cursorDir = path.join(projectDir, this.configDir);
-    const rulesDir = path.join(cursorDir, this.rulesDir);
-    const agileflowRulesDir = path.join(rulesDir, 'agileflow');
+    const commandsDir = path.join(cursorDir, this.commandsDir);
+    const agileflowCommandsDir = path.join(commandsDir, 'AgileFlow');
 
-    await this.ensureDir(agileflowRulesDir);
+    await this.ensureDir(agileflowCommandsDir);
 
     // Get commands from AgileFlow installation
     const commandsSource = path.join(agileflowDir, 'commands');
@@ -47,17 +47,20 @@ class CursorSetup extends BaseIdeSetup {
       const commands = await this.scanDirectory(commandsSource, '.md');
 
       for (const command of commands) {
-        // Create .mdc file with MDC format
-        const mdcContent = await this.createCommandMdc(command, agileflowDir, projectDir);
-        const targetPath = path.join(agileflowRulesDir, `${command.name}.mdc`);
+        // Read the original command content
+        let content = await this.readFile(command.path);
 
-        await this.writeFile(targetPath, mdcContent);
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        const targetPath = path.join(agileflowCommandsDir, `${command.name}.md`);
+        await this.writeFile(targetPath, content);
         commandCount++;
       }
     }
 
     // Create agents subdirectory
-    const agileflowAgentsDir = path.join(agileflowRulesDir, 'agents');
+    const agileflowAgentsDir = path.join(agileflowCommandsDir, 'agents');
     await this.ensureDir(agileflowAgentsDir);
 
     // Get agents from AgileFlow installation
@@ -68,19 +71,22 @@ class CursorSetup extends BaseIdeSetup {
       const agents = await this.scanDirectory(agentsSource, '.md');
 
       for (const agent of agents) {
-        // Create .mdc file with MDC format
-        const mdcContent = await this.createAgentMdc(agent, agileflowDir, projectDir);
-        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.mdc`);
+        // Read the original agent content
+        let content = await this.readFile(agent.path);
 
-        await this.writeFile(targetPath, mdcContent);
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.md`);
+        await this.writeFile(targetPath, content);
         agentCount++;
       }
     }
 
     console.log(chalk.green(`  ✓ ${this.displayName} configured:`));
-    console.log(chalk.dim(`    - ${commandCount} rules installed`));
-    console.log(chalk.dim(`    - ${agentCount} agent rules installed`));
-    console.log(chalk.dim(`    - Path: ${path.relative(projectDir, agileflowRulesDir)}`));
+    console.log(chalk.dim(`    - ${commandCount} commands installed`));
+    console.log(chalk.dim(`    - ${agentCount} agents installed`));
+    console.log(chalk.dim(`    - Path: ${path.relative(projectDir, agileflowCommandsDir)}`));
 
     return {
       success: true,
@@ -94,95 +100,18 @@ class CursorSetup extends BaseIdeSetup {
    * @param {string} projectDir - Project directory
    */
   async cleanup(projectDir) {
-    const agileflowPath = path.join(projectDir, this.configDir, this.rulesDir, 'agileflow');
-    if (await this.exists(agileflowPath)) {
-      await fs.remove(agileflowPath);
+    // Remove old .cursor/rules/agileflow (deprecated)
+    const oldRulesPath = path.join(projectDir, this.configDir, 'rules', 'agileflow');
+    if (await this.exists(oldRulesPath)) {
+      await fs.remove(oldRulesPath);
       console.log(chalk.dim(`    Removed old AgileFlow rules from ${this.displayName}`));
     }
-  }
 
-  /**
-   * Create an MDC file for a command
-   * @param {Object} command - Command info
-   * @param {string} agileflowDir - AgileFlow directory
-   * @param {string} projectDir - Project directory
-   * @returns {Promise<string>} MDC content
-   */
-  async createCommandMdc(command, agileflowDir, projectDir) {
-    // Read the original command file
-    const content = await this.readFile(command.path);
-
-    // Extract description from frontmatter if present
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let description = command.name;
-
-    if (frontmatterMatch) {
-      const descMatch = frontmatterMatch[1].match(/description:\s*["']?([^"'\n]+)["']?/);
-      if (descMatch) {
-        description = descMatch[1];
-      }
+    // Remove .cursor/commands/AgileFlow (for re-installation)
+    const commandsPath = path.join(projectDir, this.configDir, this.commandsDir, 'AgileFlow');
+    if (await this.exists(commandsPath)) {
+      await fs.remove(commandsPath);
     }
-
-    // Create MDC format with metadata
-    const relativePath = path.relative(projectDir, command.path);
-
-    return `---
-description: "${description}"
-globs: []
-alwaysApply: false
----
-
-# AgileFlow: ${command.name}
-
-Load and execute the AgileFlow command from: ${relativePath}
-
-When this rule is activated, read the full command file and follow its instructions.
-`;
-  }
-
-  /**
-   * Create an MDC file for an agent
-   * @param {Object} agent - Agent info
-   * @param {string} agileflowDir - AgileFlow directory
-   * @param {string} projectDir - Project directory
-   * @returns {Promise<string>} MDC content
-   */
-  async createAgentMdc(agent, agileflowDir, projectDir) {
-    // Read the original agent file
-    const content = await this.readFile(agent.path);
-
-    // Extract metadata from frontmatter
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    let description = agent.name;
-    let name = agent.name;
-
-    if (frontmatterMatch) {
-      const descMatch = frontmatterMatch[1].match(/description:\s*["']?([^"'\n]+)["']?/);
-      const nameMatch = frontmatterMatch[1].match(/name:\s*["']?([^"'\n]+)["']?/);
-
-      if (descMatch) description = descMatch[1];
-      if (nameMatch) name = nameMatch[1];
-    }
-
-    // Create MDC format
-    const relativePath = path.relative(projectDir, agent.path);
-
-    return `---
-description: "${description}"
-globs: []
-alwaysApply: false
----
-
-# AgileFlow Agent: ${name}
-
-Activate the AgileFlow agent from: ${relativePath}
-
-When this rule is activated:
-1. Read the full agent file
-2. Adopt the agent's persona and communication style
-3. Follow all instructions and use specified tools
-4. Stay in character until given an exit command
-`;
   }
 }
 

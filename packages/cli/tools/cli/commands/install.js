@@ -9,6 +9,7 @@ const path = require('node:path');
 const { Installer } = require('../installers/core/installer');
 const { IdeManager } = require('../installers/ide/manager');
 const { promptInstall, success, error, info, displaySection } = require('../lib/ui');
+const { createDocsStructure } = require('../lib/docs-setup');
 
 const installer = new Installer();
 const ideManager = new IdeManager();
@@ -31,6 +32,7 @@ module.exports = {
           ides: ['claude-code'],
           userName: 'Developer',
           agileflowFolder: '.agileflow',
+          docsFolder: 'docs',
         };
       } else {
         // Interactive prompts
@@ -55,9 +57,21 @@ module.exports = {
       displaySection('Configuring IDEs');
 
       ideManager.setAgileflowFolder(config.agileflowFolder);
+      ideManager.setDocsFolder(config.docsFolder);
 
       for (const ide of config.ides) {
         await ideManager.setup(ide, config.directory, coreResult.path);
+      }
+
+      // Create docs structure
+      displaySection('Creating Documentation Structure', `Folder: ${config.docsFolder}/`);
+      const docsResult = await createDocsStructure(config.directory, config.docsFolder);
+
+      if (!docsResult.success) {
+        error('Failed to create docs structure');
+        if (docsResult.errors.length > 0) {
+          docsResult.errors.forEach((err) => error(`  ${err}`));
+        }
       }
 
       // Final summary
