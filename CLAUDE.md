@@ -40,16 +40,25 @@ Added /AgileFlow:compress to reduce status.json size by stripping verbose fields
 2. Push to GitHub immediately
 3. Create git tag and push
 4. Create GitHub release
-5. **PUBLISH TO NPM** - `cd packages/cli && npm publish --access public`
+5. **GitHub Actions automatically publishes to npm** (no manual step needed!)
 
-**NEVER skip the npm publish step** - users install via npm, not GitHub.
+**Automated npm Publishing**:
+- GitHub Action triggers on git tags matching `v*.*.*`
+- Workflow: `.github/workflows/npm-publish.yml`
+- Automatically publishes to npm when you push a tag
+- **No manual npm publish needed** - it's fully automated!
 
-**NPM Authentication**:
-- Token stored in: `~/.npmrc`
+**GitHub Secrets Setup** (One-time):
+- Navigate to: https://github.com/projectquestorg/AgileFlow/settings/secrets/actions
+- Click "New repository secret"
+- Name: `NPM_TOKEN`
+- Value: Your npm token (starts with `npm_`)
+- This token is encrypted and never exposed in logs
+
+**Manual npm Publishing** (Backup/Testing):
+- Local token stored in: `~/.npmrc` (for emergency manual publishes)
 - Format: `//registry.npmjs.org/:_authToken=<npm_token>`
 - This file persists across sessions and is NOT committed to git
-- If publish fails with auth error, the token is already configured in ~/.npmrc
-- Token is pre-configured and should work without additional setup
 
 ---
 
@@ -249,9 +258,9 @@ gh release create v2.30.0 \
   --notes-file /tmp/v2.30.0-notes.txt \
   --latest
 
-# 5. Publish to npm (REQUIRED - NEVER skip this step)
-cd packages/cli
-npm publish --access public
+# 5. GitHub Actions automatically publishes to npm
+# No manual step needed! Just wait for the action to complete.
+# Monitor at: https://github.com/projectquestorg/AgileFlow/actions
 ```
 
 **Release Checklist**:
@@ -264,7 +273,8 @@ npm publish --access public
 - [ ] Release title is SPECIFIC about what was completed in THIS version
 - [ ] Git tag created and pushed
 - [ ] GitHub release created with extracted changelog notes
-- [ ] **npm publish complete (REQUIRED - users install from npm)**
+- [ ] **Wait for GitHub Actions to publish to npm** (automatic - check Actions tab)
+- [ ] Verify publish: `npm view agileflow version`
 
 ---
 
