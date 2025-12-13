@@ -98,11 +98,17 @@ export async function HowItWorks() {
 
               <div className="mt-4 rounded-tile border border-border bg-white px-4 py-4 shadow-hairline">
                 <div className="space-y-1 break-all font-mono text-[12px] leading-relaxed text-secondary">
+                  <div>docs/00-meta/</div>
+                  <div>docs/01-brainstorming/</div>
+                  <div>docs/02-practices/</div>
                   <div>docs/03-decisions/</div>
+                  <div>docs/04-architecture/</div>
                   <div>docs/05-epics/</div>
                   <div>docs/06-stories/</div>
+                  <div>docs/07-testing/</div>
                   <div>docs/08-project/</div>
                   <div>docs/09-agents/</div>
+                  <div>docs/10-research/</div>
                   <div>docs/context.md</div>
                 </div>
               </div>
