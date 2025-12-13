@@ -5,6 +5,147 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.34.0] - 2025-12-13
+
+### Added - Quality of Life Improvements
+
+Six high-impact improvements to enhance CLI usability, configuration management, and auto-repair capabilities.
+
+#### 1. Configuration Persistence
+**What Changed**: Installation configuration now persists in `manifest.yaml` and is automatically reused across commands.
+
+**Previous Behavior**: The `update` command hardcoded `userName: 'Developer'` and couldn't remember user preferences.
+
+**New Behavior**:
+- `manifest.yaml` now stores: `user_name`, `ides`, `agileflow_folder`, `docs_folder`
+- `getStatus()` returns complete configuration
+- `update` command reuses persisted config automatically
+- No more hardcoded defaults
+
+**Impact**: User preferences are remembered and consistently applied across CLI commands.
+
+#### 2. Smart Update with npm Registry Check
+**What Changed**: Update command now checks npm registry for the latest version instead of only comparing against local package.json.
+
+**New File**: `packages/cli/tools/cli/lib/npm-utils.js` - npm registry API utilities
+
+**Features**:
+- Queries npm registry for latest version of `agileflow`
+- Compares installed version vs CLI version vs npm latest
+- Detects outdated CLI and suggests `npx agileflow@latest update`
+- Provides clear version information during updates
+- Handles offline/network errors gracefully (falls back to local version)
+
+**Example Output**:
+```
+Installed:    2.33.0
+CLI version:  2.33.1
+Latest (npm): 2.34.0
+
+⚠ Your CLI is outdated!
+  To update your installation, run:
+  npx agileflow@latest update
+```
+
+**Impact**: Users always know when updates are available and can easily upgrade to the latest version.
+
+#### 3. Safer Auto-Install with CI Detection
+**What Changed**: Postinstall auto-setup now includes safety guards for CI environments, global installs, and interactive confirmation.
+
+**New Safety Checks**:
+- **CI Detection**: Skip auto-install in CI environments (`process.env.CI`)
+- **Global Install Detection**: Skip auto-install for global installations (`process.env.npm_config_global`)
+- **Interactive Confirmation**: When running interactively, prompt user with options:
+  - 1) Run setup now (recommended)
+  - 2) Skip setup for now (run `npx agileflow setup` later)
+- **Non-Interactive Mode**: Automated scripts still use `--yes` flag
+
+**Impact**: Prevents unwanted auto-installs in CI pipelines and gives users more control during manual installations.
+
+#### 4. Doctor --fix Command for Auto-Repair
+**What Changed**: Added `--fix` flag to `doctor` command for automatic issue resolution.
+
+**New Flag**: `npx agileflow doctor --fix`
+
+**Auto-Repairs**:
+- Missing `manifest.yaml` - Recreates with current configuration
+- Missing core content - Reinstalls agents, commands, skills
+- Missing IDE configurations - Regenerates IDE-specific configs
+- Orphaned IDE configurations - Removes configs not in manifest
+
+**Example**:
+```bash
+# Diagnose issues
+npx agileflow doctor
+
+# Found 3 fixable issue(s). Run with --fix to auto-repair.
+
+# Auto-repair
+npx agileflow doctor --fix
+# Applies all fixes automatically
+```
+
+**Impact**: Users can quickly resolve installation issues without manual intervention or re-running setup.
+
+#### 5. Config Get/Set Commands
+**What Changed**: Added new `config` command for managing preferences without re-running setup.
+
+**New Command**: `npx agileflow config <subcommand>`
+
+**Subcommands**:
+- `list` - Show all configuration settings
+- `get <key>` - Get a specific configuration value
+- `set <key> <value>` - Update a configuration value
+
+**Configurable Keys**:
+- `userName` - Your name for config files
+- `ides` - Comma-separated IDE list (claude-code,cursor,windsurf)
+- `agileflowFolder` - AgileFlow folder name (e.g., `.agileflow`)
+- `docsFolder` - Documentation folder name (e.g., `docs`)
+
+**Examples**:
+```bash
+# View all config
+npx agileflow config list
+
+# Get specific value
+npx agileflow config get userName
+# Output: Jane Developer
+
+# Update value
+npx agileflow config set userName "John Smith"
+npx agileflow config set ides "claude-code,cursor"
+```
+
+**Smart IDE Updates**: When changing `ides`, the command automatically:
+- Removes old IDE configurations
+- Installs new IDE configurations
+- Updates manifest
+
+**Impact**: Users can modify preferences without answering all setup prompts again.
+
+#### 6. Consistent Node.js Requirements
+**What Changed**: Updated GitHub Actions workflow to use Node.js 18 consistently with package.json requirements.
+
+**Modified**: `.github/workflows/npm-publish.yml` - Now uses Node.js 18
+
+**Impact**: CI environment matches development requirements, ensuring consistent builds.
+
+### Technical Details
+
+**New Files**:
+- `packages/cli/tools/cli/lib/npm-utils.js` - npm registry utilities
+- `packages/cli/tools/cli/commands/config.js` - Configuration management command
+
+**Modified Files**:
+- `packages/cli/tools/cli/installers/core/installer.js` - Enhanced manifest creation and status retrieval
+- `packages/cli/tools/cli/commands/update.js` - Added npm registry checking
+- `packages/cli/tools/cli/commands/doctor.js` - Added --fix flag and repair logic
+- `packages/cli/tools/postinstall.js` - Added CI detection and interactive prompts
+- `.github/workflows/npm-publish.yml` - Updated Node.js version to 18
+
+**Dependencies**: Added `semver` package (already in dependencies) for version comparison
+
 ## [2.33.1] - 2025-12-13
 
 ### Fixed - Documentation Updates

@@ -41,7 +41,7 @@ class Installer {
    * @returns {Promise<Object>} Installation result
    */
   async install(config) {
-    const { directory, ides, userName, agileflowFolder } = config;
+    const { directory, ides, userName, agileflowFolder, docsFolder } = config;
 
     const agileflowDir = path.join(directory, agileflowFolder);
     const spinner = ora('Installing AgileFlow...').start();
@@ -72,7 +72,7 @@ class Installer {
 
       // Create manifest
       spinner.text = 'Creating manifest...';
-      await this.createManifest(cfgDir, ides);
+      await this.createManifest(cfgDir, {ides, userName, agileflowFolder, docsFolder});
 
       // Count installed items
       const counts = await this.countInstalledItems(agileflowDir);
@@ -200,9 +200,10 @@ class Installer {
   /**
    * Create manifest file
    * @param {string} cfgDir - Config directory
-   * @param {string[]} ides - Selected IDEs
+   * @param {Object} config - Manifest configuration
    */
-  async createManifest(cfgDir, ides) {
+  async createManifest(cfgDir, config) {
+    const { ides, userName, agileflowFolder, docsFolder } = config;
     const packageJson = require(path.join(this.packageRoot, 'package.json'));
 
     const manifest = {
@@ -211,6 +212,9 @@ class Installer {
       updated_at: new Date().toISOString(),
       ides: ides,
       modules: ['core'],
+      user_name: userName,
+      agileflow_folder: agileflowFolder || '.agileflow',
+      docs_folder: docsFolder || 'docs',
     };
 
     const manifestPath = path.join(cfgDir, 'manifest.yaml');
@@ -265,6 +269,11 @@ class Installer {
       version: null,
       ides: [],
       modules: [],
+      userName: null,
+      agileflowFolder: null,
+      docsFolder: null,
+      installedAt: null,
+      updatedAt: null,
     };
 
     // Look for AgileFlow installation
@@ -284,6 +293,11 @@ class Installer {
         status.version = manifest.version;
         status.ides = manifest.ides || [];
         status.modules = manifest.modules || [];
+        status.userName = manifest.user_name || 'Developer';
+        status.agileflowFolder = manifest.agileflow_folder || folder;
+        status.docsFolder = manifest.docs_folder || 'docs';
+        status.installedAt = manifest.installed_at;
+        status.updatedAt = manifest.updated_at;
 
         break;
       }

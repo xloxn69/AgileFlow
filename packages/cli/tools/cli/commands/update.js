@@ -6,10 +6,12 @@
 
 const chalk = require('chalk');
 const path = require('node:path');
+const semver = require('semver');
 const { Installer } = require('../installers/core/installer');
 const { IdeManager } = require('../installers/ide/manager');
 const { displayLogo, displaySection, success, warning, error, info, confirm } = require('../lib/ui');
 const { createDocsStructure, getDocsFolderName } = require('../lib/docs-setup');
+const { getLatestVersion } = require('../lib/npm-utils');
 
 const installer = new Installer();
 const ideManager = new IdeManager();
@@ -38,21 +40,49 @@ module.exports = {
 
       displaySection('Updating AgileFlow', `Current version: ${status.version}`);
 
-      // Get package version
+      // Get local CLI version and npm registry version
       const packageJson = require(path.join(__dirname, '..', '..', '..', 'package.json'));
-      const newVersion = packageJson.version;
+      const localCliVersion = packageJson.version;
 
-      console.log(chalk.bold('Current: '), status.version);
-      console.log(chalk.bold('Latest:  '), newVersion);
+      console.log(chalk.dim('Checking npm registry for latest version...'));
+      const npmLatestVersion = await getLatestVersion('agileflow');
 
-      if (status.version === newVersion && !options.force) {
+      if (!npmLatestVersion) {
+        warning('Could not check npm registry for latest version');
+        console.log(chalk.dim('Continuing with local CLI version...\n'));
+      }
+
+      const latestVersion = npmLatestVersion || localCliVersion;
+
+      console.log(chalk.bold('Installed:   '), status.version);
+      console.log(chalk.bold('CLI version: '), localCliVersion);
+      if (npmLatestVersion) {
+        console.log(chalk.bold('Latest (npm):'), npmLatestVersion);
+      }
+
+      // Check if CLI itself is outdated
+      if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion)) {
+        console.log();
+        warning('Your CLI is outdated!');
+        console.log(chalk.dim(`  To update your installation, run:\n`));
+        console.log(chalk.cyan(`  npx agileflow@latest update\n`));
+
+        const useOutdated = await confirm('Continue with outdated CLI anyway?');
+        if (!useOutdated) {
+          console.log(chalk.dim('\nUpdate cancelled\n'));
+          process.exit(0);
+        }
+      }
+
+      // Check if project installation is up to date
+      if (status.version === latestVersion && !options.force) {
         success('Already on the latest version');
         process.exit(0);
       }
 
       // Confirm update
       if (!options.force) {
-        const proceed = await confirm(`Update to v${newVersion}?`);
+        const proceed = await confirm(`Update to v${latestVersion}?`);
         if (!proceed) {
           console.log(chalk.dim('\nUpdate cancelled\n'));
           process.exit(0);
@@ -64,13 +94,13 @@ module.exports = {
       // Get docs folder name from metadata (or default to 'docs')
       const docsFolder = await getDocsFolderName(directory);
 
-      // Re-run installation with existing config
+      // Re-run installation with existing config from manifest
       const config = {
         directory,
         ides: status.ides || ['claude-code'],
-        userName: 'Developer', // Could read from existing config
-        agileflowFolder: path.basename(status.path),
-        docsFolder,
+        userName: status.userName || 'Developer',
+        agileflowFolder: status.agileflowFolder || path.basename(status.path),
+        docsFolder: status.docsFolder || docsFolder,
       };
 
       // Run core installation
@@ -102,7 +132,7 @@ module.exports = {
         }
       }
 
-      console.log(chalk.green(`\n✨ Update complete! (${status.version} → ${newVersion})\n`));
+      console.log(chalk.green(`\n✨ Update complete! (${status.version} → ${latestVersion})\n`));
 
       process.exit(0);
     } catch (err) {
