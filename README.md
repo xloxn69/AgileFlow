@@ -12,7 +12,7 @@
 
 ## Quick Start
 
-### Installation
+### Setup
 
 #### Option 1: Add to package.json (Recommended - Auto-Setup)
 
@@ -25,7 +25,7 @@ AgileFlow will automatically set up when installed! The postinstall script will:
 2. Install AgileFlow core (41 commands, 26 agents, 23 skills)
 3. Configure your IDE automatically
 
-To skip auto-install, set the environment variable:
+To skip auto-setup, set the environment variable:
 ```bash
 AGILEFLOW_SKIP_INSTALL=true npm install agileflow
 ```
@@ -33,7 +33,7 @@ AGILEFLOW_SKIP_INSTALL=true npm install agileflow
 #### Option 2: One-time setup with npx
 
 ```bash
-npx agileflow install
+npx agileflow setup
 ```
 
 This will:
@@ -44,14 +44,14 @@ This will:
 ### CLI Commands
 
 ```bash
-npx agileflow install     # Install to project
+npx agileflow setup       # Set up AgileFlow in project
 npx agileflow status      # Check installation + updates
 npx agileflow update      # Update to latest version
 npx agileflow doctor      # Diagnose issues
 npx agileflow uninstall   # Remove from project
 ```
 
-### After Installation
+### After Setup
 
 **Initialize the system:**
 ```
