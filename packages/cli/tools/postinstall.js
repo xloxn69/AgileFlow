@@ -105,12 +105,12 @@ function runAutoInstall() {
     const cliPath = path.join(__dirname, 'cli', 'agileflow-cli.js');
 
     if (!fs.existsSync(cliPath)) {
-      log('⚠️  Could not find AgileFlow CLI. Run "npx agileflow install" manually.', 'yellow');
+      log('⚠️  Could not find AgileFlow CLI. Run "npx agileflow setup" manually.', 'yellow');
       return;
     }
 
-    // Run install command with --yes flag (non-interactive)
-    execSync(`node "${cliPath}" install --yes`, {
+    // Run setup command with --yes flag (non-interactive)
+    execSync(`node "${cliPath}" setup --yes`, {
       stdio: 'inherit',
       cwd: process.cwd(),
     });
@@ -118,13 +118,13 @@ function runAutoInstall() {
     console.log('');
     log('✨ AgileFlow is ready to use!', 'green');
     console.log('');
-    log('To skip auto-install in the future, set: AGILEFLOW_SKIP_INSTALL=true', 'dim');
+    log('To skip auto-setup in the future, set: AGILEFLOW_SKIP_INSTALL=true', 'dim');
     console.log('');
 
   } catch (error) {
     console.log('');
-    log('⚠️  Auto-installation encountered an issue.', 'yellow');
-    log('   You can run "npx agileflow install" manually to complete setup.', 'yellow');
+    log('⚠️  Auto-setup encountered an issue.', 'yellow');
+    log('   You can run "npx agileflow setup" manually to complete setup.', 'yellow');
     console.log('');
 
     if (process.env.DEBUG) {

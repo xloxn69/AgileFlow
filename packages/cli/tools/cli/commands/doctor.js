@@ -57,7 +57,7 @@ module.exports = {
 
       if (!status.installed) {
         warning('No AgileFlow installation found');
-        console.log(chalk.dim(`  Run 'npx agileflow install' to set up\n`));
+        console.log(chalk.dim(`  Run 'npx agileflow setup' to set up\n`));
 
         // Summary
         printSummary(issues, warnings);
