@@ -5,6 +5,33 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.33.0] - 2025-12-12
+
+### Changed - Command Rename (Breaking Change)
+
+**Breaking Change**: The CLI command has been renamed from `install` to `setup` for consistency with the `/AgileFlow:setup` slash command.
+
+**Old Command**:
+```bash
+npx agileflow install
+```
+
+**New Command**:
+```bash
+npx agileflow setup
+```
+
+**Changes**:
+- Renamed `install.js` to `setup.js`
+- Updated command name: `install` → `setup`
+- Updated descriptions: "Install" → "Set up"
+- Updated package.json scripts: `agileflow:install` → `agileflow:setup`
+- Updated user-facing messages: "Installation" → "Setup"
+
+**Impact**: Users must use `npx agileflow setup` instead of `npx agileflow install`. The old command will no longer work.
+
+**Rationale**: Consistency with the `/AgileFlow:setup` command that users interact with in their IDE. Using the same terminology ("setup") across CLI and slash commands improves clarity.
+
 ## [2.32.4] - 2025-12-12
 
 ### Improved - Error Handling
