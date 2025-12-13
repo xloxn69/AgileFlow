@@ -1,7 +1,7 @@
 /**
- * AgileFlow CLI - Install Command
+ * AgileFlow CLI - Setup Command
  *
- * Installs AgileFlow to a project directory.
+ * Sets up AgileFlow in a project directory.
  */
 
 const chalk = require('chalk');
@@ -15,8 +15,8 @@ const installer = new Installer();
 const ideManager = new IdeManager();
 
 module.exports = {
-  name: 'install',
-  description: 'Install AgileFlow to a project',
+  name: 'setup',
+  description: 'Set up AgileFlow in a project',
   options: [
     ['-d, --directory <path>', 'Installation directory (default: current directory)'],
     ['-y, --yes', 'Skip prompts and use defaults'],
@@ -39,13 +39,13 @@ module.exports = {
         config = await promptInstall();
       }
 
-      displaySection('Installing AgileFlow', `Target: ${config.directory}`);
+      displaySection('Setting Up AgileFlow', `Target: ${config.directory}`);
 
       // Run core installation
       const coreResult = await installer.install(config);
 
       if (!coreResult.success) {
-        error('Core installation failed');
+        error('Core setup failed');
         process.exit(1);
       }
 
@@ -75,18 +75,18 @@ module.exports = {
       }
 
       // Final summary
-      console.log(chalk.green('\n✨ Installation complete!\n'));
+      console.log(chalk.green('\n✨ Setup complete!\n'));
 
       console.log(chalk.bold('Get started:'));
       info('Open your IDE and use /agileflow:help');
-      info(`Run 'npx agileflow status' to check installation`);
+      info(`Run 'npx agileflow status' to check setup`);
       info(`Run 'npx agileflow update' to get updates`);
 
       console.log(chalk.dim(`\nInstalled to: ${coreResult.path}\n`));
 
       process.exit(0);
     } catch (err) {
-      console.error(chalk.red('\nInstallation failed:'), err.message);
+      console.error(chalk.red('\nSetup failed:'), err.message);
       if (process.env.DEBUG) {
         console.error(err.stack);
       }
