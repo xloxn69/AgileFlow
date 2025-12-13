@@ -31,6 +31,19 @@ function shouldSkipInstall() {
     return true;
   }
 
+  // Skip in CI environments
+  if (process.env.CI === 'true' || process.env.CI === '1') {
+    log('ℹ️  Skipping auto-install (CI environment detected)', 'dim');
+    return true;
+  }
+
+  // Skip if installed globally
+  if (process.env.npm_config_global === 'true') {
+    log('ℹ️  Skipping auto-install (global installation)', 'dim');
+    log('   Run "agileflow setup" in your project directory instead', 'dim');
+    return true;
+  }
+
   // Skip if running in npm cache or npx temp directory
   if (__dirname.includes('_npx') || __dirname.includes('.npm')) {
     log('ℹ️  Skipping auto-install (npm cache or npx temp directory)', 'dim');
@@ -90,15 +103,12 @@ function shouldSkipInstall() {
   return false;
 }
 
-function runAutoInstall() {
+async function runAutoInstall() {
   try {
     console.log(''); // Blank line for spacing
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'blue');
     log('  AgileFlow Auto-Setup', 'blue');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'blue');
-    console.log('');
-
-    log('🚀 Setting up AgileFlow in your project...', 'green');
     console.log('');
 
     // Path to the CLI
@@ -109,11 +119,57 @@ function runAutoInstall() {
       return;
     }
 
-    // Run setup command with --yes flag (non-interactive)
-    execSync(`node "${cliPath}" setup --yes`, {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-    });
+    // Check if running in interactive mode (TTY)
+    const isInteractive = process.stdin.isTTY && process.stdout.isTTY;
+
+    if (isInteractive) {
+      // Interactive mode: ask for confirmation
+      console.log('AgileFlow can set up automatically in your project now.');
+      console.log('');
+      console.log('Options:');
+      console.log('  1) Run setup now (recommended)');
+      console.log('  2) Skip setup for now (run "npx agileflow setup" later)');
+      console.log('');
+
+      // Use readline for simple input
+      const readline = require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+
+      const answer = await new Promise((resolve) => {
+        readline.question('Choose an option (1 or 2): ', (ans) => {
+          readline.close();
+          resolve(ans.trim());
+        });
+      });
+
+      console.log('');
+
+      if (answer !== '1') {
+        log('ℹ️  Setup skipped. Run "npx agileflow setup" when ready.', 'dim');
+        console.log('');
+        return;
+      }
+
+      log('🚀 Setting up AgileFlow in your project...', 'green');
+      console.log('');
+
+      // Run setup command (interactive mode, no --yes flag)
+      execSync(`node "${cliPath}" setup`, {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+    } else {
+      // Non-interactive mode (e.g., npm install in scripts): run with --yes
+      log('🚀 Setting up AgileFlow in your project...', 'green');
+      console.log('');
+
+      execSync(`node "${cliPath}" setup --yes`, {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+    }
 
     console.log('');
     log('✨ AgileFlow is ready to use!', 'green');
@@ -134,8 +190,10 @@ function runAutoInstall() {
 }
 
 // Main execution
-if (shouldSkipInstall()) {
-  process.exit(0);
-}
+(async () => {
+  if (shouldSkipInstall()) {
+    process.exit(0);
+  }
 
-runAutoInstall();
+  await runAutoInstall();
+})();
