@@ -60,3 +60,13 @@ body {
     0 0 0 5px rgba(37, 99, 235, 0.12);
 }
 
+.shiki code {
+  white-space: pre;
+}
+
+@media (max-width: 640px) {
+  .shiki code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

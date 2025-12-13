@@ -30,8 +30,8 @@ export async function HowItWorks() {
         </div>
 
         <div className="lg:col-span-8">
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="rounded-card border border-border bg-white p-5 shadow-hairline">
+          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:snap-none lg:gap-6 lg:overflow-visible lg:pb-0 lg:grid-cols-3">
+            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <Terminal className="h-4 w-4 text-muted" />
@@ -79,12 +79,12 @@ export async function HowItWorks() {
                 </div>
               </div>
 
-              <div className="mt-5 h-20">
+              <div className="mt-5 h-16 sm:h-20">
                 <MicroDemo name="terminalTyping" className="h-full w-full" />
               </div>
             </div>
 
-            <div className="rounded-card border border-border bg-white p-5 shadow-hairline">
+            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <FolderTree className="h-4 w-4 text-muted" />
@@ -97,7 +97,7 @@ export async function HowItWorks() {
               </p>
 
               <div className="mt-4 rounded-tile border border-border bg-white px-4 py-4 shadow-hairline">
-                <div className="space-y-1 font-mono text-[12px] leading-relaxed text-secondary">
+                <div className="space-y-1 break-all font-mono text-[12px] leading-relaxed text-secondary">
                   <div>docs/00-meta/</div>
                   <div>docs/01-process/</div>
                   <div>docs/02-planning/</div>
@@ -107,12 +107,12 @@ export async function HowItWorks() {
                 </div>
               </div>
 
-              <div className="mt-5 h-20">
+              <div className="mt-5 h-16 sm:h-20">
                 <MicroDemo name="docsTreeGrowth" className="h-full w-full" />
               </div>
             </div>
 
-            <div className="rounded-card border border-border bg-white p-5 shadow-hairline">
+            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <GitPullRequest className="h-4 w-4 text-muted" />
@@ -136,7 +136,7 @@ export async function HowItWorks() {
                 />
               </div>
 
-              <div className="mt-5 h-20">
+              <div className="mt-5 h-16 sm:h-20">
                 <MicroDemo name="commandFlow" className="h-full w-full" />
               </div>
             </div>

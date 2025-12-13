@@ -49,7 +49,7 @@ export async function codeToHtml(code: string, lang: string) {
           return node;
         },
         code(node) {
-          node.properties.style = 'display:block;white-space:pre;';
+          node.properties.style = 'display:block;';
           return node;
         },
       },
