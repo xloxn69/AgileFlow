@@ -30,8 +30,8 @@ export async function HowItWorks() {
         </div>
 
         <div className="lg:col-span-8">
-          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:snap-none lg:gap-6 lg:overflow-visible lg:pb-0 lg:grid-cols-3">
-            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            <div className="rounded-card border border-border bg-white p-4 shadow-hairline sm:p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <Terminal className="h-4 w-4 text-muted" />
@@ -84,7 +84,7 @@ export async function HowItWorks() {
               </div>
             </div>
 
-            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
+            <div className="rounded-card border border-border bg-white p-4 shadow-hairline sm:p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <FolderTree className="h-4 w-4 text-muted" />
@@ -112,7 +112,7 @@ export async function HowItWorks() {
               </div>
             </div>
 
-            <div className="shrink-0 snap-start rounded-card border border-border bg-white p-5 shadow-hairline min-w-[92%] sm:min-w-[70%] lg:min-w-0 lg:shrink">
+            <div className="rounded-card border border-border bg-white p-4 shadow-hairline sm:p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold tracking-tightish">
                   <GitPullRequest className="h-4 w-4 text-muted" />

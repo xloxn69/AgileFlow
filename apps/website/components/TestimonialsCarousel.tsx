@@ -122,49 +122,11 @@ export function TestimonialsCarousel() {
         </div>
 
         <div className="relative">
-          <div className="absolute right-0 top-0 z-10 hidden items-center gap-2 sm:flex">
-            <button
-              type="button"
-              className="rounded-full border border-border bg-white p-2 text-secondary shadow-hairline transition hover:bg-black/[0.03] focus-ring"
-              onClick={() => go(Math.max(active - 1, 0), 'prev')}
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              className="rounded-full border border-border bg-white p-2 text-secondary shadow-hairline transition hover:bg-black/[0.03] focus-ring"
-              onClick={() => go(Math.min(active + 1, testimonials.length - 1), 'next')}
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div
-            ref={scrollerRef}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pr-4 pt-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:pr-10"
-            onPointerDown={() => {
-              setHasInteracted(true);
-              trackEvent('carousel_interaction', { type: 'drag' });
-            }}
-          >
-            {testimonials.map((t, idx) => (
+          <div className="grid gap-4 sm:hidden">
+            {testimonials.map((t) => (
               <div
                 key={t.id}
-                ref={(el) => {
-                  cardRefs.current[idx] = el;
-                }}
-                data-index={idx}
-                className={cn(
-                  'snap-start',
-                  'min-w-[92%] sm:min-w-[78%] lg:min-w-[70%] xl:min-w-[64%]',
-                  'rounded-card border border-border bg-white p-6 shadow-hairline transition duration-200 ease-quiet',
-                  idx === active
-                    ? 'border-black/20'
-                    : 'border-border',
-                  idx === active ? 'sm:scale-[1.00]' : 'sm:scale-[0.98] sm:opacity-[0.92]',
-                )}
+                className="rounded-card border border-border bg-white p-5 shadow-hairline"
               >
                 <div className="flex items-start gap-4">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-panel text-xs font-semibold text-secondary">
@@ -182,8 +144,11 @@ export function TestimonialsCarousel() {
             ))}
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 sm:hidden">
+          <div
+            ref={scrollerRef}
+            className="relative hidden sm:block"
+          >
+            <div className="absolute right-0 top-0 z-10 flex items-center gap-2">
               <button
                 type="button"
                 className="rounded-full border border-border bg-white p-2 text-secondary shadow-hairline transition hover:bg-black/[0.03] focus-ring"
@@ -202,6 +167,45 @@ export function TestimonialsCarousel() {
               </button>
             </div>
 
+            <div
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 pr-10 pt-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              onPointerDown={() => {
+                setHasInteracted(true);
+                trackEvent('carousel_interaction', { type: 'drag' });
+              }}
+            >
+              {testimonials.map((t, idx) => (
+                <div
+                  key={t.id}
+                  ref={(el) => {
+                    cardRefs.current[idx] = el;
+                  }}
+                  data-index={idx}
+                  className={cn(
+                    'snap-start',
+                    'min-w-[78%] lg:min-w-[70%] xl:min-w-[64%]',
+                    'rounded-card border border-border bg-white p-6 shadow-hairline transition duration-200 ease-quiet',
+                    idx === active ? 'scale-[1.00]' : 'scale-[0.98] opacity-[0.92]',
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-panel text-xs font-semibold text-secondary">
+                      {t.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="whitespace-pre-line text-sm leading-relaxed text-ink">{t.quote}</p>
+                      <div className="mt-4 flex flex-col gap-0.5">
+                        <div className="text-sm font-semibold tracking-tightish text-ink">{t.person}</div>
+                        <div className="text-xs text-muted">{t.meta}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-2 hidden flex-wrap items-center gap-2 sm:flex">
             {testimonials.map((t, idx) => (
               <button
                 key={t.id}
@@ -214,7 +218,7 @@ export function TestimonialsCarousel() {
                 onClick={() => go(idx, 'dot')}
               />
             ))}
-            <div className="ml-0 text-xs text-muted sm:ml-2">Autoplay starts after interaction.</div>
+            <div className="ml-2 text-xs text-muted">Autoplay starts after interaction.</div>
           </div>
         </div>
       </div>
