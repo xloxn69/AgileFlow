@@ -257,10 +257,10 @@ export function MicroDemo({
   if (name === 'docsTreeGrowth') {
     const cycle = duration(5.0);
     const folders = [
-      { y: 48, label: '00-meta', t: 0.08 },
-      { y: 74, label: '01-process', t: 0.18 },
-      { y: 100, label: '02-planning', t: 0.28 },
-      { y: 126, label: '03-stories', t: 0.38 },
+      { y: 48, label: '03-decisions', t: 0.08 },
+      { y: 74, label: '05-epics', t: 0.18 },
+      { y: 100, label: '06-stories', t: 0.28 },
+      { y: 126, label: '09-agents', t: 0.38 },
     ];
     return (
       <svg viewBox="0 0 520 160" className={cn('h-full w-full', className)} aria-hidden>

@@ -125,7 +125,7 @@ export function BentoFeatures() {
           ],
           snippet: {
             lang: 'text',
-            code: ['docs/00-meta', 'docs/01-process', 'docs/03-stories', 'docs/04-adrs', 'docs/09-agents'].join(
+            code: ['docs/03-decisions/', 'docs/05-epics/', 'docs/06-stories/', 'docs/09-agents/', 'docs/context.md'].join(
               '\n',
             ),
           },
