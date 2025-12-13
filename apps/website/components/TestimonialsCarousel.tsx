@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useReducedMotion } from 'framer-motion';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
 import { trackEvent } from '@/lib/analytics';
+import { usePrefersReducedMotion } from '@/lib/reducedMotion';
 
 type Testimonial = {
   id: string;
@@ -18,7 +18,7 @@ type Testimonial = {
 };
 
 export function TestimonialsCarousel() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const testimonials = useMemo<Testimonial[]>(
     () => [
       {

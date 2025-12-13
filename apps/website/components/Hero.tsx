@@ -4,7 +4,7 @@ import { Pill } from '@/components/ui/Pill';
 import { Button } from '@/components/ui/Button';
 import { CopyButton } from '@/components/CopyButton';
 import { Reveal } from '@/components/ui/Reveal';
-import { LottiePlayer } from '@/components/ui/LottiePlayer';
+import { MicroDemo } from '@/components/ui/MicroDemo';
 
 function HeroSystem() {
   return (
@@ -87,13 +87,7 @@ function HeroSystem() {
               </div>
             </div>
             <div className="h-20 w-full sm:h-16 sm:w-64">
-              <LottiePlayer
-                src="/lottie/hero-system-boot.json"
-                className="h-full w-full"
-                poster={
-                  <div className="h-12 w-12 rounded-full border border-border bg-white shadow-hairline" />
-                }
-              />
+              <MicroDemo name="heroSystemBoot" className="h-full w-full" />
             </div>
           </div>
         </div>

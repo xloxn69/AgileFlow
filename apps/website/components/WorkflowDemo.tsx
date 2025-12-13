@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
 import { trackEvent } from '@/lib/analytics';
+import { usePrefersReducedMotion } from '@/lib/reducedMotion';
 
 type Step = {
   id: string;
@@ -103,7 +104,7 @@ export function WorkflowDemo() {
     [],
   );
 
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [active, setActive] = useState(0);
   const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -147,7 +148,7 @@ export function WorkflowDemo() {
           </Reveal>
 
           <div className="mt-8">
-            <div className="sticky top-24">
+            <div className="lg:sticky lg:top-24">
               <ol className="relative grid gap-2">
                 {steps.map((s, idx) => (
                   <li key={s.id}>
@@ -196,12 +197,12 @@ export function WorkflowDemo() {
                   sentinelRefs.current[idx] = el;
                 }}
                 data-index={idx}
-                className="h-40"
+                className="h-24 lg:h-40"
                 aria-hidden
               />
             ))}
 
-            <div className="sticky top-24">
+            <div className="lg:sticky lg:top-24">
               <div className="rounded-card border border-border bg-white shadow-hairline">
                 <div className="flex items-center justify-between border-b border-hairline px-5 py-4">
                   <div className="text-sm font-semibold tracking-tightish text-ink">{step.panel.header}</div>

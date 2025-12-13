@@ -2,7 +2,7 @@ import { Terminal, FolderTree, GitPullRequest } from 'lucide-react';
 import { Section } from '@/components/ui/Section';
 import { Reveal } from '@/components/ui/Reveal';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { LottiePlayer } from '@/components/ui/LottiePlayer';
+import { MicroDemo } from '@/components/ui/MicroDemo';
 import { Pill } from '@/components/ui/Pill';
 
 export async function HowItWorks() {
@@ -80,11 +80,7 @@ export async function HowItWorks() {
               </div>
 
               <div className="mt-5 h-20">
-                <LottiePlayer
-                  src="/lottie/terminal-typing.json"
-                  className="h-full w-full"
-                  poster={<div className="h-12 w-12 rounded-xl border border-border bg-white" />}
-                />
+                <MicroDemo name="terminalTyping" className="h-full w-full" />
               </div>
             </div>
 
@@ -112,11 +108,7 @@ export async function HowItWorks() {
               </div>
 
               <div className="mt-5 h-20">
-                <LottiePlayer
-                  src="/lottie/docs-tree-growth.json"
-                  className="h-full w-full"
-                  poster={<div className="h-12 w-12 rounded-xl border border-border bg-white" />}
-                />
+                <MicroDemo name="docsTreeGrowth" className="h-full w-full" />
               </div>
             </div>
 
@@ -145,11 +137,7 @@ export async function HowItWorks() {
               </div>
 
               <div className="mt-5 h-20">
-                <LottiePlayer
-                  src="/lottie/command-flow.json"
-                  className="h-full w-full"
-                  poster={<div className="h-12 w-12 rounded-xl border border-border bg-white" />}
-                />
+                <MicroDemo name="commandFlow" className="h-full w-full" />
               </div>
             </div>
           </div>
@@ -158,4 +146,3 @@ export async function HowItWorks() {
     </Section>
   );
 }
-
