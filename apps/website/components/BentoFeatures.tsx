@@ -6,7 +6,7 @@ import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
-import { LottiePlayer } from '@/components/ui/LottiePlayer';
+import { MicroDemo, type MicroDemoName } from '@/components/ui/MicroDemo';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { trackEvent } from '@/lib/analytics';
@@ -17,7 +17,7 @@ type Feature = {
   title: string;
   description: string;
   tag: string;
-  lottie: string;
+  demo: MicroDemoName;
   size: 'large' | 'medium' | 'small';
   modal: {
     body: string[];
@@ -54,7 +54,7 @@ export function BentoFeatures() {
         title: 'Epics → Stories → AC',
         description: 'Turn ideas into testable increments.',
         tag: 'Planning',
-        lottie: '/lottie/kanban-to-markdown.json',
+        demo: 'kanbanToMarkdown',
         size: 'large',
         modal: {
           body: [
@@ -84,7 +84,7 @@ export function BentoFeatures() {
         title: 'ADRs that actually get written',
         description: 'Stop re-deciding the same architecture.',
         tag: 'Docs',
-        lottie: '/lottie/adr-decision.json',
+        demo: 'adrDecision',
         size: 'medium',
         modal: {
           body: [
@@ -112,7 +112,7 @@ export function BentoFeatures() {
         title: 'Docs-as-code structure',
         description: 'Your process becomes readable.',
         tag: 'Docs',
-        lottie: '/lottie/docs-tree-growth.json',
+        demo: 'docsTreeGrowth',
         size: 'medium',
         modal: {
           body: [
@@ -137,7 +137,7 @@ export function BentoFeatures() {
         title: 'Multi-agent message bus',
         description: 'Separate contexts, one shared truth.',
         tag: 'Agents',
-        lottie: '/lottie/message-bus-pulse.json',
+        demo: 'messageBusPulse',
         size: 'small',
         modal: {
           body: [
@@ -162,7 +162,7 @@ export function BentoFeatures() {
         title: 'Sprint planning with velocity',
         description: 'Plan with data, not vibes.',
         tag: 'Planning',
-        lottie: '/lottie/velocity-planning.json',
+        demo: 'velocityPlanning',
         size: 'small',
         modal: {
           body: [
@@ -182,7 +182,7 @@ export function BentoFeatures() {
         title: 'CI + verification harness',
         description: 'No broken baselines.',
         tag: 'CI',
-        lottie: '/lottie/verification.json',
+        demo: 'verification',
         size: 'small',
         modal: {
           body: [
@@ -202,6 +202,7 @@ export function BentoFeatures() {
   );
 
   const [active, setActive] = useState<Feature | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   return (
     <Section id="features">
@@ -222,18 +223,14 @@ export function BentoFeatures() {
           </Reveal>
         </div>
 
-        <div
-          className={cn(
-            'grid auto-rows-[180px] gap-4',
-            'grid-cols-1 sm:grid-cols-2 lg:grid-cols-12',
-          )}
-        >
+        <div className={cn('grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 lg:auto-rows-[180px]')}>
           {features.map((feature, idx) => (
             <Reveal key={feature.id} delay={0.04 * Math.min(idx, 6)}>
               <button
                 type="button"
                 className={cn(
-                  'group relative flex h-full w-full flex-col justify-between overflow-hidden rounded-card border border-border bg-white p-5 text-left shadow-hairline transition duration-200 ease-quiet focus-ring',
+                  'group relative flex w-full flex-col justify-between overflow-hidden rounded-card border border-border bg-white p-5 text-left shadow-hairline transition duration-200 ease-quiet focus-ring',
+                  'min-h-[240px] sm:min-h-[260px] lg:min-h-0 lg:h-full',
                   'hover:-translate-y-0.5 hover:border-black/20 hover:shadow-tileHover',
                   tileSpan(feature.size),
                 )}
@@ -241,6 +238,8 @@ export function BentoFeatures() {
                   setActive(feature);
                   trackEvent('feature_modal_open', { feature: feature.id });
                 }}
+                onPointerEnter={() => setHoveredId(feature.id)}
+                onPointerLeave={() => setHoveredId((cur) => (cur === feature.id ? null : cur))}
               >
                 <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.35] texture-grid" />
                 <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.08] texture-noise" />
@@ -263,20 +262,22 @@ export function BentoFeatures() {
                 </div>
 
                 <div className="relative mt-5 flex flex-1 items-end">
-                  <LottiePlayer
-                    src={feature.lottie}
+                  <div
                     className={cn(
                       'w-full',
                       feature.size === 'large'
-                        ? 'h-56 sm:h-60'
+                        ? 'h-52 sm:h-56'
                         : feature.size === 'medium'
                           ? 'h-40'
-                          : 'h-28',
+                          : 'h-32',
                     )}
-                    poster={
-                      <div className="h-12 w-12 rounded-xl border border-border bg-white shadow-hairline" />
-                    }
-                  />
+                  >
+                    <MicroDemo
+                      name={feature.demo}
+                      className="h-full w-full"
+                      speed={hoveredId === feature.id ? 1.12 : 1}
+                    />
+                  </div>
                 </div>
               </button>
             </Reveal>

@@ -2,7 +2,7 @@ import { Code, CheckCircle2 } from 'lucide-react';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Reveal } from '@/components/ui/Reveal';
-import { LottiePlayer } from '@/components/ui/LottiePlayer';
+import { MicroDemo } from '@/components/ui/MicroDemo';
 
 const CARDS = [
   {
@@ -63,11 +63,7 @@ export function Integrations() {
                       </div>
                     </div>
                     <div className="h-12 w-12">
-                      <LottiePlayer
-                        src="/lottie/config-check.json"
-                        className="h-full w-full"
-                        poster={<div className="h-10 w-10 rounded-xl border border-border bg-white" />}
-                      />
+                      <MicroDemo name="configCheck" className="h-full w-full" />
                     </div>
                   </div>
 
@@ -84,4 +80,3 @@ export function Integrations() {
     </Section>
   );
 }
-

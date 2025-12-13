@@ -2,17 +2,18 @@
 
 import { useMemo, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Reveal } from '@/components/ui/Reveal';
 import { cn } from '@/lib/cn';
 import { trackEvent } from '@/lib/analytics';
+import { usePrefersReducedMotion } from '@/lib/reducedMotion';
 
 type QA = { q: string; a: string };
 
 export function FAQ() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const items = useMemo<QA[]>(
     () => [
       {
@@ -111,4 +112,3 @@ export function FAQ() {
     </Section>
   );
 }
-
