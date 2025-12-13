@@ -37,7 +37,7 @@
   "scripts": {
     "postinstall": "node tools/postinstall.js",
     "agileflow": "node tools/agileflow-npx.js",
-    "agileflow:install": "node tools/cli/agileflow-cli.js install",
+    "agileflow:setup": "node tools/cli/agileflow-cli.js setup",
     "agileflow:status": "node tools/cli/agileflow-cli.js status",
     "agileflow:update": "node tools/cli/agileflow-cli.js update",
     "lint": "echo 'No linting configured yet'",
