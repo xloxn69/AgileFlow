@@ -33,296 +33,412 @@ export function MicroDemo({
   const duration = (d: number) => (reduced ? 0 : d / Math.max(0.2, speed));
 
   if (name === 'terminalTyping') {
+    const cycle = duration(4.2);
+    const promptX = 60;
+    const cmdChars = 'npx agileflow';
     return (
       <svg viewBox="0 0 520 160" className={cn('h-full w-full', className)} aria-hidden>
-        <rect x="40" y="30" width="440" height="92" rx="18" fill="white" stroke="#E5E7EB" />
-        <rect x="60" y="52" width="140" height="10" rx="5" fill="#0B0D10" opacity="0.14" />
-        <rect x="60" y="74" width="220" height="10" rx="5" fill="#0B0D10" opacity="0.12" />
-        <rect x="60" y="96" width="180" height="10" rx="5" fill="#0B0D10" opacity="0.12" />
+        {/* Terminal window */}
+        <rect x="40" y="24" width="440" height="112" rx="16" fill="white" stroke="#E5E7EB" />
+
+        {/* Terminal header bar */}
+        <rect x="40" y="24" width="440" height="28" rx="16" fill="#F9FAFB" />
+        <rect x="40" y="40" width="440" height="12" fill="#F9FAFB" />
+        <path d="M40 52 H480" stroke="#E5E7EB" strokeWidth="1" />
+        {/* Traffic lights */}
+        <circle cx="60" cy="38" r="5" fill="#FCA5A5" />
+        <circle cx="78" cy="38" r="5" fill="#FCD34D" />
+        <circle cx="96" cy="38" r="5" fill="#86EFAC" />
+
+        {/* Prompt symbol */}
+        <text
+          x={promptX}
+          y="82"
+          fontSize="13"
+          fontWeight="600"
+          fill="#9CA3AF"
+          style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
+        >
+          $
+        </text>
+
+        {/* Command text that types out */}
+        <motion.text
+          x={promptX + 18}
+          y="82"
+          fontSize="13"
+          fontWeight="500"
+          fill="#374151"
+          style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
+          initial={reduced ? {} : { opacity: 0 }}
+          animate={reduced ? {} : { opacity: [0, 1, 1, 0] }}
+          transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.04, 0.72, 0.78] }}
+        >
+          <motion.tspan
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.06, 0.08, 0.72, 0.78] }}
+          >
+            n
+          </motion.tspan>
+          <motion.tspan
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.10, 0.12, 0.72, 0.78] }}
+          >
+            p
+          </motion.tspan>
+          <motion.tspan
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.14, 0.16, 0.72, 0.78] }}
+          >
+            x
+          </motion.tspan>
+          <motion.tspan
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.18, 0.20, 0.72, 0.78] }}
+          >
+            {' '}
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.22, 0.24, 0.72, 0.78] }}
+          >
+            a
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.25, 0.27, 0.72, 0.78] }}
+          >
+            g
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.28, 0.30, 0.72, 0.78] }}
+          >
+            i
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.31, 0.33, 0.72, 0.78] }}
+          >
+            l
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.34, 0.36, 0.72, 0.78] }}
+          >
+            e
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.37, 0.39, 0.72, 0.78] }}
+          >
+            f
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.40, 0.42, 0.72, 0.78] }}
+          >
+            l
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.43, 0.45, 0.72, 0.78] }}
+          >
+            o
+          </motion.tspan>
+          <motion.tspan
+            fill="#C15F3C"
+            fontWeight="600"
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.46, 0.48, 0.72, 0.78] }}
+          >
+            w
+          </motion.tspan>
+        </motion.text>
+
+        {/* Blinking cursor */}
         <motion.rect
-          x="210"
-          y="72"
-          width="10"
-          height="22"
-          rx="4"
+          x={promptX + 18}
+          y="70"
+          width="8"
+          height="16"
+          rx="2"
           fill="#0B0D10"
+          initial={reduced ? {} : { x: promptX + 18, opacity: 0 }}
           animate={
             reduced
               ? {}
               : {
-                  opacity: [0, 1, 0, 1, 0],
-                  x: [210, 250, 330, 210],
-                }
-          }
-          transition={{ duration: duration(2.8), ease: 'linear', repeat: reduced ? 0 : Infinity }}
-        />
-      </svg>
-    );
-  }
-
-  if (name === 'docsTreeGrowth') {
-    const cycle = duration(5.2);
-    const lineY = 86;
-    const lineStart = 140;
-    const lineEnd = 468;
-    return (
-      <svg viewBox="0 0 520 160" className={cn('h-full w-full', className)} aria-hidden>
-        {/* docs folder */}
-        <g opacity="0.92">
-          <rect x="52" y="56" width="44" height="16" rx="8" fill="white" stroke="#E5E7EB" />
-          <rect x="52" y="66" width="72" height="54" rx="14" fill="white" stroke="#E5E7EB" />
-          <rect x="66" y="86" width="44" height="8" rx="4" fill="#0B0D10" opacity="0.10" />
-          <rect x="66" y="102" width="34" height="8" rx="4" fill="#0B0D10" opacity="0.08" />
-        </g>
-
-        {/* baseline + progress line */}
-        <path
-          d={`M${lineStart} ${lineY} H${lineEnd}`}
-          stroke="#E5E7EB"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <motion.path
-          d={`M${lineStart} ${lineY} H${lineEnd}`}
-          stroke="#0B0D10"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-          opacity={0.18}
-          initial={reduced ? false : { pathLength: 0, opacity: 0 }}
-          animate={
-            reduced
-              ? { pathLength: 1, opacity: 0.18 }
-              : {
-                  pathLength: [0, 1, 1, 0],
-                  opacity: [0, 0.18, 0.18, 0],
+                  x: [promptX + 18, promptX + 26, promptX + 34, promptX + 42, promptX + 50, promptX + 58, promptX + 66, promptX + 74, promptX + 82, promptX + 90, promptX + 98, promptX + 106, promptX + 114, promptX + 114],
+                  opacity: [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0],
                 }
           }
           transition={{
             duration: cycle,
             ease: 'linear',
             repeat: reduced ? 0 : Infinity,
-            times: [0, 0.72, 0.9, 1],
+            times: [0, 0.08, 0.12, 0.16, 0.20, 0.27, 0.30, 0.33, 0.36, 0.39, 0.42, 0.45, 0.48, 0.52],
           }}
         />
 
-        <motion.circle
-          cx={lineStart}
-          cy={lineY}
-          r="6"
-          fill="#0B0D10"
-          opacity={0.22}
-          initial={reduced ? false : { opacity: 0 }}
+        {/* Output line - "Setting up..." */}
+        <motion.text
+          x={promptX}
+          y="106"
+          fontSize="12"
+          fill="#6B7280"
+          style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
+          initial={reduced ? {} : { opacity: 0 }}
+          animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
+          transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.54, 0.58, 0.72, 0.78] }}
+        >
+          Setting up AgileFlow...
+        </motion.text>
+
+        {/* Success checkmark */}
+        <motion.g
+          initial={reduced ? {} : { opacity: 0, scale: 0.8 }}
           animate={
             reduced
-              ? { opacity: 0.22, cx: lineStart, cy: lineY }
+              ? {}
               : {
-                  cx: [lineStart, lineEnd, lineEnd, lineStart],
-                  opacity: [0, 0.22, 0.22, 0],
+                  opacity: [0, 0, 1, 1, 0],
+                  scale: [0.8, 0.8, 1, 1, 1],
                 }
           }
-          transition={{
-            duration: cycle,
-            ease: ease(),
-            repeat: reduced ? 0 : Infinity,
-            times: [0, 0.72, 0.9, 1],
-          }}
-        />
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.62, 0.68, 0.88, 0.94] }}
+        >
+          <circle cx="450" cy="96" r="16" fill="#DCFCE7" stroke="#86EFAC" />
+          <motion.path
+            d="M442 96 l5 5 l10 -10"
+            stroke="#16A34A"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            initial={reduced ? {} : { pathLength: 0 }}
+            animate={reduced ? {} : { pathLength: [0, 0, 1, 1, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.66, 0.72, 0.88, 0.94] }}
+          />
+        </motion.g>
+      </svg>
+    );
+  }
 
-        {/* nodes */}
-        {[
-          { x: 210, t: 0.24 },
-          { x: 320, t: 0.44 },
-          { x: 430, t: 0.64 },
-        ].map((n) => (
-          <g key={n.x}>
-            <circle cx={n.x} cy={lineY} r="4" fill="#0B0D10" opacity="0.10" />
-            <motion.circle
-              cx={n.x}
-              cy={lineY}
-              r="8"
-              fill="transparent"
-              stroke="#0B0D10"
-              strokeWidth="2"
-              opacity={0}
-              initial={reduced ? false : { opacity: 0 }}
-              animate={
-                reduced
-                  ? {}
-                  : {
-                      opacity: [0, 0, 0.14, 0.14, 0],
-                    }
-              }
-              transition={{
-                duration: cycle,
-                ease: 'linear',
-                repeat: reduced ? 0 : Infinity,
-                times: [0, n.t, n.t + 0.06, 0.86, 1],
-              }}
-            />
-          </g>
+  if (name === 'docsTreeGrowth') {
+    const cycle = duration(5.0);
+    const folders = [
+      { y: 48, label: '00-meta', t: 0.08 },
+      { y: 74, label: '01-process', t: 0.18 },
+      { y: 100, label: '02-planning', t: 0.28 },
+      { y: 126, label: '03-stories', t: 0.38 },
+    ];
+    return (
+      <svg viewBox="0 0 520 160" className={cn('h-full w-full', className)} aria-hidden>
+        {/* Root docs/ folder */}
+        <g>
+          <rect x="52" y="36" width="44" height="16" rx="8" fill="white" stroke="#E5E7EB" />
+          <rect x="52" y="46" width="72" height="96" rx="14" fill="white" stroke="#E5E7EB" />
+          <text
+            x="88"
+            y="86"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize="9"
+            fontWeight="600"
+            letterSpacing="0.04em"
+            fill="#9CA3AF"
+            style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
+          >
+            docs/
+          </text>
+        </g>
+
+        {/* Vertical tree line */}
+        <path d="M148 56 V136" stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" />
+
+        {/* Horizontal branches */}
+        {folders.map((f) => (
+          <path key={f.y} d={`M148 ${f.y + 6} H168`} stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" />
         ))}
 
-        {/* doc 01 */}
+        {/* Folder entries appearing */}
+        {folders.map((f, idx) => (
+          <motion.g
+            key={f.y}
+            initial={reduced ? {} : { opacity: 0, x: -8 }}
+            animate={
+              reduced
+                ? { opacity: 1, x: 0 }
+                : {
+                    opacity: [0, 0, 1, 1, 0],
+                    x: [-8, -8, 0, 0, 0],
+                  }
+            }
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, f.t, f.t + 0.08, 0.88, 1] }}
+          >
+            <rect x="172" y={f.y} width={120 + idx * 8} height="24" rx="8" fill="white" stroke="#E5E7EB" />
+            <text
+              x="184"
+              y={f.y + 13}
+              dominantBaseline="middle"
+              fontSize="10"
+              fontWeight="500"
+              fill="#6B7280"
+              style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}
+            >
+              {f.label}/
+            </text>
+          </motion.g>
+        ))}
+
+        {/* Animated progress indicator along tree */}
+        <motion.circle
+          cx="148"
+          cy="56"
+          r="5"
+          fill="#0B0D10"
+          opacity={0.25}
+          initial={reduced ? {} : { cy: 56, opacity: 0 }}
+          animate={
+            reduced
+              ? {}
+              : {
+                  cy: [56, 56, 80, 106, 132, 132],
+                  opacity: [0, 0.25, 0.25, 0.25, 0.25, 0],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.08, 0.24, 0.38, 0.52, 0.62] }}
+        />
+
+        {/* File preview card */}
         <motion.g
-          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
+          initial={reduced ? {} : { opacity: 0, y: 12, scale: 0.96 }}
           animate={
             reduced
               ? { opacity: 1, y: 0, scale: 1 }
               : {
                   opacity: [0, 0, 1, 1, 0],
-                  y: [10, 10, 0, 0, 0],
-                  scale: [0.98, 0.98, 1, 1, 1],
+                  y: [12, 12, 0, 0, 0],
+                  scale: [0.96, 0.96, 1, 1, 1],
                 }
           }
-          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.2, 0.26, 0.86, 1] }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.52, 0.62, 0.88, 1] }}
         >
-          <rect x="162" y="28" width="128" height="44" rx="12" fill="white" stroke="#E5E7EB" />
+          <rect x="340" y="36" width="140" height="88" rx="14" fill="white" stroke="#E5E7EB" />
+          <rect x="356" y="52" width="72" height="8" rx="4" fill="#0B0D10" opacity="0.14" />
           <motion.rect
-            x="176"
-            y="42"
+            x="356"
+            y="68"
+            width="108"
+            height="6"
+            rx="3"
+            fill="#0B0D10"
+            opacity="0.10"
+            initial={reduced ? {} : { width: 0 }}
+            animate={reduced ? {} : { width: [0, 0, 108, 108, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.64, 0.74, 0.88, 1] }}
+          />
+          <motion.rect
+            x="356"
+            y="80"
             width="82"
-            height="8"
-            rx="4"
+            height="6"
+            rx="3"
             fill="#0B0D10"
-            opacity="0.14"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 82 } : { width: [0, 0, 82, 82, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.28, 0.38, 0.86, 1] }}
+            opacity="0.08"
+            initial={reduced ? {} : { width: 0 }}
+            animate={reduced ? {} : { width: [0, 0, 82, 82, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.68, 0.78, 0.88, 1] }}
           />
           <motion.rect
-            x="176"
-            y="56"
-            width="62"
-            height="8"
-            rx="4"
+            x="356"
+            y="92"
+            width="94"
+            height="6"
+            rx="3"
             fill="#0B0D10"
-            opacity="0.10"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 62 } : { width: [0, 0, 62, 62, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.32, 0.44, 0.86, 1] }}
+            opacity="0.08"
+            initial={reduced ? {} : { width: 0 }}
+            animate={reduced ? {} : { width: [0, 0, 94, 94, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.72, 0.82, 0.88, 1] }}
           />
           <motion.rect
-            x="176"
-            y="38"
-            width="7"
-            height="18"
-            rx="3.5"
+            x="356"
+            y="104"
+            width="64"
+            height="6"
+            rx="3"
+            fill="#0B0D10"
+            opacity="0.06"
+            initial={reduced ? {} : { width: 0 }}
+            animate={reduced ? {} : { width: [0, 0, 64, 64, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.76, 0.84, 0.88, 1] }}
+          />
+          {/* Cursor */}
+          <motion.rect
+            x="356"
+            y="66"
+            width="5"
+            height="12"
+            rx="2.5"
             fill="#0B0D10"
             opacity={0}
-            initial={reduced ? false : { opacity: 0 }}
+            initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
-            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.34, 0.38, 0.5, 0.54, 1] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.66, 0.70, 0.78, 0.82, 1] }}
           />
         </motion.g>
 
-        {/* ADR */}
-        <motion.g
-          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
-          animate={
-            reduced
-              ? { opacity: 1, y: 0, scale: 1 }
-              : {
-                  opacity: [0, 0, 1, 1, 0],
-                  y: [10, 10, 0, 0, 0],
-                  scale: [0.98, 0.98, 1, 1, 1],
-                }
-          }
-          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.38, 0.44, 0.86, 1] }}
-        >
-          <rect x="256" y="96" width="156" height="44" rx="12" fill="white" stroke="#E5E7EB" />
-          <rect x="270" y="106" width="34" height="14" rx="7" fill="#0B0D10" opacity="0.08" />
-          <motion.rect
-            x="314"
-            y="108"
-            width="76"
-            height="8"
-            rx="4"
-            fill="#0B0D10"
-            opacity="0.12"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 76 } : { width: [0, 0, 76, 76, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.48, 0.6, 0.86, 1] }}
-          />
-          <motion.rect
-            x="270"
-            y="126"
-            width="98"
-            height="8"
-            rx="4"
-            fill="#0B0D10"
-            opacity="0.10"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 98 } : { width: [0, 0, 98, 98, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.52, 0.66, 0.86, 1] }}
-          />
-          <motion.rect
-            x="270"
-            y="118"
-            width="7"
-            height="18"
-            rx="3.5"
-            fill="#0B0D10"
-            opacity={0}
-            initial={reduced ? false : { opacity: 0 }}
-            animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
-            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.56, 0.6, 0.72, 0.76, 1] }}
-          />
-        </motion.g>
-
-        {/* doc 02 */}
-        <motion.g
-          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
-          animate={
-            reduced
-              ? { opacity: 1, y: 0, scale: 1 }
-              : {
-                  opacity: [0, 0, 1, 1, 0],
-                  y: [10, 10, 0, 0, 0],
-                  scale: [0.98, 0.98, 1, 1, 1],
-                }
-          }
-          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.56, 0.62, 0.86, 1] }}
-        >
-          <rect x="372" y="28" width="128" height="44" rx="12" fill="white" stroke="#E5E7EB" />
-          <motion.rect
-            x="386"
-            y="42"
-            width="74"
-            height="8"
-            rx="4"
-            fill="#0B0D10"
-            opacity="0.14"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 74 } : { width: [0, 0, 74, 74, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.66, 0.78, 0.86, 1] }}
-          />
-          <motion.rect
-            x="386"
-            y="56"
-            width="54"
-            height="8"
-            rx="4"
-            fill="#0B0D10"
-            opacity="0.10"
-            initial={reduced ? false : { width: 0 }}
-            animate={reduced ? { width: 54 } : { width: [0, 0, 54, 54, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.7, 0.82, 0.86, 1] }}
-          />
-          <motion.rect
-            x="386"
-            y="38"
-            width="7"
-            height="18"
-            rx="3.5"
-            fill="#0B0D10"
-            opacity={0}
-            initial={reduced ? false : { opacity: 0 }}
-            animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
-            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.72, 0.76, 0.86, 0.9, 1] }}
-          />
-        </motion.g>
+        {/* Connecting arrow */}
+        <motion.path
+          d="M310 86 H328"
+          stroke="#0B0D10"
+          strokeWidth="2"
+          strokeLinecap="round"
+          fill="none"
+          opacity={0}
+          initial={reduced ? {} : { pathLength: 0, opacity: 0 }}
+          animate={reduced ? {} : { pathLength: [0, 0, 1, 1, 0], opacity: [0, 0, 0.18, 0.18, 0] }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.54, 0.62, 0.88, 1] }}
+        />
+        <motion.path
+          d="M328 86 l8 -5 v10 z"
+          fill="#0B0D10"
+          opacity={0}
+          initial={reduced ? {} : { opacity: 0 }}
+          animate={reduced ? {} : { opacity: [0, 0, 0.18, 0.18, 0] }}
+          transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.58, 0.62, 0.88, 1] }}
+        />
       </svg>
     );
   }
@@ -473,49 +589,317 @@ export function MicroDemo({
   }
 
   if (name === 'adrDecision') {
+    const cycle = duration(5.6);
     return (
       <svg viewBox="0 0 520 200" className={cn('h-full w-full', className)} aria-hidden>
-        <rect x="80" y="40" width="360" height="120" rx="18" fill="white" stroke="#E5E7EB" />
-        <rect x="104" y="68" width="220" height="10" rx="5" fill="#0B0D10" opacity="0.12" />
-        <rect x="104" y="92" width="260" height="10" rx="5" fill="#0B0D10" opacity="0.10" />
-        <rect x="104" y="116" width="180" height="10" rx="5" fill="#0B0D10" opacity="0.10" />
-        <motion.g
-          initial={reduced ? {} : { opacity: 0, scale: 0.96, rotate: -10 }}
-          animate={reduced ? {} : { opacity: [0, 1, 1, 0], scale: [0.96, 1, 1, 0.98], rotate: [-10, -6, -6, -10] }}
-          transition={{ duration: duration(3.4), ease: ease(), repeat: reduced ? 0 : Infinity }}
-          transform="translate(355 70)"
+        {/* ADR document */}
+        <rect x="60" y="32" width="180" height="136" rx="16" fill="white" stroke="#E5E7EB" />
+        <rect x="78" y="50" width="32" height="14" rx="7" fill="#0B0D10" opacity="0.08" />
+        <text
+          x="94"
+          y="60"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize="8"
+          fontWeight="600"
+          letterSpacing="0.08em"
+          fill="#6B7280"
+          style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }}
         >
-          <rect x="-72" y="-18" width="144" height="40" rx="18" fill="white" stroke="#0B0D10" opacity="0.7" />
-          <rect x="-56" y="-4" width="112" height="8" rx="4" fill="#0B0D10" opacity="0.2" />
+          ADR
+        </text>
+        <rect x="118" y="52" width="100" height="10" rx="5" fill="#0B0D10" opacity="0.14" />
+        <rect x="78" y="76" width="140" height="8" rx="4" fill="#0B0D10" opacity="0.08" />
+
+        {/* Decision section label */}
+        <rect x="78" y="96" width="56" height="8" rx="4" fill="#0B0D10" opacity="0.12" />
+
+        {/* Decision line that gets written */}
+        <motion.rect
+          x="78"
+          y="114"
+          width="138"
+          height="8"
+          rx="4"
+          fill="#0B0D10"
+          opacity="0.14"
+          initial={reduced ? {} : { width: 0 }}
+          animate={reduced ? {} : { width: [0, 0, 138, 138, 0] }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.62, 0.78, 0.92, 1] }}
+        />
+        <motion.rect
+          x="78"
+          y="130"
+          width="106"
+          height="8"
+          rx="4"
+          fill="#0B0D10"
+          opacity="0.10"
+          initial={reduced ? {} : { width: 0 }}
+          animate={reduced ? {} : { width: [0, 0, 106, 106, 0] }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.68, 0.82, 0.92, 1] }}
+        />
+
+        {/* Typing cursor */}
+        <motion.rect
+          x="78"
+          y="110"
+          width="6"
+          height="16"
+          rx="3"
+          fill="#0B0D10"
+          opacity={0}
+          initial={reduced ? {} : { opacity: 0 }}
+          animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
+          transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.64, 0.68, 0.76, 0.8, 1] }}
+        />
+
+        {/* Options container */}
+        <rect x="272" y="32" width="188" height="136" rx="16" fill="white" stroke="#E5E7EB" />
+        <rect x="290" y="50" width="68" height="10" rx="5" fill="#0B0D10" opacity="0.12" />
+
+        {/* Option A - gets selected */}
+        <motion.g
+          initial={reduced ? {} : { opacity: 0, x: 10 }}
+          animate={
+            reduced
+              ? { opacity: 1, x: 0 }
+              : {
+                  opacity: [0, 0, 1, 1, 0],
+                  x: [10, 10, 0, 0, 0],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.08, 0.16, 0.92, 1] }}
+        >
+          <rect x="290" y="72" width="152" height="28" rx="10" fill="white" stroke="#E5E7EB" />
+          <rect x="306" y="82" width="68" height="8" rx="4" fill="#0B0D10" opacity="0.12" />
+          {/* Selection indicator */}
+          <motion.rect
+            x="290"
+            y="72"
+            width="152"
+            height="28"
+            rx="10"
+            fill="transparent"
+            stroke="#0B0D10"
+            strokeWidth="2"
+            opacity={0}
+            initial={reduced ? {} : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 0, 0.5, 0.5, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.36, 0.44, 0.52, 0.88, 1] }}
+          />
+          {/* Checkmark */}
+          <motion.path
+            d="M426 82 l5 5 l9 -9"
+            stroke="#0B0D10"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+            opacity={0}
+            initial={reduced ? {} : { pathLength: 0, opacity: 0 }}
+            animate={reduced ? {} : { pathLength: [0, 0, 0, 1, 1, 0], opacity: [0, 0, 0, 0.6, 0.6, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.44, 0.48, 0.56, 0.88, 1] }}
+          />
         </motion.g>
+
+        {/* Option B - not selected, fades */}
+        <motion.g
+          initial={reduced ? {} : { opacity: 0, x: 10 }}
+          animate={
+            reduced
+              ? { opacity: 0.5 }
+              : {
+                  opacity: [0, 0, 1, 0.35, 0.35, 0],
+                  x: [10, 10, 0, 0, 0, 0],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.14, 0.22, 0.52, 0.88, 1] }}
+        >
+          <rect x="290" y="108" width="152" height="28" rx="10" fill="white" stroke="#E5E7EB" />
+          <rect x="306" y="118" width="92" height="8" rx="4" fill="#0B0D10" opacity="0.10" />
+        </motion.g>
+
+        {/* Option C - not selected, fades */}
+        <motion.g
+          initial={reduced ? {} : { opacity: 0, x: 10 }}
+          animate={
+            reduced
+              ? { opacity: 0.5 }
+              : {
+                  opacity: [0, 0, 1, 0.35, 0.35, 0],
+                  x: [10, 10, 0, 0, 0, 0],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.2, 0.28, 0.52, 0.88, 1] }}
+        >
+          <rect x="290" y="144" width="114" height="20" rx="10" fill="white" stroke="#E5E7EB" />
+          <rect x="306" y="150" width="54" height="8" rx="4" fill="#0B0D10" opacity="0.10" />
+        </motion.g>
+
+        {/* Arrow from selected option to document */}
+        <motion.path
+          d="M280 86 C258 86 258 122 248 122"
+          stroke="#0B0D10"
+          strokeWidth="2"
+          strokeLinecap="round"
+          fill="none"
+          opacity={0}
+          initial={reduced ? {} : { pathLength: 0, opacity: 0 }}
+          animate={reduced ? {} : { pathLength: [0, 0, 0, 1, 1, 0], opacity: [0, 0, 0, 0.25, 0.25, 0] }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.52, 0.56, 0.64, 0.88, 1] }}
+        />
+        <motion.path
+          d="M248 122 l-8 -5 v10 z"
+          fill="#0B0D10"
+          opacity={0}
+          initial={reduced ? {} : { opacity: 0 }}
+          animate={reduced ? {} : { opacity: [0, 0, 0, 0.25, 0.25, 0] }}
+          transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.56, 0.6, 0.64, 0.88, 1] }}
+        />
       </svg>
     );
   }
 
   if (name === 'messageBusPulse') {
+    const cycle = duration(4.0);
+    const agents = [
+      { cx: 100, cy: 70, label: 'A1' },
+      { cx: 100, cy: 130, label: 'A2' },
+      { cx: 420, cy: 70, label: 'A3' },
+      { cx: 420, cy: 130, label: 'A4' },
+    ];
+    const hubX = 260;
+    const hubY = 100;
     return (
       <svg viewBox="0 0 520 200" className={cn('h-full w-full', className)} aria-hidden>
-        {[
-          { cx: 120, cy: 86 },
-          { cx: 120, cy: 146 },
-          { cx: 400, cy: 116 },
-        ].map((a) => (
-          <g key={`${a.cx}-${a.cy}`}>
-            <circle cx={a.cx} cy={a.cy} r="20" fill="white" stroke="#E5E7EB" />
-            <circle cx={a.cx} cy={a.cy} r="5" fill="#0B0D10" opacity="0.55" />
+        {/* Connection lines from agents to hub */}
+        {agents.map((a) => (
+          <path
+            key={`line-${a.cx}-${a.cy}`}
+            d={`M${a.cx} ${a.cy} L${hubX} ${hubY}`}
+            stroke="#E5E7EB"
+            strokeWidth="2"
+            strokeLinecap="round"
+            fill="none"
+          />
+        ))}
+
+        {/* Animated connection pulses */}
+        {agents.map((a, idx) => (
+          <motion.circle
+            key={`pulse-${a.cx}-${a.cy}`}
+            cx={a.cx}
+            cy={a.cy}
+            r="4"
+            fill="#0B0D10"
+            opacity={0}
+            initial={reduced ? {} : { cx: a.cx, cy: a.cy, opacity: 0 }}
+            animate={
+              reduced
+                ? {}
+                : {
+                    cx: [a.cx, a.cx, hubX, hubX, a.cx],
+                    cy: [a.cy, a.cy, hubY, hubY, a.cy],
+                    opacity: [0, 0.35, 0.35, 0, 0],
+                  }
+            }
+            transition={{
+              duration: cycle,
+              ease: ease(),
+              repeat: reduced ? 0 : Infinity,
+              times: [0, idx * 0.08 + 0.02, idx * 0.08 + 0.22, idx * 0.08 + 0.28, 1],
+              delay: idx * 0.15,
+            }}
+          />
+        ))}
+
+        {/* Return pulses from hub to agents */}
+        {agents.map((a, idx) => (
+          <motion.circle
+            key={`return-${a.cx}-${a.cy}`}
+            cx={hubX}
+            cy={hubY}
+            r="3"
+            fill="#C15F3C"
+            opacity={0}
+            initial={reduced ? {} : { cx: hubX, cy: hubY, opacity: 0 }}
+            animate={
+              reduced
+                ? {}
+                : {
+                    cx: [hubX, hubX, a.cx, a.cx, hubX],
+                    cy: [hubY, hubY, a.cy, a.cy, hubY],
+                    opacity: [0, 0.5, 0.5, 0, 0],
+                  }
+            }
+            transition={{
+              duration: cycle,
+              ease: ease(),
+              repeat: reduced ? 0 : Infinity,
+              times: [0, 0.45 + idx * 0.06, 0.60 + idx * 0.06, 0.68 + idx * 0.06, 1],
+            }}
+          />
+        ))}
+
+        {/* Agent nodes */}
+        {agents.map((a) => (
+          <g key={`agent-${a.cx}-${a.cy}`}>
+            <circle cx={a.cx} cy={a.cy} r="22" fill="white" stroke="#E5E7EB" strokeWidth="1.5" />
+            <circle cx={a.cx} cy={a.cy} r="8" fill="#0B0D10" opacity="0.12" />
+            <text
+              x={a.cx}
+              y={a.cy + 1}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="8"
+              fontWeight="600"
+              fill="#9CA3AF"
+              style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }}
+            >
+              {a.label}
+            </text>
           </g>
         ))}
+
+        {/* Central hub */}
         <motion.circle
-          cx="260"
-          cy="116"
-          r="46"
+          cx={hubX}
+          cy={hubY}
+          r="32"
           fill="transparent"
           stroke="#0B0D10"
           strokeWidth="2"
-          animate={reduced ? {} : { r: [28, 78], opacity: [0.22, 0] }}
-          transition={{ duration: duration(2.2), ease: 'linear', repeat: reduced ? 0 : Infinity }}
+          opacity={0.08}
+          animate={reduced ? {} : { r: [28, 44], opacity: [0.15, 0] }}
+          transition={{ duration: duration(2.0), ease: 'linear', repeat: reduced ? 0 : Infinity }}
         />
-        <circle cx="260" cy="116" r="6" fill="#0B0D10" opacity="0.35" />
+        <circle cx={hubX} cy={hubY} r="28" fill="white" stroke="#E5E7EB" strokeWidth="1.5" />
+        <circle cx={hubX} cy={hubY} r="10" fill="#0B0D10" opacity="0.18" />
+
+        {/* Hub activity indicator */}
+        <motion.circle
+          cx={hubX}
+          cy={hubY}
+          r="6"
+          fill="#C15F3C"
+          opacity={0.35}
+          animate={reduced ? {} : { opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] }}
+          transition={{ duration: duration(1.2), ease: 'easeInOut', repeat: reduced ? 0 : Infinity }}
+        />
+
+        {/* Bus label */}
+        <text
+          x={hubX}
+          y={hubY + 52}
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="500"
+          fill="#9CA3AF"
+          style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial' }}
+        >
+          message bus
+        </text>
       </svg>
     );
   }
