@@ -5,7 +5,22 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.33.0] - 2025-12-12
+## [2.33.1] - 2025-12-13
+
+### Fixed - Documentation Updates
+
+Updated all documentation and CLI messages to consistently reference the new `setup` command instead of the deprecated `install` command.
+
+**Files Updated**:
+- `README.md` - Quick Start section and CLI commands table
+- `packages/cli/tools/cli/commands/status.js` - Error message when not installed
+- `packages/cli/tools/cli/commands/update.js` - Error message when not installed
+- `packages/cli/tools/cli/commands/doctor.js` - Diagnostic message
+- `packages/cli/tools/postinstall.js` - Auto-setup messages and command execution
+
+**Impact**: All user-facing documentation and messages now consistently use `npx agileflow setup` terminology. No functional changes.
+
+## [2.33.0] - 2025-12-13
 
 ### Changed - Command Rename (Breaking Change)
 
