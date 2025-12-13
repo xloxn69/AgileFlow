@@ -61,213 +61,266 @@ export function MicroDemo({
   }
 
   if (name === 'docsTreeGrowth') {
-    const cycle = duration(4.4);
-    const pathD =
-      'M132 80 L200 80 L200 52 L280 52 L280 80 L330 80 L330 108 L410 108 L410 80 L452 80';
+    const cycle = duration(5.2);
+    const lineY = 86;
+    const lineStart = 140;
+    const lineEnd = 468;
     return (
       <svg viewBox="0 0 520 160" className={cn('h-full w-full', className)} aria-hidden>
+        {/* docs folder */}
         <g opacity="0.92">
-          <path
-            d="M72 72 h52 a14 14 0 0 1 14 14 v40 a14 14 0 0 1 -14 14 h-52 a14 14 0 0 1 -14 -14 v-40 a14 14 0 0 1 14 -14 z"
-            fill="white"
-            stroke="#E5E7EB"
-          />
-          <path
-            d="M62 70 h46 a10 10 0 0 1 10 10 v8 h-56 v-8 a10 10 0 0 1 10 -10 z"
-            fill="white"
-            stroke="#E5E7EB"
-          />
+          <rect x="52" y="56" width="44" height="16" rx="8" fill="white" stroke="#E5E7EB" />
+          <rect x="52" y="66" width="72" height="54" rx="14" fill="white" stroke="#E5E7EB" />
+          <rect x="66" y="86" width="44" height="8" rx="4" fill="#0B0D10" opacity="0.10" />
+          <rect x="66" y="102" width="34" height="8" rx="4" fill="#0B0D10" opacity="0.08" />
         </g>
 
-        <path d={pathD} stroke="#E5E7EB" strokeWidth="2" strokeLinecap="round" fill="none" />
+        {/* baseline + progress line */}
+        <path
+          d={`M${lineStart} ${lineY} H${lineEnd}`}
+          stroke="#E5E7EB"
+          strokeWidth="2"
+          strokeLinecap="round"
+          fill="none"
+        />
         <motion.path
-          d={pathD}
+          d={`M${lineStart} ${lineY} H${lineEnd}`}
           stroke="#0B0D10"
           strokeWidth="2"
           strokeLinecap="round"
           fill="none"
           opacity={0.18}
-          initial={reduced ? {} : { pathLength: 0, opacity: 0 }}
+          initial={reduced ? false : { pathLength: 0, opacity: 0 }}
           animate={
             reduced
-              ? {}
+              ? { pathLength: 1, opacity: 0.18 }
               : {
-                  pathLength: [0, 1, 1],
-                  opacity: [0, 0.18, 0],
+                  pathLength: [0, 1, 1, 0],
+                  opacity: [0, 0.18, 0.18, 0],
                 }
           }
           transition={{
             duration: cycle,
             ease: 'linear',
             repeat: reduced ? 0 : Infinity,
-            times: [0, 0.72, 1],
+            times: [0, 0.72, 0.9, 1],
           }}
         />
 
         <motion.circle
-          cx="132"
-          cy="80"
+          cx={lineStart}
+          cy={lineY}
           r="6"
           fill="#0B0D10"
           opacity={0.22}
+          initial={reduced ? false : { opacity: 0 }}
           animate={
             reduced
-              ? {}
+              ? { opacity: 0.22, cx: lineStart, cy: lineY }
               : {
-                  cx: [132, 200, 240, 280, 330, 370, 410, 452, 132],
-                  cy: [80, 80, 52, 80, 80, 108, 108, 80, 80],
-                  opacity: [0, 0.22, 0.22, 0.22, 0.22, 0.22, 0.22, 0, 0],
-                }
-          }
-          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity }}
-        />
-
-        {/* docs-as-code */}
-        <motion.g
-          initial={reduced ? {} : { opacity: 0, y: 8, scale: 0.98 }}
-          animate={
-            reduced
-              ? {}
-              : {
-                  opacity: [0, 1, 1, 0],
-                  y: [8, 0, 0, 0],
-                  scale: [0.98, 1, 1, 1],
+                  cx: [lineStart, lineEnd, lineEnd, lineStart],
+                  opacity: [0, 0.22, 0.22, 0],
                 }
           }
           transition={{
             duration: cycle,
             ease: ease(),
             repeat: reduced ? 0 : Infinity,
-            times: [0, 0.22, 0.82, 1],
+            times: [0, 0.72, 0.9, 1],
           }}
+        />
+
+        {/* nodes */}
+        {[
+          { x: 210, t: 0.24 },
+          { x: 320, t: 0.44 },
+          { x: 430, t: 0.64 },
+        ].map((n) => (
+          <g key={n.x}>
+            <circle cx={n.x} cy={lineY} r="4" fill="#0B0D10" opacity="0.10" />
+            <motion.circle
+              cx={n.x}
+              cy={lineY}
+              r="8"
+              fill="transparent"
+              stroke="#0B0D10"
+              strokeWidth="2"
+              opacity={0}
+              initial={reduced ? false : { opacity: 0 }}
+              animate={
+                reduced
+                  ? {}
+                  : {
+                      opacity: [0, 0, 0.14, 0.14, 0],
+                    }
+              }
+              transition={{
+                duration: cycle,
+                ease: 'linear',
+                repeat: reduced ? 0 : Infinity,
+                times: [0, n.t, n.t + 0.06, 0.86, 1],
+              }}
+            />
+          </g>
+        ))}
+
+        {/* doc 01 */}
+        <motion.g
+          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
+          animate={
+            reduced
+              ? { opacity: 1, y: 0, scale: 1 }
+              : {
+                  opacity: [0, 0, 1, 1, 0],
+                  y: [10, 10, 0, 0, 0],
+                  scale: [0.98, 0.98, 1, 1, 1],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.2, 0.26, 0.86, 1] }}
         >
-          <rect x="206" y="34" width="96" height="44" rx="12" fill="white" stroke="#E5E7EB" />
+          <rect x="162" y="28" width="128" height="44" rx="12" fill="white" stroke="#E5E7EB" />
           <motion.rect
-            x="220"
-            y="48"
-            width="58"
+            x="176"
+            y="42"
+            width="82"
             height="8"
             rx="4"
             fill="#0B0D10"
             opacity="0.14"
-            initial={reduced ? {} : { width: 0 }}
-            animate={reduced ? {} : { width: [0, 58, 58, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.28, 0.78, 1] }}
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 82 } : { width: [0, 0, 82, 82, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.28, 0.38, 0.86, 1] }}
           />
           <motion.rect
-            x="220"
-            y="62"
-            width="42"
+            x="176"
+            y="56"
+            width="62"
             height="8"
             rx="4"
             fill="#0B0D10"
             opacity="0.10"
-            initial={reduced ? {} : { width: 0 }}
-            animate={reduced ? {} : { width: [0, 42, 42, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.34, 0.78, 1] }}
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 62 } : { width: [0, 0, 62, 62, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.32, 0.44, 0.86, 1] }}
           />
           <motion.rect
-            x="220"
-            y="44"
-            width="8"
+            x="176"
+            y="38"
+            width="7"
             height="18"
-            rx="4"
+            rx="3.5"
             fill="#0B0D10"
             opacity={0}
+            initial={reduced ? false : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
-            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.24, 0.28, 0.4, 0.44, 1] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.34, 0.38, 0.5, 0.54, 1] }}
           />
         </motion.g>
 
-        {/* ADRs */}
+        {/* ADR */}
         <motion.g
-          initial={reduced ? {} : { opacity: 0, y: 8, scale: 0.98 }}
+          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
           animate={
             reduced
-              ? {}
+              ? { opacity: 1, y: 0, scale: 1 }
               : {
-                  opacity: [0, 1, 1, 0],
-                  y: [8, 0, 0, 0],
-                  scale: [0.98, 1, 1, 1],
+                  opacity: [0, 0, 1, 1, 0],
+                  y: [10, 10, 0, 0, 0],
+                  scale: [0.98, 0.98, 1, 1, 1],
                 }
           }
-          transition={{
-            duration: cycle,
-            ease: ease(),
-            repeat: reduced ? 0 : Infinity,
-            times: [0, 0.38, 0.84, 1],
-          }}
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.38, 0.44, 0.86, 1] }}
         >
-          <rect x="300" y="58" width="112" height="44" rx="12" fill="white" stroke="#E5E7EB" />
-          <rect x="312" y="68" width="34" height="14" rx="7" fill="#0B0D10" opacity="0.08" />
+          <rect x="256" y="96" width="156" height="44" rx="12" fill="white" stroke="#E5E7EB" />
+          <rect x="270" y="106" width="34" height="14" rx="7" fill="#0B0D10" opacity="0.08" />
           <motion.rect
-            x="312"
-            y="86"
-            width="70"
+            x="314"
+            y="108"
+            width="76"
             height="8"
             rx="4"
             fill="#0B0D10"
             opacity="0.12"
-            initial={reduced ? {} : { width: 0 }}
-            animate={reduced ? {} : { width: [0, 70, 70, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.44, 0.82, 1] }}
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 76 } : { width: [0, 0, 76, 76, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.48, 0.6, 0.86, 1] }}
           />
           <motion.rect
-            x="312"
-            y="96"
-            width="8"
-            height="18"
-            rx="4"
-            fill="#0B0D10"
-            opacity={0}
-            animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
-            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.4, 0.44, 0.56, 0.6, 1] }}
-          />
-        </motion.g>
-
-        {/* more docs */}
-        <motion.g
-          initial={reduced ? {} : { opacity: 0, y: 8, scale: 0.98 }}
-          animate={
-            reduced
-              ? {}
-              : {
-                  opacity: [0, 1, 1, 0],
-                  y: [8, 0, 0, 0],
-                  scale: [0.98, 1, 1, 1],
-                }
-          }
-          transition={{
-            duration: cycle,
-            ease: ease(),
-            repeat: reduced ? 0 : Infinity,
-            times: [0, 0.54, 0.88, 1],
-          }}
-        >
-          <rect x="350" y="86" width="96" height="44" rx="12" fill="white" stroke="#E5E7EB" />
-          <motion.rect
-            x="364"
-            y="100"
-            width="56"
-            height="8"
-            rx="4"
-            fill="#0B0D10"
-            opacity="0.12"
-            initial={reduced ? {} : { width: 0 }}
-            animate={reduced ? {} : { width: [0, 56, 56, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.6, 0.86, 1] }}
-          />
-          <motion.rect
-            x="364"
-            y="114"
-            width="40"
+            x="270"
+            y="126"
+            width="98"
             height="8"
             rx="4"
             fill="#0B0D10"
             opacity="0.10"
-            initial={reduced ? {} : { width: 0 }}
-            animate={reduced ? {} : { width: [0, 40, 40, 0] }}
-            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.66, 0.86, 1] }}
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 98 } : { width: [0, 0, 98, 98, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.52, 0.66, 0.86, 1] }}
+          />
+          <motion.rect
+            x="270"
+            y="118"
+            width="7"
+            height="18"
+            rx="3.5"
+            fill="#0B0D10"
+            opacity={0}
+            initial={reduced ? false : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.56, 0.6, 0.72, 0.76, 1] }}
+          />
+        </motion.g>
+
+        {/* doc 02 */}
+        <motion.g
+          initial={reduced ? false : { opacity: 0, y: 10, scale: 0.98 }}
+          animate={
+            reduced
+              ? { opacity: 1, y: 0, scale: 1 }
+              : {
+                  opacity: [0, 0, 1, 1, 0],
+                  y: [10, 10, 0, 0, 0],
+                  scale: [0.98, 0.98, 1, 1, 1],
+                }
+          }
+          transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.56, 0.62, 0.86, 1] }}
+        >
+          <rect x="372" y="28" width="128" height="44" rx="12" fill="white" stroke="#E5E7EB" />
+          <motion.rect
+            x="386"
+            y="42"
+            width="74"
+            height="8"
+            rx="4"
+            fill="#0B0D10"
+            opacity="0.14"
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 74 } : { width: [0, 0, 74, 74, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.66, 0.78, 0.86, 1] }}
+          />
+          <motion.rect
+            x="386"
+            y="56"
+            width="54"
+            height="8"
+            rx="4"
+            fill="#0B0D10"
+            opacity="0.10"
+            initial={reduced ? false : { width: 0 }}
+            animate={reduced ? { width: 54 } : { width: [0, 0, 54, 54, 0] }}
+            transition={{ duration: cycle, ease: ease(), repeat: reduced ? 0 : Infinity, times: [0, 0.7, 0.82, 0.86, 1] }}
+          />
+          <motion.rect
+            x="386"
+            y="38"
+            width="7"
+            height="18"
+            rx="3.5"
+            fill="#0B0D10"
+            opacity={0}
+            initial={reduced ? false : { opacity: 0 }}
+            animate={reduced ? {} : { opacity: [0, 0, 1, 0, 1, 0] }}
+            transition={{ duration: cycle, ease: 'linear', repeat: reduced ? 0 : Infinity, times: [0, 0.72, 0.76, 0.86, 0.9, 1] }}
           />
         </motion.g>
       </svg>
