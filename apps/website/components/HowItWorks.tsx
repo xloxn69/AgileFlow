@@ -96,20 +96,20 @@ export async function HowItWorks() {
                 A docs-as-code tree snaps into place—templates, process, and agents.
               </p>
 
-              <div className="mt-4 rounded-tile border border-border bg-white px-4 py-4 shadow-hairline">
-                <div className="space-y-1 break-all font-mono text-[12px] leading-relaxed text-secondary">
-                  <div>docs/00-meta/</div>
-                  <div>docs/01-brainstorming/</div>
-                  <div>docs/02-practices/</div>
-                  <div>docs/03-decisions/</div>
-                  <div>docs/04-architecture/</div>
-                  <div>docs/05-epics/</div>
-                  <div>docs/06-stories/</div>
-                  <div>docs/07-testing/</div>
-                  <div>docs/08-project/</div>
-                  <div>docs/09-agents/</div>
-                  <div>docs/10-research/</div>
-                  <div>docs/context.md</div>
+              <div className="mt-4 rounded-tile border border-border bg-white px-4 py-4 shadow-hairline overflow-x-auto">
+                <div className="space-y-0.5 font-mono text-[11px] leading-relaxed text-secondary whitespace-nowrap">
+                  <div>00-meta/ <span className="text-muted"># Templates, glossary</span></div>
+                  <div>01-brainstorming/ <span className="text-muted"># Ideas and sketches</span></div>
+                  <div>02-practices/ <span className="text-muted"># Testing, git, CI</span></div>
+                  <div>03-decisions/ <span className="text-muted"># ADRs</span></div>
+                  <div>04-architecture/ <span className="text-muted"># Architecture docs</span></div>
+                  <div>05-epics/ <span className="text-muted"># Epic definitions</span></div>
+                  <div>06-stories/ <span className="text-muted"># User stories</span></div>
+                  <div>07-testing/ <span className="text-muted"># Test cases</span></div>
+                  <div>08-project/ <span className="text-muted"># Roadmap, backlog</span></div>
+                  <div>09-agents/ <span className="text-muted"># Agent message bus</span></div>
+                  <div>10-research/ <span className="text-muted"># Research notes</span></div>
+                  <div>context.md <span className="text-muted"># Context brief</span></div>
                 </div>
               </div>
 
