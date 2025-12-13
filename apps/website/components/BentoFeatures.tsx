@@ -125,9 +125,20 @@ export function BentoFeatures() {
           ],
           snippet: {
             lang: 'text',
-            code: ['docs/03-decisions/', 'docs/05-epics/', 'docs/06-stories/', 'docs/09-agents/', 'docs/context.md'].join(
-              '\n',
-            ),
+            code: [
+              'docs/00-meta/',
+              'docs/01-brainstorming/',
+              'docs/02-practices/',
+              'docs/03-decisions/',
+              'docs/04-architecture/',
+              'docs/05-epics/',
+              'docs/06-stories/',
+              'docs/07-testing/',
+              'docs/08-project/',
+              'docs/09-agents/',
+              'docs/10-research/',
+              'docs/context.md',
+            ].join('\n'),
           },
           docsHref: LINKS.docs,
         },
