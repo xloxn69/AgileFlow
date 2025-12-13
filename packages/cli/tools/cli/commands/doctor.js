@@ -8,7 +8,8 @@ const chalk = require('chalk');
 const path = require('node:path');
 const fs = require('fs-extra');
 const { Installer } = require('../installers/core/installer');
-const { displayLogo, displaySection, success, warning, error, info } = require('../lib/ui');
+const { displayLogo, displaySection, success, warning, error, info, confirm } = require('../lib/ui');
+const { IdeManager } = require('../installers/ide/manager');
 const { getCurrentVersion } = require('../lib/version-checker');
 
 const installer = new Installer();
@@ -18,16 +19,18 @@ module.exports = {
   description: 'Diagnose AgileFlow installation issues',
   options: [
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
+    ['--fix', 'Automatically fix detected issues'],
   ],
   action: async (options) => {
     try {
       const directory = path.resolve(options.directory || '.');
 
       displayLogo();
-      displaySection('AgileFlow Diagnostics');
+      displaySection(options.fix ? 'AgileFlow Auto-Repair' : 'AgileFlow Diagnostics');
 
       let issues = 0;
       let warnings = 0;
+      const repairs = []; // Track fixable issues
 
       // Check Node.js version
       console.log(chalk.bold('Environment:'));
@@ -73,16 +76,44 @@ module.exports = {
       } else {
         error('manifest.yaml missing');
         issues++;
+        repairs.push({
+          type: 'missing-manifest',
+          message: 'Recreate missing manifest.yaml',
+          fix: async () => {
+            info('Recreating manifest.yaml...');
+            const packageJson = require(path.join(__dirname, '..', '..', '..', 'package.json'));
+            const cfgDir = path.join(status.path, '_cfg');
+            await fs.ensureDir(cfgDir);
+
+            const yaml = require('js-yaml');
+            const manifest = {
+              version: packageJson.version,
+              installed_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              ides: status.ides || ['claude-code'],
+              modules: ['core'],
+              user_name: status.userName || 'Developer',
+              agileflow_folder: path.basename(status.path),
+              docs_folder: 'docs',
+            };
+
+            await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+            success('Created manifest.yaml');
+          },
+        });
       }
 
       // Check core content
       const counts = await installer.countInstalledItems(status.path);
+
+      let missingCore = false;
 
       if (counts.agents > 0) {
         success(`Core agents: ${counts.agents} files`);
       } else {
         error('Core agents: Missing');
         issues++;
+        missingCore = true;
       }
 
       if (counts.commands > 0) {
@@ -90,6 +121,27 @@ module.exports = {
       } else {
         error('Commands: Missing');
         issues++;
+        missingCore = true;
+      }
+
+      if (missingCore) {
+        repairs.push({
+          type: 'missing-core',
+          message: 'Reinstall missing core content',
+          fix: async () => {
+            info('Reinstalling core content...');
+            const config = {
+              directory,
+              ides: status.ides || ['claude-code'],
+              userName: status.userName || 'Developer',
+              agileflowFolder: path.basename(status.path),
+              docsFolder: status.docsFolder || 'docs',
+            };
+
+            await installer.install(config);
+            success('Reinstalled core content');
+          },
+        });
       }
 
       if (counts.skills > 0) {
@@ -103,6 +155,10 @@ module.exports = {
       if (status.ides && status.ides.length > 0) {
         console.log(chalk.bold('\nIDE Configurations:'));
 
+        const ideManager = new IdeManager();
+        ideManager.setAgileflowFolder(path.basename(status.path));
+        ideManager.setDocsFolder(status.docsFolder || 'docs');
+
         for (const ide of status.ides) {
           const configPath = getIdeConfigPath(directory, ide);
           const ideName = formatIdeName(ide);
@@ -112,8 +168,17 @@ module.exports = {
             const files = await countFilesInDir(configPath);
             success(`${ideName}: ${files} files`);
           } else {
-            warning(`${ideName}: Config missing (run 'npx agileflow update')`);
+            warning(`${ideName}: Config missing`);
             warnings++;
+            repairs.push({
+              type: 'missing-ide-config',
+              message: `Reinstall ${ideName} configuration`,
+              fix: async () => {
+                info(`Reinstalling ${ideName} configuration...`);
+                await ideManager.setup(ide, directory, status.path);
+                success(`Reinstalled ${ideName} configuration`);
+              },
+            });
           }
         }
       }
@@ -127,15 +192,45 @@ module.exports = {
         if (!status.ides || !status.ides.includes(ide)) {
           const configPath = getIdeConfigPath(directory, ide);
           if (await fs.pathExists(configPath)) {
-            warning(`${formatIdeName(ide)}: Config exists but not in manifest`);
+            const ideName = formatIdeName(ide);
+            warning(`${ideName}: Config exists but not in manifest`);
             orphansFound = true;
             warnings++;
+            repairs.push({
+              type: 'orphaned-config',
+              message: `Remove orphaned ${ideName} configuration`,
+              fix: async () => {
+                info(`Removing orphaned ${ideName} configuration...`);
+                await fs.remove(configPath);
+                success(`Removed ${ideName} configuration`);
+              },
+            });
           }
         }
       }
 
       if (!orphansFound) {
         success('No orphaned configurations');
+      }
+
+      // Execute repairs if --fix is enabled
+      if (options.fix && repairs.length > 0) {
+        console.log();
+        displaySection('Applying Fixes');
+
+        for (const repair of repairs) {
+          try {
+            await repair.fix();
+          } catch (err) {
+            error(`Failed to ${repair.message.toLowerCase()}: ${err.message}`);
+          }
+        }
+
+        console.log();
+        success(`Applied ${repairs.length} fix(es)`);
+      } else if (repairs.length > 0 && !options.fix) {
+        console.log();
+        info(`Found ${repairs.length} fixable issue(s). Run with --fix to auto-repair.`);
       }
 
       // Print summary

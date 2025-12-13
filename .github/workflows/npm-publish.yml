@@ -75,7 +75,7 @@ jobs:
           echo "- ✅ Published: agileflow@$VERSION" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Registry: https://www.npmjs.com/package/agileflow" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Install" >> $GITHUB_STEP_SUMMARY
+          echo "### Setup" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "npx agileflow@$VERSION install" >> $GITHUB_STEP_SUMMARY
+          echo "npx agileflow@$VERSION setup" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
