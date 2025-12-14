@@ -24,7 +24,7 @@ agileflow setup
 ```
 
 This will:
-1. Prompt you to select your IDE(s) and installation preferences
+1. Prompt where to install AgileFlow and configuration preferences
 2. Install AgileFlow core (commands, agents, skills)
 3. Configure your selected IDEs
 4. Create documentation structure
