@@ -52,10 +52,7 @@ export function Header() {
       </a>
 
       <motion.header
-        className={cn(
-          'fixed left-0 right-0 top-0 z-50 border-b',
-          isSticky || menuOpen ? 'border-[var(--border-default)]' : 'border-transparent',
-        )}
+        className="fixed left-0 right-0 top-0 z-50"
         animate={
           prefersReducedMotion
             ? undefined
