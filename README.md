@@ -24,7 +24,7 @@ agileflow setup
 ```
 
 This will:
-1. Prompt you to select your IDE(s) (Claude Code, Cursor, Windsurf)
+1. Prompt you where you'd like to install AgileFlow
 2. Install AgileFlow core
 3. Configure your selected IDEs
 
