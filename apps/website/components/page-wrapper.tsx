@@ -20,7 +20,8 @@ export function PageWrapper({ children }: PageWrapperProps) {
         onClose={() => setBannerClosed(true)}
       >
         <p className="text-white drop-shadow-md">
-          🎉 AgileFlow is now open source!{' '}
+          <span className="hidden sm:inline">🎉 AgileFlow is now open source! </span>
+          <span className="sm:hidden">🎉 Now open source! </span>
           <a
             href="https://github.com/projectquestorg/AgileFlow"
             target="_blank"
