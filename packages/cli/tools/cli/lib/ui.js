@@ -24,7 +24,7 @@ function displayLogo() {
 ██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║
 ██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝
 ╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ `;
-  console.log(chalk.hex('#C15F3C')(logo));
+  console.log(chalk.hex('#e8683a')(logo));
   console.log(chalk.dim(`  AgileFlow v${packageJson.version} - AI-Driven Agile Development\n`));
 }
 
@@ -34,7 +34,7 @@ function displayLogo() {
  * @param {string} subtitle - Optional subtitle
  */
 function displaySection(title, subtitle = null) {
-  console.log(chalk.bold.hex('#C15F3C')(`\n${title}`));
+  console.log(chalk.bold.hex('#e8683a')(`\n${title}`));
   if (subtitle) {
     console.log(chalk.dim(subtitle));
   }

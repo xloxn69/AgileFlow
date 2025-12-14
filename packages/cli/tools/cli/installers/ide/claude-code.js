@@ -26,7 +26,7 @@ class ClaudeCodeSetup extends BaseIdeSetup {
    * @param {Object} options - Setup options
    */
   async setup(projectDir, agileflowDir, options = {}) {
-    console.log(chalk.hex('#C15F3C')(`  Setting up ${this.displayName}...`));
+    console.log(chalk.hex('#e8683a')(`  Setting up ${this.displayName}...`));
 
     // Clean up old installation first
     await this.cleanup(projectDir);

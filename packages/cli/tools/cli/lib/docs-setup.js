@@ -247,7 +247,7 @@ async function createDocsStructure(targetDir, docsFolder = 'docs', options = {})
   };
 
   try {
-    console.log(chalk.hex('#C15F3C')(`\nCreating ${docsFolder}/ structure...`));
+    console.log(chalk.hex('#e8683a')(`\nCreating ${docsFolder}/ structure...`));
 
     // Create directories
     const directories = getDirectoryStructure(docsFolder);
