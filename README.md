@@ -34,12 +34,22 @@ This will:
 
 ### CLI Commands
 
+**Global installation:**
 ```bash
 agileflow setup       # Set up AgileFlow in project
 agileflow status      # Check installation + updates
 agileflow update      # Update to latest version
 agileflow doctor      # Diagnose issues
 agileflow uninstall   # Remove from project
+```
+
+**Project-level installation (use `npx`):**
+```bash
+npx agileflow setup       # Set up AgileFlow in project
+npx agileflow status      # Check installation + updates
+npx agileflow update      # Update to latest version
+npx agileflow doctor      # Diagnose issues
+npx agileflow uninstall   # Remove from project
 ```
 
 ### After Setup
