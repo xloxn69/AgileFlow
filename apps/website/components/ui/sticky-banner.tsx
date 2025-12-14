@@ -39,7 +39,7 @@ export function StickyBanner({ className, children, hideOnScroll = false, onClos
         className,
       )}
       initial={{ y: 0 }}
-      animate={{ y: hidden ? -48 : 0 }}
+      animate={{ y: hidden ? '-100%' : 0 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       <div className="flex w-full items-center justify-center gap-4">
