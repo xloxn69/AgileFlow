@@ -164,6 +164,12 @@ async function promptInstall() {
         return true;
       },
     },
+    {
+      type: 'confirm',
+      name: 'updateGitignore',
+      message: 'Create/update .gitignore with recommended entries?',
+      default: true,
+    },
   ]);
 
   return {
@@ -172,6 +178,7 @@ async function promptInstall() {
     userName: answers.userName,
     agileflowFolder: answers.agileflowFolder,
     docsFolder: answers.docsFolder,
+    updateGitignore: answers.updateGitignore,
   };
 }
 

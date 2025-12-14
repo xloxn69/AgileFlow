@@ -5,7 +5,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
         background: '#FFFFFF',
@@ -16,22 +17,23 @@ const config: Config = {
         muted: '#6B7280',
         border: '#E5E7EB',
         hairline: '#F1F5F9',
-        accent: '#2563EB',
+        accent: '#C15F3C',
       },
       borderRadius: {
-        tile: '14px',
-        card: '18px',
+        tile: '12px',
+        card: '16px',
       },
       boxShadow: {
         hairline: '0 1px 0 rgba(0,0,0,.03)',
-        tileHover: '0 12px 30px rgba(0,0,0,.06)',
+        tile: '0 1px 2px rgba(0,0,0,0.04)',
+        tileHover: '0 8px 24px rgba(0,0,0,0.06)',
       },
       letterSpacing: {
         tightish: '-0.03em',
         caps: '0.08em',
       },
       maxWidth: {
-        content: '1200px',
+        content: '1120px',
       },
       transitionTimingFunction: {
         quiet: 'cubic-bezier(0.16, 1, 0.3, 1)',

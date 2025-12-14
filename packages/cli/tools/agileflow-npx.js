@@ -7,7 +7,7 @@
  * It preserves the user's working directory when spawning the CLI.
  */
 
-const { execSync } = require('node:child_process');
+const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -25,15 +25,27 @@ if (isNpxExecution) {
     process.exit(1);
   }
 
-  try {
-    // Execute CLI from user's working directory (process.cwd()), not npm cache
-    execSync(`node "${cliPath}" ${args.join(' ')}`, {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-    });
-  } catch (error) {
-    process.exit(error.status || 1);
+  // Execute CLI from user's working directory (process.cwd()), not npm cache
+  const result = spawnSync(process.execPath, [cliPath, ...args], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+  });
+
+  if (result.error) {
+    console.error('Error: Failed to run AgileFlow CLI:', result.error.message);
+    process.exit(1);
   }
+
+  if (result.signal) {
+    try {
+      process.kill(process.pid, result.signal);
+    } catch {
+      process.exit(1);
+    }
+    process.exit(1);
+  }
+
+  process.exit(result.status ?? 0);
 } else {
   // Local execution - use require
   require('./cli/agileflow-cli.js');

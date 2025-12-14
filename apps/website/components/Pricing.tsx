@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Check } from 'lucide-react';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
 import { trackEvent } from '@/lib/analytics';
@@ -223,4 +223,3 @@ export function Pricing() {
     </Section>
   );
 }
-

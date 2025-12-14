@@ -9,6 +9,10 @@ const fs = require('fs-extra');
 const path = require('node:path');
 const chalk = require('chalk');
 
+// Load AgileFlow version from package.json (used for docs metadata)
+const packageJsonPath = path.join(__dirname, '..', '..', '..', 'package.json');
+const packageJson = require(packageJsonPath);
+
 /**
  * Directory structure to create
  * @param {string} docsFolder - Name of the docs folder (default: "docs")
@@ -226,9 +230,12 @@ Use \`/AgileFlow:research\` to create new research notes.
  * Create docs structure with README files
  * @param {string} targetDir - Target directory for installation
  * @param {string} docsFolder - Name of the docs folder (default: "docs")
+ * @param {Object} options - Options
+ * @param {boolean} options.updateGitignore - Whether to create/update .gitignore (default: true)
  * @returns {Promise<Object>} Result object with counts
  */
-async function createDocsStructure(targetDir, docsFolder = 'docs') {
+async function createDocsStructure(targetDir, docsFolder = 'docs', options = {}) {
+  const { updateGitignore = true } = options;
   const result = {
     success: false,
     counts: {
@@ -270,7 +277,7 @@ async function createDocsStructure(targetDir, docsFolder = 'docs') {
     const metadataPath = path.join(targetDir, docsFolder, '00-meta', 'agileflow-metadata.json');
     if (!fs.existsSync(metadataPath)) {
       const metadata = {
-        version: '2.30.1',
+        version: packageJson.version,
         created: new Date().toISOString(),
         updated: new Date().toISOString(),
         docsFolder: docsFolder,
@@ -283,14 +290,29 @@ async function createDocsStructure(targetDir, docsFolder = 'docs') {
       result.counts.filesCreated++;
       console.log(chalk.green(`  ✓ Created ${docsFolder}/00-meta/agileflow-metadata.json`));
     } else {
-      // Update existing metadata with docsFolder if missing
+      // Update existing metadata (keep docsFolder and version in sync)
       try {
         const existing = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
+        const updates = [];
+
         if (!existing.docsFolder) {
           existing.docsFolder = docsFolder;
+          updates.push('docsFolder');
+        }
+
+        if (existing.version !== packageJson.version) {
+          existing.version = packageJson.version;
+          updates.push('version');
+        }
+
+        if (updates.length > 0) {
           existing.updated = new Date().toISOString();
           await fs.writeFile(metadataPath, JSON.stringify(existing, null, 2), 'utf8');
-          console.log(chalk.yellow(`  ↻ Updated ${docsFolder}/00-meta/agileflow-metadata.json (added docsFolder)`));
+          console.log(
+            chalk.yellow(
+              `  ↻ Updated ${docsFolder}/00-meta/agileflow-metadata.json (${updates.join(', ')})`
+            )
+          );
         }
       } catch (err) {
         console.log(chalk.yellow(`  ⚠ Could not update metadata: ${err.message}`));
@@ -358,30 +380,32 @@ Document your CI/CD workflows and configuration here.
       }
     }
 
-    // Create .gitignore additions for docs folder
-    const gitignorePath = path.join(targetDir, '.gitignore');
-    const gitignoreEntries = [
-      '.env',
-      '.env.*',
-      '!.env.example',
-      '.DS_Store',
-      'node_modules/',
-      'dist/',
-      'build/',
-      'coverage/',
-    ];
+    if (updateGitignore) {
+      // Create .gitignore additions for docs folder
+      const gitignorePath = path.join(targetDir, '.gitignore');
+      const gitignoreEntries = [
+        '.env',
+        '.env.*',
+        '!.env.example',
+        '.DS_Store',
+        'node_modules/',
+        'dist/',
+        'build/',
+        'coverage/',
+      ];
 
-    if (fs.existsSync(gitignorePath)) {
-      const existingGitignore = await fs.readFile(gitignorePath, 'utf8');
-      const newEntries = gitignoreEntries.filter(entry => !existingGitignore.includes(entry));
-      if (newEntries.length > 0) {
-        await fs.appendFile(gitignorePath, '\n' + newEntries.join('\n') + '\n', 'utf8');
-        console.log(chalk.yellow(`  ↻ Updated .gitignore with ${newEntries.length} entries`));
+      if (fs.existsSync(gitignorePath)) {
+        const existingGitignore = await fs.readFile(gitignorePath, 'utf8');
+        const newEntries = gitignoreEntries.filter((entry) => !existingGitignore.includes(entry));
+        if (newEntries.length > 0) {
+          await fs.appendFile(gitignorePath, '\n' + newEntries.join('\n') + '\n', 'utf8');
+          console.log(chalk.yellow(`  ↻ Updated .gitignore with ${newEntries.length} entries`));
+        }
+      } else {
+        await fs.writeFile(gitignorePath, gitignoreEntries.join('\n') + '\n', 'utf8');
+        result.counts.filesCreated++;
+        console.log(chalk.green(`  ✓ Created .gitignore`));
       }
-    } else {
-      await fs.writeFile(gitignorePath, gitignoreEntries.join('\n') + '\n', 'utf8');
-      result.counts.filesCreated++;
-      console.log(chalk.green(`  ✓ Created .gitignore`));
     }
 
     result.success = true;

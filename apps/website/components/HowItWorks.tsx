@@ -1,6 +1,6 @@
 import { Terminal, FolderTree, GitPullRequest } from 'lucide-react';
 import { Section } from '@/components/ui/Section';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { MicroDemo } from '@/components/ui/MicroDemo';
 import { Pill } from '@/components/ui/Pill';

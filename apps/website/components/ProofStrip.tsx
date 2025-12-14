@@ -1,4 +1,4 @@
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/ui/container';
 
 const ITEMS = [
   { value: '41', label: 'commands' },
@@ -30,4 +30,3 @@ export function ProofStrip() {
     </div>
   );
 }
-

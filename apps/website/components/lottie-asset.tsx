@@ -1,0 +1,94 @@
+'use client';
+
+import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
+import { useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/cn';
+
+type LottieAssetProps = {
+  src: string;
+  className?: string;
+  loop?: boolean;
+  speed?: number;
+  posterFrame?: number;
+};
+
+export function LottieAsset({ src, className, loop = true, speed = 1, posterFrame = 0 }: LottieAssetProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const lottieRef = useRef<LottieRefCurrentProps | null>(null);
+  const [inView, setInView] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        const isIntersecting = Boolean(entry?.isIntersecting);
+        setInView(isIntersecting);
+        if (isIntersecting) setShouldLoad(true);
+      },
+      { rootMargin: '220px' },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoad || animationData) return;
+    const controller = new AbortController();
+
+    void fetch(src, { signal: controller.signal })
+      .then((res) => res.json())
+      .then((json) => setAnimationData(json))
+      .catch(() => {});
+
+    return () => controller.abort();
+  }, [animationData, shouldLoad, src]);
+
+  useEffect(() => {
+    const api = lottieRef.current;
+    if (!api) return;
+    api.setSpeed(speed);
+  }, [speed]);
+
+  useEffect(() => {
+    const api = lottieRef.current;
+    if (!api) return;
+
+    if (prefersReducedMotion) {
+      api.goToAndStop(posterFrame, true);
+      return;
+    }
+
+    if (inView) api.play();
+    else api.pause();
+  }, [inView, posterFrame, prefersReducedMotion]);
+
+  return (
+    <div
+      ref={containerRef}
+      aria-hidden="true"
+      className={cn('relative overflow-hidden', className)}
+    >
+      {animationData ? (
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={animationData}
+          loop={loop}
+          autoplay={!prefersReducedMotion && inView}
+          rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
+          style={{ width: '100%', height: '100%' }}
+        />
+      ) : (
+        <div className="h-full w-full rounded-[10px] border border-[var(--border-subtle)] bg-white/40" />
+      )}
+    </div>
+  );
+}
+

@@ -1,5 +1,5 @@
 import { cn } from '@/lib/cn';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/ui/container';
 
 export function Section({
   id,
@@ -47,4 +47,3 @@ export function Section({
     </section>
   );
 }
-
