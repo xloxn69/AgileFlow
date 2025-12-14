@@ -20,7 +20,6 @@ npm install -g agileflow
 Then run setup in your project:
 
 ```bash
-cd your-project
 agileflow setup
 ```
 
