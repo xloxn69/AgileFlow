@@ -50,6 +50,7 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
+  overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -114,4 +115,3 @@ body {
     word-break: break-word;
   }
 }
-

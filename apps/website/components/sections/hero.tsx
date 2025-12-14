@@ -58,17 +58,17 @@ export function Hero({ content }: { content: LandingContent['hero'] }) {
 
             <Reveal className="mt-10">
               <dl className="grid gap-3 rounded-card border border-[var(--border-default)] bg-white/70 p-5 text-sm text-[var(--text-secondary)] shadow-tile">
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
                   <dt className="font-medium text-[var(--text-primary)]">Developer-native</dt>
-                  <dd className="ml-auto text-right">npm install • lives in your repo</dd>
+                  <dd className="sm:ml-auto sm:text-right">npm install • lives in your repo</dd>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
                   <dt className="font-medium text-[var(--text-primary)]">Repeatable</dt>
-                  <dd className="ml-auto text-right">folders • templates • conventions</dd>
+                  <dd className="sm:ml-auto sm:text-right">folders • templates • conventions</dd>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
                   <dt className="font-medium text-[var(--text-primary)]">Scales</dt>
-                  <dd className="ml-auto text-right">solo → team → multi-agent</dd>
+                  <dd className="sm:ml-auto sm:text-right">solo → team → multi-agent</dd>
                 </div>
               </dl>
             </Reveal>
