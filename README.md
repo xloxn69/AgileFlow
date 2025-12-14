@@ -2,8 +2,6 @@
   <img src="assets/banner-0.png" alt="AgileFlow" />
 </p>
 
-# AgileFlow
-
 [![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
