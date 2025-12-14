@@ -33,17 +33,7 @@ This will:
 #### Option 2: Project-Level Installation
 
 ```bash
-npm install --save-dev agileflow
-```
-
-AgileFlow will automatically set up when installed! The postinstall script will:
-1. Detect your IDE (Claude Code, Cursor, or Windsurf)
-2. Install AgileFlow core
-3. Configure your IDE automatically
-
-To skip auto-setup, set the environment variable:
-```bash
-AGILEFLOW_SKIP_INSTALL=true npm install agileflow
+npm install agileflow
 ```
 
 ### CLI Commands
