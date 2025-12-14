@@ -24,10 +24,11 @@ agileflow setup
 ```
 
 This will:
-1. Prompt where to install AgileFlow and configuration preferences
-2. Install AgileFlow core (commands, agents, skills)
-3. Configure your selected IDEs
-4. Create documentation structure
+1. Prompt where to install AgileFlow
+2. Prompt to select your IDE(s)
+3. Install AgileFlow core (commands, agents, skills)
+4. Configure your selected IDEs
+5. Create documentation structure
 
 #### Option 2: Project-Level Installation
 
