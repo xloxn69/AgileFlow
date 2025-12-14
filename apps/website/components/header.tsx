@@ -54,18 +54,18 @@ export function Header() {
       <motion.header
         className={cn(
           'fixed left-0 right-0 top-0 z-50 border-b',
-          isSticky ? 'border-[var(--border-default)]' : 'border-transparent',
+          isSticky || menuOpen ? 'border-[var(--border-default)]' : 'border-transparent',
         )}
         animate={
           prefersReducedMotion
             ? undefined
             : {
-                backgroundColor: isSticky ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.0)',
+                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.0)',
               }
         }
         transition={{ duration: 0.2, ease: 'easeOut' }}
         style={{
-          backdropFilter: isSticky ? 'blur(12px)' : 'none',
+          backdropFilter: isSticky || menuOpen ? 'blur(12px)' : 'none',
         }}
       >
         <Container className="flex h-16 items-center justify-between gap-4">
@@ -111,7 +111,7 @@ export function Header() {
             <Link
               href="#install"
               className={cn(
-                'focus-ring inline-flex h-10 items-center rounded-full px-4 text-sm font-medium',
+                'focus-ring hidden h-10 items-center rounded-full px-4 text-sm font-medium md:inline-flex',
                 'bg-[var(--accent)] text-white shadow-tile transition-shadow hover:shadow-tileHover',
               )}
               onClick={() => track('cta_install_header')}
@@ -131,7 +131,7 @@ export function Header() {
               href={LINKS.github}
               target="_blank"
               rel="noreferrer"
-              className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+              className="focus-ring hidden h-10 w-10 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:inline-flex"
               aria-label="AgileFlow on GitHub"
               onClick={() => track('cta_github_icon')}
             >
@@ -142,15 +142,20 @@ export function Header() {
 
             <button
               type="button"
-              className="focus-ring inline-flex h-10 items-center rounded-full px-3 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:hidden"
+              className="focus-ring inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] md:hidden"
               aria-expanded={menuOpen}
               aria-controls="mobile-nav"
+              aria-label="Toggle menu"
               onClick={() => {
                 setMenuOpen((v) => !v);
                 track('nav_mobile_toggle', { open: !menuOpen });
               }}
             >
-              Menu
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
             </button>
           </div>
         </Container>
@@ -168,6 +173,16 @@ export function Header() {
               <Container className="pb-4">
                 <div className="surface rounded-card shadow-tile">
                   <div className="grid gap-1 p-2">
+                    <Link
+                      href="#install"
+                      className="focus-ring rounded-xl px-3 py-3 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent)]"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        track('cta_install_mobile');
+                      }}
+                    >
+                      Install
+                    </Link>
                     {nav.map((item) =>
                       item.kind === 'external' ? (
                         <a
