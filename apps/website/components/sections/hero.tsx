@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Container } from '@/components/ui/container';
 import { CommandButton } from '@/components/ui/command-button';
 import { Reveal } from '@/components/ui/reveal';
@@ -12,6 +13,16 @@ export function Hero({ content }: { content: LandingContent['hero'] }) {
       <Container>
         <div className="grid items-start gap-12 lg:grid-cols-12">
           <div className="lg:col-span-6">
+            <Reveal>
+              <Image
+                src="/logo.png"
+                alt="AgileFlow"
+                width={484}
+                height={114}
+                className="mb-6"
+              />
+            </Reveal>
+
             <Reveal>
               <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-default)] bg-white/70 px-3 py-1 text-xs font-medium tracking-wide text-[var(--text-secondary)]">
                 <span>{content.eyebrow}</span>
