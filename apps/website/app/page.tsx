@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import { BackgroundTexture } from '@/components/background-texture';
 import { Header } from '@/components/header';
 import { StickyBanner } from '@/components/ui/sticky-banner';
@@ -15,16 +18,19 @@ import { FAQ } from '@/components/sections/faq';
 import { FinalCTA } from '@/components/sections/final-cta';
 import { Footer } from '@/components/sections/footer';
 import { buildLandingContent } from '@/lib/landing-content';
+import type { LandingContent } from '@/lib/landing-content';
 
-export default async function Page() {
-  const content = await buildLandingContent();
+function PageContent({ content }: { content: LandingContent }) {
+  const [bannerClosed, setBannerClosed] = useState(false);
+
   return (
     <div className="relative">
       <ScrollDepthTracker />
-      <Header />
+      <Header bannerClosed={bannerClosed} />
       <StickyBanner
         className="bg-gradient-to-r from-[var(--accent)] to-orange-600"
         hideOnScroll
+        onClose={() => setBannerClosed(true)}
       >
         <p className="text-white drop-shadow-md">
           🎉 AgileFlow is now open source!{' '}
@@ -55,4 +61,9 @@ export default async function Page() {
       </main>
     </div>
   );
+}
+
+export default async function Page() {
+  const content = await buildLandingContent();
+  return <PageContent content={content} />;
 }
