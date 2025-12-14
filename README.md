@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner-0.png" alt="AgileFlow" />
+  <img src="assets/logo.png" alt="AgileFlow" />
 </p>
 
 [![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
