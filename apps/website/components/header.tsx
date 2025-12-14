@@ -11,7 +11,11 @@ import { track } from '@/lib/track';
 
 type NavItem = { label: string; href: string; kind?: 'anchor' | 'external' };
 
-export function Header() {
+interface HeaderProps {
+  bannerClosed?: boolean;
+}
+
+export function Header({ bannerClosed = false }: HeaderProps) {
   const { scrollY } = useScroll();
   const [bannerHidden, setBannerHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,7 +59,7 @@ export function Header() {
       <motion.header
         className="fixed left-0 right-0 z-40"
         animate={{
-          top: bannerHidden ? 0 : 48,
+          top: bannerHidden || bannerClosed ? 0 : 48,
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         style={{
@@ -219,7 +223,7 @@ export function Header() {
       <motion.div
         className="pointer-events-none fixed left-0 right-0 z-30 h-24"
         animate={{
-          top: bannerHidden ? 64 : 112,
+          top: bannerHidden || bannerClosed ? 64 : 112,
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
         style={{
