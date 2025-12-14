@@ -5,10 +5,11 @@ import { Header } from '@/components/header';
 import { StickyBanner } from '@/components/ui/sticky-banner';
 
 interface PageWrapperProps {
+  version: string;
   children: React.ReactNode;
 }
 
-export function PageWrapper({ children }: PageWrapperProps) {
+export function PageWrapper({ version, children }: PageWrapperProps) {
   const [bannerClosed, setBannerClosed] = useState(false);
 
   return (
@@ -20,8 +21,8 @@ export function PageWrapper({ children }: PageWrapperProps) {
         onClose={() => setBannerClosed(true)}
       >
         <p className="text-white drop-shadow-md">
-          <span className="hidden sm:inline">🎉 AgileFlow is now open source! </span>
-          <span className="sm:hidden">🎉 Now open source! </span>
+          <span className="hidden sm:inline">🎉 Introducing AgileFlow v{version}! </span>
+          <span className="sm:hidden">🎉 v{version} released! </span>
           <a
             href="https://github.com/projectquestorg/AgileFlow"
             target="_blank"

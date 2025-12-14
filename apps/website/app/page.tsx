@@ -20,7 +20,7 @@ export default async function Page() {
   return (
     <div className="relative">
       <ScrollDepthTracker />
-      <PageWrapper>
+      <PageWrapper version={content.version}>
         <BackgroundTexture />
         <main id="content" className="pt-28">
           <Hero content={content.hero} />
