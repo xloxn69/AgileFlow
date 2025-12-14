@@ -49,13 +49,6 @@ export function Header({ bannerClosed = false }: HeaderProps) {
 
   return (
     <>
-      <a
-        href="#content"
-        className="focus-ring absolute left-4 top-2 z-[60] -translate-y-20 rounded-full bg-white px-3 py-2 text-sm text-[var(--text-primary)] shadow-tile transition-transform focus:translate-y-0"
-      >
-        Skip to content
-      </a>
-
       <motion.header
         className="fixed left-0 right-0 z-40"
         initial={{ top: 0 }}
