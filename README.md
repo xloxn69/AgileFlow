@@ -1,12 +1,9 @@
 # AgileFlow
 
-<!-- AUTOGEN:STATS:START -->
-<!-- Auto-generated on 2025-12-12. Do not edit manually. -->
-
-- **41** slash commands
-- **26** specialized agents
-- **23** code generation skills
-<!-- AUTOGEN:STATS:END -->
+[![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
+[![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
+[![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
 **AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
 
@@ -22,7 +19,7 @@ npm install --save-dev agileflow
 
 AgileFlow will automatically set up when installed! The postinstall script will:
 1. Detect your IDE (Claude Code, Cursor, or Windsurf)
-2. Install AgileFlow core (41 commands, 26 agents, 23 skills)
+2. Install AgileFlow core
 3. Configure your IDE automatically
 
 To skip auto-setup, set the environment variable:
@@ -38,7 +35,7 @@ npx agileflow setup
 
 This will:
 1. Prompt you to select your IDE(s) (Claude Code, Cursor, Windsurf)
-2. Install AgileFlow core (41 commands, 26 agents, 23 skills)
+2. Install AgileFlow core
 3. Configure your selected IDEs
 
 ### CLI Commands
