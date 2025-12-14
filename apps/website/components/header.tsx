@@ -60,13 +60,10 @@ export function Header() {
           prefersReducedMotion
             ? undefined
             : {
-                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.0)',
+                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)',
               }
         }
-        transition={{ duration: 0.2, ease: 'easeOut' }}
-        style={{
-          backdropFilter: isSticky || menuOpen ? 'blur(12px)' : 'none',
-        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         <Container className="flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-3">
