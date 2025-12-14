@@ -2,19 +2,15 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
-import { cn } from '@/lib/cn';
 import { LINKS } from '@/lib/links';
 import { track } from '@/lib/track';
 
 type NavItem = { label: string; href: string; kind?: 'anchor' | 'external' };
 
 export function Header() {
-  const prefersReducedMotion = useReducedMotion();
-  const { scrollY } = useScroll();
-  const [isSticky, setIsSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const nav = useMemo<NavItem[]>(
@@ -30,8 +26,6 @@ export function Header() {
     ],
     [],
   );
-
-  useMotionValueEvent(scrollY, 'change', (value) => setIsSticky(value > 40));
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -51,18 +45,11 @@ export function Header() {
         Skip to content
       </a>
 
-      <motion.header
+      <header
         className="fixed left-0 right-0 top-0 z-50"
-        animate={
-          prefersReducedMotion
-            ? undefined
-            : {
-                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.0)',
-              }
-        }
-        transition={{ duration: 0.2, ease: 'easeOut' }}
         style={{
-          backdropFilter: isSticky || menuOpen ? 'blur(12px)' : 'none',
+          backgroundColor: 'rgba(255,255,255,0.98)',
+          backdropFilter: 'blur(12px)',
         }}
       >
         <Container className="flex h-16 items-center justify-between gap-4">
@@ -215,19 +202,11 @@ export function Header() {
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </motion.header>
+      </header>
 
       {/* Gradient fade overlay */}
-      <motion.div
+      <div
         className="pointer-events-none fixed left-0 right-0 top-16 z-40 h-24"
-        animate={
-          prefersReducedMotion
-            ? undefined
-            : {
-                opacity: isSticky ? 1 : 0,
-              }
-        }
-        transition={{ duration: 0.2, ease: 'easeOut' }}
         style={{
           background: 'linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
         }}
