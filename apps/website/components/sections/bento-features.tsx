@@ -9,6 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { LottieAsset } from '@/components/lottie-asset';
 import type { LandingContent } from '@/lib/landing-content';
 import { cn } from '@/lib/cn';
+import { MOTION } from '@/lib/motion';
 import { track } from '@/lib/track';
 
 function sizeClasses(size: 'large' | 'medium' | 'small') {
@@ -54,10 +55,10 @@ export function BentoFeatures({ tiles }: { tiles: LandingContent['features'] }) 
                   type="button"
                   className={cn(
                     'surface group relative flex h-full w-full flex-col rounded-card p-4 text-left shadow-tile sm:p-5',
-                    'transition-shadow hover:shadow-tileHover',
+                    'transition-shadow transition-colors hover:border-[#D1D5DB] hover:shadow-tileHover',
                   )}
-                  whileHover={prefersReducedMotion ? undefined : { y: -2, borderColor: '#D1D5DB' }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -1 }}
+                  transition={MOTION.hover}
                   onHoverStart={() => setHoveredId(tile.id)}
                   onHoverEnd={() => setHoveredId((current) => (current === tile.id ? null : current))}
                   onClick={() => {

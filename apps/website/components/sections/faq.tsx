@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useId, useState } from 'react';
 import { Container } from '@/components/ui/container';
 import type { LandingContent } from '@/lib/landing-content';
+import { MOTION } from '@/lib/motion';
 import { track } from '@/lib/track';
 
 export function FAQ({ items }: { items: LandingContent['faq'] }) {
@@ -44,7 +45,7 @@ export function FAQ({ items }: { items: LandingContent['faq'] }) {
                       <motion.span
                         aria-hidden="true"
                         animate={prefersReducedMotion ? undefined : { rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        transition={MOTION.panel}
                         className="mt-0.5 shrink-0 text-[var(--text-muted)]"
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -66,7 +67,7 @@ export function FAQ({ items }: { items: LandingContent['faq'] }) {
                           initial={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
                           animate={prefersReducedMotion ? undefined : { height: 'auto', opacity: 1 }}
                           exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
-                          transition={{ duration: 0.22, ease: 'easeOut' }}
+                          transition={MOTION.panel}
                           className="overflow-hidden"
                         >
                           <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.answer}</p>
@@ -83,4 +84,3 @@ export function FAQ({ items }: { items: LandingContent['faq'] }) {
     </section>
   );
 }
-

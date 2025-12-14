@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/cn';
+import { MOTION } from '@/lib/motion';
 
 export function Reveal({
   className,
@@ -17,9 +18,9 @@ export function Reveal({
   return (
     <motion.div
       className={cn(className)}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut', delay }}
+      transition={{ ...MOTION.reveal, delay }}
       viewport={{ once: true, margin: '-50px' }}
       {...props}
     />

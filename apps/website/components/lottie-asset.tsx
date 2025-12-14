@@ -13,6 +13,32 @@ type LottieAssetProps = {
   posterFrame?: number;
 };
 
+const animationCache = new Map<string, Record<string, unknown>>();
+const inflightLoads = new Map<string, Promise<Record<string, unknown>>>();
+
+async function loadAnimation(src: string) {
+  const cached = animationCache.get(src);
+  if (cached) return cached;
+
+  const inflight = inflightLoads.get(src);
+  if (inflight) return inflight;
+
+  const promise = fetch(src)
+    .then((res) => res.json() as Promise<Record<string, unknown>>)
+    .then((json) => {
+      animationCache.set(src, json);
+      inflightLoads.delete(src);
+      return json;
+    })
+    .catch((err) => {
+      inflightLoads.delete(src);
+      throw err;
+    });
+
+  inflightLoads.set(src, promise);
+  return promise;
+}
+
 export function LottieAsset({ src, className, loop = true, speed = 1, posterFrame = 0 }: LottieAssetProps) {
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -41,14 +67,15 @@ export function LottieAsset({ src, className, loop = true, speed = 1, posterFram
 
   useEffect(() => {
     if (!shouldLoad || animationData) return;
-    const controller = new AbortController();
-
-    void fetch(src, { signal: controller.signal })
-      .then((res) => res.json())
-      .then((json) => setAnimationData(json))
+    let cancelled = false;
+    void loadAnimation(src)
+      .then((json) => {
+        if (!cancelled) setAnimationData(json);
+      })
       .catch(() => {});
-
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [animationData, shouldLoad, src]);
 
   useEffect(() => {
@@ -82,7 +109,7 @@ export function LottieAsset({ src, className, loop = true, speed = 1, posterFram
           animationData={animationData}
           loop={loop}
           autoplay={!prefersReducedMotion && inView}
-          rendererSettings={{ preserveAspectRatio: 'xMidYMid slice' }}
+          rendererSettings={{ preserveAspectRatio: 'xMidYMid meet' }}
           style={{ width: '100%', height: '100%' }}
         />
       ) : (
@@ -91,4 +118,3 @@ export function LottieAsset({ src, className, loop = true, speed = 1, posterFram
     </div>
   );
 }
-
