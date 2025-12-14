@@ -8,7 +8,7 @@ import { LINKS } from '@/lib/links';
 
 export function Hero({ content }: { content: LandingContent['hero'] }) {
   return (
-    <section id="product" className="scroll-mt-24 py-20 sm:py-24 md:py-28">
+    <section id="product" className="scroll-mt-24 py-12 sm:py-24 md:py-28">
       <Container>
         <div className="grid items-start gap-12 lg:grid-cols-12">
           <div className="lg:col-span-6">
