@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Container } from '@/components/ui/container';
 import type { LandingContent } from '@/lib/landing-content';
 
@@ -8,9 +9,13 @@ export function Footer({ content }: { content: LandingContent['footer'] }) {
       <Container>
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="text-sm font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
-              Agile<span className="text-[var(--accent)]">Flow</span>
-            </div>
+            <Image
+              src="/banner.png"
+              alt="AgileFlow"
+              width={120}
+              height={28}
+              className="h-7 w-auto"
+            />
             <p className="mt-3 max-w-[44ch] text-sm leading-6 text-[var(--text-secondary)]">
               Open-source agile scaffolding for AI-driven development. Everything versioned. Nothing hidden.
             </p>
