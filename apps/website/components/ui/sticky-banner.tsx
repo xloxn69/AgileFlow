@@ -23,8 +23,11 @@ export function StickyBanner({ className, children, hideOnScroll = false, onClos
   });
 
   const handleClose = () => {
-    setClosed(true);
-    onClose?.();
+    setHidden(true);
+    setTimeout(() => {
+      setClosed(true);
+      onClose?.();
+    }, 300);
   };
 
   if (closed) return null;
@@ -36,7 +39,7 @@ export function StickyBanner({ className, children, hideOnScroll = false, onClos
         className,
       )}
       initial={{ y: 0 }}
-      animate={{ y: hidden ? -100 : 0 }}
+      animate={{ y: hidden ? -48 : 0 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       <div className="flex w-full items-center justify-center gap-4">
