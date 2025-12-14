@@ -3,6 +3,7 @@
 import { animate, useInView, useMotionValue, useMotionValueEvent, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
+import { MOTION } from '@/lib/motion';
 
 export function CountUp({ value, className }: { value: number; className?: string }) {
   const prefersReducedMotion = useReducedMotion();
@@ -20,7 +21,7 @@ export function CountUp({ value, className }: { value: number; className?: strin
       return;
     }
 
-    const controls = animate(mv, value, { duration: 0.6, ease: 'easeOut' });
+    const controls = animate(mv, value, { duration: 0.55, ease: MOTION.reveal.ease });
     return () => controls.stop();
   }, [inView, mv, prefersReducedMotion, value]);
 
@@ -30,4 +31,3 @@ export function CountUp({ value, className }: { value: number; className?: strin
     </span>
   );
 }
-

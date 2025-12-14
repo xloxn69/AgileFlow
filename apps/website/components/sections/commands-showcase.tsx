@@ -5,6 +5,7 @@ import { useId, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
 import type { LandingContent } from '@/lib/landing-content';
 import { cn } from '@/lib/cn';
+import { MOTION } from '@/lib/motion';
 import { track } from '@/lib/track';
 
 type Command = LandingContent['commands']['categories'][number]['commands'][number];
@@ -69,7 +70,7 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
                           <motion.span
                             aria-hidden="true"
                             animate={prefersReducedMotion ? undefined : { rotate: isOpen ? 180 : 0 }}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
+                            transition={MOTION.panel}
                             className="text-[var(--text-muted)]"
                           >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -91,7 +92,7 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
                               initial={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
                               animate={prefersReducedMotion ? undefined : { height: 'auto', opacity: 1 }}
                               exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
-                              transition={{ duration: 0.22, ease: 'easeOut' }}
+                              transition={MOTION.panel}
                               className="overflow-hidden"
                             >
                               <div className="mt-3 flex flex-wrap gap-2">
@@ -155,4 +156,3 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
     </section>
   );
 }
-

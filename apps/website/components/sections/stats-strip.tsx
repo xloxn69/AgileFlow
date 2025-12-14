@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/ui/container';
 import { CountUp } from '@/components/ui/count-up';
+import { MOTION } from '@/lib/motion';
 import type { Stat } from '@/lib/landing-content';
 
 export function StatsStrip({ stats }: { stats: Stat[] }) {
@@ -14,7 +15,7 @@ export function StatsStrip({ stats }: { stats: Stat[] }) {
         <motion.div
           initial={prefersReducedMotion ? undefined : { opacity: 0, y: 8 }}
           whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          transition={MOTION.reveal}
           viewport={{ once: true, margin: '-50px' }}
           className="surface rounded-card shadow-tile"
         >
@@ -33,4 +34,3 @@ export function StatsStrip({ stats }: { stats: Stat[] }) {
     </section>
   );
 }
-

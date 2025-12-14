@@ -1,15 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Container } from '@/components/ui/container';
 import { CommandButton } from '@/components/ui/command-button';
 import type { LandingContent } from '@/lib/landing-content';
 import { track } from '@/lib/track';
 
 export function FinalCTA({ content }: { content: LandingContent['finalCta'] }) {
-  const prefersReducedMotion = useReducedMotion();
-
   return (
     <section id="install" className="scroll-mt-24 py-20 sm:py-24 md:py-28">
       <Container>
@@ -26,26 +23,7 @@ export function FinalCTA({ content }: { content: LandingContent['finalCta'] }) {
             </div>
 
             <div className="grid gap-3 sm:max-w-[640px]">
-              <motion.div
-                animate={
-                  prefersReducedMotion
-                    ? undefined
-                    : {
-                        scale: [1, 1.02, 1],
-                      }
-                }
-                transition={
-                  prefersReducedMotion
-                    ? undefined
-                    : {
-                        duration: 3,
-                        ease: 'easeInOut',
-                        repeat: Infinity,
-                      }
-                }
-              >
-                <CommandButton command={content.primaryCommand} eventName="cta_install_final" />
-              </motion.div>
+              <CommandButton command={content.primaryCommand} eventName="cta_install_final" />
               <Link
                 href={content.secondaryHref}
                 target={content.secondaryHref.startsWith('#') ? undefined : '_blank'}
@@ -66,4 +44,3 @@ export function FinalCTA({ content }: { content: LandingContent['finalCta'] }) {
     </section>
   );
 }
-

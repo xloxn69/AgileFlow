@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Container } from '@/components/ui/container';
 import type { LandingContent } from '@/lib/landing-content';
 import { cn } from '@/lib/cn';
+import { MOTION } from '@/lib/motion';
 import { track } from '@/lib/track';
 
 const GAP = 16;
@@ -52,7 +53,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
       x.set(target);
       return;
     }
-    animate(x, target, { duration: 0.32, ease: 'easeOut' });
+    animate(x, target, MOTION.slide);
   }, [cardWidth, index, prefersReducedMotion, x]);
 
   return (
@@ -147,7 +148,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
                             ? undefined
                             : { opacity: active ? 1 : 0.7, scale: active ? 1 : 0.98 }
                         }
-                        transition={{ duration: 0.2, ease: 'easeOut' }}
+                        transition={MOTION.panel}
                       >
                         {item.kind === 'quote' ? (
                           <div className="surface-opaque rounded-card p-6 shadow-tile">
