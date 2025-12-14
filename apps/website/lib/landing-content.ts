@@ -2,6 +2,7 @@ import 'server-only';
 
 import { codeToHtml } from '@/lib/shiki';
 import { LINKS } from '@/lib/links';
+import { getAgileFlowStats } from '@/lib/stats';
 
 export type Stat = { value: number; label: string };
 
@@ -106,6 +107,8 @@ export type LandingContent = {
 };
 
 export async function buildLandingContent(): Promise<LandingContent> {
+  const stats = getAgileFlowStats();
+
   const docsTree = `docs/
 ├── 00-meta/          # Templates, guides, conventions
 ├── 01-brainstorming/ # Ideas and sketches
@@ -182,10 +185,10 @@ index 3b18c71..8c2aa0f 100644
       lottieSrc: '/lottie/hero-system-boot.json',
     },
     stats: [
-      { value: 41, label: 'Slash commands' },
-      { value: 26, label: 'Specialized agents' },
-      { value: 23, label: 'Code generation skills' },
-      { value: 3, label: 'IDEs supported' },
+      { value: stats.commands, label: 'Slash commands' },
+      { value: stats.agents, label: 'Specialized agents' },
+      { value: stats.skills, label: 'Code generation skills' },
+      { value: stats.ides, label: 'IDEs supported' },
     ],
     howItWorks: {
       heading: 'How It Works',
@@ -281,7 +284,7 @@ index 3b18c71..8c2aa0f 100644
         {
           id: 'coordination',
           title: 'Multi-agent coordination',
-          description: '26 agents coordinate via an append-only message bus.',
+          description: `${stats.agents} agents coordinate via an append-only message bus.`,
           tag: 'Agents',
           size: 'small',
           lottieSrc: '/lottie/message-bus-pulse.json',
@@ -399,7 +402,11 @@ index 3b18c71..8c2aa0f 100644
             {
               name: 'help',
               description: 'Show the command surface area and conventions.',
-              exampleHtml: await commandExample('help', ['Commands: 41', 'Agents: 26', 'Skills: 23']),
+              exampleHtml: await commandExample('help', [
+                `Commands: ${stats.commands}`,
+                `Agents: ${stats.agents}`,
+                `Skills: ${stats.skills}`,
+              ]),
             },
             {
               name: 'babysit',
