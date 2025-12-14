@@ -51,7 +51,7 @@ export function Header({ bannerClosed = false }: HeaderProps) {
     <>
       <motion.header
         className="fixed left-0 right-0 z-40"
-        initial={{ top: 0 }}
+        initial={{ top: 48 }}
         animate={{
           top: bannerHidden || bannerClosed ? 0 : 48,
         }}
@@ -216,7 +216,7 @@ export function Header({ bannerClosed = false }: HeaderProps) {
       {/* Gradient fade overlay */}
       <motion.div
         className="pointer-events-none fixed left-0 right-0 z-30 h-24"
-        initial={{ top: 64 }}
+        initial={{ top: 112 }}
         animate={{
           top: bannerHidden || bannerClosed ? 64 : 112,
         }}
