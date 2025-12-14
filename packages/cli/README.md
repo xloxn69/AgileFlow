@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner-0.png" alt="AgileFlow" />
+</p>
+
 # AgileFlow
 
 [![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
