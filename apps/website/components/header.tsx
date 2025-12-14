@@ -60,10 +60,13 @@ export function Header() {
           prefersReducedMotion
             ? undefined
             : {
-                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)',
+                backgroundColor: isSticky || menuOpen ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.0)',
               }
         }
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        style={{
+          backdropFilter: isSticky || menuOpen ? 'blur(12px)' : 'none',
+        }}
       >
         <Container className="flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -216,6 +219,22 @@ export function Header() {
           ) : null}
         </AnimatePresence>
       </motion.header>
+
+      {/* Gradient fade overlay */}
+      <motion.div
+        className="pointer-events-none fixed left-0 right-0 top-16 z-40 h-24"
+        animate={
+          prefersReducedMotion
+            ? undefined
+            : {
+                opacity: isSticky ? 1 : 0,
+              }
+        }
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        style={{
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
+        }}
+      />
     </>
   );
 }
