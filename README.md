@@ -9,9 +9,27 @@
 
 ## Quick Start
 
-### Setup
+### Installation
 
-#### Option 1: Add to package.json (Recommended - Auto-Setup)
+#### Option 1: Global Installation (Recommended)
+
+```bash
+npm install -g agileflow
+```
+
+Then run setup in your project:
+
+```bash
+cd your-project
+agileflow setup
+```
+
+This will:
+1. Prompt you to select your IDE(s) (Claude Code, Cursor, Windsurf)
+2. Install AgileFlow core
+3. Configure your selected IDEs
+
+#### Option 2: Project-Level Installation
 
 ```bash
 npm install --save-dev agileflow
@@ -27,25 +45,14 @@ To skip auto-setup, set the environment variable:
 AGILEFLOW_SKIP_INSTALL=true npm install agileflow
 ```
 
-#### Option 2: One-time setup with npx
-
-```bash
-npx agileflow setup
-```
-
-This will:
-1. Prompt you to select your IDE(s) (Claude Code, Cursor, Windsurf)
-2. Install AgileFlow core
-3. Configure your selected IDEs
-
 ### CLI Commands
 
 ```bash
-npx agileflow setup       # Set up AgileFlow in project
-npx agileflow status      # Check installation + updates
-npx agileflow update      # Update to latest version
-npx agileflow doctor      # Diagnose issues
-npx agileflow uninstall   # Remove from project
+agileflow setup       # Set up AgileFlow in project
+agileflow status      # Check installation + updates
+agileflow update      # Update to latest version
+agileflow doctor      # Diagnose issues
+agileflow uninstall   # Remove from project
 ```
 
 ### After Setup
