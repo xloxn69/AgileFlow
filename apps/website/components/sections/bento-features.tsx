@@ -18,9 +18,9 @@ function sizeClasses(size: 'large' | 'medium' | 'small') {
 }
 
 function lottieHeight(size: 'large' | 'medium' | 'small') {
-  if (size === 'large') return 'h-[240px]';
-  if (size === 'medium') return 'h-[160px]';
-  return 'h-[120px]';
+  if (size === 'large') return 'h-[200px] sm:h-[220px] md:h-[240px]';
+  if (size === 'medium') return 'h-[140px] sm:h-[160px]';
+  return 'h-[110px] sm:h-[120px]';
 }
 
 export function BentoFeatures({ tiles }: { tiles: LandingContent['features'] }) {
@@ -45,13 +45,16 @@ export function BentoFeatures({ tiles }: { tiles: LandingContent['features'] }) 
 
           <div className="grid grid-cols-12 gap-4">
             {tiles.tiles.map((tile, idx) => (
-              <Reveal key={tile.id} delay={prefersReducedMotion ? 0 : idx * 0.03}>
+              <Reveal
+                key={tile.id}
+                delay={prefersReducedMotion ? 0 : idx * 0.03}
+                className={sizeClasses(tile.size)}
+              >
                 <motion.button
                   type="button"
                   className={cn(
-                    'surface group relative flex h-full w-full flex-col rounded-card p-5 text-left shadow-tile',
+                    'surface group relative flex h-full w-full flex-col rounded-card p-4 text-left shadow-tile sm:p-5',
                     'transition-shadow hover:shadow-tileHover',
-                    sizeClasses(tile.size),
                   )}
                   whileHover={prefersReducedMotion ? undefined : { y: -2, borderColor: '#D1D5DB' }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
@@ -64,7 +67,7 @@ export function BentoFeatures({ tiles }: { tiles: LandingContent['features'] }) 
                   aria-haspopup="dialog"
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-xs font-medium tracking-wide text-[var(--text-muted)]">{tile.tag}</div>
                       <div className="mt-2 text-[18px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
                         {tile.title}
@@ -84,7 +87,7 @@ export function BentoFeatures({ tiles }: { tiles: LandingContent['features'] }) 
                     </div>
                   </div>
 
-                  <div className="mt-5 rounded-card border border-[var(--border-subtle)] bg-white/60 p-3">
+                  <div className="mt-5 rounded-card border border-[var(--border-subtle)] bg-white/60 p-2 sm:p-3">
                     <LottieAsset
                       src={tile.lottieSrc}
                       className={cn('w-full', lottieHeight(tile.size))}
