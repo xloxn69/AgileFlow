@@ -15,18 +15,14 @@
 
 ```bash
 npm install -g agileflow
+agileflow setup
 ```
 
 #### Option 2: Project-Level Installation
 
 ```bash
 npm install agileflow
-```
-
-Then run setup in your project:
-
-```bash
-agileflow setup
+npx agileflow setup
 ```
 
 This will:
