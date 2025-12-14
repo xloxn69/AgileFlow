@@ -2,11 +2,21 @@ import Link from 'next/link';
 import { Container } from '@/components/ui/container';
 import { CommandButton } from '@/components/ui/command-button';
 import { Reveal } from '@/components/ui/reveal';
-import { LottieAsset } from '@/components/lottie-asset';
+import { AgileFlowTerminal } from '@/components/ui/agileflow-terminal';
 import type { LandingContent } from '@/lib/landing-content';
 import { LINKS } from '@/lib/links';
 
-export function Hero({ content }: { content: LandingContent['hero'] }) {
+interface HeroProps {
+  content: LandingContent['hero'];
+  version: string;
+  stats: {
+    commands: number;
+    agents: number;
+    skills: number;
+  };
+}
+
+export function Hero({ content, version, stats }: HeroProps) {
   return (
     <section id="product" className="scroll-mt-24 py-12 sm:py-24 md:py-28">
       <Container>
@@ -76,24 +86,12 @@ export function Hero({ content }: { content: LandingContent['hero'] }) {
 
           <div className="lg:col-span-6">
             <Reveal className="relative">
-              <div className="surface rounded-card shadow-tile">
-                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
-                  <div className="text-xs font-medium tracking-wide text-[var(--text-secondary)]">System boot</div>
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-black/15" />
-                    <span className="h-2 w-2 rounded-full bg-black/10" />
-                    <span className="h-2 w-2 rounded-full bg-black/10" />
-                  </div>
-                </div>
-                <div className="p-5 sm:p-6">
-                  <div className="rounded-card border border-[var(--border-subtle)] bg-white/60 p-4">
-                    <LottieAsset src={content.lottieSrc} className="h-[320px] w-full sm:h-[380px]" />
-                  </div>
-                  <p className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
-                    Install → scaffold → record decisions → track lifecycle.
-                  </p>
-                </div>
-              </div>
+              <AgileFlowTerminal
+                version={version}
+                commands={stats.commands}
+                agents={stats.agents}
+                skills={stats.skills}
+              />
             </Reveal>
           </div>
         </div>

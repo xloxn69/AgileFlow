@@ -23,7 +23,15 @@ export default async function Page() {
       <PageWrapper version={content.version}>
         <BackgroundTexture />
         <main id="content" className="pt-28">
-          <Hero content={content.hero} />
+          <Hero
+            content={content.hero}
+            version={content.version}
+            stats={{
+              commands: content.stats[0].value,
+              agents: content.stats[1].value,
+              skills: content.stats[2].value,
+            }}
+          />
           <StatsStrip stats={content.stats} />
           <HowItWorks steps={content.howItWorks} />
           <BentoFeatures tiles={content.features} />
