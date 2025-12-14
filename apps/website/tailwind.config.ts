@@ -17,7 +17,7 @@ const config: Config = {
         muted: '#6B7280',
         border: '#E5E7EB',
         hairline: '#F1F5F9',
-        accent: '#C15F3C',
+        accent: '#e8683a',
       },
       borderRadius: {
         tile: '12px',

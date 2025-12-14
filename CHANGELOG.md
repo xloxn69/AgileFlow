@@ -312,7 +312,7 @@ Updated ASCII logo and brand color for improved visual identity.
 
 **Changes**:
 - **New ASCII Logo**: Replaced old text-based logo with bold Unicode block-style logo
-- **Brand Color**: Changed from cyan to custom brand color `#C15F3C` (burnt orange/terracotta)
+- **Brand Color**: Changed from cyan to custom brand color `#e8683a` (burnt orange/terracotta)
 
 **Files Updated**:
 - `ui.js` - Logo display and section headers
