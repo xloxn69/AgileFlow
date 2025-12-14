@@ -29,6 +29,7 @@ export type FeatureTile = {
 };
 
 export type LandingContent = {
+  version: string;
   hero: {
     eyebrow: string;
     headline: string;
@@ -174,6 +175,7 @@ index 3b18c71..8c2aa0f 100644
     codeToHtml([`/AgileFlow:${command}`, ...lines].join('\n'), 'bash');
 
   return {
+    version: stats.version,
     hero: {
       eyebrow: 'Open-source • MIT License',
       headline: 'Agile delivery, in your repo—powered by AI.',
