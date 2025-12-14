@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
+import { cn } from '@/lib/cn';
 import { LINKS } from '@/lib/links';
 import { track } from '@/lib/track';
 
