@@ -31,8 +31,9 @@ logs/
 !.env.example
 .npmrc
 
-# Internal Development Docs (not for users)
+# Internal Development (not for users)
 CLAUDE.md
+scripts/
 
 # Playwright MCP (local dev tool)
 .playwright-mcp/
