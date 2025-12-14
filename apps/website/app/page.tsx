@@ -1,38 +1,41 @@
-import { Footer } from '@/components/Footer';
-import { Header } from '@/components/Header';
-import { Hero } from '@/components/Hero';
-import { HowItWorks } from '@/components/HowItWorks';
-import { BentoFeatures } from '@/components/BentoFeatures';
-import { WorkflowDemo } from '@/components/WorkflowDemo';
-import { Integrations } from '@/components/Integrations';
-import { TestimonialsCarousel } from '@/components/TestimonialsCarousel';
-import { Pricing } from '@/components/Pricing';
-import { FAQ } from '@/components/FAQ';
-import { FinalCTA } from '@/components/FinalCTA';
-import { ProofStrip } from '@/components/ProofStrip';
-import { ScrollDepthTracker } from '@/components/ScrollDepthTracker';
-import { AmbientGridDriver } from '@/components/AmbientGridDriver';
+import { BackgroundTexture } from '@/components/background-texture';
+import { Header } from '@/components/header';
+import { ScrollDepthTracker } from '@/components/scroll-depth-tracker';
+import { Hero } from '@/components/sections/hero';
+import { StatsStrip } from '@/components/sections/stats-strip';
+import { HowItWorks } from '@/components/sections/how-it-works';
+import { BentoFeatures } from '@/components/sections/bento-features';
+import { DocsPreview } from '@/components/sections/docs-preview';
+import { IDEIntegrations } from '@/components/sections/ide-integrations';
+import { CommandsShowcase } from '@/components/sections/commands-showcase';
+import { AgentArchitecture } from '@/components/sections/agent-architecture';
+import { Testimonials } from '@/components/sections/testimonials';
+import { FAQ } from '@/components/sections/faq';
+import { FinalCTA } from '@/components/sections/final-cta';
+import { Footer } from '@/components/sections/footer';
+import { buildLandingContent } from '@/lib/landing-content';
 
-export default function Page() {
+export default async function Page() {
+  const content = await buildLandingContent();
   return (
     <div className="relative">
-      <AmbientGridDriver />
       <ScrollDepthTracker />
       <Header />
-      <main>
-        <Hero />
-        <ProofStrip />
-        <HowItWorks />
-        <BentoFeatures />
-        <WorkflowDemo />
-        <Integrations />
-        <TestimonialsCarousel />
-        <Pricing />
-        <FAQ />
-        <FinalCTA />
+      <BackgroundTexture />
+      <main id="content" className="pt-20">
+        <Hero content={content.hero} />
+        <StatsStrip stats={content.stats} />
+        <HowItWorks steps={content.howItWorks} />
+        <BentoFeatures tiles={content.features} />
+        <DocsPreview content={content.docsPreview} />
+        <IDEIntegrations cards={content.ideCards} />
+        <CommandsShowcase content={content.commands} />
+        <AgentArchitecture content={content.agents} />
+        <Testimonials content={content.testimonials} />
+        <FAQ items={content.faq} />
+        <FinalCTA content={content.finalCta} />
+        <Footer content={content.footer} />
       </main>
-      <Footer />
     </div>
   );
 }
-

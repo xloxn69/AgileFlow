@@ -25,7 +25,7 @@ async function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       themes: [grayscaleTheme],
-      langs: ['bash', 'markdown', 'json', 'text'],
+      langs: ['bash', 'markdown', 'json', 'text', 'diff'],
     });
   }
   return highlighterPromise;

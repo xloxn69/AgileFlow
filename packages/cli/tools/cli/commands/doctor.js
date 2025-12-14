@@ -6,6 +6,7 @@
 
 const chalk = require('chalk');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const fs = require('fs-extra');
 const { Installer } = require('../installers/core/installer');
 const { displayLogo, displaySection, success, warning, error, info, confirm } = require('../lib/ui');
@@ -101,6 +102,60 @@ module.exports = {
             success('Created manifest.yaml');
           },
         });
+      }
+
+      // Check safe update tracking and pending preserved updates
+      console.log(chalk.bold('\nSafe Updates:'));
+      const cfgDir = path.join(status.path, '_cfg');
+      const fileIndexPath = path.join(cfgDir, 'files.json');
+      let fileIndex = null;
+
+      if (await fs.pathExists(fileIndexPath)) {
+        try {
+          fileIndex = await fs.readJson(fileIndexPath);
+          if (!fileIndex || fileIndex.schema !== 1 || !fileIndex.files || typeof fileIndex.files !== 'object') {
+            throw new Error('invalid format');
+          }
+          success('files.json present');
+
+          const protectedCount = countProtectedFiles(fileIndex);
+          if (protectedCount > 0) {
+            warning(`Protected files: ${protectedCount} (local changes preserved)`);
+            warnings++;
+          }
+        } catch (err) {
+          warning(`files.json invalid (${err.message})`);
+          warnings++;
+          repairs.push({
+            type: 'invalid-file-index',
+            message: 'Recreate files.json safe-update index',
+            fix: async () => {
+              await createProtectedFileIndex(status.path, fileIndexPath);
+              success('Recreated files.json (all files protected)');
+            },
+          });
+        }
+      } else {
+        warning('files.json missing (safe updates disabled)');
+        warnings++;
+        repairs.push({
+          type: 'missing-file-index',
+          message: 'Create files.json safe-update index',
+          fix: async () => {
+            await createProtectedFileIndex(status.path, fileIndexPath);
+            success('Created files.json (all files protected)');
+          },
+        });
+      }
+
+      const updatesDir = path.join(cfgDir, 'updates');
+      const updateSets = await listSubdirectories(updatesDir);
+      if (updateSets.length > 0) {
+        warning(`Pending preserved updates: ${updateSets.length} set(s)`);
+        warnings++;
+        info(`Review: ${updatesDir}/`);
+      } else {
+        success('No pending preserved updates');
       }
 
       // Check core content
@@ -334,5 +389,72 @@ function printSummary(issues, warnings) {
     console.log(chalk.yellow(`${warnings} warning(s), no critical issues.\n`));
   } else {
     console.log(chalk.red(`${issues} issue(s), ${warnings} warning(s) found.\n`));
+  }
+}
+
+function sha256Hex(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+function toPosixPath(filePath) {
+  return filePath.split(path.sep).join('/');
+}
+
+function countProtectedFiles(fileIndex) {
+  if (!fileIndex || !fileIndex.files || typeof fileIndex.files !== 'object') return 0;
+  return Object.values(fileIndex.files).filter((record) => record && record.protected).length;
+}
+
+async function listSubdirectories(dirPath) {
+  if (!(await fs.pathExists(dirPath))) return [];
+  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+  return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
+}
+
+async function createProtectedFileIndex(agileflowDir, fileIndexPath) {
+  const candidates = ['agents', 'commands', 'skills', 'templates', 'config.yaml'];
+  const files = {};
+
+  for (const candidate of candidates) {
+    const candidatePath = path.join(agileflowDir, candidate);
+    if (!(await fs.pathExists(candidatePath))) continue;
+
+    const stat = await fs.stat(candidatePath);
+    if (stat.isFile()) {
+      const data = await fs.readFile(candidatePath);
+      const relativePath = toPosixPath(path.relative(agileflowDir, candidatePath));
+      files[relativePath] = { sha256: sha256Hex(data), protected: true };
+      continue;
+    }
+
+    await indexDirectory(candidatePath, agileflowDir, files);
+  }
+
+  const index = {
+    schema: 1,
+    generated_at: new Date().toISOString(),
+    version: getCurrentVersion(),
+    files,
+  };
+
+  await fs.ensureDir(path.dirname(fileIndexPath));
+  await fs.writeJson(fileIndexPath, index, { spaces: 2 });
+}
+
+async function indexDirectory(dirPath, rootDir, filesOut) {
+  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const entryPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      await indexDirectory(entryPath, rootDir, filesOut);
+      continue;
+    }
+
+    if (entry.isFile()) {
+      const data = await fs.readFile(entryPath);
+      const relativePath = toPosixPath(path.relative(rootDir, entryPath));
+      filesOut[relativePath] = { sha256: sha256Hex(data), protected: true };
+    }
   }
 }

@@ -3,7 +3,7 @@ import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
 import { Button } from '@/components/ui/Button';
 import { CopyButton } from '@/components/CopyButton';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { MicroDemo } from '@/components/ui/MicroDemo';
 
 function HeroSystem() {

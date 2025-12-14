@@ -21,7 +21,7 @@ module.exports = {
   description: 'Update existing AgileFlow installation',
   options: [
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
-    ['--force', 'Force update, overwriting modified files'],
+    ['--force', 'Force reinstall (skip prompts; overwrites local changes)'],
   ],
   action: async (options) => {
     try {
@@ -67,7 +67,7 @@ module.exports = {
         console.log(chalk.dim(`  To update your installation, run:\n`));
         console.log(chalk.cyan(`  npx agileflow@latest update\n`));
 
-        const useOutdated = await confirm('Continue with outdated CLI anyway?');
+        const useOutdated = options.force ? true : await confirm('Continue with outdated CLI anyway?');
         if (!useOutdated) {
           console.log(chalk.dim('\nUpdate cancelled\n'));
           process.exit(0);
@@ -104,7 +104,7 @@ module.exports = {
       };
 
       // Run core installation
-      const coreResult = await installer.install(config);
+      const coreResult = await installer.install(config, { force: options.force });
 
       if (!coreResult.success) {
         error('Update failed');
@@ -112,6 +112,20 @@ module.exports = {
       }
 
       success('Updated core content');
+      if (coreResult.fileOps) {
+        info(
+          `Files: ${coreResult.fileOps.created} added, ${coreResult.fileOps.updated} updated, ${coreResult.fileOps.preserved} preserved`
+        );
+        if (coreResult.fileOps.updatesPath) {
+          info(`Preserved-file updates saved to: ${coreResult.fileOps.updatesPath}`);
+        }
+        if (coreResult.fileOps.backupPath) {
+          info(`Backup saved to: ${coreResult.fileOps.backupPath}`);
+        }
+        if (coreResult.fileOps.preserved > 0 && !options.force) {
+          warning('Some local changes were preserved; use --force to overwrite them.');
+        }
+      }
 
       // Re-setup IDEs
       ideManager.setAgileflowFolder(config.agileflowFolder);
@@ -122,8 +136,8 @@ module.exports = {
       }
 
       // Create/update docs structure (idempotent - only creates missing files)
-      displaySection('Updating Documentation Structure', `Folder: ${docsFolder}/`);
-      const docsResult = await createDocsStructure(directory, docsFolder);
+      displaySection('Updating Documentation Structure', `Folder: ${config.docsFolder}/`);
+      const docsResult = await createDocsStructure(directory, config.docsFolder, { updateGitignore: false });
 
       if (!docsResult.success) {
         warning('Failed to update docs structure');

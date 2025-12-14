@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/ui/container';
 import { LINKS } from '@/lib/links';
 
 type FooterLink = { label: string; href: string; external?: boolean };

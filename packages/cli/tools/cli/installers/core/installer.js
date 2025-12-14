@@ -5,10 +5,25 @@
  */
 
 const path = require('node:path');
+const crypto = require('node:crypto');
 const fs = require('fs-extra');
 const chalk = require('chalk');
 const ora = require('ora');
 const yaml = require('js-yaml');
+
+const TEXT_EXTENSIONS = new Set(['.md', '.yaml', '.yml', '.txt', '.json']);
+
+function sha256Hex(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+function toPosixPath(filePath) {
+  return filePath.split(path.sep).join('/');
+}
+
+function safeTimestampForPath(date = new Date()) {
+  return date.toISOString().replace(/[:.]/g, '-');
+}
 
 /**
  * Get the source path for AgileFlow content
@@ -38,10 +53,13 @@ class Installer {
   /**
    * Install AgileFlow to a project
    * @param {Object} config - Installation configuration
+   * @param {Object} options - Installation options
+   * @param {boolean} options.force - Overwrite local changes
    * @returns {Promise<Object>} Installation result
    */
-  async install(config) {
+  async install(config, options = {}) {
     const { directory, ides, userName, agileflowFolder, docsFolder } = config;
+    const requestedForce = Boolean(options.force);
 
     const agileflowDir = path.join(directory, agileflowFolder);
     const spinner = ora('Installing AgileFlow...').start();
@@ -55,24 +73,76 @@ class Installer {
       const cfgDir = path.join(agileflowDir, '_cfg');
       await fs.ensureDir(cfgDir);
 
+      const manifestPath = path.join(cfgDir, 'manifest.yaml');
+      const fileIndexPath = path.join(cfgDir, 'files.json');
+
+      const hasManifest = await fs.pathExists(manifestPath);
+      const existingFileIndex = await this.readFileIndex(fileIndexPath);
+      const hasValidFileIndex = Boolean(existingFileIndex);
+
+      // Migration: installation predates file indexing
+      const isMigration = hasManifest && !hasValidFileIndex;
+      const effectiveForce = requestedForce || isMigration;
+
+      const timestamp = safeTimestampForPath();
+      let backupPath = null;
+      if (isMigration) {
+        spinner.text = 'Backing up existing installation...';
+        backupPath = await this.createBackup(agileflowDir, cfgDir, timestamp);
+      }
+
+      const fileIndex = existingFileIndex || { schema: 1, files: {} };
+      if (!fileIndex.files || typeof fileIndex.files !== 'object') {
+        fileIndex.files = {};
+      }
+
+      const fileOps = {
+        created: 0,
+        updated: 0,
+        preserved: 0,
+        stashed: 0,
+        backupPath,
+        updatesPath: null,
+        isMigration,
+        force: effectiveForce,
+      };
+
       // Copy core content
       spinner.text = 'Installing core content...';
       const coreSourcePath = path.join(this.sourcePath, 'core');
 
       if (await fs.pathExists(coreSourcePath)) {
-        await this.copyContent(coreSourcePath, agileflowDir, agileflowFolder);
+        await this.copyContent(coreSourcePath, agileflowDir, agileflowFolder, {
+          agileflowDir,
+          cfgDir,
+          fileIndex,
+          fileOps,
+          force: effectiveForce,
+          timestamp,
+        });
       } else {
         // Fallback: copy from old structure (commands, agents, skills at root)
-        await this.copyLegacyContent(directory, agileflowDir, agileflowFolder);
+        await this.copyLegacyContent(directory, agileflowDir, agileflowFolder, {
+          agileflowDir,
+          cfgDir,
+          fileIndex,
+          fileOps,
+          force: effectiveForce,
+          timestamp,
+        });
       }
 
       // Create config.yaml
       spinner.text = 'Creating configuration...';
-      await this.createConfig(agileflowDir, userName, agileflowFolder);
+      await this.createConfig(agileflowDir, userName, agileflowFolder, { force: effectiveForce });
 
       // Create manifest
       spinner.text = 'Creating manifest...';
-      await this.createManifest(cfgDir, {ides, userName, agileflowFolder, docsFolder});
+      await this.createManifest(cfgDir, { ides, userName, agileflowFolder, docsFolder }, { force: effectiveForce });
+
+      // Persist file index (used for safe future updates)
+      spinner.text = 'Writing file index...';
+      await this.writeFileIndex(fileIndexPath, fileIndex);
 
       // Count installed items
       const counts = await this.countInstalledItems(agileflowDir);
@@ -84,6 +154,7 @@ class Installer {
         path: agileflowDir,
         projectDir: directory,
         counts,
+        fileOps,
       };
     } catch (error) {
       spinner.fail('Installation failed');
@@ -96,8 +167,9 @@ class Installer {
    * @param {string} source - Source directory
    * @param {string} dest - Destination directory
    * @param {string} agileflowFolder - AgileFlow folder name
+   * @param {Object|null} policy - Copy policy (safe update behavior)
    */
-  async copyContent(source, dest, agileflowFolder) {
+  async copyContent(source, dest, agileflowFolder, policy = null) {
     const entries = await fs.readdir(source, { withFileTypes: true });
 
     for (const entry of entries) {
@@ -106,9 +178,13 @@ class Installer {
 
       if (entry.isDirectory()) {
         await fs.ensureDir(destPath);
-        await this.copyContent(srcPath, destPath, agileflowFolder);
+        await this.copyContent(srcPath, destPath, agileflowFolder, policy);
       } else {
-        await this.copyFileWithReplacements(srcPath, destPath, agileflowFolder);
+        if (policy) {
+          await this.copyFileWithPolicy(srcPath, destPath, agileflowFolder, policy);
+        } else {
+          await this.copyFileWithReplacements(srcPath, destPath, agileflowFolder);
+        }
       }
     }
   }
@@ -118,8 +194,9 @@ class Installer {
    * @param {string} projectDir - Project directory
    * @param {string} agileflowDir - AgileFlow installation directory
    * @param {string} agileflowFolder - AgileFlow folder name
+   * @param {Object|null} policy - Copy policy (safe update behavior)
    */
-  async copyLegacyContent(projectDir, agileflowDir, agileflowFolder) {
+  async copyLegacyContent(projectDir, agileflowDir, agileflowFolder, policy = null) {
     const packageRoot = this.packageRoot;
 
     // Copy commands
@@ -127,7 +204,7 @@ class Installer {
     const commandsDest = path.join(agileflowDir, 'commands');
     if (await fs.pathExists(commandsSource)) {
       await fs.ensureDir(commandsDest);
-      await this.copyContent(commandsSource, commandsDest, agileflowFolder);
+      await this.copyContent(commandsSource, commandsDest, agileflowFolder, policy);
     }
 
     // Copy agents
@@ -135,7 +212,7 @@ class Installer {
     const agentsDest = path.join(agileflowDir, 'agents');
     if (await fs.pathExists(agentsSource)) {
       await fs.ensureDir(agentsDest);
-      await this.copyContent(agentsSource, agentsDest, agileflowFolder);
+      await this.copyContent(agentsSource, agentsDest, agileflowFolder, policy);
     }
 
     // Copy skills
@@ -143,7 +220,7 @@ class Installer {
     const skillsDest = path.join(agileflowDir, 'skills');
     if (await fs.pathExists(skillsSource)) {
       await fs.ensureDir(skillsDest);
-      await this.copyContent(skillsSource, skillsDest, agileflowFolder);
+      await this.copyContent(skillsSource, skillsDest, agileflowFolder, policy);
     }
 
     // Copy templates
@@ -151,7 +228,7 @@ class Installer {
     const templatesDest = path.join(agileflowDir, 'templates');
     if (await fs.pathExists(templatesSource)) {
       await fs.ensureDir(templatesDest);
-      await this.copyContent(templatesSource, templatesDest, agileflowFolder);
+      await this.copyContent(templatesSource, templatesDest, agileflowFolder, policy);
     }
   }
 
@@ -162,10 +239,9 @@ class Installer {
    * @param {string} agileflowFolder - AgileFlow folder name
    */
   async copyFileWithReplacements(source, dest, agileflowFolder) {
-    const textExtensions = ['.md', '.yaml', '.yml', '.txt', '.json'];
     const ext = path.extname(source).toLowerCase();
 
-    if (textExtensions.includes(ext)) {
+    if (TEXT_EXTENSIONS.has(ext)) {
       let content = await fs.readFile(source, 'utf8');
 
       // Replace placeholders
@@ -179,46 +255,288 @@ class Installer {
   }
 
   /**
+   * Copy a file with safe update behavior.
+   * - If the destination file is unchanged since the last install, overwrite.
+   * - If it has local changes, preserve and write the new version to _cfg/updates/<timestamp>/...
+   * - If --force is set, overwrite all.
+   * @param {string} source - Source file path
+   * @param {string} dest - Destination file path
+   * @param {string} agileflowFolder - AgileFlow folder name
+   * @param {Object} policy - Copy policy
+   */
+  async copyFileWithPolicy(source, dest, agileflowFolder, policy) {
+    const { agileflowDir, cfgDir, fileIndex, fileOps, force, timestamp } = policy;
+
+    const relativePath = toPosixPath(path.relative(agileflowDir, dest));
+    const maybeRecord = fileIndex.files[relativePath];
+    const existingRecord = maybeRecord && typeof maybeRecord === 'object' ? maybeRecord : null;
+
+    const ext = path.extname(source).toLowerCase();
+    const isText = TEXT_EXTENSIONS.has(ext);
+
+    let newContent;
+    if (isText) {
+      let content = await fs.readFile(source, 'utf8');
+      content = content.replace(/\{agileflow_folder\}/g, agileflowFolder);
+      content = content.replace(/\{project-root\}/g, '{project-root}');
+      newContent = content;
+    } else {
+      newContent = await fs.readFile(source);
+    }
+
+    const newHash = sha256Hex(newContent);
+    const destExists = await fs.pathExists(dest);
+
+    if (!destExists) {
+      await fs.ensureDir(path.dirname(dest));
+      if (isText) {
+        await fs.writeFile(dest, newContent, 'utf8');
+      } else {
+        await fs.copy(source, dest);
+      }
+
+      fileIndex.files[relativePath] = { sha256: newHash, protected: false };
+      fileOps.created++;
+      return;
+    }
+
+    if (force) {
+      if (isText) {
+        await fs.writeFile(dest, newContent, 'utf8');
+      } else {
+        await fs.copy(source, dest);
+      }
+
+      fileIndex.files[relativePath] = { sha256: newHash, protected: false };
+      fileOps.updated++;
+      return;
+    }
+
+    const currentHash = await this.hashFile(dest);
+
+    // Respect previously protected files unless they now match upstream.
+    if (existingRecord && existingRecord.protected) {
+      if (currentHash === newHash) {
+        fileIndex.files[relativePath] = { sha256: newHash, protected: false };
+        return;
+      }
+
+      await this.writeStash(cfgDir, timestamp, relativePath, isText, newContent, source, fileOps);
+      fileIndex.files[relativePath] = { sha256: currentHash, protected: true };
+      fileOps.preserved++;
+      return;
+    }
+
+    // If we have a baseline hash and the file is unchanged since last install, we can update in place.
+    if (existingRecord && existingRecord.sha256 === currentHash) {
+      if (currentHash !== newHash) {
+        if (isText) {
+          await fs.writeFile(dest, newContent, 'utf8');
+        } else {
+          await fs.copy(source, dest);
+        }
+        fileOps.updated++;
+      }
+
+      fileIndex.files[relativePath] = { sha256: newHash, protected: false };
+      return;
+    }
+
+    // Unknown or locally modified file: preserve and stash the new version for manual merge.
+    if (currentHash === newHash) {
+      fileIndex.files[relativePath] = { sha256: newHash, protected: false };
+      return;
+    }
+
+    await this.writeStash(cfgDir, timestamp, relativePath, isText, newContent, source, fileOps);
+    fileIndex.files[relativePath] = { sha256: currentHash, protected: true };
+    fileOps.preserved++;
+  }
+
+  async writeStash(cfgDir, timestamp, relativePath, isText, newContent, source, fileOps) {
+    const updatesRoot = path.join(cfgDir, 'updates', timestamp);
+    const stashPath = path.join(updatesRoot, relativePath);
+
+    await fs.ensureDir(path.dirname(stashPath));
+    if (isText) {
+      await fs.writeFile(stashPath, newContent, 'utf8');
+    } else {
+      await fs.copy(source, stashPath);
+    }
+
+    fileOps.stashed++;
+    fileOps.updatesPath = updatesRoot;
+  }
+
+  async hashFile(filePath) {
+    const data = await fs.readFile(filePath);
+    return sha256Hex(data);
+  }
+
+  async readFileIndex(fileIndexPath) {
+    if (!(await fs.pathExists(fileIndexPath))) return null;
+    try {
+      const index = await fs.readJson(fileIndexPath);
+      if (!index || typeof index !== 'object') return null;
+      if (index.schema !== 1) return null;
+      if (!index.files || typeof index.files !== 'object') return null;
+      return index;
+    } catch {
+      return null;
+    }
+  }
+
+  async writeFileIndex(fileIndexPath, fileIndex) {
+    const packageJson = require(path.join(this.packageRoot, 'package.json'));
+    const nextIndex = {
+      schema: 1,
+      generated_at: new Date().toISOString(),
+      version: packageJson.version,
+      files: fileIndex.files || {},
+    };
+
+    await fs.writeJson(fileIndexPath, nextIndex, { spaces: 2 });
+  }
+
+  async createBackup(agileflowDir, cfgDir, timestamp) {
+    const backupRoot = path.join(cfgDir, 'backups', timestamp);
+    await fs.ensureDir(backupRoot);
+
+    const candidates = ['agents', 'commands', 'skills', 'templates', 'config.yaml'];
+    for (const name of candidates) {
+      const srcPath = path.join(agileflowDir, name);
+      if (await fs.pathExists(srcPath)) {
+        await fs.copy(srcPath, path.join(backupRoot, name));
+      }
+    }
+
+    const manifestPath = path.join(cfgDir, 'manifest.yaml');
+    if (await fs.pathExists(manifestPath)) {
+      await fs.copy(manifestPath, path.join(backupRoot, 'manifest.yaml'));
+    }
+
+    return backupRoot;
+  }
+
+  /**
    * Create configuration file
    * @param {string} agileflowDir - AgileFlow directory
    * @param {string} userName - User name
    * @param {string} agileflowFolder - AgileFlow folder name
+   * @param {Object} options - Options
+   * @param {boolean} options.force - Overwrite existing file
    */
-  async createConfig(agileflowDir, userName, agileflowFolder) {
-    const config = {
-      version: require(path.join(this.packageRoot, 'package.json')).version,
-      user_name: userName,
-      agileflow_folder: agileflowFolder,
-      communication_language: 'English',
-      created_at: new Date().toISOString(),
-    };
-
+  async createConfig(agileflowDir, userName, agileflowFolder, options = {}) {
     const configPath = path.join(agileflowDir, 'config.yaml');
-    await fs.writeFile(configPath, yaml.dump(config), 'utf8');
+    const packageJson = require(path.join(this.packageRoot, 'package.json'));
+
+    if (!(await fs.pathExists(configPath))) {
+      const config = {
+        version: packageJson.version,
+        user_name: userName,
+        agileflow_folder: agileflowFolder,
+        communication_language: 'English',
+        created_at: new Date().toISOString(),
+      };
+
+      await fs.writeFile(configPath, yaml.dump(config), 'utf8');
+      return;
+    }
+
+    try {
+      const existingContent = await fs.readFile(configPath, 'utf8');
+      const loaded = yaml.load(existingContent);
+      const existing = loaded && typeof loaded === 'object' && !Array.isArray(loaded) ? loaded : {};
+
+      const next = {
+        ...existing,
+        version: packageJson.version,
+        user_name: userName,
+        agileflow_folder: agileflowFolder,
+        created_at: existing.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      await fs.writeFile(configPath, yaml.dump(next), 'utf8');
+    } catch {
+      if (options.force) {
+        const config = {
+          version: packageJson.version,
+          user_name: userName,
+          agileflow_folder: agileflowFolder,
+          communication_language: 'English',
+          created_at: new Date().toISOString(),
+        };
+
+        await fs.writeFile(configPath, yaml.dump(config), 'utf8');
+      }
+    }
   }
 
   /**
    * Create manifest file
    * @param {string} cfgDir - Config directory
    * @param {Object} config - Manifest configuration
+   * @param {Object} options - Options
+   * @param {boolean} options.force - Overwrite existing file
    */
-  async createManifest(cfgDir, config) {
+  async createManifest(cfgDir, config, options = {}) {
     const { ides, userName, agileflowFolder, docsFolder } = config;
     const packageJson = require(path.join(this.packageRoot, 'package.json'));
 
-    const manifest = {
-      version: packageJson.version,
-      installed_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      ides: ides,
-      modules: ['core'],
-      user_name: userName,
-      agileflow_folder: agileflowFolder || '.agileflow',
-      docs_folder: docsFolder || 'docs',
-    };
-
     const manifestPath = path.join(cfgDir, 'manifest.yaml');
-    await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+    const now = new Date().toISOString();
+
+    if (!(await fs.pathExists(manifestPath))) {
+      const manifest = {
+        version: packageJson.version,
+        installed_at: now,
+        updated_at: now,
+        ides: ides,
+        modules: ['core'],
+        user_name: userName,
+        agileflow_folder: agileflowFolder || '.agileflow',
+        docs_folder: docsFolder || 'docs',
+      };
+
+      await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+      return;
+    }
+
+    try {
+      const existingContent = await fs.readFile(manifestPath, 'utf8');
+      const loaded = yaml.load(existingContent);
+      const existing = loaded && typeof loaded === 'object' && !Array.isArray(loaded) ? loaded : {};
+
+      const manifest = {
+        ...existing,
+        version: packageJson.version,
+        installed_at: existing.installed_at || now,
+        updated_at: now,
+        ides: ides,
+        modules: existing.modules || ['core'],
+        user_name: userName,
+        agileflow_folder: agileflowFolder || existing.agileflow_folder || '.agileflow',
+        docs_folder: docsFolder || existing.docs_folder || 'docs',
+      };
+
+      await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+    } catch {
+      if (options.force) {
+        const manifest = {
+          version: packageJson.version,
+          installed_at: now,
+          updated_at: now,
+          ides: ides,
+          modules: ['core'],
+          user_name: userName,
+          agileflow_folder: agileflowFolder || '.agileflow',
+          docs_folder: docsFolder || 'docs',
+        };
+
+        await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+      }
+    }
   }
 
   /**

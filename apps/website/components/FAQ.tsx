@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { cn } from '@/lib/cn';
 import { trackEvent } from '@/lib/analytics';
 import { usePrefersReducedMotion } from '@/lib/reducedMotion';

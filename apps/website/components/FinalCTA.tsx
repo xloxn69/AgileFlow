@@ -1,5 +1,5 @@
 import { Section } from '@/components/ui/Section';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { CopyButton } from '@/components/CopyButton';
 import { Button } from '@/components/ui/Button';
 import { LINKS } from '@/lib/links';
@@ -56,4 +56,3 @@ export function FinalCTA() {
     </Section>
   );
 }
-

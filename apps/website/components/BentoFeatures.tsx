@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { Section } from '@/components/ui/Section';
 import { Pill } from '@/components/ui/Pill';
-import { Reveal } from '@/components/ui/Reveal';
+import { Reveal } from '@/components/ui/reveal';
 import { cn } from '@/lib/cn';
 import { MicroDemo, type MicroDemoName } from '@/components/ui/MicroDemo';
 import { Modal } from '@/components/ui/Modal';

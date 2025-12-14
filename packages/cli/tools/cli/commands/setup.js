@@ -33,6 +33,7 @@ module.exports = {
           userName: 'Developer',
           agileflowFolder: '.agileflow',
           docsFolder: 'docs',
+          updateGitignore: true,
         };
       } else {
         // Interactive prompts
@@ -65,7 +66,9 @@ module.exports = {
 
       // Create docs structure
       displaySection('Creating Documentation Structure', `Folder: ${config.docsFolder}/`);
-      const docsResult = await createDocsStructure(config.directory, config.docsFolder);
+      const docsResult = await createDocsStructure(config.directory, config.docsFolder, {
+        updateGitignore: config.updateGitignore,
+      });
 
       if (!docsResult.success) {
         error('Failed to create docs structure');
