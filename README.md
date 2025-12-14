@@ -17,6 +17,12 @@
 npm install -g agileflow
 ```
 
+#### Option 2: Project-Level Installation
+
+```bash
+npm install agileflow
+```
+
 Then run setup in your project:
 
 ```bash
@@ -29,12 +35,6 @@ This will:
 3. Install AgileFlow core (commands, agents, skills)
 4. Configure your selected IDEs
 5. Create documentation structure
-
-#### Option 2: Project-Level Installation
-
-```bash
-npm install agileflow
-```
 
 ### CLI Commands
 
