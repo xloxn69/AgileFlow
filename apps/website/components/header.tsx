@@ -47,7 +47,7 @@ export function Header() {
       </a>
 
       <header
-        className="fixed left-0 right-0 top-0 z-50"
+        className="fixed left-0 right-0 top-12 z-40"
         style={{
           backgroundColor: 'rgba(255,255,255,0.98)',
           backdropFilter: 'blur(12px)',
@@ -207,7 +207,7 @@ export function Header() {
 
       {/* Gradient fade overlay */}
       <div
-        className="pointer-events-none fixed left-0 right-0 top-16 z-40 h-24"
+        className="pointer-events-none fixed left-0 right-0 top-28 z-30 h-24"
         style={{
           background: 'linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
         }}
