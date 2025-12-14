@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/cn';
@@ -12,7 +12,13 @@ import { track } from '@/lib/track';
 type NavItem = { label: string; href: string; kind?: 'anchor' | 'external' };
 
 export function Header() {
+  const { scrollY } = useScroll();
+  const [bannerHidden, setBannerHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setBannerHidden(latest > 40);
+  });
 
   const nav = useMemo<NavItem[]>(
     () => [
@@ -46,8 +52,12 @@ export function Header() {
         Skip to content
       </a>
 
-      <header
-        className="fixed left-0 right-0 top-12 z-40"
+      <motion.header
+        className="fixed left-0 right-0 z-40"
+        animate={{
+          top: bannerHidden ? 0 : 48,
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
         style={{
           backgroundColor: 'rgba(255,255,255,0.98)',
           backdropFilter: 'blur(12px)',
@@ -203,11 +213,15 @@ export function Header() {
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </header>
+      </motion.header>
 
       {/* Gradient fade overlay */}
-      <div
-        className="pointer-events-none fixed left-0 right-0 top-28 z-30 h-24"
+      <motion.div
+        className="pointer-events-none fixed left-0 right-0 z-30 h-24"
+        animate={{
+          top: bannerHidden ? 64 : 112,
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
         style={{
           background: 'linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
         }}
