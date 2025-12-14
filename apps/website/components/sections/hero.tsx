@@ -15,7 +15,7 @@ export function Hero({ content }: { content: LandingContent['hero'] }) {
           <div className="lg:col-span-6">
             <Reveal>
               <Image
-                src="/logo.png"
+                src="/banner.png"
                 alt="AgileFlow"
                 width={484}
                 height={114}
