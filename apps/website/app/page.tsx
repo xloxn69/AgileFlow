@@ -1,5 +1,6 @@
 import { BackgroundTexture } from '@/components/background-texture';
 import { Header } from '@/components/header';
+import { StickyBanner } from '@/components/ui/sticky-banner';
 import { ScrollDepthTracker } from '@/components/scroll-depth-tracker';
 import { Hero } from '@/components/sections/hero';
 import { StatsStrip } from '@/components/sections/stats-strip';
@@ -21,8 +22,24 @@ export default async function Page() {
     <div className="relative">
       <ScrollDepthTracker />
       <Header />
+      <StickyBanner
+        className="bg-gradient-to-r from-[var(--accent)] to-orange-600"
+        hideOnScroll
+      >
+        <p className="text-white drop-shadow-md">
+          🎉 AgileFlow is now open source!{' '}
+          <a
+            href="https://github.com/projectquestorg/AgileFlow"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium underline decoration-white/50 transition hover:decoration-white"
+          >
+            Star us on GitHub
+          </a>
+        </p>
+      </StickyBanner>
       <BackgroundTexture />
-      <main id="content" className="pt-20">
+      <main id="content" className="pt-28">
         <Hero content={content.hero} />
         <StatsStrip stats={content.stats} />
         <HowItWorks steps={content.howItWorks} />
