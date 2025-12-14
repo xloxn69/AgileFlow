@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
@@ -71,11 +72,16 @@ export function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="focus-ring rounded-md text-sm font-semibold tracking-tight"
+              className="focus-ring rounded-md"
               onClick={() => track('nav_home')}
             >
-              <span className="text-[var(--text-primary)]">Agile</span>
-              <span className="text-[var(--accent)]">Flow</span>
+              <Image
+                src="/banner.png"
+                alt="AgileFlow"
+                width={120}
+                height={28}
+                className="h-7 w-auto"
+              />
             </Link>
           </div>
 
