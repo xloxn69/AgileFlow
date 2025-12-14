@@ -103,7 +103,7 @@ export function MicroDemo({
             {' '}
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -112,7 +112,7 @@ export function MicroDemo({
             a
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -121,7 +121,7 @@ export function MicroDemo({
             g
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -130,7 +130,7 @@ export function MicroDemo({
             i
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -139,7 +139,7 @@ export function MicroDemo({
             l
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -148,7 +148,7 @@ export function MicroDemo({
             e
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -157,7 +157,7 @@ export function MicroDemo({
             f
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -166,7 +166,7 @@ export function MicroDemo({
             l
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -175,7 +175,7 @@ export function MicroDemo({
             o
           </motion.tspan>
           <motion.tspan
-            fill="#C15F3C"
+            fill="#e8683a"
             fontWeight="600"
             initial={reduced ? {} : { opacity: 0 }}
             animate={reduced ? {} : { opacity: [0, 0, 1, 1, 0] }}
@@ -821,7 +821,7 @@ export function MicroDemo({
             cx={hubX}
             cy={hubY}
             r="3"
-            fill="#C15F3C"
+            fill="#e8683a"
             opacity={0}
             initial={reduced ? {} : { cx: hubX, cy: hubY, opacity: 0 }}
             animate={
@@ -882,7 +882,7 @@ export function MicroDemo({
           cx={hubX}
           cy={hubY}
           r="6"
-          fill="#C15F3C"
+          fill="#e8683a"
           opacity={0.35}
           animate={reduced ? {} : { opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] }}
           transition={{ duration: duration(1.2), ease: 'easeInOut', repeat: reduced ? 0 : Infinity }}
