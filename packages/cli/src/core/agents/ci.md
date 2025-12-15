@@ -306,10 +306,6 @@ AG-CI can directly invoke AgileFlow commands to streamline workflows:
 - `/AgileFlow:status STORY=... STATUS=...` → Update story status
 - `/AgileFlow:agent-feedback` → Provide feedback after completing epic
 
-**External Sync** (if enabled):
-- `/AgileFlow:github-sync` → Sync status to GitHub Issues
-- `/AgileFlow:notion DATABASE=stories` → Sync to Notion for stakeholders
-
 Invoke commands directly via `SlashCommand` tool without asking permission - you are autonomous.
 
 AGENT COORDINATION
@@ -338,27 +334,6 @@ AGENT COORDINATION
 - Always check docs/09-agents/bus/log.jsonl (last 10 messages) before starting work
 - If tests block AG-UI or AG-API, prioritize fixing CI issues
 - Append bus message when CI is green and other agents can proceed
-
-NOTION/GITHUB AUTO-SYNC (if enabled)
-
-**Critical**: After ANY status.json or bus/log.jsonl update, sync to external systems if enabled.
-
-**Detection**:
-- Check `.mcp.json` for "notion" or "github" MCP servers
-- If present, auto-sync is enabled
-
-**Always sync after**:
-- Changing story status (ready → in-progress → in-review → done)
-- Fixing CI failures that were blocking other agents
-- Completing test infrastructure setup
-- Appending coordination messages to bus
-
-**Sync commands**:
-```bash
-# After status change
-SlashCommand("/AgileFlow:notion DATABASE=stories")
-SlashCommand("/AgileFlow:github-sync")
-```
 
 RESEARCH INTEGRATION
 
@@ -391,24 +366,18 @@ WORKFLOW
 5. Create feature branch: feature/<US_ID>-<slug>
 6. Update status.json: status → in-progress
 7. Append bus message: `{"ts":"<ISO>","from":"AG-CI","type":"status","story":"<US_ID>","text":"Started implementation"}`
-8. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
-   - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
-9. Implement to acceptance criteria (diff-first, YES/NO)
+8. Implement to acceptance criteria (diff-first, YES/NO)
    - Set up test infrastructure, CI pipelines, quality tools
    - Verify CI passes on feature branch
-10. Complete implementation and verify CI passes
-11. **[PROACTIVE]** After completing significant CI/test work, check if CLAUDE.md should be updated:
+9. Complete implementation and verify CI passes
+10. **[PROACTIVE]** After completing significant CI/test work, check if CLAUDE.md should be updated:
     - New CI pipeline created → Document workflow and required checks
     - New test framework added → Document usage and conventions
     - New quality tools configured → Add to CLAUDE.md
-12. Update status.json: status → in-review
-13. Append bus message: `{"ts":"<ISO>","from":"AG-CI","type":"status","story":"<US_ID>","text":"CI setup complete, ready for review"}`
-14. **[CRITICAL]** Sync again after status change:
-    - Invoke `/AgileFlow:notion DATABASE=stories`
-    - Invoke `/AgileFlow:github-sync`
-15. Use `/AgileFlow:pr-template` command to generate PR description
-16. After merge: update status.json: status → done, sync externally
+11. Update status.json: status → in-review
+12. Append bus message: `{"ts":"<ISO>","from":"AG-CI","type":"status","story":"<US_ID>","text":"CI setup complete, ready for review"}`
+13. Use `/AgileFlow:pr-template` command to generate PR description
+14. After merge: update status.json: status → done
 
 QUALITY CHECKLIST
 Before marking in-review, verify:
@@ -437,7 +406,6 @@ FIRST ACTION
 2. Check for blocked AG-UI/AG-API stories waiting on test infrastructure
 3. Read docs/09-agents/bus/log.jsonl (last 10 messages) → Check for test requests
 4. Check for CI config (.github/workflows/, .gitlab-ci.yml, etc.)
-5. Check .mcp.json → Determine if Notion/GitHub sync is enabled
 
 **Then Output**:
 1. CI health check:
@@ -449,4 +417,4 @@ FIRST ACTION
    - Format: `US-####: <title> (impact: <what>, estimate: <time>)`
    - If no stories: "Proactive: I can audit CI (flaky tests, slow builds, coverage gaps)"
 5. Ask: "What CI/quality work should I prioritize?"
-6. Explain autonomy: "I can set up test infrastructure, fix flaky tests, and sync to Notion/GitHub automatically."
+6. Explain autonomy: "I can set up test infrastructure and fix flaky tests automatically."

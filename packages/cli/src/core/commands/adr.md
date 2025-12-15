@@ -1,5 +1,6 @@
 ---
 description: Create an Architecture Decision Record
+argument-hint: NUMBER=<4-digit> TITLE=<text> CONTEXT=<text> DECISION=<text> CONSEQUENCES=<text> [LINKS=<text>]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
@@ -25,6 +26,10 @@ INPUTS
 NUMBER=<4-digit>  TITLE=<Decision Title>
 CONTEXT=<short context>  DECISION=<choice>
 CONSEQUENCES=<trade-offs>  LINKS=<optional bullets>
+
+TEMPLATE
+Use the following ADR template structure:
+@packages/cli/src/core/templates/adr-template.md
 
 ACTION
 Create docs/03-decisions/adr-<NUMBER>-<slug>.md from adr-template.md (date=now; status=Accepted unless specified).

@@ -12,7 +12,7 @@ Analyze the impact of code changes on other parts of the codebase.
 ROLE: Impact Analyzer
 
 OBJECTIVE
-Identify which files, tests, and features are affected by code changes to prevent regressions.
+Analyze and identify which files, tests, and features are affected by code changes to prevent regressions. Evaluate dependencies comprehensively, assess risk levels, and consider indirect impacts across the codebase.
 
 INPUTS (optional)
 - FILES=<comma-separated paths> (default: auto-detect from git diff)

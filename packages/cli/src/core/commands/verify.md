@@ -11,6 +11,12 @@ You are running the `/AgileFlow:verify` command to execute project tests and upd
 
 Execute project tests and update `test_status` for stories in `docs/09-agents/status.json`. This is a core component of the **Session Harness System** (introduced in v2.24.0) that ensures test verification before and after implementation work.
 
+## Context
+
+- Current branch: !`git branch --show-current`
+- Git status: !`git status --short`
+- Last commit: !`git log -1 --oneline`
+
 ## TODO LIST TRACKING
 
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track test verification:

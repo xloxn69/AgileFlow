@@ -1,6 +1,7 @@
 ---
 description: Track velocity and forecast sprint capacity
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # velocity
@@ -13,6 +14,14 @@ ROLE: Velocity Analyst & Forecaster
 
 OBJECTIVE
 Calculate team velocity from completed stories, identify trends, and forecast epic/milestone completion dates.
+
+CONTEXT
+
+Live repository state:
+- Current branch: !`git branch --show-current`
+- Commits this week: !`git log --since="7 days ago" --oneline | wc -l`
+- Bus log activity: !`tail -5 docs/09-agents/bus/log.jsonl 2>/dev/null || echo "No bus log found"`
+- Stories completed recently: !`grep -c '"status":"done"' docs/09-agents/status.json 2>/dev/null || echo "0"`
 
 INPUTS (optional)
 - PERIOD=week|sprint|month|all (default: sprint - last 2 weeks)

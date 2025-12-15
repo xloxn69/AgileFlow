@@ -15,6 +15,10 @@ INPUTS
 AGENT_ID=<AG-UI|AG-API|AG-CI or custom>  ROLE=<role>
 TOOLS=[list]  SCOPE=<directories & story tags>
 
+TEMPLATE
+Use the following agent profile template:
+@packages/cli/src/core/templates/agent-profile-template.md
+
 ACTIONS
 1) Create docs/02-practices/prompts/agents/agent-<AGENT_ID>.md from agent-profile-template.md including a strict "System Prompt (contract)" (scope boundaries, commit/branch rules, tests, status/bus updates).
 2) Update docs/09-agents/roster.yaml (create if missing) mapping id→role/tools/scope.

@@ -1,6 +1,8 @@
 ---
 description: Generate retrospective with Start/Stop/Continue format
+argument-hint: [TIMEFRAME=sprint|2weeks|30d|90d] [EPIC=<id>] [FORMAT=ascii|markdown|html] [SAVE=true|false]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # retro
@@ -29,6 +31,14 @@ Mark each step complete as you finish it. This ensures comprehensive retrospecti
 
 OBJECTIVE
 Automatically generate retrospective insights by analyzing bus/log.jsonl, status.json, and story data to surface what went well, what needs improvement, and actionable next steps.
+
+CONTEXT
+
+Live repository state:
+- Current branch: !`git branch --show-current`
+- Sprint activity: !`git log --since="14 days ago" --oneline | wc -l`
+- Contributors: !`git log --since="14 days ago" --format='%an' | sort -u`
+- Recent completions: !`tail -10 docs/09-agents/bus/log.jsonl 2>/dev/null | grep -c '"status":"done"' || echo "0"`
 
 INPUTS (optional)
 - TIMEFRAME=sprint|2weeks|30d|90d (default: 2weeks)
@@ -516,7 +526,7 @@ USAGE EXAMPLES
 /AgileFlow:retro SAVE=false
 ```
 
-### Export as markdown for Notion
+### Export as markdown
 ```bash
 /AgileFlow:retro FORMAT=markdown > retro.md
 ```

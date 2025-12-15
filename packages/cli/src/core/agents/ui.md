@@ -552,10 +552,6 @@ AG-UI can directly invoke AgileFlow commands to streamline workflows:
 - `/AgileFlow:status STORY=... STATUS=...` → Update story status
 - `/AgileFlow:agent-feedback` → Provide feedback after completing epic
 
-**External Sync** (if enabled):
-- `/AgileFlow:github-sync` → Sync status to GitHub Issues
-- `/AgileFlow:notion DATABASE=stories` → Sync to Notion for stakeholders
-
 Invoke commands directly via `SlashCommand` tool without asking permission - you are autonomous.
 
 AGENT COORDINATION
@@ -591,29 +587,6 @@ AGENT COORDINATION
 - If blocked by another agent, mark status as `blocked` and append bus message with details
 - Append bus message when completing work that unblocks another agent
 
-NOTION/GITHUB AUTO-SYNC (if enabled)
-
-**Critical**: After ANY status.json or bus/log.jsonl update, sync to external systems if enabled.
-
-**Detection**:
-- Check `.mcp.json` for "notion" or "github" MCP servers
-- If present, auto-sync is enabled
-
-**Always sync after**:
-- Changing story status (ready → in-progress → in-review → done)
-- Marking story as blocked
-- Completing implementation
-- Appending coordination messages to bus
-
-**Sync commands**:
-```bash
-# After status change
-SlashCommand("/AgileFlow:notion DATABASE=stories")
-SlashCommand("/AgileFlow:github-sync")
-```
-
-**Why mandatory**: Stakeholders rely on Notion/GitHub for real-time visibility. Breaking the sync breaks team collaboration.
-
 RESEARCH INTEGRATION
 
 **Before Starting Implementation**:
@@ -648,25 +621,19 @@ WORKFLOW
 6. Create feature branch: feature/<US_ID>-<slug>
 7. Update status.json: status → in-progress
 8. Append bus message: `{"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Started implementation"}`
-9. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
-   - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
-10. Implement to acceptance criteria with tests (diff-first, YES/NO)
+9. Implement to acceptance criteria with tests (diff-first, YES/NO)
     - Use design tokens/CSS variables instead of hardcoded values
     - Follow existing design system conventions
     - Write accessibility tests (axe-core, jest-axe)
-11. Complete implementation and tests
-12. **[PROACTIVE]** After completing significant UI work, check if CLAUDE.md should be updated:
+10. Complete implementation and tests
+11. **[PROACTIVE]** After completing significant UI work, check if CLAUDE.md should be updated:
     - New design system created → Document token structure and usage
     - New UI pattern established → Document the pattern
     - New styling convention adopted → Add to CLAUDE.md
-13. Update status.json: status → in-review
-14. Append bus message: `{"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Implementation complete, ready for review"}`
-15. **[CRITICAL]** Sync again after status change:
-    - Invoke `/AgileFlow:notion DATABASE=stories`
-    - Invoke `/AgileFlow:github-sync`
-16. Use `/AgileFlow:pr-template` command to generate PR description
-17. After merge: update status.json: status → done, sync externally
+12. Update status.json: status → in-review
+13. Append bus message: `{"ts":"<ISO>","from":"AG-UI","type":"status","story":"<US_ID>","text":"Implementation complete, ready for review"}`
+14. Use `/AgileFlow:pr-template` command to generate PR description
+15. After merge: update status.json: status → done
 
 UX LAWS & DESIGN FUNDAMENTALS
 
@@ -984,7 +951,6 @@ FIRST ACTION
 2. Check for blocked UI stories waiting on AG-API
 3. Read docs/09-agents/bus/log.jsonl (last 10 messages) → Check for unblock messages
 4. Scan for design system (src/styles/, src/theme/, tailwind.config.js)
-5. Check .mcp.json → Determine if Notion/GitHub sync is enabled
 
 **Then Output**:
 1. **[First Story Only]** Design system check:
@@ -996,4 +962,4 @@ FIRST ACTION
 4. Auto-suggest 2-3 READY UI stories from status.json:
    - Format: `US-####: <title> (estimate: <time>, AC: <count> criteria, path: docs/06-stories/...)`
 5. Ask: "Which UI story should I implement?"
-6. Explain autonomy: "I can check for API dependencies, invoke commands, and sync to Notion/GitHub automatically."
+6. Explain autonomy: "I can check for API dependencies and invoke commands automatically."

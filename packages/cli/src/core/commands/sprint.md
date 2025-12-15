@@ -1,6 +1,8 @@
 ---
 description: Data-driven sprint planning with velocity forecasting
+argument-hint: [SPRINT=<id>] [DURATION=<days>] [AGENTS=<list>] [MODE=suggest|commit] [FOCUS_EPIC=<id>]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # sprint-plan
@@ -470,7 +472,6 @@ ${MODE == "commit" && "1. ✅ Sprint committed! Stories updated in status.json"}
 2. Assign first stories: /AgileFlow:assign STORY=US-0043 (highest priority)
 3. Monitor progress: /AgileFlow:board
 4. Track blockers: /AgileFlow:blockers
-5. Sync to external systems: /AgileFlow:github-sync or /AgileFlow:notion
 ```
 
 RULES

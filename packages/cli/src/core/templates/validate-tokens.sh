@@ -50,21 +50,6 @@ else
 fi
 
 echo ""
-
-# Check Context7 token (secure - doesn't print value)
-if grep -q "^CONTEXT7_API_KEY=" .env && ! grep -q "CONTEXT7_API_KEY=$" .env; then
-  TOKEN_VALUE=$(grep "^CONTEXT7_API_KEY=" .env | cut -d'=' -f2)
-  if [ -z "$TOKEN_VALUE" ] || [ "$TOKEN_VALUE" = "your_key_here" ] || [[ "$TOKEN_VALUE" == *"placeholder"* ]]; then
-    echo "⚠️  CONTEXT7_API_KEY is set but appears to be placeholder"
-    echo "    → Replace with real key (optional for higher rate limits)"
-  else
-    echo "✅ CONTEXT7_API_KEY is set (length: ${#TOKEN_VALUE})"
-  fi
-else
-  echo "ℹ️  CONTEXT7_API_KEY not found in .env (optional)"
-fi
-
-echo ""
 echo "🔒 Security Check:"
 
 # Check .gitignore for .mcp.json

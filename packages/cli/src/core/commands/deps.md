@@ -1,6 +1,8 @@
 ---
 description: Visualize dependency graph with critical path detection
+argument-hint: [SCOPE=story|epic|all] [EPIC=<id>] [STORY=<id>] [FORMAT=ascii|mermaid|graphviz|json] [ANALYSIS=critical-path|circular|blocking|all]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # dependencies

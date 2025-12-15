@@ -30,5 +30,8 @@
   },
   "devDependencies": {
     "tailwindcss": "3.4.1"
+  },
+  "dependencies": {
+    "agileflow": "^2.34.0"
   }
 }

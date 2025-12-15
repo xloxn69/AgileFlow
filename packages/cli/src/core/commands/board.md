@@ -1,6 +1,7 @@
 ---
 description: Display visual kanban board with WIP limits
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # board
@@ -13,6 +14,14 @@ ROLE: Board Visualizer
 
 OBJECTIVE
 Create a visual kanban board showing stories organized by status with color coding, WIP limits, and quick stats.
+
+CONTEXT
+
+Live repository state:
+- Current branch: !`git branch --show-current`
+- Last commit: !`git log -1 --oneline`
+- Recent activity: !`git log --since="7 days ago" --oneline | head -5`
+- Status file modified: !`stat -c %y docs/09-agents/status.json 2>/dev/null || echo "Not found"`
 
 INPUTS (optional)
 - EPIC=<EP_ID> (filter by specific epic)
