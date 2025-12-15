@@ -262,13 +262,14 @@ export const Terminal = ({
     ))
   }, [children, sequence])
 
-  // Smooth auto-scroll to follow new content
+  // Scroll to show the latest animated item
   useEffect(() => {
-    if (scrollRef.current && sequenceHasStarted && activeIndex > 0) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: 'smooth'
-      })
+    if (scrollRef.current && sequenceHasStarted) {
+      // Find the currently active element
+      const children = scrollRef.current.querySelectorAll('code > div')
+      if (children[activeIndex]) {
+        children[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
     }
   }, [activeIndex, sequenceHasStarted])
 
@@ -294,7 +295,7 @@ export const Terminal = ({
           maxHeight: 'calc(600px - 60px)'
         }}
       >
-        <code className="grid gap-y-0.5 text-[10px] leading-tight text-[var(--text-primary)] whitespace-pre">{wrappedChildren}</code>
+        <code className="grid gap-y-0.5 text-[8px] leading-[1.2] text-[var(--text-primary)] whitespace-pre overflow-x-hidden">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
