@@ -49,6 +49,15 @@ export const AnimatedSpan = ({
   const sequence = useSequence()
   const itemIndex = useItemIndex()
   const [hasStarted, setHasStarted] = useState(false)
+
+  const sequenceRef = useRef(sequence)
+  const itemIndexRef = useRef(itemIndex)
+
+  useEffect(() => {
+    sequenceRef.current = sequence
+    itemIndexRef.current = itemIndex
+  }, [sequence, itemIndex])
+
   useEffect(() => {
     if (!sequence || itemIndex === null) return
     if (!sequence.sequenceStarted) return
@@ -68,9 +77,11 @@ export const AnimatedSpan = ({
       transition={{ duration: 0.3, delay: sequence ? 0 : delay / 1000 }}
       className={cn("grid text-sm font-normal tracking-tight", className)}
       onAnimationComplete={() => {
-        if (!sequence) return
-        if (itemIndex === null) return
-        sequence.completeItem(itemIndex)
+        const seq = sequenceRef.current
+        const idx = itemIndexRef.current
+        if (!seq) return
+        if (idx === null) return
+        seq.completeItem(idx)
       }}
       {...props}
     >
@@ -120,6 +131,14 @@ export const TypingAnimation = ({
   const sequence = useSequence()
   const itemIndex = useItemIndex()
 
+  const sequenceRef = useRef(sequence)
+  const itemIndexRef = useRef(itemIndex)
+
+  useEffect(() => {
+    sequenceRef.current = sequence
+    itemIndexRef.current = itemIndex
+  }, [sequence, itemIndex])
+
   useEffect(() => {
     if (sequence && itemIndex !== null) {
       if (!sequence.sequenceStarted) return
@@ -159,8 +178,10 @@ export const TypingAnimation = ({
         i++
       } else {
         clearInterval(typingEffect)
-        if (sequence && itemIndex !== null) {
-          sequence.completeItem(itemIndex)
+        const seq = sequenceRef.current
+        const idx = itemIndexRef.current
+        if (seq && idx !== null) {
+          seq.completeItem(idx)
         }
       }
     }, duration)
@@ -168,7 +189,7 @@ export const TypingAnimation = ({
     return () => {
       clearInterval(typingEffect)
     }
-  }, [children, duration, started, sequence, itemIndex])
+  }, [children, duration, started])
 
   return (
     <MotionComponent
