@@ -5,6 +5,68 @@ All notable changes to the AgileFlow plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.35.0] - 2025-12-15
+
+### Added - Configuration Management System
+
+#### 1. New /configure Command
+**What Changed**: Added `/configure` command to replace the deprecated `/setup` command with enhanced configuration management capabilities.
+
+**Features**:
+- Interactive configuration wizard for AgileFlow settings
+- Manages IDE configurations, agent settings, and project preferences
+- Replaces the old `/setup` command with more focused configuration management
+
+**Migration**: Users should use `/configure` instead of `/setup` going forward.
+
+#### 2. Six New Configuration Agents
+**What Changed**: Added specialized configuration agents for different aspects of AgileFlow configuration.
+
+**New Agents**:
+- **configuration/archival**: Manage archival and cleanup of old project artifacts
+- **configuration/attribution**: Configure AI attribution settings in commits and documentation
+- **configuration/ci**: Set up and configure CI/CD integration
+- **configuration/git-config**: Manage git configuration and hooks
+- **configuration/hooks**: Configure and manage AgileFlow hooks
+- **configuration/verify**: Verify AgileFlow installation and configuration integrity
+
+**Access**: Use `/AgileFlow:agents:configuration/*` to access these specialized agents.
+
+#### 3. Enhanced Babysit Command
+**What Changed**: Significantly improved the `/babysit` command with better guidance and workflow support.
+
+**Improvements**:
+- Enhanced interactive mentoring for feature implementation
+- Better step-by-step guidance from idea to PR
+- Improved agent orchestration and handoff workflows
+- More comprehensive feature planning assistance
+
+### Removed
+
+#### 1. Deprecated context7 Agent
+**What Changed**: Removed the `context7` agent which has been deprecated.
+
+**Reason**: The Context7 service functionality has been superseded by other documentation access methods.
+
+**Migration**: No action required - functionality has been replaced by alternative documentation tools.
+
+#### 2. Deprecated /setup Command
+**What Changed**: Removed the `/setup` command in favor of the new `/configure` command.
+
+**Migration**: Use `/configure` for all configuration management tasks.
+
+### Improved
+
+#### 1. Documentation Patterns
+**What Changed**: Added `PATTERNS-AskUserQuestion.md` guide for consistent user interaction patterns.
+
+**Impact**: Agents and commands now have better guidance for when and how to ask users for clarification or input.
+
+#### 2. Agent Updates
+**What Changed**: Various improvements to existing agents including adr-writer, api, ci, devops, documentation, epic-planner, mentor, research, security, and ui agents.
+
+**Impact**: Enhanced agent capabilities, better guidance, and more consistent behavior across the system.
+
 ## [2.34.0] - 2025-12-13
 
 ### Added - Quality of Life Improvements
