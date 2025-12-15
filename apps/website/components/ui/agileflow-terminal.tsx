@@ -86,8 +86,6 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-gray-400">  Run &apos;npx agileflow update&apos; to get updates</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-gray-500">Installed to: /home/user/projects/my-project/.agileflow</AnimatedSpan>
-      <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan><span className="text-[#4ec9b0]">user@DevMachine</span> my-project % </AnimatedSpan>
     </Terminal>
   );
 }
