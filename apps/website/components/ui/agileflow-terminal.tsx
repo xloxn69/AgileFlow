@@ -80,8 +80,8 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="font-bold">Get started:</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">  Open your IDE and use /agileflow:help</AnimatedSpan>
-      <AnimatedSpan className="text-gray-400">  Run 'npx agileflow status' to check setup</AnimatedSpan>
-      <AnimatedSpan className="text-gray-400">  Run 'npx agileflow update' to get updates</AnimatedSpan>
+      <AnimatedSpan className="text-gray-400">  Run &apos;npx agileflow status&apos; to check setup</AnimatedSpan>
+      <AnimatedSpan className="text-gray-400">  Run &apos;npx agileflow update&apos; to get updates</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-gray-500">Installed to: /Users/xloxn69/Desktop/jottyai-mobile/.agileflow</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
