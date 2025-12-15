@@ -262,12 +262,7 @@ export const Terminal = ({
     ))
   }, [children, sequence])
 
-  // Auto-scroll to bottom when content changes
-  useEffect(() => {
-    if (scrollRef.current && sequenceHasStarted) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
-  }, [activeIndex, sequenceHasStarted])
+  // Removed auto-scroll - let user control scrolling
 
   const content = (
     <div
