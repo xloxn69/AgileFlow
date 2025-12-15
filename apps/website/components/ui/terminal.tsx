@@ -270,15 +270,26 @@ export const Terminal = ({
 
   const isAnimationComplete = activeIndex >= totalChildren
 
-  // Scroll to show the latest animated item + 1 extra line
+  // Scroll to show the latest animated item + 1 extra line (within terminal only)
   useEffect(() => {
     if (scrollRef.current && sequenceHasStarted) {
       // Find the currently active element
       const childElements = scrollRef.current.querySelectorAll('code > div')
       // Scroll to active + 1 for extra line visibility
       const targetIndex = Math.min(activeIndex + 1, childElements.length - 1)
-      if (childElements[targetIndex]) {
-        childElements[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'end' })
+      const targetElement = childElements[targetIndex] as HTMLElement
+
+      if (targetElement) {
+        // Calculate position relative to the scrollable container
+        const containerRect = scrollRef.current.getBoundingClientRect()
+        const elementRect = targetElement.getBoundingClientRect()
+        const relativeTop = elementRect.top - containerRect.top + scrollRef.current.scrollTop
+
+        // Scroll within the terminal container only
+        scrollRef.current.scrollTo({
+          top: relativeTop - containerRect.height + elementRect.height + 10,
+          behavior: 'smooth'
+        })
       }
     }
   }, [activeIndex, sequenceHasStarted])
