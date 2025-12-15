@@ -11,10 +11,8 @@ interface AgileFlowTerminalProps {
 
 export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFlowTerminalProps) {
   return (
-    <Terminal className="font-mono" sequence={false}>
-      <div style={{ color: 'black', fontSize: '16px' }}>TEST - Can you see this?</div>
-      <div style={{ color: 'red', fontSize: '20px', fontWeight: 'bold' }}>RED TEXT TEST</div>
-      <AnimatedSpan startOnView={false}>
+    <Terminal className="font-mono" sequence={true} startOnView={true}>
+      <AnimatedSpan>
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a]">
