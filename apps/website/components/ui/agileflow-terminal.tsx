@@ -28,11 +28,21 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       </AnimatedSpan>
       <AnimatedSpan className="text-gray-500">{`  AgileFlow v${version} - AI-Driven Agile Development`}</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan className="text-[#4ec9b0]">? Where would you like to install AgileFlow? <span className="text-gray-400">.</span></AnimatedSpan>
-      <AnimatedSpan className="text-[#4ec9b0]">? Select your IDE(s): <span className="text-gray-400">Claude Code</span></AnimatedSpan>
-      <AnimatedSpan className="text-[#4ec9b0]">? What should agents call you? <span className="text-gray-400">Developer</span></AnimatedSpan>
-      <AnimatedSpan className="text-[#4ec9b0]">? AgileFlow installation folder name: <span className="text-gray-400">.agileflow</span></AnimatedSpan>
-      <AnimatedSpan className="text-[#4ec9b0]">? Documentation folder name: <span className="text-gray-400">docs</span></AnimatedSpan>
+      <AnimatedSpan className="text-[#4ec9b0]">
+        ? Where would you like to install AgileFlow? <TypingAnimation duration={100} className="text-gray-400">.</TypingAnimation>
+      </AnimatedSpan>
+      <AnimatedSpan className="text-[#4ec9b0]">
+        ? Select your IDE(s): <TypingAnimation duration={80} className="text-gray-400">Claude Code</TypingAnimation>
+      </AnimatedSpan>
+      <AnimatedSpan className="text-[#4ec9b0]">
+        ? What should agents call you? <TypingAnimation duration={90} className="text-gray-400">Developer</TypingAnimation>
+      </AnimatedSpan>
+      <AnimatedSpan className="text-[#4ec9b0]">
+        ? AgileFlow installation folder name: <TypingAnimation duration={80} className="text-gray-400">.agileflow</TypingAnimation>
+      </AnimatedSpan>
+      <AnimatedSpan className="text-[#4ec9b0]">
+        ? Documentation folder name: <TypingAnimation duration={100} className="text-gray-400">docs</TypingAnimation>
+      </AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a] font-bold">Setting Up AgileFlow</AnimatedSpan>
       <AnimatedSpan className="text-gray-500">Target: /home/user/projects/my-project</AnimatedSpan>
@@ -44,7 +54,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a] font-bold">Configuring IDEs</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan>  Setting up Claude Code...</AnimatedSpan>
+      <AnimatedSpan>  <TypingAnimation duration={60}>Setting up Claude Code...</TypingAnimation></AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">  ✓ Claude Code configured:</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">    - {commands} commands installed</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">    - {agents} agents installed</AnimatedSpan>
@@ -53,7 +63,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-[#e8683a] font-bold">Creating Documentation Structure</AnimatedSpan>
       <AnimatedSpan className="text-gray-500">Folder: docs/</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">Creating docs/ structure...</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]"><TypingAnimation duration={60}>Creating docs/ structure...</TypingAnimation></AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/README.md</AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/00-meta/README.md</AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/01-brainstorming/README.md</AnimatedSpan>
