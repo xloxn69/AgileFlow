@@ -246,13 +246,29 @@ export const Terminal = ({
       </div>
       <pre
         ref={scrollRef}
-        className="overflow-auto p-6"
-        style={{
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#555 #2d2d2d',
-        }}
+        className="terminal-scroll overflow-auto p-6"
       >
         <code className="grid gap-y-1 text-xs text-[#d4d4d4]">{wrappedChildren}</code>
+        <style jsx>{`
+          .terminal-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #888 #2d2d2d;
+          }
+          .terminal-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+          }
+          .terminal-scroll::-webkit-scrollbar-track {
+            background: #2d2d2d;
+          }
+          .terminal-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+          }
+          .terminal-scroll::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+          }
+        `}</style>
       </pre>
     </div>
   )
