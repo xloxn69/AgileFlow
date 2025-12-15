@@ -15,24 +15,12 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan>
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {` █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗`}
-      </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {`██╔══██╗██╔════╝ ██║██║     ██╔════╝██╔════╝██║     ██╔═══██╗██║    ██║`}
-      </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {`███████║██║  ███╗██║██║     █████╗  █████╗  ██║     ██║   ██║██║ █╗ ██║`}
-      </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {`██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║`}
-      </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {`██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝`}
-      </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a] font-mono">
-        {`╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝`}
-      </AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{` █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗`}</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{`██╔══██╗██╔════╝ ██║██║     ██╔════╝██╔════╝██║     ██╔═══██╗██║    ██║`}</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{`███████║██║  ███╗██║██║     █████╗  █████╗  ██║     ██║   ██║██║ █╗ ██║`}</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{`██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║`}</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{`██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝`}</AnimatedSpan>
+      <AnimatedSpan className="text-[#e8683a]">{`╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝`}</AnimatedSpan>
       <AnimatedSpan className="text-gray-500">{`  AgileFlow v${version} - AI-Driven Agile Development`}</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#4ec9b0]">? Where would you like to install AgileFlow? <span className="text-gray-400">.</span></AnimatedSpan>
