@@ -104,7 +104,7 @@ export function MessageBusDemo({ className }: { className?: string }) {
           <Circle ref={agent3}>
             <SettingsIcon />
           </Circle>
-          <Circle ref={bus} className="size-16 border-[var(--accent)]">
+          <Circle ref={bus} className="size-16">
             <BusIcon />
           </Circle>
           <Circle ref={agent4}>
