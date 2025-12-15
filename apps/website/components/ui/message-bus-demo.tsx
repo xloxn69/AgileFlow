@@ -98,13 +98,14 @@ export function MessageBusDemo({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-white/50 to-white/80 p-10",
+        "relative flex h-[300px] w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-white/50 to-white/80 p-10",
         className,
       )}
       ref={containerRef}
     >
-      <div className="flex size-full max-h-[200px] max-w-lg flex-col items-stretch justify-between gap-10">
-        <div className="flex flex-row items-center justify-between">
+      <div className="flex size-full flex-col items-center justify-between gap-8">
+        {/* Top row - 2 agents */}
+        <div className="flex w-full max-w-[400px] flex-row items-center justify-between">
           <Circle ref={agent1} label="AG-UI">
             <MonitorIcon />
           </Circle>
@@ -112,12 +113,18 @@ export function MessageBusDemo({ className }: { className?: string }) {
             <ServerIcon />
           </Circle>
         </div>
-        <div className="flex flex-row items-center justify-between">
-          <Circle ref={agent3} label="AG-CI">
-            <WorkflowIcon />
-          </Circle>
+
+        {/* Middle row - Central bus */}
+        <div className="flex flex-row items-center justify-center">
           <Circle ref={bus} className="size-16" label="Message Bus">
             <BusIcon />
+          </Circle>
+        </div>
+
+        {/* Bottom row - 2 agents */}
+        <div className="flex w-full max-w-[400px] flex-row items-center justify-between">
+          <Circle ref={agent3} label="AG-CI">
+            <WorkflowIcon />
           </Circle>
           <Circle ref={agent4} label="AG-QA">
             <TestTubeIcon />
