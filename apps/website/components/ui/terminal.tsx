@@ -262,7 +262,15 @@ export const Terminal = ({
     ))
   }, [children, sequence])
 
-  // Removed auto-scroll - let user control scrolling
+  // Smooth auto-scroll to follow new content
+  useEffect(() => {
+    if (scrollRef.current && sequenceHasStarted && activeIndex > 0) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  }, [activeIndex, sequenceHasStarted])
 
   const content = (
     <div
@@ -286,7 +294,7 @@ export const Terminal = ({
           maxHeight: 'calc(600px - 60px)'
         }}
       >
-        <code className="grid gap-y-1 text-xs text-[var(--text-primary)]">{wrappedChildren}</code>
+        <code className="grid gap-y-0.5 text-[10px] leading-tight text-[var(--text-primary)] whitespace-pre">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
