@@ -115,7 +115,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
       </Container>
 
       <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
-        <Marquee pauseOnHover vertical className="[--duration:20s]">
+        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
           {column1.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
@@ -130,7 +130,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+        <Marquee pauseOnHover vertical className="[--duration:20s]">
           {column4.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
