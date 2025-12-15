@@ -75,30 +75,32 @@ function initials(name: string) {
 
 function TestimonialCard({ quote, name, role }: { quote: string; name: string; role: string }) {
   return (
-    <div className="w-[350px] rounded-card border border-[var(--border-default)] bg-white/70 p-6 shadow-tile">
-      <p className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</p>
+    <figure className={cn(
+      "relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
+      "border-[var(--border-default)] bg-white/70 hover:bg-white/90"
+    )}>
+      <blockquote className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
       <div className="mt-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
           {initials(name)}
         </div>
-        <div className="min-w-0">
-          <div className="text-sm font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
+        <div className="flex flex-col">
+          <figcaption className="text-sm font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
             {name}
-          </div>
-          <div className="text-xs font-medium tracking-wide text-[var(--text-muted)]">
+          </figcaption>
+          <p className="text-xs font-medium text-[var(--text-muted)]">
             {role}
-          </div>
+          </p>
         </div>
       </div>
-    </div>
+    </figure>
   );
 }
 
 export function Testimonials({ content }: { content: LandingContent['testimonials'] }) {
-  const column1 = TESTIMONIALS.slice(0, 3);
-  const column2 = TESTIMONIALS.slice(3, 6);
-  const column3 = TESTIMONIALS.slice(6, 9);
-  const column4 = TESTIMONIALS.slice(9, 12);
+  const column1 = TESTIMONIALS.slice(0, 4);
+  const column2 = TESTIMONIALS.slice(4, 8);
+  const column3 = TESTIMONIALS.slice(8, 12);
 
   return (
     <section id="testimonials" className="scroll-mt-24 py-20 sm:py-24 md:py-28">
@@ -109,30 +111,27 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
           </h2>
           <p className="mt-3 text-[15px] leading-7 text-[var(--text-secondary)]">{content.subhead}</p>
         </div>
+      </Container>
 
-        <div className="relative flex h-[600px] w-full items-center justify-center gap-4 overflow-hidden">
-        <Marquee pauseOnHover vertical className="[--duration:30s]">
+      <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
+        <Marquee pauseOnHover vertical className="[--duration:20s]">
           {column1.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee reverse pauseOnHover vertical className="[--duration:30s]">
+        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
           {column2.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee pauseOnHover vertical className="[--duration:30s]">
+        <Marquee pauseOnHover vertical className="[--duration:20s]">
           {column3.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee reverse pauseOnHover vertical className="[--duration:30s]">
-          {column4.map((testimonial, idx) => (
-            <TestimonialCard key={idx} {...testimonial} />
-          ))}
-        </Marquee>
-        </div>
-      </Container>
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-[var(--bg-primary)]"></div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[var(--bg-primary)]"></div>
+      </div>
     </section>
   );
 }
