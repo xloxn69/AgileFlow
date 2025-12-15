@@ -98,9 +98,10 @@ function TestimonialCard({ quote, name, role }: { quote: string; name: string; r
 }
 
 export function Testimonials({ content }: { content: LandingContent['testimonials'] }) {
-  const column1 = TESTIMONIALS.slice(0, 4);
-  const column2 = TESTIMONIALS.slice(4, 8);
-  const column3 = TESTIMONIALS.slice(8, 12);
+  const column1 = TESTIMONIALS.slice(0, 3);
+  const column2 = TESTIMONIALS.slice(3, 6);
+  const column3 = TESTIMONIALS.slice(6, 9);
+  const column4 = TESTIMONIALS.slice(9, 12);
 
   return (
     <section id="testimonials" className="scroll-mt-24 py-20 sm:py-24 md:py-28">
@@ -126,6 +127,11 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
         </Marquee>
         <Marquee pauseOnHover vertical className="[--duration:20s]">
           {column3.map((testimonial, idx) => (
+            <TestimonialCard key={idx} {...testimonial} />
+          ))}
+        </Marquee>
+        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+          {column4.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
