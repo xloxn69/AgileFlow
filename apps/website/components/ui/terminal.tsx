@@ -273,7 +273,7 @@ export const Terminal = ({
     <div
       ref={containerRef}
       className={cn(
-        "z-0 h-full max-h-[600px] w-full max-w-3xl rounded-xl border border-[var(--border-default)] bg-white/70 shadow-tile",
+        "z-0 flex h-full max-h-[600px] w-full max-w-3xl flex-col rounded-xl border border-[var(--border-default)] bg-white/70 shadow-tile",
         className
       )}
     >
@@ -284,10 +284,11 @@ export const Terminal = ({
       </div>
       <pre
         ref={scrollRef}
-        className="overflow-auto p-6"
+        className="flex-1 overflow-auto p-6"
         style={{
           scrollbarWidth: 'thin',
-          scrollbarColor: '#cbd5e1 #f1f5f9'
+          scrollbarColor: '#cbd5e1 #f1f5f9',
+          maxHeight: 'calc(600px - 60px)'
         }}
       >
         <code className="grid gap-y-1 text-xs text-[var(--text-primary)]">{wrappedChildren}</code>

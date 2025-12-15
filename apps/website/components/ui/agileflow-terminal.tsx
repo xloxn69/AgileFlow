@@ -15,22 +15,22 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan>
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {` █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗`}
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {`██╔══██╗██╔════╝ ██║██║     ██╔════╝██╔════╝██║     ██╔═══██╗██║    ██║`}
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {`███████║██║  ███╗██║██║     █████╗  █████╗  ██║     ██║   ██║██║ █╗ ██║`}
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {`██╔══██║██║   ██║██║██║     ██╔══╝  ██╔══╝  ██║     ██║   ██║██║███╗██║`}
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {`██║  ██║╚██████╔╝██║███████╗███████╗██║     ███████╗╚██████╔╝╚███╔███╔╝`}
       </AnimatedSpan>
-      <AnimatedSpan className="text-[#e8683a]">
+      <AnimatedSpan className="text-[#e8683a] font-mono">
         {`╚═╝  ╚═╝ ╚═════╝ ╚═╝╚══════╝╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝`}
       </AnimatedSpan>
       <AnimatedSpan className="text-gray-500">{`  AgileFlow v${version} - AI-Driven Agile Development`}</AnimatedSpan>
