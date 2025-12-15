@@ -17,7 +17,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
       {AGILEFLOW_LOGO.map((line, index) => (
-        <AnimatedSpan key={index} className="text-[#e8683a]">{line}</AnimatedSpan>
+        <AnimatedSpan key={index} className="text-[#e8683a] font-mono">{line}</AnimatedSpan>
       ))}
       <AnimatedSpan className="text-gray-500">{`  AgileFlow v${version} - AI-Driven Agile Development`}</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>

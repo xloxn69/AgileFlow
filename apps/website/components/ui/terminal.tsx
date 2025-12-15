@@ -78,7 +78,7 @@ export const AnimatedSpan = ({
       initial={{ opacity: 0, y: -5 }}
       animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
       transition={{ duration: 0.3, delay: sequence ? 0 : delay / 1000 }}
-      className={cn("grid font-normal tracking-tight", className)}
+      className={cn("block font-normal tracking-tight whitespace-pre", className)}
       onAnimationComplete={() => {
         const seq = sequenceRef.current
         const idx = itemIndexRef.current
@@ -318,7 +318,7 @@ export const Terminal = ({
           pointerEvents: isAnimationComplete ? 'auto' : 'none'
         }}
       >
-        <code className="grid gap-y-0.5 text-[7px] leading-[1.2] text-[var(--text-primary)] whitespace-pre overflow-x-hidden">{wrappedChildren}</code>
+        <code className="block whitespace-pre text-[7px] leading-[1.2] text-[var(--text-primary)] overflow-x-hidden font-mono">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
