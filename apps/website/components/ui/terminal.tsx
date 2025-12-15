@@ -262,13 +262,23 @@ export const Terminal = ({
     ))
   }, [children, sequence])
 
-  // Scroll to show the latest animated item
+  // Get total number of children
+  const totalChildren = useMemo(() => {
+    if (!sequence) return 0
+    return Children.count(children)
+  }, [children, sequence])
+
+  const isAnimationComplete = activeIndex >= totalChildren
+
+  // Scroll to show the latest animated item + 1 extra line
   useEffect(() => {
     if (scrollRef.current && sequenceHasStarted) {
       // Find the currently active element
-      const children = scrollRef.current.querySelectorAll('code > div')
-      if (children[activeIndex]) {
-        children[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      const childElements = scrollRef.current.querySelectorAll('code > div')
+      // Scroll to active + 1 for extra line visibility
+      const targetIndex = Math.min(activeIndex + 1, childElements.length - 1)
+      if (childElements[targetIndex]) {
+        childElements[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'end' })
       }
     }
   }, [activeIndex, sequenceHasStarted])
@@ -288,14 +298,16 @@ export const Terminal = ({
       </div>
       <pre
         ref={scrollRef}
-        className="flex-1 overflow-auto p-6"
+        className="flex-1 p-6"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: '#cbd5e1 #f1f5f9',
-          maxHeight: 'calc(600px - 60px)'
+          maxHeight: 'calc(600px - 60px)',
+          overflow: isAnimationComplete ? 'auto' : 'hidden',
+          pointerEvents: isAnimationComplete ? 'auto' : 'none'
         }}
       >
-        <code className="grid gap-y-0.5 text-[6px] leading-[1.1] text-[var(--text-primary)] whitespace-pre overflow-x-hidden">{wrappedChildren}</code>
+        <code className="grid gap-y-0.5 text-[5px] leading-[1.1] text-[var(--text-primary)] whitespace-pre overflow-x-hidden">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
