@@ -72,13 +72,6 @@ AGENT COORDINATION
 {"ts":"2025-10-21T10:15:00Z","from":"RESEARCH","type":"research-complete","text":"Auth research saved to docs/10-research/20251021-jwt-vs-oauth2.md"}
 ```
 
-NOTION/GITHUB AUTO-SYNC (if enabled)
-
-**After saving research**:
-- Research notes may be referenced in Notion epics/stories
-- No direct sync needed (research is internal documentation)
-- But if research leads to ADR, coordinate with ADR-WRITER to sync
-
 WORKFLOW: CHATGPT RESEARCH PROMPT
 1. **[KNOWLEDGE LOADING]** Before building prompt:
    - Read CLAUDE.md for project context

@@ -1,5 +1,6 @@
 ---
 description: Generate context export for web AI tools
+argument-hint: [MODE=full|export|note|research] [NOTE=<text>] [TOPIC=<text>] [DETAILS=<text>]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

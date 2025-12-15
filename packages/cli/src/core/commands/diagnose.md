@@ -30,8 +30,6 @@ JSON_FILES=(
   "docs/00-meta/agileflow-metadata.json"
   "docs/09-agents/status.json"
   "docs/09-agents/status-archive.json"
-  "docs/08-project/github-sync-map.json"
-  "docs/08-project/notion-sync-map.json"
   ".claude/settings.json"
 )
 
@@ -158,45 +156,6 @@ if [ -f docs/09-agents/status-archive.json ]; then
   ARCHIVE_COUNT=$(jq '.stories | length' docs/09-agents/status-archive.json 2>/dev/null)
 
   echo "  status-archive.json: ${ARCHIVE_KB}KB ($ARCHIVE_COUNT stories)"
-fi
-
-echo ""
-
-# Check 5: MCP Integration
-echo "🔌 MCP Integration"
-echo "------------------"
-
-if [ -f .mcp.json ]; then
-  if jq empty .mcp.json 2>/dev/null; then
-    echo "  ✅ .mcp.json is valid JSON"
-
-    # Check if in .gitignore
-    if grep -q "^\\.mcp\\.json$" .gitignore 2>/dev/null; then
-      echo "  ✅ .mcp.json is in .gitignore (secure)"
-    else
-      echo "  ⚠️  WARNING: .mcp.json is NOT in .gitignore"
-      echo "     This is a SECURITY RISK - add it immediately!"
-      JSON_ERRORS=$((JSON_ERRORS + 1))
-    fi
-  else
-    echo "  ❌ .mcp.json is INVALID JSON"
-    JSON_ERRORS=$((JSON_ERRORS + 1))
-  fi
-else
-  echo "  ℹ️  MCP not configured (.mcp.json not found)"
-fi
-
-if [ -f .env ]; then
-  # Check if in .gitignore
-  if grep -q "^\\.env$" .gitignore 2>/dev/null; then
-    echo "  ✅ .env is in .gitignore (secure)"
-  else
-    echo "  ⚠️  WARNING: .env is NOT in .gitignore"
-    echo "     This is a SECURITY RISK - add it immediately!"
-    JSON_ERRORS=$((JSON_ERRORS + 1))
-  fi
-else
-  echo "  ℹ️  .env not found (optional if MCP not configured)"
 fi
 
 echo ""

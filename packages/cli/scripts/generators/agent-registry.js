@@ -68,7 +68,7 @@ function extractFrontmatter(filePath) {
 function categorizeAgent(name, description) {
   const categories = {
     'Core Development': ['ui', 'api', 'database', 'devops', 'ci'],
-    'Specialized Development': ['mobile', 'integrations', 'datamigration', 'context7'],
+    'Specialized Development': ['mobile', 'integrations', 'datamigration'],
     'Quality & Testing': ['qa', 'testing', 'security', 'accessibility'],
     'Architecture & Design': ['design', 'adr-writer', 'epic-planner', 'product'],
     'Maintenance & Optimization': ['refactor', 'performance', 'monitoring'],

@@ -26,7 +26,7 @@ TODO LIST TRACKING
 Mark each step complete as you finish it. This ensures thorough validation.
 
 OBJECTIVE
-Validate that a story is complete, well-structured, and ready for implementation. Check for:
+Comprehensively analyze and validate that a story is complete, well-structured, and ready for implementation. Evaluate each aspect critically and assess readiness:
 1. All required sections present (per story template)
 2. Architecture Context populated with source citations
 3. Clear, testable Acceptance Criteria

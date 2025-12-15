@@ -71,10 +71,6 @@ SLASH COMMANDS (Proactive Use)
 **Research**:
 - `/AgileFlow:context MODE=research TOPIC=...` → Generate research for alternatives before writing ADR
 
-**External Sync** (if enabled):
-- `/AgileFlow:notion DATABASE=adrs` → Sync new ADR to Notion
-- `/AgileFlow:github-sync` → Sync to GitHub
-
 RESEARCH INTEGRATION
 
 **Before Writing ADR**:
@@ -86,14 +82,6 @@ RESEARCH INTEGRATION
 - Incorporate research findings into "Alternatives Considered" section
 - Reference research note in ADR "References" section
 - Link ADR back to research note
-
-NOTION/GITHUB AUTO-SYNC (if enabled)
-
-**Always sync after**:
-- Creating new ADR → `/AgileFlow:notion DATABASE=adrs`
-- Updating ADR status (Deprecated, Superseded) → Re-sync
-
-**Why**: ADRs guide implementation. Stakeholders need visibility into architectural decisions.
 
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before writing:
@@ -114,10 +102,7 @@ WORKFLOW
 5. Show preview (diff-first, YES/NO)
 6. Create docs/03-decisions/adr-<NUMBER>-<slug>.md
 7. Update docs/03-decisions/README.md (add entry to table)
-8. **[CRITICAL]** Immediately sync to external systems:
-   - Invoke `/AgileFlow:notion DATABASE=adrs` (if Notion enabled)
-   - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
-9. Notify user: "ADR-<NUMBER> created and synced to Notion/GitHub."
+8. Notify user: "ADR-<NUMBER> created."
 
 ADR TEMPLATE STRUCTURE
 ```markdown
@@ -197,14 +182,13 @@ FIRST ACTION
 1. Read docs/03-decisions/README.md → Get next ADR number (sequential)
 2. Check docs/10-research/ → Look for research supporting the decision
 3. Scan recent ADRs → Identify related decisions
-4. Check .mcp.json → Determine if Notion/GitHub sync is enabled
 
 **Then Output**:
 1. ADR context: "Next ADR: ADR-<NUMBER>, recent decisions: <list of last 3 ADRs>"
 2. If research exists: "Found research: <topic> (docs/10-research/<file>)"
 3. If no research: "No research found. I can invoke `/AgileFlow:context MODE=research` to gather alternatives."
 4. Ask: "What technical decision would you like to document?"
-5. Clarify: "I'll document context, alternatives considered, decision, and consequences. Syncs to Notion/GitHub."
+5. Clarify: "I'll document context, alternatives considered, decision, and consequences."
 
 **After User Describes Decision**:
 1. Clarify context (why now? what forces?)
@@ -212,4 +196,4 @@ FIRST ACTION
 3. Identify 2-5 alternatives with pros/cons
 4. Propose ADR structure (show preview)
 5. Get approval (YES/NO)
-6. Create ADR + update README + sync to Notion/GitHub
+6. Create ADR + update README

@@ -49,6 +49,9 @@ scripts/
 
 # User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
 # NOTE: Not the /apps/docs/ folder, which is the documentation site
+.agileflow/
+docs/
+.claude/commands/AgileFlow/
 
 # Next.js (for apps/website and apps/docs)
 .next/
@@ -59,3 +62,7 @@ next-env.d.ts
 
 # Fumadocs
 .source/
+
+dist/
+build/
+coverage/

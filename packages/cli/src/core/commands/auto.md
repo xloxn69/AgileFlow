@@ -29,7 +29,7 @@ TODO LIST TRACKING
 Mark each step complete as you finish it. This ensures nothing is forgotten during the multi-step generation process.
 
 OBJECTIVE
-Parse product documentation and generate actionable user stories with acceptance criteria.
+Analyze and parse product documentation to generate actionable user stories with acceptance criteria. Evaluate feature boundaries, assess story complexity, and consider dependencies to ensure comprehensive coverage.
 
 INPUTS
 - SOURCE=<file path or URL> (required: PRD, mockup, API spec, etc.)

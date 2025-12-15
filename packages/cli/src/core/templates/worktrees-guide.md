@@ -178,10 +178,6 @@ git branch -d feature/new-feature
 
 AgileFlow's message bus (`docs/09-agents/bus/log.jsonl`) is shared across all worktrees. The bus is append-only (JSONL), so concurrent appends are generally safe. However, **status.json** uses read-modify-write, so avoid concurrent edits to the same stories.
 
-### GitHub & Notion Sync
-
-If you have GitHub or Notion MCP integration enabled, each worktree can sync independently. Both updates go to the same GitHub repo/Notion workspace (shared .git).
-
 ## Troubleshooting
 
 ### "fatal: 'branch' is already checked out"

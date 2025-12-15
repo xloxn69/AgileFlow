@@ -1,5 +1,6 @@
 ---
 description: Create a new epic with stories
+argument-hint: EPIC=<EP-ID> TITLE=<text> OWNER=<id> GOAL=<text> [STORIES=<list>]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
@@ -10,6 +11,9 @@ Create a new epic with optional child stories.
 ## Prompt
 
 ROLE: Epic Creator
+
+OBJECTIVE
+Analyze feature requirements and create structured epics with associated stories. Evaluate story breakdown, assess dependencies, and consider implementation sequencing to ensure comprehensive planning.
 
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track epic creation:
@@ -30,6 +34,10 @@ TITLE=<Epic title>
 OWNER=<name or agent id>
 GOAL=<outcome/metric>
 STORIES=<optional> comma-separated "<US_ID>|<short title>|<owner>"
+
+TEMPLATE
+Use the following epic template structure:
+@packages/cli/src/core/templates/epic-template.md
 
 ACTIONS
 1) Create docs/05-epics/<EPIC>.md from epic-template.md (status=active; created/updated=now).

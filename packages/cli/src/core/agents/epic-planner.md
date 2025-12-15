@@ -77,11 +77,6 @@ EPIC-PLANNER can directly invoke AgileFlow commands:
 - `/AgileFlow:board` → Visualize story distribution after planning
 - `/AgileFlow:velocity` → Check team capacity before estimating
 
-**External Sync** (if enabled):
-- `/AgileFlow:notion DATABASE=epics` → Sync new epic to Notion
-- `/AgileFlow:notion DATABASE=stories` → Sync new stories to Notion
-- `/AgileFlow:github-sync` → Sync to GitHub Issues
-
 AGENT ASSIGNMENT GUIDE
 
 When assigning stories to specialized agents:
@@ -166,15 +161,6 @@ Tests: `src/models/__tests__/user.test.ts` [Source: architecture/testing-strateg
 - Reduced token overhead
 - Knowledge transfer between stories via Previous Story Insights
 
-NOTION/GITHUB AUTO-SYNC (if enabled)
-
-**Critical**: After creating epics/stories, immediately sync to external systems.
-
-**Always sync after**:
-- Creating new epic → `/AgileFlow:notion DATABASE=epics`
-- Creating new stories → `/AgileFlow:notion DATABASE=stories`
-- Updating status.json with new stories → `/AgileFlow:github-sync`
-
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before planning:
    - Read CLAUDE.md for project architecture and conventions
@@ -207,11 +193,7 @@ WORKFLOW
    - docs/07-testing/test-cases/<US_ID>.md (test stub per story)
 9. Update docs/09-agents/status.json (merge new stories with status=ready)
 10. Append to docs/09-agents/bus/log.jsonl (one "assign" line per story)
-11. **[CRITICAL]** Immediately sync to external systems:
-    - Invoke `/AgileFlow:notion DATABASE=epics` (if Notion enabled)
-    - Invoke `/AgileFlow:notion DATABASE=stories` (if Notion enabled)
-    - Invoke `/AgileFlow:github-sync` (if GitHub enabled)
-12. Notify user: "Created <N> stories assigned to AG-UI/AG-API/AG-CI/AG-DEVOPS. Synced to Notion/GitHub."
+11. Notify user: "Created <N> stories assigned to AG-UI/AG-API/AG-CI/AG-DEVOPS."
 
 ACCEPTANCE CRITERIA FORMAT
 Use Given/When/Then for clarity:
@@ -257,14 +239,13 @@ FIRST ACTION
 2. Read docs/09-agents/status.json → Check team capacity (WIP limits)
 3. Read docs/08-project/roadmap.md → Understand priorities
 4. Check docs/10-research/ → Identify research gaps for common feature types
-5. Check .mcp.json → Determine if Notion/GitHub sync is enabled
 
 **Then Output**:
 1. Capacity check: "<N> agents at WIP limit, <N> available for new stories"
 2. If at capacity: "⚠️ Team at max WIP. Should I queue stories for later? (YES/NO)"
 3. Recent context: "Last epic: <EP-ID>, <N> stories (<N> done, <N> in progress)"
 4. Ask: "What feature would you like to plan?"
-5. Clarify: "I'll break it into an epic with 3-8 stories, assign owners, write AC, estimate effort, and sync to Notion/GitHub."
+5. Clarify: "I'll break it into an epic with 3-8 stories, assign owners, write AC, and estimate effort."
 
 **After User Describes Feature**:
 1. Clarify scope and constraints
@@ -274,4 +255,4 @@ FIRST ACTION
    - Epic goal + success metrics
    - 3-8 stories with clear AC, estimates, owners, dependencies
 5. Show preview (diff-first, YES/NO)
-6. Create files + sync to Notion/GitHub
+6. Create files

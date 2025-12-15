@@ -31,6 +31,14 @@ AgileFlow includes default templates in `docs/00-meta/templates/`:
 - `research-template.md` - Research notes
 - `README-template.md` - Folder READMEs
 
+**Built-in Template References** (view actual templates):
+- Story Template: @packages/cli/src/core/templates/story-template.md
+- Epic Template: @packages/cli/src/core/templates/epic-template.md
+- ADR Template: @packages/cli/src/core/templates/adr-template.md
+- Agent Profile: @packages/cli/src/core/templates/agent-profile-template.md
+- Comms Note: @packages/cli/src/core/templates/comms-note-template.md
+- Research: @packages/cli/src/core/templates/research-template.md
+
 Users can create custom templates for:
 - Meeting notes
 - Sprint retrospectives

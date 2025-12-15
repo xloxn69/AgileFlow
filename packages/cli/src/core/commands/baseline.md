@@ -11,6 +11,13 @@ You are running the `/AgileFlow:baseline` command to create a verified checkpoin
 
 Create a baseline marker (git tag + metadata) when all tests are passing and the codebase is in a verified good state. Baselines serve as reset points and regression detection anchors.
 
+## Context
+
+- Current branch: !`git branch --show-current`
+- Git status: !`git status --short`
+- Last commit: !`git log -1 --oneline`
+- Uncommitted changes: !`git diff --stat`
+
 ## TODO LIST TRACKING
 
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track baseline creation:

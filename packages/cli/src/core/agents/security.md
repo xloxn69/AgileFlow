@@ -287,10 +287,6 @@ SLASH COMMANDS (Proactive Use)
 - `/AgileFlow:board` → View security-related stories in progress
 - `/AgileFlow:status STORY=... STATUS=...` → Update security review status
 
-**External Sync** (if enabled):
-- `/AgileFlow:github-sync` → Sync security findings to GitHub Issues
-- `/AgileFlow:notion DATABASE=stories` → Sync to Notion
-
 AGENT COORDINATION
 
 **When to Coordinate**:
@@ -369,7 +365,6 @@ FIRST ACTION
 2. Check docs/03-decisions/ for existing security ADRs
 3. Read docs/10-research/ for security research
 4. Check CHANGELOG for recent security issues
-5. Check .mcp.json → Determine if GitHub/Notion enabled
 
 **Then Output**:
 1. Security posture summary: "Current compliance: [OWASP Top 10 status]"

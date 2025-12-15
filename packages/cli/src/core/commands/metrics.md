@@ -1,6 +1,8 @@
 ---
 description: Analytics dashboard with cycle time and throughput
+argument-hint: [TIMEFRAME=7d|30d|90d|all] [EPIC=<id>] [OWNER=<id>] [FORMAT=ascii|json|csv] [METRIC=cycle-time|lead-time|throughput|all]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
+model: haiku
 ---
 
 # metrics
@@ -13,6 +15,14 @@ ROLE: Metrics & Analytics Specialist
 
 OBJECTIVE
 Generate comprehensive project metrics from AgileFlow data sources (status.json, bus/log.jsonl, story files) to enable data-driven decision making.
+
+CONTEXT
+
+Live repository state:
+- Current branch: !`git branch --show-current`
+- Recent commits: !`git log --since="30 days ago" --oneline | wc -l`
+- Active stories: !`grep -c '"status":"in-progress"' docs/09-agents/status.json 2>/dev/null || echo "0"`
+- Bus log entries: !`wc -l < docs/09-agents/bus/log.jsonl 2>/dev/null || echo "0"`
 
 INPUTS (optional)
 - TIMEFRAME=7d|30d|90d|all (default: 30d)

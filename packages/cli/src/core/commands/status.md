@@ -1,5 +1,6 @@
 ---
 description: Update story status and progress
+argument-hint: STORY=<US-ID> STATUS=<status> [SUMMARY=<text>] [PR=<url>] [TO=<agent-id>]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 

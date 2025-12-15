@@ -11,6 +11,9 @@ Initialize or save research notes to the research folder.
 
 ROLE: Research Initializer
 
+OBJECTIVE
+Evaluate and organize research findings with structured analysis. Assess relevance, consider key insights, and examine sources to create comprehensive research documentation.
+
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track research initialization:
 ```

@@ -26,6 +26,10 @@ INPUTS
 STORY=<US-ID>  FROM=<id>  TO=<id>
 SUMMARY=<what changed>  BLOCKERS=<optional list>
 
+TEMPLATE
+Use the following comms note template:
+@packages/cli/src/core/templates/comms-note-template.md
+
 ACTIONS
 1) Create docs/09-agents/comms/<STORY>-<YYYYMMDD>-handoff.md from comms-note-template.md.
 2) Append bus line type="handoff".

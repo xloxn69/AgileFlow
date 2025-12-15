@@ -265,7 +265,7 @@ FORMAT VARIATIONS
 Plain text or HTML email ready to send
 
 ### Markdown
-For posting to internal wikis, Notion, etc.
+For posting to internal wikis, documentation platforms, etc.
 
 ### Slides
 Generate slide deck outline:
