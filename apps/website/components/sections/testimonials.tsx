@@ -75,7 +75,7 @@ function initials(name: string) {
 
 function TestimonialCard({ quote, name, role }: { quote: string; name: string; role: string }) {
   return (
-    <figure className="surface relative h-full w-full cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover md:w-64">
+    <figure className="surface relative w-full cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover md:w-64">
       <blockquote className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
       <div className="mt-4 flex items-center gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
