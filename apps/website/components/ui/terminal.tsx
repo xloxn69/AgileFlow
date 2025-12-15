@@ -194,6 +194,7 @@ export const Terminal = ({
   startOnView = true,
 }: TerminalProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
+  const scrollRef = useRef<HTMLPreElement | null>(null)
   const isInView = useInView(containerRef as React.RefObject<Element>, {
     amount: 0.3,
     once: true,
@@ -223,6 +224,13 @@ export const Terminal = ({
     ))
   }, [children, sequence])
 
+  // Auto-scroll to bottom when content changes
+  useEffect(() => {
+    if (scrollRef.current && sequenceHasStarted) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [activeIndex, sequenceHasStarted])
+
   const content = (
     <div
       ref={containerRef}
@@ -236,7 +244,14 @@ export const Terminal = ({
         <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
         <div className="h-3 w-3 rounded-full bg-green-500"></div>
       </div>
-      <pre className="overflow-auto p-6">
+      <pre
+        ref={scrollRef}
+        className="overflow-auto p-6"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#555 #2d2d2d',
+        }}
+      >
         <code className="grid gap-y-1 text-xs text-[#d4d4d4]">{wrappedChildren}</code>
       </pre>
     </div>

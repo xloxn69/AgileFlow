@@ -12,7 +12,7 @@ interface AgileFlowTerminalProps {
 export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFlowTerminalProps) {
   return (
     <Terminal className="font-mono">
-      <TypingAnimation duration={30}>xloxn69@Mac-mini jottyai-mobile % npx agileflow setup</TypingAnimation>
+      <AnimatedSpan><span className="text-[#4ec9b0]">user@DevMachine</span> my-project % <TypingAnimation duration={30}>npx agileflow setup</TypingAnimation></AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a]">
         {` █████╗  ██████╗ ██╗██╗     ███████╗███████╗██╗      ██████╗ ██╗    ██╗`}
       </AnimatedSpan>
@@ -40,7 +40,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-[#4ec9b0]">? Documentation folder name: <span className="text-gray-400">docs</span></AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a] font-bold">Setting Up AgileFlow</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">Target: /Users/xloxn69/Desktop/jottyai-mobile</AnimatedSpan>
+      <AnimatedSpan className="text-gray-500">Target: /home/user/projects/my-project</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">✔ Core installation complete</AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">✓ Installed {agents} agents</AnimatedSpan>
@@ -59,22 +59,29 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-gray-500">Folder: docs/</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a]">Creating docs/ structure...</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/00-meta/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/01-brainstorming/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/02-practices/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/03-decisions/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/04-architecture/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/05-epics/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/06-stories/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/07-testing/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/08-project/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/09-agents/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/10-research/README.md (already exists)</AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">  ⊘ Skipped docs/09-agents/status.json (already exists)</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/00-meta/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/01-brainstorming/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/03-decisions/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/04-architecture/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/05-epics/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/06-stories/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/07-testing/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/08-project/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/09-agents/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/10-research/README.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/00-meta/agileflow-metadata.json</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/09-agents/status.json</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/09-agents/bus/log.jsonl</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/testing.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/git-branching.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/releasing.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/security.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created docs/02-practices/ci.md</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">  ✓ Created .gitignore</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan className="text-[#6a9955]">✨ Docs structure created: 0 directories, 0 files</AnimatedSpan>
-      <AnimatedSpan className="text-gray-400">   20 files skipped (already exist)</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">✨ Docs structure created: 15 directories, 21 files</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">✨ Setup complete!</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
@@ -83,9 +90,9 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-gray-400">  Run &apos;npx agileflow status&apos; to check setup</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">  Run &apos;npx agileflow update&apos; to get updates</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <AnimatedSpan className="text-gray-500">Installed to: /Users/xloxn69/Desktop/jottyai-mobile/.agileflow</AnimatedSpan>
+      <AnimatedSpan className="text-gray-500">Installed to: /home/user/projects/my-project/.agileflow</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
-      <TypingAnimation duration={30}>xloxn69@Mac-mini jottyai-mobile % </TypingAnimation>
+      <AnimatedSpan><span className="text-[#4ec9b0]">user@DevMachine</span> my-project % </AnimatedSpan>
     </Terminal>
   );
 }
