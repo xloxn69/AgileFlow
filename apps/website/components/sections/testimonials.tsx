@@ -120,12 +120,12 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+        <Marquee pauseOnHover vertical className="[--duration:20s]">
           {column2.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
         </Marquee>
-        <Marquee pauseOnHover vertical className="[--duration:20s]">
+        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
           {column3.map((testimonial, idx) => (
             <TestimonialCard key={idx} {...testimonial} />
           ))}
