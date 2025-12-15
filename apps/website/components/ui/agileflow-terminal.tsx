@@ -1,7 +1,7 @@
 'use client';
 
+import Image from 'next/image';
 import { Terminal, TypingAnimation, AnimatedSpan } from './terminal';
-import { AGILEFLOW_LOGO } from '@/lib/logo';
 
 interface AgileFlowTerminalProps {
   version: string;
@@ -16,9 +16,16 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan>
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
-      {AGILEFLOW_LOGO.map((line, index) => (
-        <AnimatedSpan key={index} className="text-[#e8683a] font-mono">{line}</AnimatedSpan>
-      ))}
+      <AnimatedSpan>
+        <Image
+          src="/banner.png"
+          alt="AgileFlow"
+          width={400}
+          height={60}
+          className="my-1"
+          style={{ imageRendering: 'crisp-edges' }}
+        />
+      </AnimatedSpan>
       <AnimatedSpan className="text-gray-500">{`  AgileFlow v${version} - AI-Driven Agile Development`}</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#4ec9b0]">? Where would you like to install AgileFlow? <span className="text-gray-400">.</span></AnimatedSpan>
