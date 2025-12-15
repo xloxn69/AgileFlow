@@ -309,16 +309,17 @@ export const Terminal = ({
       </div>
       <pre
         ref={scrollRef}
-        className="flex-1 p-6"
+        className="flex-1 p-6 font-mono"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: '#cbd5e1 #f1f5f9',
           maxHeight: 'calc(600px - 60px)',
           overflow: isAnimationComplete ? 'auto' : 'hidden',
-          pointerEvents: isAnimationComplete ? 'auto' : 'none'
+          pointerEvents: isAnimationComplete ? 'auto' : 'none',
+          fontFamily: 'var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace'
         }}
       >
-        <code className="block whitespace-pre text-[9px] leading-[1.3] text-[var(--text-primary)] overflow-x-hidden font-mono">{wrappedChildren}</code>
+        <code className="block whitespace-pre text-[9px] leading-[1.3] text-[var(--text-primary)] overflow-x-hidden">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
