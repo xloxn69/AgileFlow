@@ -144,9 +144,6 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
             ))}
           </Marquee>
         </div>
-
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-[var(--bg-primary)]"></div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[var(--bg-primary)]"></div>
       </div>
     </section>
   );
