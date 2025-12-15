@@ -120,11 +120,6 @@ export function MessageBusDemo({ className }: { className?: string }) {
         toRef={bus}
         curvature={-75}
         endYOffset={-10}
-        gradientStartColor="#e8683a"
-        gradientStopColor="#c15f3c"
-        pathColor="#e5e7eb"
-        pathWidth={2}
-        duration={3}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -132,34 +127,16 @@ export function MessageBusDemo({ className }: { className?: string }) {
         toRef={bus}
         curvature={75}
         endYOffset={-10}
-        gradientStartColor="#e8683a"
-        gradientStopColor="#c15f3c"
-        pathColor="#e5e7eb"
-        pathWidth={2}
-        duration={3}
-        delay={0.3}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={agent3}
         toRef={bus}
-        gradientStartColor="#e8683a"
-        gradientStopColor="#c15f3c"
-        pathColor="#e5e7eb"
-        pathWidth={2}
-        duration={3}
-        delay={0.6}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={agent4}
         toRef={bus}
-        gradientStartColor="#e8683a"
-        gradientStopColor="#c15f3c"
-        pathColor="#e5e7eb"
-        pathWidth={2}
-        duration={3}
-        delay={0.9}
       />
     </div>
   )
