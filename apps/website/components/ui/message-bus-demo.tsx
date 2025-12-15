@@ -120,6 +120,8 @@ export function MessageBusDemo({ className }: { className?: string }) {
         toRef={bus}
         curvature={-75}
         endYOffset={-10}
+        duration={2}
+        delay={0}
       />
       <AnimatedBeam
         containerRef={containerRef}
@@ -127,16 +129,22 @@ export function MessageBusDemo({ className }: { className?: string }) {
         toRef={bus}
         curvature={75}
         endYOffset={-10}
+        duration={2}
+        delay={0.5}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={agent3}
         toRef={bus}
+        duration={2}
+        delay={1}
       />
       <AnimatedBeam
         containerRef={containerRef}
         fromRef={agent4}
         toRef={bus}
+        duration={2}
+        delay={1.5}
       />
     </div>
   )
