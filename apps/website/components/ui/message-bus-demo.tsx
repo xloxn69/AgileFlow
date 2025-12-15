@@ -9,7 +9,7 @@ const Circle = forwardRef<
   { className?: string; children?: React.ReactNode; label?: string }
 >(({ className, children, label }, ref) => {
   return (
-    <div className="group relative">
+    <div className="relative flex flex-col items-center gap-2">
       <div
         ref={ref}
         className={cn(
@@ -20,7 +20,7 @@ const Circle = forwardRef<
         {children}
       </div>
       {label && (
-        <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-[var(--border-default)] bg-white px-2 py-0.5 text-[10px] font-medium text-[var(--text-muted)] shadow-sm">
           {label}
         </div>
       )}
