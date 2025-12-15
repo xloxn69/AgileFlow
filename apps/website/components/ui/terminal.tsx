@@ -78,7 +78,7 @@ export const AnimatedSpan = ({
       initial={{ opacity: 0, y: -5 }}
       animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
       transition={{ duration: 0.3, delay: sequence ? 0 : delay / 1000 }}
-      className={cn("grid text-sm font-normal tracking-tight", className)}
+      className={cn("grid font-normal tracking-tight", className)}
       onAnimationComplete={() => {
         const seq = sequenceRef.current
         const idx = itemIndexRef.current
@@ -203,7 +203,7 @@ export const TypingAnimation = ({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn("text-sm font-normal tracking-tight", className)}
+      className={cn("font-normal tracking-tight", className)}
       {...props}
     >
       {displayedText}
