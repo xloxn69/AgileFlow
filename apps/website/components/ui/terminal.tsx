@@ -63,11 +63,14 @@ export const AnimatedSpan = ({
     if (!sequence.sequenceStarted) return
     if (hasStarted) return
     if (sequence.activeIndex === itemIndex) {
+      console.log(`AnimatedSpan ${itemIndex}: Starting animation`)
       setHasStarted(true)
     }
   }, [sequence?.activeIndex, sequence?.sequenceStarted, hasStarted, itemIndex])
 
   const shouldAnimate = sequence ? hasStarted : startOnView ? isInView : true
+
+  console.log(`AnimatedSpan ${itemIndex}: shouldAnimate=${shouldAnimate}, hasStarted=${hasStarted}, activeIndex=${sequence?.activeIndex}, sequenceStarted=${sequence?.sequenceStarted}`)
 
   return (
     <motion.div
@@ -79,6 +82,7 @@ export const AnimatedSpan = ({
       onAnimationComplete={() => {
         const seq = sequenceRef.current
         const idx = itemIndexRef.current
+        console.log(`AnimatedSpan ${idx}: Animation complete, calling completeItem`)
         if (!seq) return
         if (idx === null) return
         seq.completeItem(idx)
@@ -225,11 +229,18 @@ export const Terminal = ({
   const [activeIndex, setActiveIndex] = useState(0)
   const sequenceHasStarted = sequence ? !startOnView || isInView : false
 
+  console.log(`Terminal: activeIndex=${activeIndex}, sequenceHasStarted=${sequenceHasStarted}, isInView=${isInView}, startOnView=${startOnView}`)
+
   const contextValue = useMemo<SequenceContextValue | null>(() => {
     if (!sequence) return null
     return {
       completeItem: (index: number) => {
-        setActiveIndex((current) => (index === current ? current + 1 : current))
+        console.log(`Terminal.completeItem: index=${index}, current=${activeIndex}`)
+        setActiveIndex((current) => {
+          const next = index === current ? current + 1 : current
+          console.log(`Terminal.completeItem: ${current} -> ${next}`)
+          return next
+        })
       },
       activeIndex,
       sequenceStarted: sequenceHasStarted,
