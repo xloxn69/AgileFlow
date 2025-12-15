@@ -146,49 +146,49 @@ export function MessageBusDemo({ className }: { className?: string }) {
         </Circle>
 
         {/* Top left */}
-        <div className="absolute left-[10%] top-[15%]">
+        <div className="absolute left-[5%] top-[8%]">
           <Circle ref={agent1} label="AG-UI">
             <MonitorIcon />
           </Circle>
         </div>
 
         {/* Top center */}
-        <div className="absolute left-1/2 top-[5%] -translate-x-1/2">
+        <div className="absolute left-1/2 top-[2%] -translate-x-1/2">
           <Circle ref={agent2} label="AG-API">
             <ServerIcon />
           </Circle>
         </div>
 
         {/* Top right */}
-        <div className="absolute right-[10%] top-[15%]">
+        <div className="absolute right-[5%] top-[8%]">
           <Circle ref={agent3} label="AG-DESIGN">
             <PaletteIcon />
           </Circle>
         </div>
 
         {/* Left */}
-        <div className="absolute left-[5%] top-1/2 -translate-y-1/2">
+        <div className="absolute left-[2%] top-1/2 -translate-y-1/2">
           <Circle ref={agent4} label="AG-CI">
             <WorkflowIcon />
           </Circle>
         </div>
 
         {/* Right */}
-        <div className="absolute right-[5%] top-1/2 -translate-y-1/2">
+        <div className="absolute right-[2%] top-1/2 -translate-y-1/2">
           <Circle ref={agent5} label="AG-QA">
             <TestTubeIcon />
           </Circle>
         </div>
 
         {/* Bottom left */}
-        <div className="absolute bottom-[15%] left-[15%]">
+        <div className="absolute bottom-[8%] left-[8%]">
           <Circle ref={agent6} label="AG-DEVOPS">
             <RocketIcon />
           </Circle>
         </div>
 
         {/* Bottom right */}
-        <div className="absolute bottom-[15%] right-[15%]">
+        <div className="absolute bottom-[8%] right-[8%]">
           <Circle ref={agent7} label="AG-DB">
             <DatabaseIcon />
           </Circle>
