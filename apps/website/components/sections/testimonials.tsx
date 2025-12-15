@@ -75,7 +75,7 @@ function initials(name: string) {
 
 function TestimonialCard({ quote, name, role }: { quote: string; name: string; role: string }) {
   return (
-    <figure className="surface relative h-full w-64 cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover">
+    <figure className="surface relative h-full w-full cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover md:w-64">
       <blockquote className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
       <div className="mt-4 flex items-center gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
@@ -101,7 +101,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
   const column4 = TESTIMONIALS.slice(9, 12);
 
   return (
-    <section id="testimonials" className="scroll-mt-24 py-20 sm:py-24 md:py-28">
+    <section id="testimonials" className="scroll-mt-24 bg-dot-grid py-20 sm:py-24 md:py-28">
       <Container>
         <div className="mb-12 max-w-[70ch]">
           <h2 className="text-[28px] font-semibold tracking-[-0.02em] text-[var(--text-primary)] sm:text-[32px]">
@@ -111,7 +111,7 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
         </div>
       </Container>
 
-      <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
+      <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden px-4">
         {/* Mobile: Single column */}
         <div className="flex md:hidden">
           <Marquee pauseOnHover vertical className="[--duration:20s]">
