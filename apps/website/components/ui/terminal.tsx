@@ -318,7 +318,7 @@ export const Terminal = ({
           pointerEvents: isAnimationComplete ? 'auto' : 'none'
         }}
       >
-        <code className="block whitespace-pre text-[7px] leading-[1.2] text-[var(--text-primary)] overflow-x-hidden font-mono">{wrappedChildren}</code>
+        <code className="block whitespace-pre text-[9px] leading-[1.3] text-[var(--text-primary)] overflow-x-hidden font-mono">{wrappedChildren}</code>
       </pre>
       <style jsx>{`
         pre::-webkit-scrollbar {
