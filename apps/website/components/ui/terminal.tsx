@@ -168,7 +168,7 @@ export const TypingAnimation = ({
     return () => {
       clearInterval(typingEffect)
     }
-  }, [children, duration, started])
+  }, [children, duration, started, sequence, itemIndex])
 
   return (
     <MotionComponent
@@ -236,7 +236,7 @@ export const Terminal = ({
     <div
       ref={containerRef}
       className={cn(
-        "z-0 h-full max-h-[600px] w-full max-w-3xl rounded-xl border border-[var(--border-default)] bg-[#1e1e1e]",
+        "z-0 h-full max-h-[600px] w-full max-w-3xl rounded-xl border border-[var(--border-default)] bg-white/70 shadow-tile",
         className
       )}
     >
@@ -247,30 +247,30 @@ export const Terminal = ({
       </div>
       <pre
         ref={scrollRef}
-        className="terminal-scroll overflow-auto p-6"
+        className="overflow-auto p-6"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#cbd5e1 #f1f5f9'
+        }}
       >
-        <code className="grid gap-y-1 text-xs text-[#d4d4d4]">{wrappedChildren}</code>
-        <style jsx>{`
-          .terminal-scroll {
-            scrollbar-width: thin;
-            scrollbar-color: #888 #2d2d2d;
-          }
-          .terminal-scroll::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-          }
-          .terminal-scroll::-webkit-scrollbar-track {
-            background: #2d2d2d;
-          }
-          .terminal-scroll::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-          }
-          .terminal-scroll::-webkit-scrollbar-thumb:hover {
-            background: #aaa;
-          }
-        `}</style>
+        <code className="grid gap-y-1 text-xs text-[var(--text-primary)]">{wrappedChildren}</code>
       </pre>
+      <style jsx>{`
+        pre::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        pre::-webkit-scrollbar-track {
+          background: #f1f5f9;
+        }
+        pre::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+        }
+        pre::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      `}</style>
     </div>
   )
 
