@@ -11,7 +11,7 @@ interface AgileFlowTerminalProps {
 
 export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFlowTerminalProps) {
   return (
-    <Terminal className="font-mono">
+    <Terminal className="font-mono" sequence={false}>
       <AnimatedSpan>
         <span className="text-[#4ec9b0]">user@DevMachine</span> my-project % npx agileflow setup
       </AnimatedSpan>
