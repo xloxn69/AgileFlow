@@ -1,6 +1,6 @@
 import { Container } from '@/components/ui/container';
 import { Reveal } from '@/components/ui/reveal';
-import { LottieAsset } from '@/components/lottie-asset';
+import { MessageBusDemo } from '@/components/ui/message-bus-demo';
 import type { LandingContent } from '@/lib/landing-content';
 
 export function AgentArchitecture({ content }: { content: LandingContent['agents'] }) {
@@ -28,8 +28,8 @@ export function AgentArchitecture({ content }: { content: LandingContent['agents
                   <div className="text-xs font-medium tracking-wide text-[var(--text-secondary)]">Message bus</div>
                 </div>
                 <div className="p-5">
-                  <div className="rounded-card border border-[var(--border-subtle)] bg-white/60 p-4">
-                    <LottieAsset src={content.lottieSrc} className="h-[260px] w-full" posterFrame={30} />
+                  <div className="rounded-card border border-[var(--border-subtle)] bg-white/60">
+                    <MessageBusDemo className="h-[260px]" />
                   </div>
                 </div>
               </div>
