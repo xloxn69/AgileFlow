@@ -12,7 +12,7 @@ const Circle = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-[var(--border-default)] bg-white p-2.5 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
+        "z-10 flex size-12 items-center justify-center rounded-full border-2 border-[var(--border-default)] bg-white p-2.5 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]",
         className,
       )}
     >
@@ -86,13 +86,13 @@ export function MessageBusDemo({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative flex w-full items-center justify-center p-8",
+        "relative flex w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-white/50 to-white/80 p-10",
         className,
       )}
       ref={containerRef}
     >
-      <div className="flex h-full w-full max-w-md flex-col items-stretch justify-between gap-8">
-        <div className="flex flex-row items-center justify-between px-4">
+      <div className="flex size-full max-h-[200px] max-w-lg flex-col items-stretch justify-between gap-10">
+        <div className="flex flex-row items-center justify-between">
           <Circle ref={agent1}>
             <LayoutIcon />
           </Circle>
@@ -100,14 +100,12 @@ export function MessageBusDemo({ className }: { className?: string }) {
             <DatabaseIcon />
           </Circle>
         </div>
-        <div className="flex flex-row items-center justify-center">
-          <Circle ref={bus} className="h-16 w-16 border-[var(--accent)]">
-            <BusIcon />
-          </Circle>
-        </div>
-        <div className="flex flex-row items-center justify-between px-4">
+        <div className="flex flex-row items-center justify-between">
           <Circle ref={agent3}>
             <SettingsIcon />
+          </Circle>
+          <Circle ref={bus} className="size-16 border-[var(--accent)]">
+            <BusIcon />
           </Circle>
           <Circle ref={agent4}>
             <CheckCircleIcon />
@@ -120,7 +118,8 @@ export function MessageBusDemo({ className }: { className?: string }) {
         containerRef={containerRef}
         fromRef={agent1}
         toRef={bus}
-        curvature={-40}
+        curvature={-75}
+        endYOffset={-10}
         gradientStartColor="#e8683a"
         gradientStopColor="#c15f3c"
         pathColor="#e5e7eb"
@@ -131,39 +130,36 @@ export function MessageBusDemo({ className }: { className?: string }) {
         containerRef={containerRef}
         fromRef={agent2}
         toRef={bus}
-        curvature={40}
+        curvature={75}
+        endYOffset={-10}
         gradientStartColor="#e8683a"
         gradientStopColor="#c15f3c"
         pathColor="#e5e7eb"
         pathWidth={2}
         duration={3}
-        delay={0.5}
+        delay={0.3}
       />
       <AnimatedBeam
         containerRef={containerRef}
-        fromRef={bus}
-        toRef={agent3}
-        curvature={-40}
-        reverse
+        fromRef={agent3}
+        toRef={bus}
         gradientStartColor="#e8683a"
         gradientStopColor="#c15f3c"
         pathColor="#e5e7eb"
         pathWidth={2}
         duration={3}
-        delay={1}
+        delay={0.6}
       />
       <AnimatedBeam
         containerRef={containerRef}
-        fromRef={bus}
-        toRef={agent4}
-        curvature={40}
-        reverse
+        fromRef={agent4}
+        toRef={bus}
         gradientStartColor="#e8683a"
         gradientStopColor="#c15f3c"
         pathColor="#e5e7eb"
         pathWidth={2}
         duration={3}
-        delay={1.5}
+        delay={0.9}
       />
     </div>
   )
