@@ -111,7 +111,10 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
         </div>
       </Container>
 
-      <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden px-4">
+      <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden px-4" style={{
+        maskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%)'
+      }}>
         {/* Mobile: Single column */}
         <div className="flex md:hidden">
           <Marquee pauseOnHover vertical className="[--duration:20s]">
@@ -144,9 +147,6 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
             ))}
           </Marquee>
         </div>
-
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-[var(--bg-primary)] to-transparent"></div>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--bg-primary)] to-transparent"></div>
       </div>
     </section>
   );
