@@ -82,9 +82,14 @@ export const AnimatedSpan = ({
       onAnimationComplete={() => {
         const seq = sequenceRef.current
         const idx = itemIndexRef.current
-        console.log(`AnimatedSpan ${idx}: Animation complete, calling completeItem`)
+        console.log(`AnimatedSpan ${idx}: Animation complete, shouldAnimate=${shouldAnimate}`)
         if (!seq) return
         if (idx === null) return
+        // Only call completeItem if this item actually animated (was visible)
+        if (!hasStarted) {
+          console.log(`AnimatedSpan ${idx}: Skipping completeItem (never started)`)
+          return
+        }
         seq.completeItem(idx)
       }}
       {...props}
