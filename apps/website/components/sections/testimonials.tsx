@@ -75,10 +75,7 @@ function initials(name: string) {
 
 function TestimonialCard({ quote, name, role }: { quote: string; name: string; role: string }) {
   return (
-    <figure className={cn(
-      "relative h-full w-64 cursor-pointer overflow-hidden rounded-xl border p-4",
-      "border-[var(--border-default)] bg-white/70 hover:bg-white/90"
-    )}>
+    <figure className="surface relative h-full w-64 cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover">
       <blockquote className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
       <div className="mt-4 flex items-center gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
@@ -115,26 +112,39 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
       </Container>
 
       <div className="relative flex h-[500px] w-full flex-row items-center justify-center overflow-hidden">
-        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
-          {column1.map((testimonial, idx) => (
-            <TestimonialCard key={idx} {...testimonial} />
-          ))}
-        </Marquee>
-        <Marquee pauseOnHover vertical className="[--duration:20s]">
-          {column2.map((testimonial, idx) => (
-            <TestimonialCard key={idx} {...testimonial} />
-          ))}
-        </Marquee>
-        <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
-          {column3.map((testimonial, idx) => (
-            <TestimonialCard key={idx} {...testimonial} />
-          ))}
-        </Marquee>
-        <Marquee pauseOnHover vertical className="[--duration:20s]">
-          {column4.map((testimonial, idx) => (
-            <TestimonialCard key={idx} {...testimonial} />
-          ))}
-        </Marquee>
+        {/* Mobile: Single column */}
+        <div className="flex md:hidden">
+          <Marquee pauseOnHover vertical className="[--duration:20s]">
+            {TESTIMONIALS.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
+            ))}
+          </Marquee>
+        </div>
+
+        {/* Desktop: 4 columns */}
+        <div className="hidden md:flex md:flex-row">
+          <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+            {column1.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
+            ))}
+          </Marquee>
+          <Marquee pauseOnHover vertical className="[--duration:20s]">
+            {column2.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
+            ))}
+          </Marquee>
+          <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+            {column3.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
+            ))}
+          </Marquee>
+          <Marquee pauseOnHover vertical className="[--duration:20s]">
+            {column4.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
+            ))}
+          </Marquee>
+        </div>
+
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-[var(--bg-primary)]"></div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[var(--bg-primary)]"></div>
       </div>
