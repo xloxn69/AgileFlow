@@ -176,9 +176,9 @@ flowchart LR
 
   count --> score{Score}
 
-  score -->|"3+ same (A=3)"| high["HIGH (60%+)<br/>Strong consensus"]
-  score -->|"2 same"| medium["MEDIUM (40-59%)<br/>Partial consensus"]
-  score -->|"All different"| low["LOW (<40%)<br/>No consensus"]
+  score -->|3+ same (A=3)| high["HIGH (60%+)<br/>Strong consensus"]
+  score -->|2 same| medium["MEDIUM (40-59%)<br/>Partial consensus"]
+  score -->|All different| low["LOW (<40%)<br/>No consensus"]
 ```
 
 | Experts Agree | Confidence | Action |

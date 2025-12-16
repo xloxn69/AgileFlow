@@ -103,7 +103,7 @@ sequenceDiagram
   participant Expert as Expert System
   participant State as State Manager
 
-  User->>CC: /AgileFlow:story TITLE="Add login"
+  User->>CC: /AgileFlow:story TITLE Add login
   CC->>Router: Parse command + args
 
   Router->>Router: Load command markdown

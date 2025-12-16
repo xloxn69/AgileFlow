@@ -147,13 +147,13 @@ flowchart TD
 
   user --> analyze{Analyze keywords}
 
-  analyze -->|"database, SQL, schema,<br/>migration, query"| db[/AgileFlow:agents:database]
-  analyze -->|"API, endpoint, REST,<br/>GraphQL, route"| api[/AgileFlow:agents:api]
-  analyze -->|"component, styling,<br/>CSS, theme, UI"| ui[/AgileFlow:agents:ui]
-  analyze -->|"test, spec, coverage,<br/>mock, fixture"| test[/AgileFlow:agents:testing]
-  analyze -->|"CI, pipeline, deploy,<br/>workflow, action"| ci[/AgileFlow:agents:ci]
-  analyze -->|"security, auth, OWASP,<br/>vulnerability"| sec[/AgileFlow:agents:security]
-  analyze -->|"performance, optimize,<br/>profile, cache"| perf[/AgileFlow:agents:performance]
+  analyze -->|database, SQL, schema,<br/>migration, query| db[AgileFlow-agents:database]
+  analyze -->|API, endpoint, REST,<br/>GraphQL, route| api[AgileFlow-agents:api]
+  analyze -->|component, styling,<br/>CSS, theme, UI| ui[AgileFlow-agents:ui]
+  analyze -->|test, spec, coverage,<br/>mock, fixture| test[AgileFlow-agents:testing]
+  analyze -->|CI, pipeline, deploy,<br/>workflow, action| ci[AgileFlow-agents:ci]
+  analyze -->|security, auth, OWASP,<br/>vulnerability| sec[AgileFlow-agents:security]
+  analyze -->|performance, optimize,<br/>profile, cache| perf[AgileFlow-agents:performance]
 
   db & api & ui & test & ci & sec & perf --> expert[Expert executes with expertise.yaml]
 ```
