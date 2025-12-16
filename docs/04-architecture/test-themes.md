@@ -25,4 +25,15 @@ Medium gray fills, darker borders.
 
 ---
 
-**Which one looks best?** Reply 1, 2, or 3
+## Option 4: Adaptive (Light/Dark Mode) ⭐
+**Auto-switches colors based on your phone's theme setting!**
+- Light mode: Light gray nodes, dark text
+- Dark mode: Dark gray nodes, light text
+
+![Option 4 - Adaptive](images/test-4-adaptive.svg)
+
+---
+
+**Which one looks best?** Reply 1, 2, 3, or 4
+
+(Try switching your phone between light/dark mode to test option 4)
