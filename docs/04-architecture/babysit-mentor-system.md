@@ -6,57 +6,15 @@ The `/AgileFlow:babysit` command is an end-to-end implementation mentor that gui
 
 ## Overview
 
-```mermaid
-flowchart TD
-  accTitle: Babysit Mentor System Overview
-  accDescr: Shows how babysit guides users through implementation
+![Diagram 1](images/babysit-mentor-system-1.svg)
 
-  user([User Request])
-
-  user --> babysit[AgileFlow-babysit]
-
-  babysit --> understand[Understand Request]
-  understand --> research[Research Codebase]
-  research --> plan[Create Implementation Plan]
-
-  plan --> check{Existing Story/Epic?}
-
-  check -->|No| create[Create Story/Epic]
-  check -->|Yes| link[Link to Existing]
-
-  create --> implement
-  link --> implement[Guide Implementation]
-
-  implement --> expert{Need Domain Expert?}
-
-  expert -->|Yes| spawn[Spawn Expert Agent]
-  expert -->|No| continue[Continue Mentoring]
-
-  spawn --> work[Expert Does Work]
-  work --> continue
-
-  continue --> review[Review & Iterate]
-  review --> pr[Create PR]
-  pr --> done([Feature Complete])
-```
 
 ---
 
 ## Core Responsibilities
 
-```mermaid
-flowchart LR
-  accTitle: Babysit Core Responsibilities
-  accDescr: The five main responsibilities of the babysit command
+![Diagram 2](images/babysit-mentor-system-2.svg)
 
-  babysit[Babysit Mentor]
-
-  babysit --> r1[Research<br/>Understand codebase]
-  babysit --> r2[Plan<br/>Break into steps]
-  babysit --> r3[Route<br/>Delegate to experts]
-  babysit --> r4[Track<br/>Update status.json]
-  babysit --> r5[Guide<br/>Help user through PR]
-```
 
 ---
 
@@ -64,35 +22,8 @@ flowchart LR
 
 Babysit automatically detects domains from user requests and spawns appropriate experts:
 
-```mermaid
-flowchart TD
-  accTitle: Domain Detection and Routing
-  accDescr: How babysit routes requests to domain experts
+![Diagram 3](images/babysit-mentor-system-3.svg)
 
-  request([User Request])
-
-  request --> analyze[Analyze Keywords]
-
-  analyze --> detect{Domains Detected}
-
-  detect --> single{Single Domain?}
-  detect --> multi{Multiple Domains?}
-
-  single -->|database| db[AgileFlow-agents:database]
-  single -->|API| api[AgileFlow-agents:api]
-  single -->|UI| ui[AgileFlow-agents:ui]
-  single -->|testing| test[AgileFlow-agents:testing]
-  single -->|security| sec[AgileFlow-agents:security]
-
-  multi --> orchestrate[Multi-Expert Mode]
-  orchestrate --> spawn[Spawn 3-5 Experts]
-
-  db & api & ui & test & sec --> execute[Expert Executes]
-  spawn --> synthesize[Synthesize Results]
-
-  execute --> result([Return to Babysit])
-  synthesize --> result
-```
 
 ### Domain Keyword Map
 
@@ -111,80 +42,15 @@ flowchart TD
 
 ## Workflow Sequence
 
-```mermaid
-sequenceDiagram
-  accTitle: Babysit Workflow Sequence
-  accDescr: Full sequence of babysit guiding a feature implementation
+![Diagram 4](images/babysit-mentor-system-4.svg)
 
-  actor User
-  participant Babysit as /babysit
-  participant Research as Codebase Research
-  participant Story as Story Management
-  participant Expert as Domain Expert
-  participant PR as PR Creation
-
-  User->>Babysit: "Add user authentication"
-
-  Note over Babysit: UNDERSTAND PHASE
-  Babysit->>Research: Analyze codebase
-  Research-->>Babysit: Found: Express app, no auth yet
-
-  Note over Babysit: PLAN PHASE
-  Babysit->>User: Here's my plan:<br/>1. Add users table<br/>2. Create auth endpoints<br/>3. Add login UI<br/>4. Add JWT middleware
-
-  User->>Babysit: Looks good, proceed
-
-  Note over Babysit: TRACK PHASE
-  Babysit->>Story: Create EP-0001 + stories
-  Story-->>Babysit: Created US-0001 to US-0004
-
-  Note over Babysit: IMPLEMENT PHASE
-  loop For each story
-    Babysit->>Expert: Route to domain expert
-    Expert->>Expert: Execute with expertise
-    Expert-->>Babysit: Work complete
-    Babysit->>Story: Update status
-    Babysit->>User: Progress update
-  end
-
-  Note over Babysit: FINALIZE PHASE
-  Babysit->>PR: Create pull request
-  PR-->>Babysit: PR #123 created
-  Babysit-->>User: Done! PR ready for review
-```
 
 ---
 
 ## State Management
 
-```mermaid
-stateDiagram-v2
-  accTitle: Babysit Session States
-  accDescr: States of a babysit mentoring session
+![Diagram 5](images/babysit-mentor-system-5.svg)
 
-  [*] --> Listening: User starts babysit
-
-  Listening --> Understanding: User describes feature
-  Understanding --> Researching: Analyze codebase
-
-  Researching --> Planning: Research complete
-  Planning --> AwaitingApproval: Plan presented
-
-  AwaitingApproval --> Planning: User wants changes
-  AwaitingApproval --> Tracking: User approves
-
-  Tracking --> Implementing: Story/Epic created
-  Implementing --> Routing: Domain detected
-
-  Routing --> ExpertWorking: Expert spawned
-  ExpertWorking --> Implementing: Expert done
-
-  Implementing --> Reviewing: All steps complete
-  Reviewing --> Implementing: Changes needed
-  Reviewing --> CreatingPR: Ready for PR
-
-  CreatingPR --> [*]: PR created
-```
 
 ---
 
@@ -194,47 +60,15 @@ When a request spans multiple domains, babysit can either:
 1. **Sequential**: Route to experts one at a time
 2. **Parallel**: Use multi-expert orchestration
 
-```mermaid
-flowchart TD
-  accTitle: Multi-Domain Decision
-  accDescr: How babysit decides between sequential and parallel execution
+![Diagram 6](images/babysit-mentor-system-6.svg)
 
-  request([Complex Request])
-
-  request --> analyze{How many domains?}
-
-  analyze -->|1-2| sequential[Sequential Execution]
-  analyze -->|3+| parallel[Parallel Execution]
-
-  sequential --> s1[Expert 1]
-  s1 --> s2[Expert 2]
-  s2 --> done
-
-  parallel --> p[Multi-Expert Orchestration]
-  p --> e1[Expert 1] & e2[Expert 2] & e3[Expert 3]
-  e1 & e2 & e3 --> synthesize[Synthesize]
-  synthesize --> done([Continue])
-```
 
 ---
 
 ## Integration Points
 
-```mermaid
-flowchart LR
-  accTitle: Babysit Integration Points
-  accDescr: How babysit integrates with other AgileFlow components
+![Diagram 7](images/babysit-mentor-system-7.svg)
 
-  babysit[/babysit]
-
-  babysit --> story[/story<br/>Create stories]
-  babysit --> epic[/epic<br/>Create epics]
-  babysit --> status[/status<br/>Update progress]
-  babysit --> agents[Domain Agents<br/>Delegate work]
-  babysit --> multiexp[/multi-expert<br/>Complex analysis]
-  babysit --> pr[/pr<br/>Create PR]
-  babysit --> verify[/verify<br/>Run tests]
-```
 
 ---
 
