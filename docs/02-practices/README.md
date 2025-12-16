@@ -1,0 +1,14 @@
+# Project Practices
+
+Project-specific practices, conventions, and standards for YOUR codebase.
+
+## Contents
+
+- **testing.md**: Testing strategies and patterns
+- **git-branching.md**: Git workflow and branching strategy
+- **releasing.md**: Release process and versioning
+- **security.md**: Security practices and guidelines
+- **ci.md**: CI/CD configuration and workflows
+- **prompts/agents/**: Custom agent prompts for this project
+
+**Note**: This is for YOUR project's practices (styling, typography, component patterns, API conventions), NOT AgileFlow system practices (those go in 00-meta/).

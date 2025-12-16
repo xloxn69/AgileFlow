@@ -1,6 +1,5 @@
 ---
 description: Auto-generate stories from PRDs, mockups, or specs
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # auto-story

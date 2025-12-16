@@ -1,6 +1,5 @@
 ---
 description: Synchronize a folder's README.md with its current contents
-allowed-tools: Task
 ---
 
 # readme-sync

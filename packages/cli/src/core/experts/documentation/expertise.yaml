@@ -1,0 +1,61 @@
+domain: documentation
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  docs:
+    - path: README.md
+      purpose: Project root documentation
+    - path: docs/
+      purpose: Main documentation directory
+    - path: CHANGELOG.md
+      purpose: Release notes and version history
+    - path: CONTRIBUTING.md
+      purpose: Contribution guidelines
+
+  api_docs:
+    - path: docs/api/
+      purpose: API documentation
+    - path: openapi.yaml
+      purpose: OpenAPI specification
+    - path: swagger.json
+      purpose: Swagger definition
+
+  guides:
+    - path: docs/guides/
+      purpose: User and developer guides
+    - path: docs/tutorials/
+      purpose: Step-by-step tutorials
+    - path: docs/architecture/
+      purpose: Architecture documentation
+
+relationships:
+  - doc_type: readme
+    location: README.md, */README.md
+    purpose: "Entry point for each directory"
+  - doc_type: api
+    location: docs/api/, openapi.yaml
+    generated_from: "Code annotations, JSDoc, TypeDoc"
+  - doc_type: changelog
+    location: CHANGELOG.md
+    format: "Keep a Changelog"
+
+patterns:
+  - name: README Per Directory
+    description: "Each major directory has its own README"
+  - name: Code Examples
+    description: "All docs include working code examples"
+  - name: Auto-Generated API Docs
+    description: "API docs generated from code comments"
+  - name: Versioned Docs
+    description: "Docs versioned with code releases"
+
+conventions:
+  - "Markdown format for all documentation"
+  - "Code examples must be tested/runnable"
+  - "Include both quick start and detailed guides"
+  - "Update docs in same PR as code changes"
+  - "Broken link checker runs in CI"
+  - "Screenshots updated when UI changes"
+
+learnings: []  # AUTO-UPDATED by self-improve

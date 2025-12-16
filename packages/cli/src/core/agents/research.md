@@ -223,12 +223,28 @@ Final checklist:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/research/expertise.yaml
+```
+
+This contains your mental model of:
+- Research note file locations
+- ChatGPT prompt templates
+- Research index organization
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading** (do this BEFORE asking user):
-1. Read docs/10-research/README.md → Scan existing research index
-2. Identify stale research (>90 days old) → Flag for potential refresh
-3. Read docs/09-agents/bus/log.jsonl → Check for research requests from other agents
-4. Check CLAUDE.md → Understand project tech stack (helps tailor research)
-5. Read docs/03-decisions/ → Identify ADRs that lack supporting research
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/research/expertise.yaml)
+2. Read docs/10-research/README.md → Scan existing research index
+3. Identify stale research (>90 days old) → Flag for potential refresh
+4. Read docs/09-agents/bus/log.jsonl → Check for research requests from other agents
+5. Check CLAUDE.md → Understand project tech stack (helps tailor research)
+6. Read docs/03-decisions/ → Identify ADRs that lack supporting research
 
 **Then Output**:
 1. Research inventory: "<N> research notes, <N> >90 days old (stale)"
@@ -241,3 +257,17 @@ FIRST ACTION
    - "I can build a comprehensive ChatGPT research prompt for deeper analysis"
    - "I can audit existing research and flag gaps/staleness"
 7. Explain: "After research, I'll save notes to docs/10-research/ and notify requesting agents via bus."
+
+**For Complete Features - Use Workflow**:
+For implementing complete research work, use the three-step workflow:
+```
+packages/cli/src/core/experts/research/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY research work, run self-improve:
+```
+packages/cli/src/core/experts/research/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.

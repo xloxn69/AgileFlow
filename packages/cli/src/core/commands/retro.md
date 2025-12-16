@@ -1,7 +1,6 @@
 ---
 description: Generate retrospective with Start/Stop/Continue format
 argument-hint: [TIMEFRAME=sprint|2weeks|30d|90d] [EPIC=<id>] [FORMAT=ascii|markdown|html] [SAVE=true|false]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 model: haiku
 ---
 

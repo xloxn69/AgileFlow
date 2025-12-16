@@ -1,0 +1,59 @@
+domain: refactor
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  code_quality:
+    - path: .eslintrc.js
+      purpose: Linting rules and code style
+    - path: tsconfig.json
+      purpose: TypeScript configuration
+    - path: .prettierrc
+      purpose: Code formatting rules
+
+  tests:
+    - path: tests/
+      purpose: Test files to verify refactoring safety
+    - path: coverage/
+      purpose: Coverage reports
+
+  tech_debt:
+    - path: docs/tech-debt/
+      purpose: Technical debt tracking
+    - path: TODO.md
+      purpose: Known issues and improvements
+
+relationships:
+  - smell_type: duplicate_code
+    detection: "Similar blocks in multiple files"
+    fix: "Extract to shared function/module"
+  - smell_type: long_function
+    detection: ">50 lines, >10 cyclomatic complexity"
+    fix: "Extract helper functions"
+  - smell_type: dead_code
+    detection: "Unused exports, unreachable code"
+    fix: "Remove safely after verification"
+
+patterns:
+  - name: Extract Method
+    description: "Move code block to named function"
+    when: "Function too long, code reused"
+  - name: Rename Symbol
+    description: "Improve naming for clarity"
+    when: "Name unclear, misleading, or abbreviated"
+  - name: Move to Module
+    description: "Relocate code to appropriate module"
+    when: "Code in wrong layer or misplaced"
+  - name: Simplify Conditional
+    description: "Reduce nested conditionals"
+    when: "Deep nesting, complex boolean logic"
+
+conventions:
+  - "Never refactor without tests passing first"
+  - "One refactoring type per PR (don't mix)"
+  - "Measure complexity before and after"
+  - "Document rationale for refactoring"
+  - "Run full test suite after refactoring"
+  - "No behavior changes during refactoring"
+
+learnings: []  # AUTO-UPDATED by self-improve

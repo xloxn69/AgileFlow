@@ -1,0 +1,91 @@
+# ADR Writer Expert - Domain Knowledge
+# This file is the agent's "mental model" of the ADR domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: adr-writer
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  decisions:
+    - path: docs/03-decisions/
+      purpose: "Architecture Decision Records"
+      conventions: "ADR-####-slug.md naming"
+    - path: docs/03-decisions/template.md
+      purpose: "ADR template"
+    - path: docs/03-decisions/README.md
+      purpose: "ADR index"
+
+  research:
+    - path: docs/10-research/
+      purpose: "Research supporting ADR alternatives"
+    - path: docs/10-research/README.md
+      purpose: "Research index"
+
+  context:
+    - path: CLAUDE.md
+      purpose: "Project context informing decisions"
+    - path: docs/04-architecture/
+      purpose: "Architecture documentation"
+
+relationships:
+  - parent: research
+    child: adrs
+    type: informs
+    notes: "Research provides alternatives for ADRs"
+  - parent: adrs
+    child: implementation
+    type: constrains
+    notes: "ADRs constrain implementation choices"
+  - parent: adrs
+    child: superseding_adrs
+    type: superseded_by
+    notes: "Old ADRs can be superseded by new ones"
+
+patterns:
+  - name: ADR Structure
+    description: "Title, Status, Context, Decision, Alternatives, Consequences"
+    location: docs/03-decisions/
+    example: |
+      # ADR-0001: Use PostgreSQL for data persistence
+      ## Status: Accepted
+      ## Context: Need relational database...
+      ## Decision: PostgreSQL...
+      ## Alternatives Considered: MySQL, MongoDB...
+      ## Consequences: +Reliability, -Learning curve
+
+  - name: ADR Status Lifecycle
+    description: "Proposed → Accepted → (Deprecated | Superseded)"
+    location: docs/03-decisions/
+    example: "Start Proposed, approve to Accepted"
+
+  - name: Research-First ADR
+    description: "Always research alternatives before writing ADR"
+    location: docs/10-research/
+    example: "Research 3-5 alternatives with pros/cons"
+
+conventions:
+  - "Research alternatives before writing ADR"
+  - "Document 2-5 alternatives with pros/cons"
+  - "State decision clearly and concisely"
+  - "List consequences (positive, negative, neutral)"
+  - "Link to related ADRs"
+  - "Update index after creating ADR"
+  - "Use imperative title (Use X, Choose Y)"
+
+adr_statuses:
+  proposed: "Under review, not yet approved"
+  accepted: "Approved, should be followed"
+  deprecated: "No longer recommended"
+  superseded: "Replaced by newer ADR"
+
+decision_categories:
+  - "Technology choices (framework, database, language)"
+  - "Architecture patterns (monolith vs microservices)"
+  - "Data modeling (schema design, caching)"
+  - "Security approaches (auth, encryption)"
+  - "Infrastructure (hosting, CI/CD)"
+  - "Development practices (testing, branching)"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

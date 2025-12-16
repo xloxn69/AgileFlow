@@ -1,0 +1,69 @@
+domain: ci
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  workflows:
+    - path: .github/workflows/
+      purpose: GitHub Actions workflow files
+      conventions: "*.yml files, one per workflow"
+    - path: .gitlab-ci.yml
+      purpose: GitLab CI configuration
+    - path: Jenkinsfile
+      purpose: Jenkins pipeline definition
+    - path: .circleci/config.yml
+      purpose: CircleCI configuration
+
+  config:
+    - path: .eslintrc.js
+      purpose: ESLint linting rules
+    - path: .prettierrc
+      purpose: Prettier formatting config
+    - path: tsconfig.json
+      purpose: TypeScript compiler options
+    - path: package.json
+      purpose: Scripts and dependencies
+
+  test_infrastructure:
+    - path: jest.config.js
+      purpose: Unit test configuration
+    - path: vitest.config.ts
+      purpose: Vitest configuration
+    - path: playwright.config.ts
+      purpose: E2E test setup
+    - path: coverage/
+      purpose: Coverage reports output
+
+relationships:
+  - workflow: ci.yml
+    triggers: [push, pull_request]
+    jobs: [lint, type-check, test, build]
+  - workflow: deploy.yml
+    triggers: [push to main]
+    jobs: [build, deploy-staging, deploy-production]
+  - tool: eslint
+    config: .eslintrc.js
+    command: "npm run lint"
+  - tool: typescript
+    config: tsconfig.json
+    command: "npm run type-check"
+
+patterns:
+  - name: Fail Fast
+    description: "Run fast checks (lint, types) before slow tests"
+  - name: Parallel Jobs
+    description: "Independent jobs run in parallel"
+  - name: Caching
+    description: "Cache node_modules, build artifacts between runs"
+  - name: Matrix Testing
+    description: "Test across multiple Node versions, OS"
+
+conventions:
+  - "Workflows under 5 min for lint/unit, 15 min for full suite"
+  - "Required checks configured on protected branches"
+  - "Secrets stored in GitHub Secrets, never in code"
+  - "Coverage reports uploaded to tracking service"
+  - "Flaky tests quarantined with tracking issues"
+  - "PRs require all checks passing before merge"
+
+learnings: []  # AUTO-UPDATED by self-improve

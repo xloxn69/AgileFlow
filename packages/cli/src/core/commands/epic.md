@@ -1,7 +1,6 @@
 ---
 description: Create a new epic with stories
 argument-hint: EPIC=<EP-ID> TITLE=<text> OWNER=<id> GOAL=<text> [STORIES=<list>]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # epic-new

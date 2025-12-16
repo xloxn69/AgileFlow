@@ -1,7 +1,6 @@
 ---
 description: Create an Architecture Decision Record
 argument-hint: NUMBER=<4-digit> TITLE=<text> CONTEXT=<text> DECISION=<text> CONSEQUENCES=<text> [LINKS=<text>]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # adr-new

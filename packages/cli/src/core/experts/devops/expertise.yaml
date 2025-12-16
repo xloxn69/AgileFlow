@@ -1,0 +1,76 @@
+domain: devops
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  infrastructure:
+    - path: docker-compose.yml
+      purpose: Local development environment
+    - path: Dockerfile
+      purpose: Container image definition
+    - path: terraform/
+      purpose: Infrastructure as Code
+    - path: k8s/
+      purpose: Kubernetes manifests
+
+  config:
+    - path: .env.example
+      purpose: Environment variable template
+    - path: package.json
+      purpose: Dependencies and scripts
+    - path: requirements.txt
+      purpose: Python dependencies
+    - path: Cargo.toml
+      purpose: Rust dependencies
+
+  deployment:
+    - path: vercel.json
+      purpose: Vercel deployment config
+    - path: netlify.toml
+      purpose: Netlify deployment config
+    - path: render.yaml
+      purpose: Render deployment config
+    - path: fly.toml
+      purpose: Fly.io deployment config
+
+  monitoring:
+    - path: prometheus.yml
+      purpose: Metrics collection config
+    - path: grafana/
+      purpose: Dashboard definitions
+    - path: alerts/
+      purpose: Alerting rules
+
+relationships:
+  - dependency_manager: npm
+    lockfile: package-lock.json
+    audit_command: "npm audit"
+  - dependency_manager: pip
+    lockfile: requirements.txt
+    audit_command: "pip-audit"
+  - deployment: vercel
+    branch: main
+    trigger: push
+  - deployment: staging
+    branch: develop
+    trigger: push
+
+patterns:
+  - name: Blue-Green Deployment
+    description: "Zero-downtime deploys with instant rollback"
+  - name: Canary Release
+    description: "Gradual rollout to percentage of traffic"
+  - name: Feature Flags
+    description: "Toggle features without deployment"
+  - name: Secret Rotation
+    description: "Regular credential updates"
+
+conventions:
+  - "Never commit secrets or credentials"
+  - "Environment variables for all config"
+  - "Staging mirrors production exactly"
+  - "Rollback procedures documented and tested"
+  - "Dependencies audited weekly"
+  - "Critical vulnerabilities fixed within 24h"
+
+learnings: []  # AUTO-UPDATED by self-improve

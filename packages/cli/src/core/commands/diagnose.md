@@ -1,6 +1,5 @@
 ---
 description: System health diagnostics
-allowed-tools: Bash, Read
 ---
 
 # diagnose

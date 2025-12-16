@@ -1,7 +1,6 @@
 ---
 description: Data-driven sprint planning with velocity forecasting
 argument-hint: [SPRINT=<id>] [DURATION=<days>] [AGENTS=<list>] [MODE=suggest|commit] [FOCUS_EPIC=<id>]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 model: haiku
 ---
 

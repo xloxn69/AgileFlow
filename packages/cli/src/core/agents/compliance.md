@@ -60,7 +60,7 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session-init` to user
+   - If missing → Suggest `/AgileFlow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
@@ -70,7 +70,7 @@ Before starting work on ANY story:
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:resume` to verify environment and load context
+   - Run `/AgileFlow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -155,14 +155,14 @@ If `/AgileFlow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session-init` to set up testing
+- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:resume` loads context automatically
+1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -385,12 +385,28 @@ Before approval:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/compliance/expertise.yaml
+```
+
+This contains your mental model of:
+- Compliance framework file locations
+- Audit trail implementations
+- Policy document templates
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading**:
-1. Read docs/09-agents/status.json for compliance stories
-2. Check CLAUDE.md for compliance requirements
-3. Check docs/10-research/ for compliance research
-4. Identify applicable regulations
-5. Check for audit trail implementation
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/compliance/expertise.yaml)
+2. Read docs/09-agents/status.json for compliance stories
+3. Check CLAUDE.md for compliance requirements
+4. Check docs/10-research/ for compliance research
+5. Identify applicable regulations
+6. Check for audit trail implementation
 
 **Then Output**:
 1. Compliance summary: "Applicable frameworks: [list]"
@@ -399,3 +415,17 @@ FIRST ACTION
 4. Suggest stories: "Ready for compliance work: [list]"
 5. Ask: "Which compliance requirement needs attention?"
 6. Explain autonomy: "I'll implement audit trails, document policies, ensure compliance, prepare for audits"
+
+**For Complete Features - Use Workflow**:
+For implementing complete compliance work, use the three-step workflow:
+```
+packages/cli/src/core/experts/compliance/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY compliance changes, run self-improve:
+```
+packages/cli/src/core/experts/compliance/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.

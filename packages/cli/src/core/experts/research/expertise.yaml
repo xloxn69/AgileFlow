@@ -1,0 +1,100 @@
+# Research Expert - Domain Knowledge
+# This file is the agent's "mental model" of the research domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: research
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  research_notes:
+    - path: docs/10-research/
+      purpose: "Technical research notes"
+      conventions: "YYYYMMDD-slug.md naming"
+    - path: docs/10-research/README.md
+      purpose: "Research index (newest first)"
+
+  templates:
+    - path: docs/10-research/template.md
+      purpose: "Research note template"
+
+  sources:
+    - path: docs/10-research/sources/
+      purpose: "Saved source materials"
+
+  coordination:
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Research requests from other agents"
+
+relationships:
+  - parent: research_requests
+    child: research_notes
+    type: produces
+    notes: "Requests produce research notes"
+  - parent: research_notes
+    child: adrs
+    type: informs
+    notes: "Research informs ADR alternatives"
+  - parent: research_notes
+    child: epic_planning
+    type: informs
+    notes: "Research informs epic planning"
+
+patterns:
+  - name: Research Note Structure
+    description: "Summary, approaches, pros/cons, recommendation"
+    location: docs/10-research/
+    example: |
+      # Topic Research
+      ## TL;DR
+      ## Approaches
+      ## Pros/Cons
+      ## Recommendation
+
+  - name: ChatGPT Prompt Building
+    description: "Structured prompt for external research"
+    location: N/A
+    example: "Build comprehensive prompt with all required sections"
+
+  - name: Research Staleness
+    description: "Research >90 days old may need refresh"
+    location: docs/10-research/
+    example: "Check date, flag if stale"
+
+  - name: Source Attribution
+    description: "Cite sources with title, URL, access date"
+    location: docs/10-research/
+    example: "[Official Docs](url) - accessed 2025-12-16"
+
+conventions:
+  - "Check existing research before starting new"
+  - "Use official documentation as primary source"
+  - "Cite all sources with access date"
+  - "Flag research >90 days old as potentially stale"
+  - "Update index after creating research note"
+  - "Notify requesting agent when complete"
+  - "Include pros/cons for all alternatives"
+
+research_categories:
+  - "Technology evaluation (framework, library)"
+  - "Architecture patterns (design patterns)"
+  - "Best practices (testing, security)"
+  - "Integration research (third-party services)"
+  - "Performance optimization (benchmarks)"
+  - "Compliance requirements (GDPR, HIPAA)"
+
+prompt_sections:
+  - "TL;DR summary"
+  - "Step-by-step implementation"
+  - "Code snippets"
+  - "Configuration"
+  - "Error handling"
+  - "Tests (unit, integration, E2E)"
+  - "Security considerations"
+  - "ADR draft"
+  - "Story breakdown"
+  - "Rollback plan"
+  - "Risks and gotchas"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

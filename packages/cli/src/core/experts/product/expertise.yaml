@@ -1,0 +1,85 @@
+# Product Expert - Domain Knowledge
+# This file is the agent's "mental model" of the product domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: product
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  requirements:
+    - path: docs/05-epics/
+      purpose: "Epic definitions with goals and success metrics"
+      conventions: "EP-#### naming, YAML frontmatter"
+    - path: docs/06-stories/
+      purpose: "User stories organized by epic"
+      conventions: "US-#### naming, Given/When/Then AC"
+    - path: docs/01-brainstorming/
+      purpose: "Early ideas and feature sketches"
+      conventions: "Informal, exploratory notes"
+
+  documentation:
+    - path: docs/08-project/roadmap.md
+      purpose: "Product roadmap and priorities"
+    - path: docs/08-project/backlog.md
+      purpose: "Feature backlog"
+    - path: CLAUDE.md
+      purpose: "Project context and conventions"
+
+  personas:
+    - path: docs/08-project/personas/
+      purpose: "User persona definitions"
+      conventions: "One persona per file"
+
+  coordination:
+    - path: docs/09-agents/status.json
+      purpose: "Story status and assignments"
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Agent coordination messages"
+
+relationships:
+  - parent: epics
+    child: stories
+    type: contains
+    notes: "Epics break down into multiple stories"
+  - parent: personas
+    child: stories
+    type: informs
+    notes: "Personas drive story 'As a...' statements"
+  - parent: roadmap
+    child: epics
+    type: prioritizes
+    notes: "Roadmap determines epic priorities"
+
+patterns:
+  - name: User Story Format
+    description: "As a [role], I want [action], so that [benefit]"
+    location: docs/06-stories/
+    example: "As a new user, I want to sign up with email, so that I can access my account"
+
+  - name: Acceptance Criteria
+    description: "Given/When/Then format for testable criteria"
+    location: docs/06-stories/
+    example: "Given a new user, When they submit signup, Then account is created"
+
+  - name: Definition of Ready
+    description: "Story has AC, test stub, no blockers"
+    location: docs/09-agents/status.json
+    example: "status: ready"
+
+  - name: Interview Questions
+    description: "Why? Who? What problem? How measured? Edge cases?"
+    location: N/A
+    example: "5 key questions for requirements elicitation"
+
+conventions:
+  - "User stories must have clear benefit (the 'so that' clause)"
+  - "Acceptance criteria in Given/When/Then format"
+  - "Include edge cases and error scenarios"
+  - "Define success metrics for features"
+  - "Link stories to personas"
+  - "Document scope (in/out of feature)"
+  - "Small stories: 0.5-2 day estimates"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

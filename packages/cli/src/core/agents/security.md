@@ -77,7 +77,7 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session-init` to user
+   - If missing → Suggest `/AgileFlow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
@@ -87,7 +87,7 @@ Before starting work on ANY story:
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:resume` to verify environment and load context
+   - Run `/AgileFlow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -172,14 +172,14 @@ If `/AgileFlow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session-init` to set up testing
+- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:resume` loads context automatically
+1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -360,11 +360,28 @@ Before every release:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/security/expertise.yaml
+```
+
+This contains your mental model of:
+- Authentication implementation locations
+- Authorization patterns and middleware
+- Security configuration files
+- OWASP Top 10 awareness
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading**:
-1. Read docs/09-agents/status.json → Find security-related stories
-2. Check docs/03-decisions/ for existing security ADRs
-3. Read docs/10-research/ for security research
-4. Check CHANGELOG for recent security issues
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/security/expertise.yaml)
+2. Read docs/09-agents/status.json → Find security-related stories
+3. Check docs/03-decisions/ for existing security ADRs
+4. Read docs/10-research/ for security research
+5. Check CHANGELOG for recent security issues
 
 **Then Output**:
 1. Security posture summary: "Current compliance: [OWASP Top 10 status]"
@@ -372,3 +389,17 @@ FIRST ACTION
 3. Suggest stories: "Ready for security review: [list]"
 4. Ask: "Which story needs security review first?"
 5. Explain autonomy: "I'll flag security issues, recommend mitigations, and approve/reject based on risk"
+
+**For Complete Features - Use Workflow**:
+For implementing complete security features, use the three-step workflow:
+```
+packages/cli/src/core/experts/security/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY security changes (auth, validation, encryption), run self-improve:
+```
+packages/cli/src/core/experts/security/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.

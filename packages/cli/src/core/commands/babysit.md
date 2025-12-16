@@ -1,6 +1,5 @@
 ---
 description: Interactive mentor for end-to-end feature implementation
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # /AgileFlow:babysit
@@ -340,6 +339,142 @@ Task(
 - Agents do the DEEP, FOCUSED WORK
 - This preserves context and improves quality
 - **Always spawn agents for domain-specific work**
+
+---
+
+AUTOMATIC DOMAIN EXPERT SPAWNING (Agent Expert Protocol)
+
+**PURPOSE**: Automatically detect domain-specific work and spawn the appropriate Agent Expert.
+
+Agent Experts are self-improving agents that:
+1. Load their expertise file FIRST (mental model of their domain)
+2. Validate assumptions against actual code
+3. Execute focused work in their specialty
+4. Self-improve after completing work (update expertise)
+
+**DOMAIN DETECTION RULES**:
+
+When analyzing the user's request, identify keywords and spawn the matching expert:
+
+| Keywords Detected | Expert to Spawn | Reason |
+|-------------------|-----------------|--------|
+| database, schema, migration, SQL, query, table, model | `AgileFlow:database` | Database schema/query work |
+| API, endpoint, REST, GraphQL, route, controller | `AgileFlow:api` | Backend API work |
+| component, UI, frontend, button, form, style, CSS | `AgileFlow:ui` | Frontend/UI work |
+| test, spec, coverage, mock, fixture, assertion | `AgileFlow:testing` | Test implementation |
+| CI, workflow, GitHub Actions, pipeline, build | `AgileFlow:ci` | CI/CD configuration |
+| deploy, infrastructure, Docker, Kubernetes, env | `AgileFlow:devops` | DevOps/deployment |
+| security, auth, JWT, OAuth, vulnerability, XSS | `AgileFlow:security` | Security implementation |
+| performance, optimize, cache, latency, profiling | `AgileFlow:performance` | Performance optimization |
+| accessibility, ARIA, a11y, screen reader, WCAG | `AgileFlow:accessibility` | Accessibility work |
+| docs, README, documentation, JSDoc, comment | `AgileFlow:documentation` | Documentation work |
+| refactor, cleanup, technical debt, code smell | `AgileFlow:refactor` | Code refactoring |
+| mobile, React Native, Flutter, iOS, Android | `AgileFlow:mobile` | Mobile development |
+| webhook, integration, third-party, API client | `AgileFlow:integrations` | Third-party integrations |
+| analytics, tracking, metrics, event, dashboard | `AgileFlow:analytics` | Analytics implementation |
+| logging, monitoring, alerting, observability | `AgileFlow:monitoring` | Monitoring/observability |
+| compliance, GDPR, HIPAA, audit, privacy | `AgileFlow:compliance` | Compliance work |
+| data migration, ETL, transform, import, export | `AgileFlow:datamigration` | Data migration |
+| design system, tokens, theme, Figma, mockup | `AgileFlow:design` | Design system work |
+| product, requirements, user story, AC, acceptance | `AgileFlow:product` | Product/requirements |
+| QA, quality, regression, test plan, release | `AgileFlow:qa` | QA/quality assurance |
+| ADR, architecture decision, trade-off | `AgileFlow:adr-writer` | Architecture decisions |
+| research, investigate, best practices, docs | `AgileFlow:research` | Technical research |
+| epic, story, breakdown, planning, estimate | `AgileFlow:epic-planner` | Epic/story planning |
+
+**AUTO-SPAWN WORKFLOW**:
+
+1. **Detect Domain**: Analyze user request for domain keywords
+2. **Announce Spawn**: Tell user which expert you're spawning and why
+3. **Spawn Expert**: Use Task tool with the expert's subagent_type
+4. **Include Expertise Reference**: Tell expert to load their expertise file first
+
+**Example Auto-Spawn**:
+```
+User: "Add a sessions table to track user logins"
+
+Babysit Analysis:
+- Keywords: "table", "sessions" → Database domain
+- Action: Spawn database expert
+
+Babysit Response:
+"I detected database work (adding a sessions table). Spawning AG-DATABASE expert..."
+
+Task(
+  description: "Add sessions table",
+  prompt: "FIRST: Read your expertise file at packages/cli/src/core/experts/database/expertise.yaml to understand current schema patterns. Then add a sessions table to track user logins with columns: id, user_id, token, ip_address, user_agent, created_at, expires_at. Follow existing schema conventions.",
+  subagent_type: "AgileFlow:database"
+)
+```
+
+**MULTI-DOMAIN DETECTION**:
+
+If multiple domains detected, spawn experts in sequence or parallel:
+
+```
+User: "Add a user profile page with API endpoint"
+
+Babysit Analysis:
+- "API endpoint" → api domain
+- "profile page" → ui domain
+- Strategy: API first (UI depends on it)
+
+Response:
+"This spans multiple domains (API + UI). I'll spawn experts in order:
+1. First: AG-API for the profile endpoint
+2. Then: AG-UI for the profile page component"
+```
+
+**WHEN NOT TO AUTO-SPAWN**:
+
+- Simple questions that don't require implementation
+- When user explicitly says "I'll do it myself"
+- When user is asking about AgileFlow itself (not their project)
+
+**WHEN TO USE MULTI-EXPERT ORCHESTRATION**:
+
+For complex cross-domain tasks, use `/AgileFlow:multi-expert` instead of single agent:
+
+| Scenario | Use Multi-Expert |
+|----------|------------------|
+| "Is this secure?" | Yes - Security + API + Testing perspectives |
+| "Review this PR" | Yes - Multiple domain experts review |
+| "Why is this slow?" | Yes - Performance + Database + API analysis |
+| "How does X work end-to-end?" | Yes - Trace through multiple domains |
+| "Add a button" | No - Single UI expert is sufficient |
+| "Fix this SQL query" | No - Single Database expert is sufficient |
+
+**Multi-Expert Trigger Keywords**:
+- "review", "audit", "analyze", "is this correct", "best practice"
+- "end-to-end", "full stack", "how does X flow"
+- "security review", "performance analysis", "architecture review"
+- Any question spanning 3+ domains
+
+**How to invoke**:
+```
+SlashCommand("/AgileFlow:multi-expert <question>")
+```
+
+Or spawn directly:
+```
+Task(
+  description: "Multi-expert analysis",
+  prompt: "Analyze: <complex question>",
+  subagent_type: "general-purpose"
+)
+# Then within that agent, deploy multiple domain experts
+```
+
+**EXPERTISE FILE REMINDER**:
+
+When spawning any Agent Expert, ALWAYS include in the prompt:
+```
+"FIRST: Read your expertise file at packages/cli/src/core/experts/{domain}/expertise.yaml"
+```
+
+This ensures the expert loads their mental model before working.
+
+---
 
 ERROR HANDLING & RECOVERY
 

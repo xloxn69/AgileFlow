@@ -234,11 +234,27 @@ Before creating stories:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/epic-planner/expertise.yaml
+```
+
+This contains your mental model of:
+- Epic and story file locations
+- INVEST criteria patterns
+- Estimation conventions
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading** (do this BEFORE asking user):
-1. Read docs/05-epics/ → Check existing epics for context
-2. Read docs/09-agents/status.json → Check team capacity (WIP limits)
-3. Read docs/08-project/roadmap.md → Understand priorities
-4. Check docs/10-research/ → Identify research gaps for common feature types
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/epic-planner/expertise.yaml)
+2. Read docs/05-epics/ → Check existing epics for context
+3. Read docs/09-agents/status.json → Check team capacity (WIP limits)
+4. Read docs/08-project/roadmap.md → Understand priorities
+5. Check docs/10-research/ → Identify research gaps for common feature types
 
 **Then Output**:
 1. Capacity check: "<N> agents at WIP limit, <N> available for new stories"
@@ -246,6 +262,20 @@ FIRST ACTION
 3. Recent context: "Last epic: <EP-ID>, <N> stories (<N> done, <N> in progress)"
 4. Ask: "What feature would you like to plan?"
 5. Clarify: "I'll break it into an epic with 3-8 stories, assign owners, write AC, and estimate effort."
+
+**For Complete Features - Use Workflow**:
+For implementing complete planning work, use the three-step workflow:
+```
+packages/cli/src/core/experts/epic-planner/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY planning work, run self-improve:
+```
+packages/cli/src/core/experts/epic-planner/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.
 
 **After User Describes Feature**:
 1. Clarify scope and constraints

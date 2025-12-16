@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # Resume AgileFlow Session
 
-You are running the `/AgileFlow:resume` command to start an AgileFlow session with environment verification, test checking, and context loading.
+You are running the `/AgileFlow:session:resume` command to start an AgileFlow session with environment verification, test checking, and context loading.
 
 ## Command Purpose
 
@@ -29,11 +29,11 @@ Mark each step complete as you finish it. This ensures comprehensive session sta
 
 **When to use:**
 - Manually: Start of each coding session
-- Automatically: Via SessionStart hook (configured in `/AgileFlow:session-init`)
+- Automatically: Via SessionStart hook (configured in `/AgileFlow:session:init`)
 
 ## Prerequisites
 
-- Session harness must be initialized (`/AgileFlow:session-init`)
+- Session harness must be initialized (`/AgileFlow:session:init`)
 - Must be in project root directory
 
 ## Execution Flow
@@ -44,7 +44,7 @@ Mark each step complete as you finish it. This ensures comprehensive session sta
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "⚠️  Session harness not initialized"
   echo ""
-  echo "Run /AgileFlow:session-init to set up test verification"
+  echo "Run /AgileFlow:session:init to set up test verification"
   echo ""
   echo "Or continue without session harness? [y/N]: "
 
@@ -294,7 +294,7 @@ If session harness not initialized, provide basic context:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⚠️  Session harness not initialized
-   Run /AgileFlow:session-init for:
+   Run /AgileFlow:session:init for:
    • Automatic test verification
    • Session state tracking
    • Baseline management
@@ -352,10 +352,19 @@ Since then:
   • 45 commits
   • 3 new epics added
 
-Consider running /AgileFlow:status for full overview
+Consider running /AgileFlow:session:status for full overview
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+## Related Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/AgileFlow:session:init` | One-time setup of session harness |
+| `/AgileFlow:session:status` | View current session state and activity |
+| `/AgileFlow:session:end` | Cleanly end session and record summary |
+| `/AgileFlow:session:history` | View past session history and metrics |
 
 ## Error Handling
 
@@ -424,7 +433,7 @@ Choice [1/2/3]: _
 
 ### Called By
 - SessionStart hook (if configured)
-- User manually via `/AgileFlow:resume`
+- User manually via `/AgileFlow:session:resume`
 
 ### Calls
 - `/AgileFlow:verify` - Test verification
@@ -448,28 +457,3 @@ Choice [1/2/3]: _
 5. **Context-Rich**: Provide all info needed to resume work
 6. **Non-Blocking**: Don't wait for user input unless critical
 7. **Silent Option**: Support quiet mode for hook usage
-
-## Example Execution
-
-```
-User: /AgileFlow:resume
-
-Claude: 🚀 Resuming AgileFlow session...
-
-        Running docs/00-meta/init.sh...
-        📦 Dependencies up to date
-        ✅ Environment ready
-
-        🧪 Running tests...
-        ✅ All tests passing (42/42) - 12.3s
-
-        Loading context...
-
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        🚀 AgileFlow Session Resumed
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        [... full summary as shown above ...]
-
-        Ready to work on US-0043! 🚀
-```

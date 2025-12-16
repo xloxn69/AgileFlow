@@ -1,0 +1,67 @@
+domain: testing
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  test_files:
+    - path: tests/
+      purpose: Main test directory
+      conventions: "*.test.ts, *.spec.ts pattern"
+    - path: __tests__/
+      purpose: Alternative test directory (Jest convention)
+    - path: src/**/*.test.ts
+      purpose: Co-located test files
+
+  config:
+    - path: jest.config.js
+      purpose: Jest configuration
+    - path: vitest.config.ts
+      purpose: Vitest configuration
+    - path: playwright.config.ts
+      purpose: E2E test configuration
+    - path: cypress.config.ts
+      purpose: Cypress E2E configuration
+
+  fixtures:
+    - path: tests/fixtures/
+      purpose: Test data and fixtures
+    - path: tests/mocks/
+      purpose: Mock implementations
+    - path: tests/__mocks__/
+      purpose: Jest module mocks
+
+relationships:
+  - test_type: unit
+    location: tests/unit/ OR src/**/*.test.ts
+    framework: jest OR vitest
+    pattern: "Test single function/class in isolation"
+  - test_type: integration
+    location: tests/integration/
+    framework: jest OR vitest
+    pattern: "Test multiple components together"
+  - test_type: e2e
+    location: tests/e2e/ OR e2e/
+    framework: playwright OR cypress
+    pattern: "Test full user workflows"
+
+patterns:
+  - name: AAA Pattern
+    description: "Arrange-Act-Assert structure for all tests"
+    example: "// Arrange: setup, // Act: execute, // Assert: verify"
+  - name: Test Fixtures
+    description: "Reusable test data objects"
+    location: tests/fixtures/
+  - name: Mocking Strategy
+    description: "Mock external dependencies, not internal modules"
+  - name: Coverage Thresholds
+    description: "80% for critical paths, 70% minimum overall"
+
+conventions:
+  - "Test files named *.test.ts or *.spec.ts"
+  - "Describe blocks group related tests"
+  - "Test names describe behavior, not implementation"
+  - "One assertion per test (mostly)"
+  - "No test interdependence (each test isolated)"
+  - "Fast tests (<100ms for unit, <10s for integration)"
+
+learnings: []  # AUTO-UPDATED by self-improve

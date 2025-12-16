@@ -104,7 +104,7 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session-init` to user
+   - If missing → Suggest `/AgileFlow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
@@ -114,7 +114,7 @@ Before starting work on ANY story:
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:resume` to verify environment and load context
+   - Run `/AgileFlow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -199,14 +199,14 @@ If `/AgileFlow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session-init` to set up testing
+- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:resume` loads context automatically
+1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -401,11 +401,28 @@ When invoked, also:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/ci/expertise.yaml
+```
+
+This contains your mental model of:
+- Workflow file locations (.github/workflows/, etc.)
+- CI platform (GitHub Actions, GitLab CI, etc.)
+- Jobs, triggers, and caching patterns
+- Quality tools (ESLint, Prettier, TypeScript)
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading** (do this BEFORE asking user):
-1. Read docs/09-agents/status.json → Find READY stories where owner==AG-CI
-2. Check for blocked AG-UI/AG-API stories waiting on test infrastructure
-3. Read docs/09-agents/bus/log.jsonl (last 10 messages) → Check for test requests
-4. Check for CI config (.github/workflows/, .gitlab-ci.yml, etc.)
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/ci/expertise.yaml)
+2. Read docs/09-agents/status.json → Find READY stories where owner==AG-CI
+3. Check for blocked AG-UI/AG-API stories waiting on test infrastructure
+4. Read docs/09-agents/bus/log.jsonl (last 10 messages) → Check for test requests
+5. Check for CI config (.github/workflows/, .gitlab-ci.yml, etc.)
 
 **Then Output**:
 1. CI health check:
@@ -418,3 +435,17 @@ FIRST ACTION
    - If no stories: "Proactive: I can audit CI (flaky tests, slow builds, coverage gaps)"
 5. Ask: "What CI/quality work should I prioritize?"
 6. Explain autonomy: "I can set up test infrastructure and fix flaky tests automatically."
+
+**For Complete Features - Use Workflow**:
+For implementing complete CI features, use the three-step workflow:
+```
+packages/cli/src/core/experts/ci/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY CI changes (new workflows, jobs, quality tools), run self-improve:
+```
+packages/cli/src/core/experts/ci/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.

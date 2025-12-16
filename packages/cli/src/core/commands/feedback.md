@@ -1,6 +1,5 @@
 ---
 description: Collect and process agent feedback
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # agent-feedback

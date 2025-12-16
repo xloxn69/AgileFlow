@@ -46,7 +46,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten.
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "⚠️  Session harness not initialized"
   echo ""
-  echo "Run /AgileFlow:session-init to set up test verification"
+  echo "Run /AgileFlow:session:init to set up test verification"
   exit 1
 fi
 ```
@@ -212,7 +212,7 @@ Updated stories:
 
 The verify command requires session harness configuration.
 
-Run /AgileFlow:session-init to:
+Run /AgileFlow:session:init to:
 1. Detect your project type and test command
 2. Create environment.json configuration
 3. Enable test verification for all stories
@@ -264,7 +264,7 @@ Run without story_id to verify all in_progress stories.
 ## Integration Points
 
 ### Used By
-- `/AgileFlow:resume` - Runs verify as part of session startup
+- `/AgileFlow:session:resume` - Runs verify as part of session startup
 - `/AgileFlow:baseline` - Requires passing tests before creating baseline
 - Development agents - Should run verify after implementation
 

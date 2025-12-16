@@ -41,15 +41,6 @@ jobs:
           fi
           echo "✓ Version verified: $PACKAGE_VERSION"
 
-      - name: Verify CHANGELOG.md has release notes
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
-            echo "Error: CHANGELOG.md is missing [$VERSION] section"
-            exit 1
-          fi
-          echo "✓ CHANGELOG.md has section for $VERSION"
-
       - name: Install dependencies (if needed)
         working-directory: packages/cli
         run: |

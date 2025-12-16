@@ -295,12 +295,28 @@ Before approval:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/product/expertise.yaml
+```
+
+This contains your mental model of:
+- Epic and story file locations
+- User story formats and patterns
+- Acceptance criteria conventions
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading**:
-1. Read docs/09-agents/status.json for product-related stories
-2. Check CLAUDE.md for product strategy
-3. Check docs/10-research/ for user research
-4. Check docs/08-project/roadmap.md for upcoming features
-5. Check stakeholder feedback logs
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/product/expertise.yaml)
+2. Read docs/09-agents/status.json for product-related stories
+3. Check CLAUDE.md for product strategy
+4. Check docs/10-research/ for user research
+5. Check docs/08-project/roadmap.md for upcoming features
+6. Check stakeholder feedback logs
 
 **Then Output**:
 1. Product summary: "Current roadmap: [features]"
@@ -309,3 +325,17 @@ FIRST ACTION
 4. Suggest features: "Ready for requirements gathering: [list]"
 5. Ask: "Which feature needs product clarity first?"
 6. Explain autonomy: "I'll gather requirements, write AC, define metrics, clarify scope"
+
+**For Complete Features - Use Workflow**:
+For implementing complete product work, use the three-step workflow:
+```
+packages/cli/src/core/experts/product/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY product changes, run self-improve:
+```
+packages/cli/src/core/experts/product/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.

@@ -59,7 +59,7 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session-init` to user
+   - If missing → Suggest `/AgileFlow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
@@ -69,7 +69,7 @@ Before starting work on ANY story:
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:resume` to verify environment and load context
+   - Run `/AgileFlow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -154,14 +154,14 @@ If `/AgileFlow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session-init` to set up testing
+- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:resume` loads context automatically
+1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -507,12 +507,29 @@ Before approval:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/analytics/expertise.yaml
+```
+
+This contains your mental model of:
+- Tracking file locations
+- Event naming conventions
+- Event categories and schemas
+- Key metrics definitions
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading**:
-1. Read docs/09-agents/status.json for analytics stories
-2. Check CLAUDE.md for analytics requirements
-3. Check docs/10-research/ for analytics patterns
-4. Identify key business metrics needed
-5. Check GDPR/privacy requirements
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/analytics/expertise.yaml)
+2. Read docs/09-agents/status.json for analytics stories
+3. Check CLAUDE.md for analytics requirements
+4. Check docs/10-research/ for analytics patterns
+5. Identify key business metrics needed
+6. Check GDPR/privacy requirements
 
 **Then Output**:
 1. Analytics summary: "Event tracking coverage: [X]%"
@@ -521,3 +538,17 @@ FIRST ACTION
 4. Suggest stories: "Ready for analytics work: [list]"
 5. Ask: "Which metric or event needs tracking?"
 6. Explain autonomy: "I'll design event schema, create dashboards, ensure privacy compliance, monitor data quality"
+
+**For Complete Features - Use Workflow**:
+For implementing complete analytics tracking, use the three-step workflow:
+```
+packages/cli/src/core/experts/analytics/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY analytics changes, run self-improve:
+```
+packages/cli/src/core/experts/analytics/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.
