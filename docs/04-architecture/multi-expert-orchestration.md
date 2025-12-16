@@ -47,27 +47,8 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
 
 ## Confidence Scoring
 
-```mermaid
-flowchart LR
-  accTitle: Confidence Scoring System
-  accDescr: How confidence is calculated from expert agreement
+![Diagram 6](images/multi-expert-orchestration-6.svg)
 
-  subgraph Experts[5 Experts Deployed]
-    e1[Expert 1: A]
-    e2[Expert 2: A]
-    e3[Expert 3: A]
-    e4[Expert 4: B]
-    e5[Expert 5: B]
-  end
-
-  Experts --> count[Count Agreement]
-
-  count --> score{Score}
-
-  score -->|3+ same (A=3)| high["HIGH (60%+)<br/>Strong consensus"]
-  score -->|2 same| medium["MEDIUM (40-59%)<br/>Partial consensus"]
-  score -->|All different| low["LOW (<40%)<br/>No consensus"]
-```
 
 | Experts Agree | Confidence | Action |
 |---------------|------------|--------|
