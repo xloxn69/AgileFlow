@@ -8,36 +8,8 @@ The Agent Expert System enables self-improving AI agents that learn from their w
 
 ## Overview
 
-```mermaid
-flowchart TD
-  accTitle: Agent Expert System Overview
-  accDescr: Shows the relationship between agents, expertise files, and the self-improvement loop
+![Diagram 1](images/agent-expert-system-1.svg)
 
-  subgraph Input[User Request]
-    req([User runs command])
-  end
-
-  subgraph Routing[Domain Detection]
-    detect{Detect domain keywords}
-    detect -->|database, schema| db[Database Expert]
-    detect -->|API, endpoint| api[API Expert]
-    detect -->|component, styling| ui[UI Expert]
-    detect -->|test, coverage| test[Testing Expert]
-    detect -->|deploy, CI| ci[CI Expert]
-  end
-
-  subgraph Expert[Agent Expert]
-    load[Load expertise.yaml]
-    plan[Plan with mental models]
-    build[Build solution]
-    improve[Update expertise]
-  end
-
-  req --> detect
-  db & api & ui & test & ci --> load
-  load --> plan --> build --> improve
-  improve -.->|learns| load
-```
 
 ---
 
@@ -45,34 +17,8 @@ flowchart TD
 
 Every Agent Expert follows the same workflow pattern:
 
-```mermaid
-flowchart LR
-  accTitle: Agent Expert Three-Step Workflow
-  accDescr: Plan, Build, Self-Improve cycle
+![Diagram 2](images/agent-expert-system-2.svg)
 
-  subgraph Step1[1. PLAN]
-    read[Read expertise.yaml]
-    analyze[Analyze codebase]
-    design[Design approach]
-  end
-
-  subgraph Step2[2. BUILD]
-    implement[Implement solution]
-    test[Run tests]
-    validate[Validate output]
-  end
-
-  subgraph Step3[3. SELF-IMPROVE]
-    reflect[Reflect on work]
-    extract[Extract learnings]
-    update[Update expertise.yaml]
-  end
-
-  read --> analyze --> design
-  design --> implement --> test --> validate
-  validate --> reflect --> extract --> update
-  update -.->|next task| read
-```
 
 ---
 
@@ -80,30 +26,8 @@ flowchart LR
 
 Each domain expert has a dedicated directory with mental models and workflows:
 
-```mermaid
-flowchart TD
-  accTitle: Expertise File Structure
-  accDescr: Shows the file organization for each domain expert
+![Diagram 3](images/agent-expert-system-3.svg)
 
-  experts[experts/]
-
-  subgraph Domain[database/]
-    yaml[expertise.yaml<br/>Mental models, patterns, learnings]
-    question[question.md<br/>Q&A workflow]
-    workflow[workflow.md<br/>Implementation workflow]
-    improve[self-improve.md<br/>Learning protocol]
-  end
-
-  subgraph Templates[templates/]
-    t1[expertise-template.yaml]
-    t2[workflow-template.md]
-    t3[question-template.md]
-    t4[self-improve-template.md]
-  end
-
-  experts --> Domain
-  experts --> Templates
-```
 
 ### expertise.yaml Schema
 
@@ -138,25 +62,8 @@ learnings:
 
 The `/AgileFlow:babysit` command automatically routes requests to appropriate domain experts:
 
-```mermaid
-flowchart TD
-  accTitle: Domain Expert Routing
-  accDescr: Shows how user requests are routed to domain experts based on keywords
+![Diagram 4](images/agent-expert-system-4.svg)
 
-  user([User Request])
-
-  user --> analyze{Analyze keywords}
-
-  analyze -->|database, SQL, schema,<br/>migration, query| db[AgileFlow-agents:database]
-  analyze -->|API, endpoint, REST,<br/>GraphQL, route| api[AgileFlow-agents:api]
-  analyze -->|component, styling,<br/>CSS, theme, UI| ui[AgileFlow-agents:ui]
-  analyze -->|test, spec, coverage,<br/>mock, fixture| test[AgileFlow-agents:testing]
-  analyze -->|CI, pipeline, deploy,<br/>workflow, action| ci[AgileFlow-agents:ci]
-  analyze -->|security, auth, OWASP,<br/>vulnerability| sec[AgileFlow-agents:security]
-  analyze -->|performance, optimize,<br/>profile, cache| perf[AgileFlow-agents:performance]
-
-  db & api & ui & test & ci & sec & perf --> expert[Expert executes with expertise.yaml]
-```
 
 ---
 
@@ -164,35 +71,8 @@ flowchart TD
 
 After completing work, agents update their expertise files:
 
-```mermaid
-sequenceDiagram
-  accTitle: Self-Improvement Protocol
-  accDescr: Shows how an agent updates its expertise after completing work
+![Diagram 5](images/agent-expert-system-5.svg)
 
-  participant User
-  participant Agent as Domain Expert
-  participant Expertise as expertise.yaml
-  participant Codebase
-
-  User->>Agent: Request implementation
-  Agent->>Expertise: Load mental models
-  Expertise-->>Agent: Patterns, anti-patterns, learnings
-
-  Agent->>Codebase: Analyze existing code
-  Codebase-->>Agent: Current patterns, structure
-
-  Agent->>Agent: Plan using mental models
-  Agent->>Codebase: Implement solution
-  Agent->>Codebase: Run tests
-
-  Note over Agent: SELF-IMPROVE PHASE
-
-  Agent->>Agent: Reflect on work done
-  Agent->>Agent: Extract new learnings
-  Agent->>Expertise: Update with new insights
-
-  Agent-->>User: Work complete + learnings recorded
-```
 
 ---
 
@@ -200,97 +80,22 @@ sequenceDiagram
 
 For complex cross-domain tasks, multiple experts can be deployed in parallel:
 
-```mermaid
-flowchart TD
-  accTitle: Multi-Expert Orchestration
-  accDescr: Shows how multiple experts analyze the same problem and synthesize results
+![Diagram 6](images/agent-expert-system-6.svg)
 
-  task([Complex Task])
-
-  task --> orchestrator[Multi-Expert Orchestrator]
-
-  orchestrator --> |spawn| e1[Database Expert]
-  orchestrator --> |spawn| e2[API Expert]
-  orchestrator --> |spawn| e3[Security Expert]
-
-  e1 --> r1[DB Analysis]
-  e2 --> r2[API Analysis]
-  e3 --> r3[Security Analysis]
-
-  r1 & r2 & r3 --> synthesize[Synthesize Results]
-
-  synthesize --> confidence{Agreement Level}
-
-  confidence -->|3+ agree| high[High Confidence]
-  confidence -->|2 agree| medium[Medium Confidence]
-  confidence -->|1 only| low[Low Confidence]
-
-  high & medium & low --> output([Unified Recommendation])
-```
 
 ---
 
 ## State Diagram: Expert Lifecycle
 
-```mermaid
-stateDiagram-v2
-  accTitle: Expert Lifecycle States
-  accDescr: Shows the states an expert goes through during task execution
+![Diagram 7](images/agent-expert-system-7.svg)
 
-  [*] --> Idle
-
-  Idle --> Loading: Task assigned
-  Loading --> Planning: Expertise loaded
-
-  Planning --> Building: Plan approved
-  Planning --> Idle: Plan rejected
-
-  Building --> Validating: Implementation done
-  Validating --> Building: Tests failed
-  Validating --> Improving: Tests passed
-
-  Improving --> Idle: Learnings saved
-
-  Idle --> [*]: Session ends
-```
 
 ---
 
 ## Integration Points
 
-```mermaid
-flowchart LR
-  accTitle: Agent Expert Integration Points
-  accDescr: Shows how the expert system integrates with other AgileFlow components
+![Diagram 8](images/agent-expert-system-8.svg)
 
-  subgraph Commands[Slash Commands]
-    babysit[/babysit]
-    multiexp[/multi-expert]
-    validate[/validate-expertise]
-  end
-
-  subgraph Experts[Expert System]
-    routing[Domain Routing]
-    expertise[Expertise Files]
-    learning[Self-Improvement]
-  end
-
-  subgraph Agents[Specialized Agents]
-    db[database]
-    api[api]
-    ui[ui]
-    more[...25 domains]
-  end
-
-  babysit --> routing
-  multiexp --> routing
-  validate --> expertise
-
-  routing --> Agents
-  Agents --> expertise
-  Agents --> learning
-  learning --> expertise
-```
 
 ---
 

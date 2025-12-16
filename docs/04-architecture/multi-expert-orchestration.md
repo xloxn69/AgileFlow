@@ -6,58 +6,15 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
 
 ## Overview
 
-```mermaid
-flowchart TD
-  accTitle: Multi-Expert Orchestration Overview
-  accDescr: Shows how multiple experts analyze a problem in parallel
+![Diagram 1](images/multi-expert-orchestration-1.svg)
 
-  problem([Complex Problem])
-
-  problem --> analyze[Analyze Problem Domain]
-
-  analyze --> select{Select Experts<br/>3-5 domains}
-
-  select --> spawn[Spawn Experts in Parallel]
-
-  subgraph Parallel[Parallel Execution]
-    direction LR
-    e1[Expert 1]
-    e2[Expert 2]
-    e3[Expert 3]
-    e4[Expert 4]
-    e5[Expert 5]
-  end
-
-  spawn --> Parallel
-
-  Parallel --> collect[Collect Results]
-  collect --> synthesize[Synthesize Findings]
-  synthesize --> output([Unified Recommendation])
-```
 
 ---
 
 ## When to Use Multi-Expert
 
-```mermaid
-flowchart TD
-  accTitle: Multi-Expert Decision Tree
-  accDescr: When to use multi-expert vs single expert
+![Diagram 2](images/multi-expert-orchestration-2.svg)
 
-  start{Task Type?}
-
-  start -->|Single domain| single[Use Single Expert]
-  start -->|Cross-domain| check{How complex?}
-
-  check -->|2 domains| pair[Consider Pair]
-  check -->|3+ domains| multi[Use Multi-Expert]
-  check -->|Architectural| multi
-
-  single --> done([Execute])
-  pair --> done
-  multi --> orchestrate[Multi-Expert Orchestration]
-  orchestrate --> done
-```
 
 **Use Multi-Expert when:**
 - Task spans 3+ domains (e.g., "Add user authentication" touches DB, API, UI, Security)
@@ -69,91 +26,22 @@ flowchart TD
 
 ## Expert Selection Process
 
-```mermaid
-sequenceDiagram
-  accTitle: Expert Selection Process
-  accDescr: How the orchestrator selects which experts to deploy
+![Diagram 3](images/multi-expert-orchestration-3.svg)
 
-  participant User
-  participant Orch as Orchestrator
-  participant Analyzer as Domain Analyzer
-  participant Registry as Expert Registry
-
-  User->>Orch: Submit complex task
-  Orch->>Analyzer: Analyze task keywords
-
-  Analyzer->>Analyzer: Extract domain signals
-  Note over Analyzer: "authentication" → security, api<br/>"database schema" → database<br/>"login form" → ui
-
-  Analyzer-->>Orch: Domain list [security, api, database, ui]
-
-  Orch->>Registry: Get experts for domains
-  Registry-->>Orch: Available experts
-
-  Orch->>Orch: Select top 3-5 by relevance
-  Orch-->>User: Selected: security, api, database
-```
 
 ---
 
 ## Parallel Execution Pattern
 
-```mermaid
-flowchart LR
-  accTitle: Parallel Execution Pattern
-  accDescr: Shows how experts execute in parallel using Task tool
+![Diagram 4](images/multi-expert-orchestration-4.svg)
 
-  task([Task Description])
-
-  task --> t1[Task Tool<br/>run_in_background: true]
-  task --> t2[Task Tool<br/>run_in_background: true]
-  task --> t3[Task Tool<br/>run_in_background: true]
-
-  t1 --> e1[Security Expert]
-  t2 --> e2[API Expert]
-  t3 --> e3[Database Expert]
-
-  e1 --> r1[Security Analysis]
-  e2 --> r2[API Analysis]
-  e3 --> r3[Database Analysis]
-
-  r1 & r2 & r3 --> wait[TaskOutput<br/>block: true]
-
-  wait --> synthesize[Synthesize]
-```
 
 ---
 
 ## Synthesis Process
 
-```mermaid
-flowchart TD
-  accTitle: Result Synthesis Process
-  accDescr: How individual expert results are synthesized
+![Diagram 5](images/multi-expert-orchestration-5.svg)
 
-  subgraph Results[Expert Results]
-    r1[Security: Use JWT + rate limiting]
-    r2[API: RESTful with versioning]
-    r3[Database: Users table with indexes]
-  end
-
-  Results --> compare[Compare Findings]
-
-  compare --> agree{Agreement?}
-
-  agree -->|All agree| high[High Confidence]
-  agree -->|Partial| medium[Medium Confidence]
-  agree -->|Disagree| low[Low Confidence]
-
-  subgraph Output[Synthesis Output]
-    findings[Key Findings]
-    insights[Unique Insights]
-    conflicts[Areas of Disagreement]
-    recommendation[Unified Recommendation]
-  end
-
-  high & medium & low --> Output
-```
 
 ---
 
@@ -191,20 +79,8 @@ flowchart LR
 
 ## Output Format
 
-```mermaid
-flowchart TD
-  accTitle: Multi-Expert Output Structure
-  accDescr: Structure of the synthesized output
+![Diagram 7](images/multi-expert-orchestration-7.svg)
 
-  output[Multi-Expert Analysis]
-
-  output --> meta[Metadata<br/>Experts deployed, confidence]
-  output --> findings[Key Findings<br/>Points all experts agree on]
-  output --> insights[Unique Insights<br/>Valuable points from individuals]
-  output --> conflicts[Disagreements<br/>Where experts differ]
-  output --> recommendation[Recommendation<br/>Synthesized approach]
-  output --> actions[Action Items<br/>Next steps]
-```
 
 ### Example Output
 
@@ -244,49 +120,8 @@ Implement JWT-based auth with:
 
 ## Sequence: Full Orchestration
 
-```mermaid
-sequenceDiagram
-  accTitle: Full Multi-Expert Orchestration Sequence
-  accDescr: Complete flow from request to synthesized output
+![Diagram 8](images/multi-expert-orchestration-8.svg)
 
-  actor User
-  participant Orch as Orchestrator
-  participant Task as Task Tool
-  participant E1 as Security Expert
-  participant E2 as API Expert
-  participant E3 as Database Expert
-  participant Synth as Synthesizer
-
-  User->>Orch: /multi-expert TASK="Add auth system"
-
-  Orch->>Orch: Analyze domains needed
-  Note over Orch: Domains: security, api, database
-
-  par Spawn Experts
-    Orch->>Task: spawn security (background)
-    Task->>E1: Execute analysis
-    and
-    Orch->>Task: spawn api (background)
-    Task->>E2: Execute analysis
-    and
-    Orch->>Task: spawn database (background)
-    Task->>E3: Execute analysis
-  end
-
-  E1-->>Task: Security findings
-  E2-->>Task: API findings
-  E3-->>Task: Database findings
-
-  Orch->>Task: TaskOutput (wait all)
-  Task-->>Orch: All results
-
-  Orch->>Synth: Synthesize findings
-  Synth->>Synth: Compare & score
-  Synth->>Synth: Generate recommendation
-
-  Synth-->>Orch: Unified analysis
-  Orch-->>User: Multi-Expert Report
-```
 
 ---
 
