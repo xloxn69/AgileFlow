@@ -1,0 +1,94 @@
+# README Updater Expert - Domain Knowledge
+# This file is the agent's "mental model" of the README updating domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: readme-updater
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  documentation:
+    - path: README.md
+      purpose: "Root project README"
+    - path: docs/
+      purpose: "Documentation folder with per-folder READMEs"
+    - path: "*/README.md"
+      purpose: "Per-folder README files"
+
+  templates:
+    - path: docs/00-meta/readme-template.md
+      purpose: "README template for consistency"
+
+relationships:
+  - parent: root_readme
+    child: folder_readmes
+    type: links_to
+    notes: "Root README links to folder READMEs"
+  - parent: folder_readmes
+    child: folder_contents
+    type: documents
+    notes: "README documents folder contents"
+  - parent: sibling_folders
+    child: cross_links
+    type: navigates_via
+    notes: "READMEs link to related folders"
+
+patterns:
+  - name: Standard README Structure
+    description: "Title, description, contents, navigation, how-to"
+    location: "*/README.md"
+    example: |
+      # Folder Name
+      Description
+      ## Contents
+      ## Quick Navigation
+      ## How to Use
+
+  - name: Contents Listing
+    description: "List all files/folders with descriptions"
+    location: "*/README.md"
+    example: "- **file.md** - Brief description"
+
+  - name: Navigation Links
+    description: "Links to parent and related folders"
+    location: "*/README.md"
+    example: "[Parent](../README.md) | [Related](../sibling/)"
+
+  - name: Per-Folder Purpose
+    description: "Each folder has clear documented purpose"
+    location: "*/README.md"
+    example: "docs/03-decisions/ - Architecture Decision Records"
+
+conventions:
+  - "Every folder should have a README.md"
+  - "README should list all contents with descriptions"
+  - "Include navigation links (parent, siblings)"
+  - "Keep README current with folder contents"
+  - "Use consistent structure across all READMEs"
+  - "Don't duplicate content, link instead"
+  - "Explain purpose before listing contents"
+
+folder_purposes:
+  docs/00-meta: "Project metadata and conventions"
+  docs/01-brainstorming: "Early ideas and sketches"
+  docs/02-practices: "Development practices"
+  docs/03-decisions: "Architecture Decision Records"
+  docs/04-architecture: "System architecture documentation"
+  docs/05-epics: "Feature epics"
+  docs/06-stories: "User stories"
+  docs/07-testing: "Test documentation"
+  docs/08-project: "Project management"
+  docs/09-agents: "Agent coordination"
+  docs/10-research: "Technical research"
+
+audit_checklist:
+  - "README exists for folder"
+  - "Title matches folder purpose"
+  - "Description is clear and helpful"
+  - "Contents list is complete"
+  - "Navigation links work"
+  - "No outdated information"
+  - "Consistent with template"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

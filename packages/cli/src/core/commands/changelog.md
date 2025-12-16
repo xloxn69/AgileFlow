@@ -1,6 +1,5 @@
 ---
 description: Auto-generate changelog from commit history
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # generate-changelog

@@ -1,0 +1,106 @@
+# Mentor Expert - Domain Knowledge
+# This file is the agent's "mental model" of the mentor/orchestration domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: mentor
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  coordination:
+    - path: docs/09-agents/status.json
+      purpose: "Single source of truth for story statuses"
+      conventions: "Update after every status change"
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Agent coordination message bus"
+      conventions: "Append-only, newest last"
+
+  planning:
+    - path: docs/05-epics/
+      purpose: "Epic definitions"
+      conventions: "EP-#### naming"
+    - path: docs/06-stories/
+      purpose: "User stories"
+      conventions: "US-#### naming, organized by epic"
+    - path: docs/07-testing/test-cases/
+      purpose: "Test stubs for stories"
+      conventions: "One per story"
+
+  research:
+    - path: docs/10-research/
+      purpose: "Technical research notes"
+      conventions: "YYYYMMDD-slug.md format"
+    - path: docs/03-decisions/
+      purpose: "Architecture Decision Records"
+      conventions: "ADR-#### format"
+
+  project:
+    - path: CLAUDE.md
+      purpose: "Project context and conventions"
+    - path: docs/08-project/roadmap.md
+      purpose: "Product roadmap"
+    - path: docs/08-project/backlog.md
+      purpose: "Feature backlog"
+
+relationships:
+  - parent: mentor
+    child: specialized_agents
+    type: coordinates
+    notes: "Mentor orchestrates AG-UI, AG-API, AG-CI, etc."
+  - parent: epics
+    child: stories
+    type: contains
+    notes: "Epics break down into stories"
+  - parent: research
+    child: planning
+    type: informs
+    notes: "Research informs epic/story planning"
+
+patterns:
+  - name: End-to-End Flow
+    description: "Feature request → Epic → Stories → Implementation → PR"
+    location: N/A
+    example: "Guide user from idea to merged code"
+
+  - name: Definition of Ready
+    description: "Story has AC, test stub, no blockers"
+    location: docs/09-agents/status.json
+    example: "status: ready"
+
+  - name: Agent Handoff
+    description: "Transfer story ownership between agents"
+    location: docs/09-agents/bus/log.jsonl
+    example: '{"type":"handoff","from":"MENTOR","to":"AG-UI"}'
+
+  - name: Research Integration
+    description: "Check research before planning, create if missing"
+    location: docs/10-research/
+    example: "Research → Plan → Build → Review"
+
+conventions:
+  - "Always check existing epics/stories before creating new"
+  - "Ensure Definition of Ready before assigning work"
+  - "Coordinate agents via bus messages"
+  - "Update status.json after every change"
+  - "WIP limit: max 2 stories per agent"
+  - "Integrate research into planning"
+  - "Small batches: 0.5-2 day stories"
+
+agent_roster:
+  - id: AG-UI
+    scope: "Frontend, components, styling, accessibility"
+  - id: AG-API
+    scope: "Backend, endpoints, business logic, database"
+  - id: AG-CI
+    scope: "Test infrastructure, pipelines, quality tools"
+  - id: AG-DEVOPS
+    scope: "Deployment, dependencies, technical debt"
+  - id: EPIC-PLANNER
+    scope: "Epic/story decomposition"
+  - id: ADR-WRITER
+    scope: "Architecture decisions"
+  - id: RESEARCH
+    scope: "Technical research"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

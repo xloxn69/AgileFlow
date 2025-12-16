@@ -1,7 +1,6 @@
 ---
 description: Track and resolve blockers with actionable suggestions
 argument-hint: [AGENT=<id>] [SHOW_RESOLVED=true] [DETAILED=true]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 model: haiku
 ---
 

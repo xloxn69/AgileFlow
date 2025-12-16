@@ -1,7 +1,6 @@
 ---
 description: Assign or reassign a story to an owner
 argument-hint: STORY=<US-ID> NEW_OWNER=<id> [NEW_STATUS=<status>] [NOTE=<text>]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # assign

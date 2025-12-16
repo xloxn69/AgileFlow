@@ -1,0 +1,167 @@
+# Analytics Expert - Domain Knowledge
+# This file is the agent's "mental model" of the analytics domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: analytics
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  tracking:
+    - path: src/analytics/
+      purpose: "Analytics tracking implementation"
+      key_exports: [track, identify, page]
+      conventions: "Single analytics facade for all tracking"
+    - path: src/analytics/events/
+      purpose: "Event definitions and schemas"
+      conventions: "One file per event category"
+    - path: src/analytics/providers/
+      purpose: "Analytics provider integrations (Segment, Amplitude)"
+      conventions: "Named *Provider.ts"
+
+  schemas:
+    - path: src/analytics/schemas/
+      purpose: "Event schema definitions for validation"
+      conventions: "JSON Schema or Zod schemas"
+    - path: src/analytics/events/catalog.ts
+      purpose: "Master event catalog with all tracked events"
+      conventions: "Exported EVENT_CATALOG constant"
+
+  dashboards:
+    - path: docs/analytics/
+      purpose: "Dashboard specifications and metric definitions"
+      conventions: "Markdown documentation"
+    - path: docs/analytics/events.md
+      purpose: "Event tracking documentation"
+    - path: docs/analytics/metrics.md
+      purpose: "Key business metrics definitions"
+
+  privacy:
+    - path: src/analytics/consent.ts
+      purpose: "GDPR consent management"
+      conventions: "Check consent before tracking"
+    - path: src/analytics/privacy.ts
+      purpose: "PII filtering and anonymization"
+      conventions: "Strip PII before sending events"
+
+relationships:
+  - parent: tracking_facade
+    child: providers
+    type: routes_to
+    notes: "Facade routes events to configured providers"
+  - parent: events
+    child: schemas
+    type: validated_by
+    notes: "Events validated against schemas before sending"
+  - parent: ui_components
+    child: tracking
+    type: calls
+    notes: "UI components call tracking facade"
+  - parent: api_endpoints
+    child: tracking
+    type: calls
+    notes: "Backend also tracks server-side events"
+
+patterns:
+  - name: Event Tracking Facade
+    description: "Single interface for all analytics tracking"
+    location: src/analytics/
+    example: |
+      analytics.track('button_clicked', { button_name: 'signup' });
+      analytics.identify(userId, { plan: 'pro' });
+      analytics.page('landing');
+
+  - name: Event Schema Validation
+    description: "Validate events against schema before sending"
+    location: src/analytics/schemas/
+    example: |
+      const schema = z.object({
+        event_name: z.string(),
+        properties: z.object({ ... })
+      });
+
+  - name: Consent-First Tracking
+    description: "Check GDPR consent before any tracking"
+    location: src/analytics/consent.ts
+    example: |
+      if (hasConsent('analytics')) {
+        analytics.track(event);
+      }
+
+  - name: Event Naming Convention
+    description: "object_action format in snake_case"
+    location: src/analytics/events/
+    example: "button_clicked, form_submitted, page_viewed"
+
+  - name: Anonymous User Tracking
+    description: "Track anonymous users with session ID, not PII"
+    location: src/analytics/
+    example: "Use anonymous_id until user identifies"
+
+conventions:
+  - "NEVER track PII (email, name, phone) in event properties"
+  - "ALWAYS check consent before tracking (GDPR/CCPA)"
+  - "Use object_action naming: button_clicked, form_submitted"
+  - "Use snake_case for event names and properties"
+  - "Validate events against schema before sending"
+  - "Include timestamp, session_id, anonymous_id with every event"
+  - "Document all events in event catalog"
+  - "Test tracking in development before production"
+
+event_categories:
+  navigation:
+    - page_viewed
+    - navigation_clicked
+    - back_clicked
+    - search_performed
+
+  user_actions:
+    - button_clicked
+    - form_submitted
+    - feature_used
+    - content_shared
+
+  conversions:
+    - signup_started
+    - signup_completed
+    - trial_started
+    - purchase_completed
+    - upgrade_clicked
+
+  engagement:
+    - content_viewed
+    - video_played
+    - comment_added
+    - reaction_added
+
+  errors:
+    - error_occurred
+    - api_failed
+    - validation_failed
+
+key_metrics:
+  acquisition:
+    - daily_signups
+    - signup_conversion_rate
+    - acquisition_source
+
+  engagement:
+    - daily_active_users
+    - monthly_active_users
+    - session_duration
+    - feature_adoption_rate
+
+  retention:
+    - day_1_retention
+    - day_7_retention
+    - day_30_retention
+    - churn_rate
+
+  revenue:
+    - monthly_recurring_revenue
+    - average_revenue_per_user
+    - lifetime_value
+
+# Learnings are AUTO-UPDATED by self-improve.md
+# Do not edit manually - let the agent learn from experience
+learnings: []

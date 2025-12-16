@@ -1,0 +1,99 @@
+# Database Expert - Mental Model
+#
+# This file represents the agent's understanding of database patterns.
+# It is populated with AgileFlow-generic knowledge and learns project-specific
+# details through the self-improve workflow.
+#
+# NOT a source of truth - always validate against actual code.
+
+domain: database
+last_updated: 2025-12-16
+version: 1.0
+
+# Key files the database expert needs to know
+files:
+  schemas:
+    - path: src/db/schema.ts
+      purpose: Database table definitions (if using Drizzle/TypeORM)
+      key_exports: [tables, relations]
+    - path: prisma/schema.prisma
+      purpose: Prisma schema file (if using Prisma)
+      conventions: "model declarations with @id, @relation"
+    - path: src/models/
+      purpose: Model definitions (if using Mongoose/Sequelize)
+      pattern: "<ModelName>.model.ts"
+
+  migrations:
+    - path: src/db/migrations/
+      purpose: Schema migration scripts
+      pattern: "YYYYMMDD_description.ts"
+    - path: prisma/migrations/
+      purpose: Prisma migration history
+      conventions: "Auto-generated, don't edit"
+
+  queries:
+    - path: src/db/queries/
+      purpose: Database query functions
+      conventions: "One file per table/resource"
+    - path: src/repositories/
+      purpose: Repository pattern implementations
+      pattern: "<Resource>Repository.ts"
+
+  seeds:
+    - path: src/db/seeds/
+      purpose: Seed data for development/testing
+      conventions: "Idempotent, can run multiple times"
+
+# Common database relationships
+# Self-improve will populate project-specific relationships
+relationships: []
+  # Example - will be populated by self-improve:
+  # - parent: users
+  #   child: posts
+  #   type: one-to-many
+  #   cascade: delete
+  #   foreign_key: user_id
+
+# Database patterns the expert should recognize and follow
+patterns:
+  - name: "Soft deletes"
+    description: "Use deleted_at timestamp instead of hard DELETE"
+    location: Tables with user data
+    applies_to: [users, posts, comments]
+
+  - name: "Timestamps"
+    description: "All tables have created_at and updated_at"
+    location: Every table
+    convention: "Auto-managed by ORM or triggers"
+
+  - name: "UUID primary keys"
+    description: "Use UUIDs instead of auto-increment for distributed systems"
+    location: Primary key columns
+    alternative: "Auto-increment for simpler setups"
+
+  - name: "Foreign key naming"
+    description: "Foreign keys follow <table_singular>_id pattern"
+    location: All relationship columns
+    example: "user_id, post_id, category_id"
+
+  - name: "Index naming"
+    description: "Indexes follow idx_<table>_<columns> pattern"
+    location: Index definitions
+    example: "idx_users_email, idx_posts_user_id_created_at"
+
+# Conventions the database expert should follow
+conventions:
+  - "Tables: lowercase, plural (users, posts, categories)"
+  - "Columns: lowercase, snake_case (first_name, created_at)"
+  - "Foreign keys: <table_singular>_id (user_id, post_id)"
+  - "Required columns: id, created_at, updated_at"
+  - "Soft delete column: deleted_at (nullable timestamp)"
+  - "All queries use parameterized statements (prevent SQL injection)"
+  - "Transactions for multi-table operations"
+  - "Migrations must be reversible (up and down)"
+  - "No SELECT * in production code"
+  - "Index columns used in WHERE, JOIN, ORDER BY"
+
+# Learnings accumulated through self-improve
+# AUTO-UPDATED - do not edit manually
+learnings: []

@@ -1,0 +1,106 @@
+# Epic Planner Expert - Domain Knowledge
+# This file is the agent's "mental model" of the epic planning domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: epic-planner
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  epics:
+    - path: docs/05-epics/
+      purpose: "Epic definitions with goals and metrics"
+      conventions: "EP-#### naming, YAML frontmatter"
+    - path: docs/05-epics/template.md
+      purpose: "Epic template"
+
+  stories:
+    - path: docs/06-stories/
+      purpose: "User stories organized by epic"
+      conventions: "US-#### naming"
+    - path: docs/06-stories/template.md
+      purpose: "Story template"
+
+  testing:
+    - path: docs/07-testing/test-cases/
+      purpose: "Test case stubs per story"
+      conventions: "One file per US-####"
+
+  research:
+    - path: docs/10-research/
+      purpose: "Technical research to inform planning"
+    - path: docs/03-decisions/
+      purpose: "ADRs constraining architecture"
+
+  coordination:
+    - path: docs/09-agents/status.json
+      purpose: "Story status tracking"
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Agent coordination messages"
+
+relationships:
+  - parent: epics
+    child: stories
+    type: decomposes_into
+    notes: "Epics decompose into 3-10 stories"
+  - parent: stories
+    child: test_cases
+    type: has
+    notes: "Each story has test case stub"
+  - parent: stories
+    child: agents
+    type: assigned_to
+    notes: "Stories assigned to specialized agents"
+
+patterns:
+  - name: INVEST Criteria
+    description: "Independent, Negotiable, Valuable, Estimable, Small, Testable"
+    location: N/A
+    example: "Validate each story against INVEST"
+
+  - name: Vertical Slices
+    description: "Each story delivers user-visible value"
+    location: docs/06-stories/
+    example: "Full feature slice, not horizontal layers"
+
+  - name: Given/When/Then
+    description: "Acceptance criteria format"
+    location: docs/06-stories/
+    example: "Given user logged in, When clicks submit, Then form saved"
+
+  - name: Story Estimation
+    description: "0.5d, 1d, 2d estimates for stories"
+    location: docs/06-stories/
+    example: "Larger than 2d? Break down further"
+
+conventions:
+  - "Stories 0.5-2 days in size"
+  - "Given/When/Then acceptance criteria"
+  - "Test stub created with story"
+  - "Dependencies clearly documented"
+  - "Stories assigned to appropriate agent"
+  - "Check research before planning"
+  - "Check ADRs for constraints"
+
+agent_assignments:
+  AG-UI:
+    - "Frontend components"
+    - "Styling and design systems"
+    - "Accessibility"
+    - "User interactions"
+  AG-API:
+    - "Backend endpoints"
+    - "Business logic"
+    - "Data models"
+    - "Database access"
+  AG-CI:
+    - "Test infrastructure"
+    - "CI/CD pipelines"
+    - "Code quality tools"
+  AG-DEVOPS:
+    - "Deployment"
+    - "Dependencies"
+    - "Technical debt"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

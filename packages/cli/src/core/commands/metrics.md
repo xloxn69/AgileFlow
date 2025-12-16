@@ -1,7 +1,6 @@
 ---
 description: Analytics dashboard with cycle time and throughput
 argument-hint: [TIMEFRAME=7d|30d|90d|all] [EPIC=<id>] [OWNER=<id>] [FORMAT=ascii|json|csv] [METRIC=cycle-time|lead-time|throughput|all]
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 model: haiku
 ---
 

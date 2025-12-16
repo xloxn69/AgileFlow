@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # Session Harness Initialization
 
-You are running the `/AgileFlow:session-init` command to set up test verification and session management for the AgileFlow project.
+You are running the `/AgileFlow:session:init` command to set up test verification and session management for the AgileFlow project.
 
 ## Command Purpose
 
@@ -321,9 +321,9 @@ echo "✅ SessionStart hook configured"
 echo "✅ docs/00-meta/resume-session.sh created"
 ```
 
-**IMPORTANT**: The hook calls a **shell script** (`bash docs/00-meta/resume-session.sh`), NOT the slash command `/AgileFlow:resume`. This is because:
+**IMPORTANT**: The hook calls a **shell script** (`bash docs/00-meta/resume-session.sh`), NOT the slash command `/AgileFlow:session:resume`. This is because:
 - Hooks execute shell commands, not Claude Code slash commands
-- The shell script replicates `/AgileFlow:resume` functionality
+- The shell script replicates `/AgileFlow:session:resume` functionality
 - This enables true automatic session resumption
 
 ### 10. Final Summary
@@ -355,7 +355,7 @@ Next Steps:
   1. Restart Claude Code to activate SessionStart hook
   2. Run /AgileFlow:verify to check tests anytime
   3. Run /AgileFlow:baseline to mark new baselines
-  4. Run /AgileFlow:resume (slash command) or bash docs/00-meta/resume-session.sh (shell script)
+  4. Run /AgileFlow:session:resume manually or let the hook run it
 
 On Next Session:
   - Hook will automatically run: bash docs/00-meta/resume-session.sh
@@ -364,6 +364,15 @@ On Next Session:
 
 Session harness is ready! 🚀
 ```
+
+## Related Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/AgileFlow:session:resume` | Start session with verification and context loading |
+| `/AgileFlow:session:status` | View current session state and activity |
+| `/AgileFlow:session:end` | Cleanly end session and record summary |
+| `/AgileFlow:session:history` | View past session history and metrics |
 
 ## Error Handling
 
@@ -421,7 +430,7 @@ This is optional - you can add baseline tags manually later using:
 ## Integration Points
 
 ### Called By
-- `/AgileFlow:setup` - Optionally runs session-init during initial setup
+- `/AgileFlow:setup` - Optionally runs session:init during initial setup
 
 ### Calls
 - `/AgileFlow:verify` - For initial test verification
@@ -442,91 +451,3 @@ This is optional - you can add baseline tags manually later using:
 4. **User Control**: Every optional feature requires explicit consent
 5. **Clear Output**: Step-by-step progress with clear status indicators
 6. **Error Recovery**: Provides options to retry, skip, or fix issues
-
-## Example Execution
-
-```
-User: /AgileFlow:session-init
-
-Claude: Initializing session harness...
-
-        🔍 Detecting project configuration...
-
-        Found: package.json
-        Project Type: Node.js
-        Test Command: npm test (from package.json scripts)
-        Dev Server: npm run dev
-
-        Detected configuration:
-          Project Type: nodejs
-          Test Command: npm test
-          Dev Server: npm run dev (port 3000)
-
-        Is this correct? [Y/n]
-
-User: y
-
-Claude: ✅ Configuration confirmed
-
-        Creating files...
-        ✅ docs/00-meta/environment.json
-        ✅ docs/00-meta/init.sh (executable)
-        ✅ docs/09-agents/session-state.json
-
-        🧪 Running initial test verification...
-        Command: npm test
-
-        ✅ Tests passed (42/42)
-        Duration: 12.3s
-
-        Create baseline git tag? [Y/n]
-
-User: y
-
-Claude: ✅ Git tag created: agileflow-baseline-20251206-103000
-        ✅ Baseline commit: abc123def456
-
-        Enable automatic session resumption? [Y/n]
-
-User: y
-
-Claude: ✅ Resume script created: docs/00-meta/resume-session.sh
-        ✅ SessionStart hook configured
-        ✅ .claude/settings.json updated
-
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        ✅ Session Harness Initialized
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        Files Created:
-          ✅ docs/00-meta/environment.json
-          ✅ docs/00-meta/init.sh
-          ✅ docs/00-meta/resume-session.sh (auto-resume script)
-          ✅ docs/09-agents/session-state.json
-          ✅ .claude/settings.json (hook added)
-
-        Baseline Status:
-          ✅ Tests: 42/42 passing
-          ✅ Git tag: agileflow-baseline-20251206-103000
-          ✅ Commit: abc123def456
-
-        Configuration:
-          Project Type: nodejs
-          Test Command: npm test
-          Verification Policy: warn
-          Auto-Resume: enabled (via shell script)
-
-        Hook Configuration:
-          bash docs/00-meta/resume-session.sh
-
-        Next session will automatically:
-          1. Run bash docs/00-meta/resume-session.sh (via hook)
-          2. Execute init script (environment setup)
-          3. Verify tests (detect regressions)
-          4. Load context (recent activity)
-          5. Show summary (ready to code!)
-
-        🔴 IMPORTANT: Restart Claude Code to activate the hook!
-
-        Session harness is ready! 🚀
-```

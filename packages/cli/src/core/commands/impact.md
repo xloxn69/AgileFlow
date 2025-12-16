@@ -1,6 +1,5 @@
 ---
 description: Analyze change impact across codebase
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # impact-analysis

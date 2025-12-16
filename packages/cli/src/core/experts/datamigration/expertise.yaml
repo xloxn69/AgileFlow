@@ -1,0 +1,107 @@
+# Data Migration Expert - Domain Knowledge
+# This file is the agent's "mental model" of the data migration domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: datamigration
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  migrations:
+    - path: src/migrations/
+      purpose: "Database migration scripts"
+      conventions: "Timestamped: YYYYMMDDHHMMSS_description.ts"
+    - path: src/migrations/data/
+      purpose: "Data transformation scripts"
+      conventions: "Separate from schema migrations"
+    - path: src/migrations/rollback/
+      purpose: "Rollback scripts for each migration"
+
+  validation:
+    - path: src/migrations/validators/
+      purpose: "Data validation scripts"
+      conventions: "Pre and post-migration validators"
+    - path: docs/migrations/validation-reports/
+      purpose: "Validation report outputs"
+
+  documentation:
+    - path: docs/migrations/
+      purpose: "Migration documentation"
+    - path: docs/migrations/runbooks/
+      purpose: "Migration runbooks"
+    - path: docs/migrations/history.md
+      purpose: "Migration history log"
+
+relationships:
+  - parent: schema_migration
+    child: data_migration
+    type: precedes
+    notes: "Schema changes before data transformations"
+  - parent: migration
+    child: rollback
+    type: paired_with
+    notes: "Every migration has a rollback script"
+  - parent: validation
+    child: migration
+    type: verifies
+    notes: "Validation before and after migration"
+
+patterns:
+  - name: Zero-Downtime Migration
+    description: "Migrate without taking service offline"
+    location: docs/migrations/
+    example: |
+      1. Add new column (nullable)
+      2. Backfill data
+      3. Switch application to use new column
+      4. Remove old column
+
+  - name: Expand-Contract Pattern
+    description: "Add new, migrate data, remove old"
+    location: src/migrations/
+    example: "Add column → copy data → remove old column"
+
+  - name: Blue-Green Migration
+    description: "Run old and new in parallel, switch over"
+    location: docs/migrations/
+    example: "Write to both, read from old, switch reads, stop old writes"
+
+  - name: Validation Checkpoints
+    description: "Validate data at each migration step"
+    location: src/migrations/validators/
+    example: "Count check, integrity check, sample verification"
+
+conventions:
+  - "ALWAYS backup before migration"
+  - "ALWAYS have rollback script ready"
+  - "NEVER run migrations during peak hours"
+  - "Validate data before and after migration"
+  - "Test migrations in staging first"
+  - "Document migration in runbook"
+  - "Monitor during and after migration"
+  - "Keep migrations idempotent when possible"
+
+migration_checklist:
+  pre_migration:
+    - "Backup completed and verified"
+    - "Rollback script tested"
+    - "Staging migration successful"
+    - "Downtime window scheduled (if needed)"
+    - "Stakeholders notified"
+    - "Monitoring dashboards ready"
+
+  during_migration:
+    - "Progress logging enabled"
+    - "Error handling active"
+    - "Checkpoint validation passing"
+    - "Performance within bounds"
+
+  post_migration:
+    - "Data validation passed"
+    - "Application functioning correctly"
+    - "No data loss verified"
+    - "Rollback script archived"
+    - "Migration documented in history"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

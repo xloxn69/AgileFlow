@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node scripts/get-env.js:*)",
+      "Bash(bash scripts/archive-completed-stories.sh:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "enabled": true,
+        "command": "node scripts/get-env.js",
+        "description": "Display AgileFlow project environment information on session start",
+        "runInBackground": false,
+        "timeout": 5000
+      },
+      {
+        "enabled": true,
+        "command": "bash scripts/archive-completed-stories.sh",
+        "description": "Auto-archive completed stories older than threshold",
+        "runInBackground": true,
+        "timeout": 10000
+      }
+    ]
+  }
+}

@@ -40,18 +40,29 @@ scripts/
 
 # Claude Settings (user-specific files only)
 # NOTE: .claude/settings.json is NOT gitignored (project-level config)
+# NOTE: .claude/settings.local.example.json is NOT gitignored (template for users)
 .claude/settings.local.json
 .claude/prompt-log.txt
 .claude/session.log
 .claude/activity.log
 .claude/context.log
 .claude/hook.log
+.claude/*.log
+.claude/cache/
 
 # User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
-# NOTE: Not the /apps/docs/ folder, which is the documentation site
+# NOTE: docs/ is NOW PUBLIC for contributor visibility (research, decisions, practices)
+# NOTE: apps/docs/ is the Fumadocs documentation website
 .agileflow/
-docs/
 .claude/commands/AgileFlow/
+
+# Sensitive/internal docs files (keep private)
+docs/00-meta/
+docs/01-brainstorming/
+docs/05-epics/
+docs/06-stories/
+docs/08-project/
+docs/09-agents/
 
 # Next.js (for apps/website and apps/docs)
 .next/

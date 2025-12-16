@@ -43,7 +43,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 
 ## Prerequisites
 
-- Session harness initialized (`/AgileFlow:session-init`)
+- Session harness initialized (`/AgileFlow:session:init`)
 - All tests must be passing
 - Git working tree must be clean
 - All `in_progress` stories must have `test_status: passing`
@@ -63,7 +63,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 ```bash
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "❌ Session harness not initialized"
-  echo "Run /AgileFlow:session-init first"
+  echo "Run /AgileFlow:session:init first"
   exit 1
 fi
 ```
@@ -397,7 +397,7 @@ Choice [1/2/3]: _
 
 ### Called By
 - User manually via `/AgileFlow:baseline`
-- `/AgileFlow:session-init` - Creates initial baseline (optional)
+- `/AgileFlow:session:init` - Creates initial baseline (optional)
 
 ### Calls
 - `/AgileFlow:verify` - Test verification

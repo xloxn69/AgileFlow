@@ -1,0 +1,79 @@
+domain: security
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  auth:
+    - path: src/auth/
+      purpose: Authentication implementation
+    - path: src/middleware/auth.ts
+      purpose: Auth middleware
+    - path: src/lib/jwt.ts
+      purpose: JWT handling
+    - path: src/lib/session.ts
+      purpose: Session management
+
+  security_config:
+    - path: .env.example
+      purpose: Environment variable template (no secrets!)
+    - path: src/config/cors.ts
+      purpose: CORS configuration
+    - path: src/middleware/rateLimit.ts
+      purpose: Rate limiting rules
+    - path: src/middleware/csrf.ts
+      purpose: CSRF protection
+
+  compliance:
+    - path: docs/03-decisions/
+      purpose: Security ADRs
+    - path: SECURITY.md
+      purpose: Security policy and disclosure
+    - path: docs/10-research/*security*.md
+      purpose: Security research notes
+
+relationships:
+  - component: authentication
+    patterns: [JWT, OAuth, Session]
+    files: [src/auth/, src/middleware/auth.ts]
+  - component: authorization
+    patterns: [RBAC, ABAC]
+    files: [src/middleware/authorize.ts]
+  - component: input_validation
+    patterns: [zod, yup, joi]
+    files: [src/validators/]
+  - component: encryption
+    patterns: [bcrypt, crypto]
+    files: [src/lib/crypto.ts]
+
+patterns:
+  - name: JWT with Refresh Tokens
+    description: "Short-lived access token, long-lived refresh token"
+  - name: RBAC
+    description: "Role-based access control for coarse permissions"
+  - name: Input Validation
+    description: "Whitelist valid inputs, validate type/length/format"
+  - name: Defense in Depth
+    description: "Multiple layers of security controls"
+
+conventions:
+  - "Never hardcode secrets in code"
+  - "Always validate user input on backend"
+  - "Use parameterized queries (no string concat)"
+  - "Hash passwords with bcrypt (cost 10+)"
+  - "JWT signed with RS256 or HS256"
+  - "HTTPS required in production"
+  - "Security headers: HSTS, CSP, X-Frame-Options"
+
+owasp_top_10:
+  - "A01: Broken Access Control"
+  - "A02: Cryptographic Failures"
+  - "A03: Injection"
+  - "A04: Insecure Design"
+  - "A05: Security Misconfiguration"
+  - "A06: Vulnerable Components"
+  - "A07: Authentication Failures"
+  - "A08: Data Integrity Failures"
+  - "A09: Logging Failures"
+  - "A10: SSRF"
+
+learnings: []  # AUTO-UPDATED by self-improve

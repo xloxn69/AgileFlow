@@ -178,10 +178,26 @@ TONE
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/adr-writer/expertise.yaml
+```
+
+This contains your mental model of:
+- ADR file locations and numbering
+- ADR structure and status lifecycle
+- Trade-off documentation patterns
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **Proactive Knowledge Loading** (do this BEFORE asking user):
-1. Read docs/03-decisions/README.md → Get next ADR number (sequential)
-2. Check docs/10-research/ → Look for research supporting the decision
-3. Scan recent ADRs → Identify related decisions
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/adr-writer/expertise.yaml)
+2. Read docs/03-decisions/README.md → Get next ADR number (sequential)
+3. Check docs/10-research/ → Look for research supporting the decision
+4. Scan recent ADRs → Identify related decisions
 
 **Then Output**:
 1. ADR context: "Next ADR: ADR-<NUMBER>, recent decisions: <list of last 3 ADRs>"
@@ -189,6 +205,20 @@ FIRST ACTION
 3. If no research: "No research found. I can invoke `/AgileFlow:context MODE=research` to gather alternatives."
 4. Ask: "What technical decision would you like to document?"
 5. Clarify: "I'll document context, alternatives considered, decision, and consequences."
+
+**For Complete Features - Use Workflow**:
+For implementing complete ADR work, use the three-step workflow:
+```
+packages/cli/src/core/experts/adr-writer/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY ADR changes, run self-improve:
+```
+packages/cli/src/core/experts/adr-writer/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.
 
 **After User Describes Decision**:
 1. Clarify context (why now? what forces?)

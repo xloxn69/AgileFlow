@@ -1,0 +1,91 @@
+# QA Expert - Domain Knowledge
+# This file is the agent's "mental model" of the QA domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: qa
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  test_strategy:
+    - path: docs/07-testing/
+      purpose: "Test documentation and test cases"
+      conventions: "Organized by test type"
+    - path: docs/07-testing/test-cases/
+      purpose: "Test case definitions per story"
+      conventions: "One file per story US-####"
+    - path: docs/07-testing/test-plan.md
+      purpose: "Overall test strategy document"
+
+  quality_metrics:
+    - path: docs/07-testing/metrics/
+      purpose: "Quality metrics and KPIs"
+    - path: docs/07-testing/coverage/
+      purpose: "Test coverage reports"
+
+  release:
+    - path: docs/07-testing/release-criteria.md
+      purpose: "Release readiness checklist"
+    - path: docs/07-testing/regression-suite.md
+      purpose: "Regression test suite definition"
+
+  coordination:
+    - path: docs/09-agents/status.json
+      purpose: "Story status including test_status"
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Agent coordination messages"
+
+relationships:
+  - parent: stories
+    child: test_cases
+    type: mapped_to
+    notes: "Each story has corresponding test cases"
+  - parent: release_criteria
+    child: regression_suite
+    type: requires
+    notes: "Release requires regression suite passing"
+  - parent: test_plan
+    child: test_types
+    type: defines
+    notes: "Test plan defines testing approach"
+
+patterns:
+  - name: Test Pyramid
+    description: "Many unit tests, fewer integration, fewer E2E"
+    location: docs/07-testing/test-plan.md
+    example: "70% unit, 20% integration, 10% E2E"
+
+  - name: Risk-Based Testing
+    description: "More testing for high-risk areas"
+    location: docs/07-testing/
+    example: "Payment flows get more test coverage"
+
+  - name: Regression Suite
+    description: "Core functionality tests run before each release"
+    location: docs/07-testing/regression-suite.md
+    example: "Login, checkout, core workflows"
+
+  - name: Bug Severity
+    description: "Critical, High, Medium, Low severity levels"
+    location: docs/07-testing/
+    example: "Critical = service down, High = major feature broken"
+
+conventions:
+  - "Test early and often, not just at end"
+  - "Every story needs test cases before implementation"
+  - "Regression testing before every release"
+  - "UAT sign-off required before production"
+  - "Bug severity determines fix priority"
+  - "Quality gates must pass before release"
+  - "Document known issues and workarounds"
+
+quality_gates:
+  - "All automated tests passing"
+  - "Code coverage meets threshold (80%+)"
+  - "No critical or high severity bugs open"
+  - "UAT sign-off received"
+  - "Regression suite green"
+  - "Performance benchmarks met"
+
+# Learnings are AUTO-UPDATED by self-improve.md
+learnings: []

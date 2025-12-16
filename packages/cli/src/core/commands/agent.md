@@ -1,6 +1,5 @@
 ---
 description: Onboard a new agent with profile and contract
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # agent-new

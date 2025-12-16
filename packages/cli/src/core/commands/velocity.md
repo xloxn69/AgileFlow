@@ -1,6 +1,5 @@
 ---
 description: Track velocity and forecast sprint capacity
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 model: haiku
 ---
 

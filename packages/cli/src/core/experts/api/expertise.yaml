@@ -1,0 +1,118 @@
+# API Expert - Mental Model
+#
+# This file represents the agent's understanding of API patterns.
+# It is populated with AgileFlow-generic knowledge and learns project-specific
+# details through the self-improve workflow.
+#
+# NOT a source of truth - always validate against actual code.
+
+domain: api
+last_updated: 2025-12-16
+version: 1.0
+
+# Key files the API expert needs to know
+files:
+  routes:
+    - path: src/api/routes/
+      purpose: API route definitions
+      pattern: "<resource>.routes.ts"
+    - path: src/app/api/
+      purpose: Next.js API routes (App Router)
+      pattern: "<path>/route.ts"
+    - path: src/pages/api/
+      purpose: Next.js API routes (Pages Router)
+      pattern: "<endpoint>.ts"
+
+  controllers:
+    - path: src/api/controllers/
+      purpose: Request handlers / business logic
+      pattern: "<Resource>Controller.ts"
+    - path: src/services/
+      purpose: Business logic services
+      pattern: "<Resource>Service.ts"
+
+  middleware:
+    - path: src/api/middleware/
+      purpose: Auth, validation, error handling, logging
+      key_files: [auth.ts, validate.ts, error.ts]
+    - path: src/middleware.ts
+      purpose: Next.js Edge middleware
+      conventions: "Runs on every request"
+
+  schemas:
+    - path: src/api/schemas/
+      purpose: Request/response validation schemas (Zod/Yup)
+      pattern: "<resource>.schema.ts"
+    - path: src/types/api/
+      purpose: TypeScript API types
+      pattern: "<resource>.types.ts"
+
+  tests:
+    - path: src/api/__tests__/
+      purpose: API integration tests
+      pattern: "<resource>.test.ts"
+    - path: tests/api/
+      purpose: E2E API tests
+      conventions: "Supertest or similar"
+
+# API endpoint registry
+# Self-improve will populate project-specific endpoints
+relationships: []
+  # Example - will be populated by self-improve:
+  # - endpoint: "GET /api/users"
+  #   controller: UserController.list
+  #   auth_required: true
+  #   rate_limited: true
+  # - endpoint: "POST /api/users"
+  #   controller: UserController.create
+  #   validation: createUserSchema
+  #   auth_required: false
+
+# API patterns the expert should recognize and follow
+patterns:
+  - name: "REST conventions"
+    description: "GET list, GET :id, POST create, PUT :id update, DELETE :id"
+    location: All resource routes
+    verbs: [GET, POST, PUT, PATCH, DELETE]
+
+  - name: "Authentication"
+    description: "JWT tokens in Authorization: Bearer header"
+    location: src/api/middleware/auth.ts
+    alternatives: [session-based, API keys, OAuth]
+
+  - name: "Request validation"
+    description: "Validate request body/query before processing"
+    location: Middleware or controller start
+    libraries: [zod, yup, joi, class-validator]
+
+  - name: "Error handling"
+    description: "Consistent error response format with codes"
+    location: src/api/middleware/error.ts
+    format: "{ error: { code, message, details } }"
+
+  - name: "Response format"
+    description: "JSON responses with consistent structure"
+    location: All endpoints
+    success: "{ data: {...}, meta?: {...} }"
+    error: "{ error: { code, message, details? } }"
+
+  - name: "Rate limiting"
+    description: "Protect public endpoints from abuse"
+    location: Public endpoints, auth endpoints
+    headers: [X-RateLimit-Limit, X-RateLimit-Remaining]
+
+# Conventions the API expert should follow
+conventions:
+  - "Base path: /api or /api/v1"
+  - "Resource naming: plural, lowercase (users, posts, categories)"
+  - "Auth header: Authorization: Bearer <token>"
+  - "Content-Type: application/json for request/response"
+  - "HTTP status codes: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Internal Server Error"
+  - "Validate all inputs (never trust client data)"
+  - "Never expose internal errors to client"
+  - "Log request IDs for traceability"
+  - "Document endpoints in OpenAPI/Swagger"
+
+# Learnings accumulated through self-improve
+# AUTO-UPDATED - do not edit manually
+learnings: []

@@ -295,6 +295,21 @@ Before completing:
 
 FIRST ACTION
 
+**CRITICAL: Load Expertise First (Agent Expert Protocol)**
+
+Before ANY work, read your expertise file:
+```
+packages/cli/src/core/experts/readme-updater/expertise.yaml
+```
+
+This contains your mental model of:
+- README file locations across project
+- Standard README structure template
+- Navigation link patterns
+- Recent learnings from past work
+
+**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
+
 **CRITICAL: You receive the folder path in the prompt from /readme-sync**:
 1. The prompt will contain: `FOLDER PATH: docs/XX-foldername/`
 2. Extract this path
@@ -302,12 +317,13 @@ FIRST ACTION
 4. Do NOT process other folders
 
 **Proactive Context Loading** (use Claude Code tools):
-1. **Bash**: `ls -la [FOLDER_PATH]` → Verify folder exists and list contents
-2. **Read**: `Read [FOLDER_PATH]/README.md` (if file exists) → Understand current docs
-3. **Bash**: `find [FOLDER_PATH] -type f -name "*.md"` → Find all markdown files
-4. **Bash**: `find [FOLDER_PATH] -type d -maxdepth 1` → Find all subdirectories
-5. Analyze: What's documented vs what exists
-6. Plan: What improvements needed
+1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/readme-updater/expertise.yaml)
+2. **Bash**: `ls -la [FOLDER_PATH]` → Verify folder exists and list contents
+3. **Read**: `Read [FOLDER_PATH]/README.md` (if file exists) → Understand current docs
+4. **Bash**: `find [FOLDER_PATH] -type f -name "*.md"` → Find all markdown files
+5. **Bash**: `find [FOLDER_PATH] -type d -maxdepth 1` → Find all subdirectories
+6. Analyze: What's documented vs what exists
+7. Plan: What improvements needed
 
 **Then Output**:
 1. Folder audit summary: "📁 [FOLDER_PATH] contains X files, Y documented, Z missing"
@@ -316,6 +332,20 @@ FIRST ACTION
 4. Improvements planned: "[Specific structure/content updates]"
 5. Execute update: **Use Edit tool** to update README, **Use Write tool** if creating new
 6. Report: "✅ Updated README.md - added [N] sections, fixed [N] links, documented [N] files"
+
+**For Complete Features - Use Workflow**:
+For implementing complete README work, use the three-step workflow:
+```
+packages/cli/src/core/experts/readme-updater/workflow.md
+```
+This chains Plan → Build → Self-Improve automatically.
+
+**After Completing Work - Self-Improve**:
+After ANY README updates, run self-improve:
+```
+packages/cli/src/core/experts/readme-updater/self-improve.md
+```
+This updates your expertise with what you learned, so you're faster next time.
 
 **Tools to use in this agent**:
 - **Bash**: Discover files/folders (ls, find, wc)

@@ -1,7 +1,6 @@
 ---
 description: Configure advanced AgileFlow features (git, hooks, archival, CI)
 argument-hint: (interactive menu)
-allowed-tools: Bash, Read, Task, AskUserQuestion
 ---
 
 # configure

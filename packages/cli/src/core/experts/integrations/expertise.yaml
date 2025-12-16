@@ -1,0 +1,143 @@
+# Integrations Expert - Domain Knowledge
+# This file is the agent's "mental model" of the integrations domain
+# AUTO-UPDATED by self-improve.md after completing work
+
+domain: integrations
+last_updated: 2025-12-16
+version: 1.0
+
+files:
+  clients:
+    - path: src/integrations/
+      purpose: "Third-party API client implementations"
+      key_exports: []
+      conventions: "One client per service (StripeClient, TwilioClient)"
+    - path: src/integrations/clients/
+      purpose: "API client classes for external services"
+      conventions: "Named *Client.ts"
+    - path: src/integrations/webhooks/
+      purpose: "Webhook receivers and handlers"
+      conventions: "Named *WebhookHandler.ts"
+
+  configuration:
+    - path: src/config/integrations.ts
+      purpose: "Integration configuration and API key management"
+      conventions: "All secrets from environment variables"
+    - path: .env.example
+      purpose: "Template for required environment variables"
+      conventions: "Document all integration API keys here"
+
+  types:
+    - path: src/types/integrations/
+      purpose: "TypeScript types for external service responses"
+      conventions: "Match external API response schemas"
+
+  services:
+    - path: src/services/payment/
+      purpose: "Payment processing service layer"
+      conventions: "Wraps Stripe/PayPal/Square clients"
+    - path: src/services/email/
+      purpose: "Email delivery service layer"
+      conventions: "Wraps SendGrid/Mailgun/SES"
+    - path: src/services/auth/
+      purpose: "Authentication provider integrations"
+      conventions: "OAuth flows for Google/GitHub/Auth0"
+
+relationships:
+  - parent: services
+    child: clients
+    type: uses
+    notes: "Service layer uses API clients"
+  - parent: webhooks
+    child: services
+    type: triggers
+    notes: "Webhooks trigger service layer actions"
+  - parent: api_endpoints
+    child: services
+    type: calls
+    notes: "API endpoints call integration services"
+
+patterns:
+  - name: API Client Pattern
+    description: "Wrap third-party SDK with custom client for testability"
+    location: src/integrations/clients/
+    example: |
+      class StripeClient {
+        constructor(apiKey: string) { ... }
+        async createPayment(amount: number) { ... }
+      }
+
+  - name: Webhook Handler Pattern
+    description: "Validate signature, parse event, handle idempotently"
+    location: src/integrations/webhooks/
+    example: |
+      1. Validate webhook signature
+      2. Check if event already processed (idempotency)
+      3. Parse and route to handler
+      4. Respond 200 immediately
+
+  - name: Retry with Exponential Backoff
+    description: "Retry failed external requests with increasing delays"
+    location: src/integrations/clients/
+    example: "1s, 2s, 4s, 8s delays with jitter"
+
+  - name: Circuit Breaker
+    description: "Stop calling failing services to prevent cascade failures"
+    location: src/integrations/clients/
+    example: "Open circuit after 5 consecutive failures"
+
+  - name: Rate Limiting
+    description: "Respect external service rate limits"
+    location: src/integrations/clients/
+    example: "Token bucket or queue-based rate limiting"
+
+conventions:
+  - "NEVER hardcode API keys - use environment variables"
+  - "ALWAYS validate webhook signatures before processing"
+  - "ALWAYS implement retry logic with exponential backoff"
+  - "ALWAYS log external service calls (without secrets)"
+  - "ALWAYS handle rate limiting gracefully"
+  - "Implement idempotency for webhook handlers"
+  - "Use circuit breaker for unreliable services"
+  - "Mock external services in tests"
+  - "Document all required environment variables"
+
+integrations_catalog:
+  payment:
+    - name: Stripe
+      env_vars: [STRIPE_API_KEY, STRIPE_WEBHOOK_SECRET]
+      webhooks: [payment.completed, subscription.updated, refund.created]
+    - name: PayPal
+      env_vars: [PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET]
+    - name: Square
+      env_vars: [SQUARE_ACCESS_TOKEN]
+
+  email:
+    - name: SendGrid
+      env_vars: [SENDGRID_API_KEY]
+      webhooks: [email.delivered, email.bounced, email.complained]
+    - name: Mailgun
+      env_vars: [MAILGUN_API_KEY, MAILGUN_DOMAIN]
+
+  auth:
+    - name: Auth0
+      env_vars: [AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET]
+    - name: Google OAuth
+      env_vars: [GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET]
+    - name: GitHub OAuth
+      env_vars: [GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET]
+
+  messaging:
+    - name: Twilio
+      env_vars: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN]
+      webhooks: [message.delivered, message.failed]
+
+  storage:
+    - name: AWS S3
+      env_vars: [AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET]
+    - name: Google Cloud Storage
+      env_vars: [GCS_PROJECT_ID, GCS_BUCKET]
+
+# Learnings are AUTO-UPDATED by self-improve.md
+# Do not edit manually - let the agent learn from experience
+learnings: []

@@ -1,6 +1,5 @@
 ---
 description: Manage dependencies with updates and security audits
-allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
 
 # packages
