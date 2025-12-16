@@ -11,9 +11,9 @@ flowchart TD
   accTitle: Babysit Mentor System Overview
   accDescr: Shows how babysit guides users through implementation
 
-  user([User: "I want to add login"])
+  user([User Request])
 
-  user --> babysit[/AgileFlow:babysit]
+  user --> babysit[AgileFlow-babysit]
 
   babysit --> understand[Understand Request]
   understand --> research[Research Codebase]
@@ -78,11 +78,11 @@ flowchart TD
   detect --> single{Single Domain?}
   detect --> multi{Multiple Domains?}
 
-  single -->|database| db[/AgileFlow:agents:database]
-  single -->|API| api[/AgileFlow:agents:api]
-  single -->|UI| ui[/AgileFlow:agents:ui]
-  single -->|testing| test[/AgileFlow:agents:testing]
-  single -->|security| sec[/AgileFlow:agents:security]
+  single -->|database| db[AgileFlow-agents:database]
+  single -->|API| api[AgileFlow-agents:api]
+  single -->|UI| ui[AgileFlow-agents:ui]
+  single -->|testing| test[AgileFlow-agents:testing]
+  single -->|security| sec[AgileFlow-agents:security]
 
   multi --> orchestrate[Multi-Expert Mode]
   orchestrate --> spawn[Spawn 3-5 Experts]
@@ -247,10 +247,10 @@ flowchart TD
 
   start{What do you need?}
 
-  start -->|"End-to-end feature"| babysit[Use /babysit]
-  start -->|"Single domain task"| agent[Use specific agent]
-  start -->|"Quick question"| direct[Ask directly]
-  start -->|"Complex analysis"| multi[Use /multi-expert]
+  start -->|End-to-end feature| babysit[Use /babysit]
+  start -->|Single domain task| agent[Use specific agent]
+  start -->|Quick question| direct[Ask directly]
+  start -->|Complex analysis| multi[Use /multi-expert]
 
   babysit --> examples1["Add user authentication"<br/>"Implement payment system"<br/>"Build notification feature"]
 

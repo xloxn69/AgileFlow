@@ -66,7 +66,7 @@ sequenceDiagram
   participant State as State Manager
   participant Output as Output Formatter
 
-  User->>CC: /AgileFlow:story TITLE="Add login"
+  User->>CC: /AgileFlow:story TITLE Add login
 
   CC->>Parser: Parse command string
   Parser->>Parser: Extract command name
@@ -95,7 +95,7 @@ flowchart TD
   accTitle: Agent Execution Pattern
   accDescr: Shows how an agent command executes with expertise
 
-  start([/AgileFlow:agents:database])
+  start([AgileFlow-agents:database])
 
   start --> load[Load Agent Markdown<br/>agents/database.md]
 
@@ -138,9 +138,9 @@ flowchart LR
     epic[epic-planner]
   end
 
-  story -.->|"may invoke"| epic
-  babysit -->|"routes to"| db & api & ui
-  multiexp -->|"spawns multiple"| db & api & ui
+  story -.->|"may invoke| epic
+  babysit -->|routes to| db & api & ui
+  multiexp -->|spawns multiple| db & api & ui
 ```
 
 **Key distinction:**
