@@ -27,28 +27,8 @@ This document describes how slash commands and agents work together in AgileFlow
 
 ## Agent vs Command Relationship
 
-```mermaid
-flowchart LR
-  accTitle: Agent vs Command Relationship
-  accDescr: Shows how commands can invoke agents
+![Diagram 4](images/command-agent-flow-4.svg)
 
-  subgraph Commands[Commands]
-    story[story]
-    babysit[babysit]
-    multiexp[multi-expert]
-  end
-
-  subgraph Agents[Agents]
-    db[database]
-    api[api]
-    ui[ui]
-    epic[epic-planner]
-  end
-
-  story -.->|"may invoke| epic
-  babysit -->|routes to| db & api & ui
-  multiexp -->|spawns multiple| db & api & ui
-```
 
 **Key distinction:**
 - **Commands**: User-facing actions (create story, view board, run sprint)
