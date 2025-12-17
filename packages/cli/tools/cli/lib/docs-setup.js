@@ -13,6 +13,21 @@ const chalk = require('chalk');
 const packageJsonPath = path.join(__dirname, '..', '..', '..', 'package.json');
 const packageJson = require(packageJsonPath);
 
+// Load package README.md for docs/README.md
+const packageReadmePath = path.join(__dirname, '..', '..', '..', 'README.md');
+let packageReadme = '';
+try {
+  packageReadme = fs.readFileSync(packageReadmePath, 'utf8');
+  // Fix relative image paths to use npm CDN
+  packageReadme = packageReadme.replace(
+    /src="assets\//g,
+    'src="https://cdn.jsdelivr.net/npm/agileflow/assets/'
+  );
+} catch (e) {
+  // Fallback if README not found
+  packageReadme = '# AgileFlow\n\nSee https://github.com/projectquestorg/AgileFlow for documentation.';
+}
+
 /**
  * Directory structure to create
  * @param {string} docsFolder - Name of the docs folder (default: "docs")
@@ -43,32 +58,7 @@ function getDirectoryStructure(docsFolder = 'docs') {
  */
 function getReadmeTemplates(docsFolder = 'docs') {
   return {
-    [`${docsFolder}/README.md`]: `# AgileFlow Documentation
-
-This directory contains all AgileFlow documentation and project management files.
-
-## Directory Structure
-
-- **00-meta/**: System metadata, templates, and guides
-- **01-brainstorming/**: Ideas and sketches for features
-- **02-practices/**: Project practices, conventions, and standards
-- **03-decisions/**: Architecture Decision Records (ADRs)
-- **04-architecture/**: System architecture documentation
-- **05-epics/**: Epic definitions and planning
-- **06-stories/**: User stories and implementation details
-- **07-testing/**: Test cases and acceptance criteria
-- **08-project/**: Project management (roadmap, backlog, milestones)
-- **09-agents/**: Agent status tracking and communication
-- **10-research/**: Research notes and findings
-
-## Getting Started
-
-Use AgileFlow slash commands to work with these directories:
-- \`/AgileFlow:epic\` - Create a new epic
-- \`/AgileFlow:story\` - Create a user story
-- \`/AgileFlow:status\` - Update story status
-- \`/AgileFlow:help\` - See all available commands
-`,
+    [`${docsFolder}/README.md`]: packageReadme,
 
     [`${docsFolder}/00-meta/README.md`]: `# Meta Documentation
 
