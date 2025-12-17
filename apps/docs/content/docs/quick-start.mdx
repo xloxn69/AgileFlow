@@ -25,7 +25,7 @@ Let's create a simple user story for adding a login feature.
     In your IDE, run the story command:
 
     ```
-    /AgileFlow:story
+    /agileflow:story
     ```
 
     This will launch the story creation wizard.
@@ -69,7 +69,7 @@ Let's create a simple user story for adding a login feature.
     Begin implementing the story:
 
     ```
-    /AgileFlow:status AF-001 in-progress
+    /agileflow:status AF-001 in-progress
     ```
 
     This updates the story status and tracks it in your sprint.
@@ -90,7 +90,7 @@ graph LR
 
 ### 1. Create Stories
 
-Use `/AgileFlow:story` to create user stories with:
+Use `/agileflow:story` to create user stories with:
 - Clear acceptance criteria
 - Story point estimates
 - Dependencies
@@ -100,7 +100,7 @@ Use `/AgileFlow:story` to create user stories with:
 Organize stories into sprints:
 
 ```
-/AgileFlow:sprint
+/agileflow:sprint
 ```
 
 This helps you:
@@ -128,25 +128,25 @@ Here's a complete workflow example:
 
 ```bash
 # 1. Create a story
-/AgileFlow:story
+/agileflow:story
 > "Add user authentication with JWT tokens"
 
 # 2. Plan the sprint
-/AgileFlow:sprint
+/agileflow:sprint
 > Add AF-001 to current sprint
 
 # 3. Start development
-/AgileFlow:status AF-001 in-progress
+/agileflow:status AF-001 in-progress
 
 # 4. Document an architecture decision
-/AgileFlow:adr
+/agileflow:adr
 > "Use JWT for authentication because..."
 
 # 5. Complete the story
-/AgileFlow:status AF-001 completed
+/agileflow:status AF-001 completed
 
 # 6. Create a pull request
-/AgileFlow:pr AF-001
+/agileflow:pr AF-001
 ```
 
 ## Common Commands
@@ -155,15 +155,15 @@ Here are the most frequently used commands:
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:story` | Create a new user story |
-| `/AgileFlow:epic` | Create an epic with multiple stories |
-| `/AgileFlow:sprint` | Plan a sprint |
-| `/AgileFlow:status` | Update story status |
-| `/AgileFlow:pr` | Generate pull request description |
-| `/AgileFlow:adr` | Create Architecture Decision Record |
+| `/agileflow:story` | Create a new user story |
+| `/agileflow:epic` | Create an epic with multiple stories |
+| `/agileflow:sprint` | Plan a sprint |
+| `/agileflow:status` | Update story status |
+| `/agileflow:pr` | Generate pull request description |
+| `/agileflow:adr` | Create Architecture Decision Record |
 
 <Callout>
-  Run `/AgileFlow:help` to see all available commands.
+  Run `/agileflow:help` to see all available commands.
 </Callout>
 
 ## Working with Agents

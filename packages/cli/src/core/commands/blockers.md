@@ -137,7 +137,7 @@ For each blocker, provide:
 ### Research Blockers
 - Search docs/10-research/ for related topics
 - Check for stale research (>90 days) that might need updating
-- Suggest running /AgileFlow:context MODE=research for specific topic
+- Suggest running /agileflow:context MODE=research for specific topic
 - Link to ADRs that might have context
 
 CROSS-AGENT COORDINATION ANALYSIS (v2.7.0)
@@ -280,7 +280,7 @@ US-0051 | AG-DEVOPS | Blocked: Unclear deployment target
 
   📚 Related:
     - Research: docs/10-research/20251010-deployment-comparison.md (90 days old, may be stale)
-    - Suggest: /AgileFlow:context MODE=research TOPIC="Modern deployment platforms 2025"
+    - Suggest: /agileflow:context MODE=research TOPIC="Modern deployment platforms 2025"
 
 ---
 
@@ -317,10 +317,10 @@ AG-API at WIP limit (2/2):
 4. [Low] Redistribute AG-API backlog when capacity opens
 
 Next Commands:
-- /AgileFlow:status STORY=US-0051 STATUS=ready NOTE="Clarified deployment target: Vercel"
-- /AgileFlow:context MODE=research TOPIC="Modern deployment platforms 2025"
-- /AgileFlow:validate-system (check for other inconsistencies)
-- /AgileFlow:board (visualize current state)
+- /agileflow:status STORY=US-0051 STATUS=ready NOTE="Clarified deployment target: Vercel"
+- /agileflow:context MODE=research TOPIC="Modern deployment platforms 2025"
+- /agileflow:validate-system (check for other inconsistencies)
+- /agileflow:board (visualize current state)
 ```
 
 RULES
@@ -338,7 +338,7 @@ After displaying blockers, ask:
 "Would you like me to update any blocker statuses or create resolution stories?"
 
 If yes, suggest:
-- `/AgileFlow:status STORY=<id> STATUS=ready` for resolved blockers
+- `/agileflow:status STORY=<id> STATUS=ready` for resolved blockers
 - `/story-new` for creating unblocking stories
 - `/handoff` for reassigning capacity-blocked stories
 - `/adr-new` for architectural blockers needing decisions

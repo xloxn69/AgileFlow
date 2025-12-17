@@ -451,7 +451,7 @@ Committed: X stories, Y.Z estimated days (Y% of capacity)
 1. Sequence stories: US-0043 (AG-API) → US-0042 (AG-UI) → US-0050 (AG-CI)
 2. Daily standup focus: AG-API unblocking AG-UI (check /blockers)
 3. Mid-sprint checkpoint: Day 5 - assess if US-0055 can be added
-4. End-of-sprint: Run /AgileFlow:velocity to update historical data
+4. End-of-sprint: Run /agileflow:velocity to update historical data
 
 📅 SPRINT TIMELINE
 ------------------
@@ -466,11 +466,11 @@ Definition of Done:
 ✅ Demo prepared for stakeholders
 
 Next Steps:
-${MODE == "suggest" && "1. Review commitment and run /AgileFlow:sprint-plan MODE=commit to finalize"}
+${MODE == "suggest" && "1. Review commitment and run /agileflow:sprint-plan MODE=commit to finalize"}
 ${MODE == "commit" && "1. ✅ Sprint committed! Stories updated in status.json"}
-2. Assign first stories: /AgileFlow:assign STORY=US-0043 (highest priority)
-3. Monitor progress: /AgileFlow:board
-4. Track blockers: /AgileFlow:blockers
+2. Assign first stories: /agileflow:assign STORY=US-0043 (highest priority)
+3. Monitor progress: /agileflow:board
+4. Track blockers: /agileflow:blockers
 ```
 
 RULES

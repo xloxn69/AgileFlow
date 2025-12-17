@@ -104,7 +104,7 @@ Create `.claude/settings.json` with basic SessionStart hook:
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help to see available commands'"
+            "command": "echo '🚀 AgileFlow loaded - Type /agileflow:help to see available commands'"
           }
         ]
       }

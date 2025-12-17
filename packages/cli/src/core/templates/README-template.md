@@ -1,7 +1,7 @@
 # {{FOLDER_NAME}}
 
 ## Contents
-<!-- This section is managed by /AgileFlow:readme-sync -->
+<!-- This section is managed by /agileflow:readme-sync -->
 
 ## Overview
 {{OVERVIEW}}

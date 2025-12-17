@@ -241,7 +241,7 @@ fi
 if [ $avg_review_time -gt 2 ]; then
   echo "🎯 MEDIUM: Reduce review time from $avg_review_time to <1 day"
   echo "   - Set up daily 30min review slot"
-  echo "   - Use /AgileFlow:ai-code-review before requesting human review"
+  echo "   - Use /agileflow:ai-code-review before requesting human review"
 fi
 
 # Low priority: Long-term improvements
@@ -377,8 +377,8 @@ Saved to: docs/08-project/retrospectives/retro-20251031.md
 
 Next Steps:
   - Review action items in next team meeting
-  - Run /AgileFlow:metrics to track improvements
-  - Run /AgileFlow:velocity to update sprint planning
+  - Run /agileflow:metrics to track improvements
+  - Run /agileflow:velocity to update sprint planning
 ```
 
 INSIGHTS ENGINE
@@ -498,36 +498,36 @@ echo "$retro_content" > $retro_file
 
 INTEGRATION WITH OTHER COMMANDS
 
-- After `/AgileFlow:metrics`: Run `/AgileFlow:retro` to contextualize the data
-- Before planning: Run `/AgileFlow:retro` to apply learnings
-- In `/AgileFlow:babysit`: Suggest `/AgileFlow:retro` at sprint boundaries
-- With `/AgileFlow:velocity`: Use velocity trends in retro insights
+- After `/agileflow:metrics`: Run `/agileflow:retro` to contextualize the data
+- Before planning: Run `/agileflow:retro` to apply learnings
+- In `/agileflow:babysit`: Suggest `/agileflow:retro` at sprint boundaries
+- With `/agileflow:velocity`: Use velocity trends in retro insights
 
 USAGE EXAMPLES
 
 ### Standard 2-week retro
 ```bash
-/AgileFlow:retro
+/agileflow:retro
 ```
 
 ### Last 30 days
 ```bash
-/AgileFlow:retro TIMEFRAME=30d
+/agileflow:retro TIMEFRAME=30d
 ```
 
 ### Epic-specific retro
 ```bash
-/AgileFlow:retro EPIC=EP-0010
+/agileflow:retro EPIC=EP-0010
 ```
 
 ### Generate without saving
 ```bash
-/AgileFlow:retro SAVE=false
+/agileflow:retro SAVE=false
 ```
 
 ### Export as markdown
 ```bash
-/AgileFlow:retro FORMAT=markdown > retro.md
+/agileflow:retro FORMAT=markdown > retro.md
 ```
 
 RULES

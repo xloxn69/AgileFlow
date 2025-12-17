@@ -1,7 +1,7 @@
 #!/bin/bash
 # AgileFlow Session Resume Script
 # This script is called by the SessionStart hook to automatically resume sessions.
-# It replicates the functionality of /AgileFlow:session:resume as a shell script.
+# It replicates the functionality of /agileflow:session:resume as a shell script.
 
 set -e
 
@@ -11,7 +11,7 @@ echo ""
 # Load environment configuration
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "⚠️  Session harness not initialized"
-  echo "   Run /AgileFlow:session:init to set up session management"
+  echo "   Run /agileflow:session:init to set up session management"
   exit 0
 fi
 

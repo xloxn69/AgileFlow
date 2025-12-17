@@ -39,7 +39,7 @@ Stories in AgileFlow include:
 - **Dependencies**: Related stories or blockers
 
 <Callout type="info">
-  Use `/AgileFlow:story` to create stories with AI-generated acceptance criteria.
+  Use `/agileflow:story` to create stories with AI-generated acceptance criteria.
 </Callout>
 
 ### Epics
@@ -58,7 +58,7 @@ Epics help you:
 - Plan releases and milestones
 
 <Callout>
-  Create epics with `/AgileFlow:epic` to automatically generate stories.
+  Create epics with `/agileflow:epic` to automatically generate stories.
 </Callout>
 
 ### Sprints
@@ -103,7 +103,7 @@ We will use PostgreSQL 15 as our primary database.
 ```
 
 <Callout type="warn">
-  Always create an ADR for significant architectural decisions using `/AgileFlow:adr`
+  Always create an ADR for significant architectural decisions using `/agileflow:adr`
 </Callout>
 
 ## Workflow States
@@ -129,7 +129,7 @@ graph LR
 
 Update status with:
 ```bash
-/AgileFlow:status AF-001 in-progress
+/agileflow:status AF-001 in-progress
 ```
 
 ## Agents
@@ -173,15 +173,15 @@ Use skills within conversations or let agents invoke them automatically.
 **Commands** are slash commands that trigger specific AgileFlow actions.
 
 Common commands:
-- `/AgileFlow:story` - Create user story
-- `/AgileFlow:epic` - Create epic
-- `/AgileFlow:sprint` - Plan sprint
-- `/AgileFlow:status` - Update story status
-- `/AgileFlow:pr` - Generate PR description
-- `/AgileFlow:adr` - Document decision
+- `/agileflow:story` - Create user story
+- `/agileflow:epic` - Create epic
+- `/agileflow:sprint` - Plan sprint
+- `/agileflow:status` - Update story status
+- `/agileflow:pr` - Generate PR description
+- `/agileflow:adr` - Document decision
 
 <Callout>
-  Run `/AgileFlow:help` to see all 41 commands.
+  Run `/agileflow:help` to see all 41 commands.
 </Callout>
 
 ## Story Points

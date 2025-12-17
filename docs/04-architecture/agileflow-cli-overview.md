@@ -82,7 +82,7 @@ When you run `npx agileflow setup`, this structure is created:
 |-----------|---------|
 | `.agileflow/` | Core installation (commands, agents, experts) |
 | `.agileflow/experts/` | Domain expertise files (25 domains) |
-| `.claude/commands/AgileFlow/` | Slash command definitions |
+| `.claude/commands/agileflow/` | Slash command definitions |
 | `docs/02-practices/` | Development practices |
 | `docs/03-decisions/` | Architecture Decision Records |
 | `docs/04-architecture/` | System architecture docs |

@@ -132,8 +132,8 @@ export async function buildLandingContent(): Promise<LandingContent> {
 Generate a one-page context summary for tools with strict limits.
 
 ## Acceptance Criteria
-- Given a repo, when /AgileFlow:context runs, then \`docs/00-meta/context.md\` updates
-- Given verbose docs, when /AgileFlow:compress runs, then duplicated sections are reduced
+- Given a repo, when /agileflow:context runs, then \`docs/00-meta/context.md\` updates
+- Given verbose docs, when /agileflow:compress runs, then duplicated sections are reduced
 `,
       'markdown',
     ),
@@ -172,7 +172,7 @@ index 3b18c71..8c2aa0f 100644
   ]);
 
   const commandExample = async (command: string, lines: string[]) =>
-    codeToHtml([`/AgileFlow:${command}`, ...lines].join('\n'), 'bash');
+    codeToHtml([`/agileflow:${command}`, ...lines].join('\n'), 'bash');
 
   return {
     version: stats.version,
@@ -206,7 +206,7 @@ index 3b18c71..8c2aa0f 100644
         {
           step: 2,
           title: 'Scaffold',
-          description: 'Run /AgileFlow:setup in your IDE',
+          description: 'Run /agileflow:setup in your IDE',
           lottieSrc: '/lottie/folder-scaffold.json',
         },
         {
@@ -379,7 +379,7 @@ index 3b18c71..8c2aa0f 100644
     ideCards: {
       heading: 'IDE integrations',
       cards: [
-        { name: 'Claude Code', path: '.claude/commands/AgileFlow/', lottieSrc: '/lottie/ide-config-check.json' },
+        { name: 'Claude Code', path: '.claude/commands/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
         { name: 'Cursor', path: '.cursor/rules/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
         { name: 'Windsurf', path: '.windsurf/workflows/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
       ],
@@ -622,7 +622,7 @@ index 3b18c71..8c2aa0f 100644
         {
           question: 'How does it handle context limits?',
           answer:
-            '/AgileFlow:compress reduces verbose fields. /AgileFlow:context exports a one-page summary for web AI tools.',
+            '/agileflow:compress reduces verbose fields. /agileflow:context exports a one-page summary for web AI tools.',
         },
         {
           question: 'Is there a paid version?',

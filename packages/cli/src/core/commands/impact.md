@@ -165,7 +165,7 @@ INTEGRATION
 Suggest optimized CI that only runs affected tests:
 ```yaml
 - name: Impact analysis
-  run: npx claude-code /AgileFlow:impact-analysis BASE=main
+  run: npx claude-code /agileflow:impact-analysis BASE=main
 
 - name: Run affected tests
   run: npm test -- $(cat affected-tests.txt)

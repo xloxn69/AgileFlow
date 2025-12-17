@@ -269,7 +269,7 @@ How it works:
 Manual archival and compression:
 - Archival: bash scripts/archive-completed-stories.sh (reads from metadata)
 - Archival with custom threshold: bash scripts/archive-completed-stories.sh 7
-- Compression: /AgileFlow:compress (strips verbose fields if archival isn't enough)
+- Compression: /agileflow:compress (strips verbose fields if archival isn't enough)
 - View status: ls -lh docs/09-agents/status*.json
 
 Configuration:

@@ -69,7 +69,7 @@ learnings:
 
 ## Domain Expert Routing
 
-The `/AgileFlow:babysit` command automatically routes requests to appropriate domain experts:
+The `/agileflow:babysit` command automatically routes requests to appropriate domain experts:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-4.dark.svg">

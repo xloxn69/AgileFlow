@@ -5,7 +5,7 @@ argument-hint: [message] (optional)
 
 # Establish Baseline
 
-You are running the `/AgileFlow:baseline` command to create a verified checkpoint representing a known-good state of the project.
+You are running the `/agileflow:baseline` command to create a verified checkpoint representing a known-good state of the project.
 
 ## Command Purpose
 
@@ -43,7 +43,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 
 ## Prerequisites
 
-- Session harness initialized (`/AgileFlow:session:init`)
+- Session harness initialized (`/agileflow:session:init`)
 - All tests must be passing
 - Git working tree must be clean
 - All `in_progress` stories must have `test_status: passing`
@@ -51,8 +51,8 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 ## Usage
 
 ```
-/AgileFlow:baseline
-/AgileFlow:baseline "Sprint 3 complete - all features tested"
+/agileflow:baseline
+/agileflow:baseline "Sprint 3 complete - all features tested"
 ```
 
 ## Execution Flow
@@ -63,7 +63,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 ```bash
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "❌ Session harness not initialized"
-  echo "Run /AgileFlow:session:init first"
+  echo "Run /agileflow:session:init first"
   exit 1
 fi
 ```
@@ -71,7 +71,7 @@ fi
 **Check Tests:**
 ```bash
 echo "🧪 Verifying tests..."
-/AgileFlow:verify
+/agileflow:verify
 
 # Check exit code
 if [ $? -ne 0 ]; then
@@ -107,7 +107,7 @@ if [ -n "$FAILING_STORIES" ]; then
   echo "Stories with non-passing tests:"
   echo "$FAILING_STORIES"
   echo ""
-  echo "Run /AgileFlow:verify and fix failing tests first"
+  echo "Run /agileflow:verify and fix failing tests first"
   exit 1
 fi
 ```
@@ -252,7 +252,7 @@ To push baseline to remote:
 ### After Epic Completion
 ```
 User: We just finished EP-0005. All stories tested and merged.
-User: /AgileFlow:baseline "EP-0005: User authentication complete"
+User: /agileflow:baseline "EP-0005: User authentication complete"
 
 Claude: 🧪 Verifying tests...
         ✅ All tests passing (58/58)
@@ -274,7 +274,7 @@ Claude: 🧪 Verifying tests...
 ### Before Risky Refactor
 ```
 User: About to refactor the auth system. Want a safety checkpoint.
-User: /AgileFlow:baseline "Before auth refactor"
+User: /agileflow:baseline "Before auth refactor"
 
 Claude: ✅ Baseline created: agileflow-baseline-20251206-150000
 
@@ -282,13 +282,13 @@ Claude: ✅ Baseline created: agileflow-baseline-20251206-150000
           git checkout agileflow-baseline-20251206-150000
 
         Or compare tests after refactor:
-          /AgileFlow:verify
+          /agileflow:verify
           # Compare to baseline: 42/42 tests
 ```
 
 ### Sprint Checkpoint
 ```
-User: /AgileFlow:baseline "Sprint 12 end - 15 stories completed"
+User: /agileflow:baseline "Sprint 12 end - 15 stories completed"
 
 Claude: ✅ Baseline Established
 
@@ -362,7 +362,7 @@ Stories with non-passing tests:
 
 All in-progress stories must have passing tests.
 
-Run /AgileFlow:verify to check and fix tests.
+Run /agileflow:verify to check and fix tests.
 ```
 
 ### Git Not Available
@@ -396,11 +396,11 @@ Choice [1/2/3]: _
 ## Integration Points
 
 ### Called By
-- User manually via `/AgileFlow:baseline`
-- `/AgileFlow:session:init` - Creates initial baseline (optional)
+- User manually via `/agileflow:baseline`
+- `/agileflow:session:init` - Creates initial baseline (optional)
 
 ### Calls
-- `/AgileFlow:verify` - Test verification
+- `/agileflow:verify` - Test verification
 
 ### Reads
 - `docs/00-meta/environment.json` - Current baseline info
@@ -494,7 +494,7 @@ Claude: ⚠️  This will discard all changes since baseline
 ## Example Execution
 
 ```
-User: /AgileFlow:baseline "Major milestone - v1.0 ready"
+User: /agileflow:baseline "Major milestone - v1.0 ready"
 
 Claude: 🧪 Verifying all requirements...
 

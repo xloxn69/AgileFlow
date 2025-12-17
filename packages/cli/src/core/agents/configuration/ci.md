@@ -116,7 +116,7 @@ Use AskUserQuestion to ask which CI provider to configure:
     },
     {
       "label": "Skip CI setup",
-      "description": "Don't configure CI now - you can run /AgileFlow:configure again later"
+      "description": "Don't configure CI now - you can run /agileflow:configure again later"
     }
   ]
 }]</parameter>
@@ -126,7 +126,7 @@ Use AskUserQuestion to ask which CI provider to configure:
 **If user selects "Skip CI setup"**: Exit gracefully with message:
 ```
 ⏭️ Skipping CI/CD setup
-You can configure CI later by running /AgileFlow:configure again
+You can configure CI later by running /agileflow:configure again
 ```
 
 ### Step 3: Detect Project Commands
@@ -1061,7 +1061,7 @@ fi
 if ! git remote -v 2>/dev/null | grep -q origin; then
   echo "⚠️ Warning: Git remote not configured"
   echo "   CI badge URLs will be placeholders"
-  echo "   Configure git remote first: /AgileFlow:configure (select Git Repository)"
+  echo "   Configure git remote first: /agileflow:configure (select Git Repository)"
 fi
 ```
 

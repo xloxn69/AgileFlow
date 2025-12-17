@@ -41,7 +41,7 @@ scripts/
 # Claude Code (user-specific, not part of plugin repo)
 .claude/
 
-# AgileFlow installed files (created by /AgileFlow:setup)
+# AgileFlow installed files (created by /agileflow:setup)
 .agileflow/
 
 # Sensitive/internal docs files (keep private)

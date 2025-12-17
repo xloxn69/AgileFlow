@@ -44,7 +44,7 @@ Only essential tracking metadata remains:
 
 ## Workflow
 
-When user runs `/AgileFlow:compress`:
+When user runs `/agileflow:compress`:
 
 1. **Validate Environment**:
    - Check if `docs/09-agents/status.json` exists
@@ -109,8 +109,8 @@ When user runs `/AgileFlow:compress`:
 - After major epic completion (many stories with verbose records)
 
 **Combine with archival**:
-1. First run archival to move old completed stories: `/AgileFlow:compress` → runs `bash scripts/archive-completed-stories.sh`
-2. If still too large, run compression: `/AgileFlow:compress` → runs `bash scripts/compress-status.sh`
+1. First run archival to move old completed stories: `/agileflow:compress` → runs `bash scripts/archive-completed-stories.sh`
+2. If still too large, run compression: `/agileflow:compress` → runs `bash scripts/compress-status.sh`
 3. Result: status.json under 25000 tokens
 
 ## Safety
@@ -136,8 +136,8 @@ bash scripts/compress-status.sh
 
 ## Related Commands
 
-- `/AgileFlow:status` - View current story statuses
-- `/AgileFlow:validate` - Validate AgileFlow system health
+- `/agileflow:status` - View current story statuses
+- `/agileflow:validate` - Validate AgileFlow system health
 
 ## Example Output
 

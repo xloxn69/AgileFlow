@@ -32,7 +32,7 @@ class CursorSetup extends BaseIdeSetup {
     // Clean up old installation first
     await this.cleanup(projectDir);
 
-    // Create .cursor/commands/AgileFlow directory
+    // Create .cursor/commands/agileflow directory
     const cursorDir = path.join(projectDir, this.configDir);
     const commandsDir = path.join(cursorDir, this.commandsDir);
     const agileflowCommandsDir = path.join(commandsDir, 'AgileFlow');
@@ -110,7 +110,7 @@ class CursorSetup extends BaseIdeSetup {
       console.log(chalk.dim(`    Removed old AgileFlow rules from ${this.displayName}`));
     }
 
-    // Remove .cursor/commands/AgileFlow (for re-installation)
+    // Remove .cursor/commands/agileflow (for re-installation)
     const commandsPath = path.join(projectDir, this.configDir, this.commandsDir, 'AgileFlow');
     if (await this.exists(commandsPath)) {
       await fs.remove(commandsPath);

@@ -309,7 +309,7 @@ Customize ADR structure:
 {
   "ide": {
     "type": "claude-code",
-    "commandPrefix": "/AgileFlow:",
+    "commandPrefix": "/agileflow:",
     "agentMention": "@agileflow-",
     "shortcuts": {
       "createStory": "Ctrl+Shift+S",
@@ -427,7 +427,7 @@ Use environment-specific overrides:
 Validate your configuration:
 
 ```bash
-/AgileFlow:diagnose
+/agileflow:diagnose
 ```
 
 Shows:
@@ -502,12 +502,12 @@ Use env vars for sensitive data:
 1. Check file exists: `.agileflow/config.json`
 2. Validate JSON syntax
 3. Check file permissions
-4. Run `/AgileFlow:diagnose`
+4. Run `/agileflow:diagnose`
 
 ### Invalid Settings
 
 ```bash
-/AgileFlow:diagnose
+/agileflow:diagnose
 ```
 
 Shows validation errors and suggestions.
@@ -515,7 +515,7 @@ Shows validation errors and suggestions.
 ### Reset to Defaults
 
 ```bash
-/AgileFlow:setup --reset-config
+/agileflow:setup --reset-config
 ```
 
 <Callout type="warn">

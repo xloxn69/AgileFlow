@@ -173,7 +173,7 @@ else
   echo "1. Fix JSON validation errors using: bash scripts/validate-json.sh <file>"
   echo "2. Add missing files to .gitignore if needed"
   echo "3. Run archival if status.json is too large: bash scripts/archive-completed-stories.sh 7"
-  echo "4. Re-run diagnostics after fixes: /AgileFlow:diagnose"
+  echo "4. Re-run diagnostics after fixes: /agileflow:diagnose"
   exit 1
 fi
 ```

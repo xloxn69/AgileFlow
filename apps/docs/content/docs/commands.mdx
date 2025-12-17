@@ -12,12 +12,12 @@ AgileFlow provides **41 slash commands** to streamline your development workflow
 
 ## Story Management
 
-### /AgileFlow:story
+### /agileflow:story
 
 Create a new user story with AI-generated acceptance criteria.
 
 ```
-/AgileFlow:story
+/agileflow:story
 ```
 
 **Prompts for**:
@@ -36,12 +36,12 @@ Create a new user story with AI-generated acceptance criteria.
   Stories are saved to `.agileflow/stories/` with auto-generated IDs (AF-001, AF-002, etc.)
 </Callout>
 
-### /AgileFlow:epic
+### /agileflow:epic
 
 Create an epic with multiple related stories.
 
 ```
-/AgileFlow:epic
+/agileflow:epic
 ```
 
 **Use cases**:
@@ -55,12 +55,12 @@ Create an epic with multiple related stories.
 - Dependency mapping
 - Milestone planning
 
-### /AgileFlow:status
+### /agileflow:status
 
 Update the status of a story.
 
 ```
-/AgileFlow:status AF-001 in-progress
+/agileflow:status AF-001 in-progress
 ```
 
 **Valid statuses**:
@@ -71,12 +71,12 @@ Update the status of a story.
 - `done` - Completed
 - `blocked` - Blocked by dependency
 
-### /AgileFlow:assign
+### /agileflow:assign
 
 Assign a story to an owner.
 
 ```
-/AgileFlow:assign AF-001 --owner AG-API
+/agileflow:assign AF-001 --owner AG-API
 ```
 
 **Owners**:
@@ -86,12 +86,12 @@ Assign a story to an owner.
 
 ## Sprint Planning
 
-### /AgileFlow:sprint
+### /agileflow:sprint
 
 Interactive sprint planning with velocity tracking.
 
 ```
-/AgileFlow:sprint
+/agileflow:sprint
 ```
 
 **Features**:
@@ -101,12 +101,12 @@ Interactive sprint planning with velocity tracking.
 - Set sprint goals
 - Track dependencies
 
-### /AgileFlow:board
+### /agileflow:board
 
 Display visual kanban board.
 
 ```
-/AgileFlow:board
+/agileflow:board
 ```
 
 **Shows**:
@@ -115,12 +115,12 @@ Display visual kanban board.
 - Sprint progress
 - WIP limits (if configured)
 
-### /AgileFlow:velocity
+### /agileflow:velocity
 
 Track and analyze team velocity.
 
 ```
-/AgileFlow:velocity
+/agileflow:velocity
 ```
 
 **Metrics**:
@@ -129,12 +129,12 @@ Track and analyze team velocity.
 - Commitment reliability
 - Recommended capacity
 
-### /AgileFlow:metrics
+### /agileflow:metrics
 
 View sprint and project metrics.
 
 ```
-/AgileFlow:metrics
+/agileflow:metrics
 ```
 
 **Displays**:
@@ -146,12 +146,12 @@ View sprint and project metrics.
 
 ## Documentation
 
-### /AgileFlow:adr
+### /agileflow:adr
 
 Create an Architecture Decision Record.
 
 ```
-/AgileFlow:adr
+/agileflow:adr
 ```
 
 **Structure**:
@@ -162,12 +162,12 @@ Create an Architecture Decision Record.
 
 **Saved to**: `docs/03-decisions/`
 
-### /AgileFlow:docs
+### /agileflow:docs
 
 Synchronize documentation with code changes.
 
 ```
-/AgileFlow:docs
+/agileflow:docs
 ```
 
 **Actions**:
@@ -176,12 +176,12 @@ Synchronize documentation with code changes.
 - Generates changelog entries
 - Updates code examples
 
-### /AgileFlow:readme-sync
+### /agileflow:readme-sync
 
 Synchronize a folder's README with its contents.
 
 ```
-/AgileFlow:readme-sync path/to/folder
+/agileflow:readme-sync path/to/folder
 ```
 
 **Updates**:
@@ -192,12 +192,12 @@ Synchronize a folder's README with its contents.
 
 ## Code Quality
 
-### /AgileFlow:review
+### /agileflow:review
 
 AI-powered code review with quality suggestions.
 
 ```
-/AgileFlow:review
+/agileflow:review
 ```
 
 **Checks**:
@@ -207,12 +207,12 @@ AI-powered code review with quality suggestions.
 - Security concerns
 - Best practices
 
-### /AgileFlow:refactor
+### /agileflow:refactor
 
 Identify and plan technical debt cleanup.
 
 ```
-/AgileFlow:refactor
+/agileflow:refactor
 ```
 
 **Analyzes**:
@@ -222,12 +222,12 @@ Identify and plan technical debt cleanup.
 - Test coverage
 - Documentation gaps
 
-### /AgileFlow:debt
+### /agileflow:debt
 
 Track and prioritize technical debt.
 
 ```
-/AgileFlow:debt
+/agileflow:debt
 ```
 
 **Features**:
@@ -238,12 +238,12 @@ Track and prioritize technical debt.
 
 ## Testing
 
-### /AgileFlow:tests
+### /agileflow:tests
 
 Set up automated testing infrastructure.
 
 ```
-/AgileFlow:tests
+/agileflow:tests
 ```
 
 **Configures**:
@@ -252,12 +252,12 @@ Set up automated testing infrastructure.
 - CI integration
 - Test patterns
 
-### /AgileFlow:verify
+### /agileflow:verify
 
 Run project tests and update story status.
 
 ```
-/AgileFlow:verify [story_id]
+/agileflow:verify [story_id]
 ```
 
 **Actions**:
@@ -268,12 +268,12 @@ Run project tests and update story status.
 
 ## CI/CD & Deployment
 
-### /AgileFlow:ci
+### /agileflow:ci
 
 Bootstrap CI/CD workflow.
 
 ```
-/AgileFlow:ci
+/agileflow:ci
 ```
 
 **Sets up**:
@@ -282,12 +282,12 @@ Bootstrap CI/CD workflow.
 - Linting and type checking
 - Build pipeline
 
-### /AgileFlow:deploy
+### /agileflow:deploy
 
 Configure automated deployment.
 
 ```
-/AgileFlow:deploy
+/agileflow:deploy
 ```
 
 **Supports**:
@@ -296,12 +296,12 @@ Configure automated deployment.
 - Kubernetes
 - Custom deployment scripts
 
-### /AgileFlow:packages
+### /agileflow:packages
 
 Manage dependencies with updates and security audits.
 
 ```
-/AgileFlow:packages
+/agileflow:packages
 ```
 
 **Features**:
@@ -312,12 +312,12 @@ Manage dependencies with updates and security audits.
 
 ## Git & Pull Requests
 
-### /AgileFlow:pr
+### /agileflow:pr
 
 Generate pull request description from story.
 
 ```
-/AgileFlow:pr AF-001
+/agileflow:pr AF-001
 ```
 
 **Generates**:
@@ -326,23 +326,23 @@ Generate pull request description from story.
 - Testing instructions
 - Checklist
 
-### /AgileFlow:changelog
+### /agileflow:changelog
 
 Auto-generate changelog from commit history.
 
 ```
-/AgileFlow:changelog
+/agileflow:changelog
 ```
 
 **Format**: Keep a Changelog
 - Added, Changed, Fixed, Deprecated, Removed, Security
 
-### /AgileFlow:baseline
+### /agileflow:baseline
 
 Mark current state as verified baseline.
 
 ```
-/AgileFlow:baseline "Release 1.0"
+/agileflow:baseline "Release 1.0"
 ```
 
 **Use cases**:
@@ -352,12 +352,12 @@ Mark current state as verified baseline.
 
 ## Research & Analysis
 
-### /AgileFlow:research
+### /agileflow:research
 
 Initialize research note with structured template.
 
 ```
-/AgileFlow:research
+/agileflow:research
 ```
 
 **Template sections**:
@@ -370,12 +370,12 @@ Initialize research note with structured template.
 
 **Saved to**: `docs/research/`
 
-### /AgileFlow:impact
+### /agileflow:impact
 
 Analyze change impact across codebase.
 
 ```
-/AgileFlow:impact
+/agileflow:impact
 ```
 
 **Analyzes**:
@@ -385,12 +385,12 @@ Analyze change impact across codebase.
 - Breaking changes
 - Migration needs
 
-### /AgileFlow:deps
+### /agileflow:deps
 
 Visualize dependency graph with critical path.
 
 ```
-/AgileFlow:deps [story_id]
+/agileflow:deps [story_id]
 ```
 
 **Shows**:
@@ -402,12 +402,12 @@ Visualize dependency graph with critical path.
 
 ## Workflow Automation
 
-### /AgileFlow:auto
+### /agileflow:auto
 
 Auto-generate stories from PRDs, mockups, or specs.
 
 ```
-/AgileFlow:auto
+/agileflow:auto
 ```
 
 **Input types**:
@@ -422,12 +422,12 @@ Auto-generate stories from PRDs, mockups, or specs.
 - Priority ordering
 - Story point estimates
 
-### /AgileFlow:babysit
+### /agileflow:babysit
 
 Interactive mentor for end-to-end feature implementation.
 
 ```
-/AgileFlow:babysit
+/agileflow:babysit
 ```
 
 **Guides you through**:
@@ -440,12 +440,12 @@ Interactive mentor for end-to-end feature implementation.
 
 ## Project Management
 
-### /AgileFlow:blockers
+### /agileflow:blockers
 
 Track and resolve blockers.
 
 ```
-/AgileFlow:blockers
+/agileflow:blockers
 ```
 
 **Shows**:
@@ -455,12 +455,12 @@ Track and resolve blockers.
 - Suggested actions
 - Owner assignment
 
-### /AgileFlow:update
+### /agileflow:update
 
 Generate stakeholder progress report.
 
 ```
-/AgileFlow:update
+/agileflow:update
 ```
 
 **Includes**:
@@ -470,12 +470,12 @@ Generate stakeholder progress report.
 - Blockers and risks
 - Velocity trends
 
-### /AgileFlow:retro
+### /agileflow:retro
 
 Generate retrospective with Start/Stop/Continue format.
 
 ```
-/AgileFlow:retro
+/agileflow:retro
 ```
 
 **Sections**:
@@ -486,12 +486,12 @@ Generate retrospective with Start/Stop/Continue format.
 
 ## Configuration
 
-### /AgileFlow:setup
+### /agileflow:setup
 
 Bootstrap entire AgileFlow system in current project.
 
 ```
-/AgileFlow:setup
+/agileflow:setup
 ```
 
 **Creates**:
@@ -500,12 +500,12 @@ Bootstrap entire AgileFlow system in current project.
 - Slash commands
 - Agent contracts
 
-### /AgileFlow:agent
+### /agileflow:agent
 
 Onboard a new agent with profile and contract.
 
 ```
-/AgileFlow:agent
+/agileflow:agent
 ```
 
 **Creates**:
@@ -514,12 +514,12 @@ Onboard a new agent with profile and contract.
 - Skills
 - Command integration
 
-### /AgileFlow:template
+### /agileflow:template
 
 Create and manage custom document templates.
 
 ```
-/AgileFlow:template
+/agileflow:template
 ```
 
 **Template types**:
@@ -530,12 +530,12 @@ Create and manage custom document templates.
 
 ## Utilities
 
-### /AgileFlow:help
+### /agileflow:help
 
 Display AgileFlow system overview and commands.
 
 ```
-/AgileFlow:help
+/agileflow:help
 ```
 
 **Shows**:
@@ -544,12 +544,12 @@ Display AgileFlow system overview and commands.
 - Quick start guide
 - Documentation links
 
-### /AgileFlow:diagnose
+### /agileflow:diagnose
 
 System health diagnostics.
 
 ```
-/AgileFlow:diagnose
+/agileflow:diagnose
 ```
 
 **Checks**:
@@ -559,12 +559,12 @@ System health diagnostics.
 - Agent availability
 - Command registration
 
-### /AgileFlow:compress
+### /agileflow:compress
 
 Compress status.json by removing verbose fields.
 
 ```
-/AgileFlow:compress
+/agileflow:compress
 ```
 
 **Optimizes**:
@@ -573,12 +573,12 @@ Compress status.json by removing verbose fields.
 - Reduces file size
 - Maintains functionality
 
-### /AgileFlow:feedback
+### /agileflow:feedback
 
 Collect and process agent feedback.
 
 ```
-/AgileFlow:feedback
+/agileflow:feedback
 ```
 
 **Gathers**:
@@ -587,12 +587,12 @@ Collect and process agent feedback.
 - Workflow issues
 - Improvement suggestions
 
-### /AgileFlow:handoff
+### /agileflow:handoff
 
 Document work handoff between agents.
 
 ```
-/AgileFlow:handoff
+/agileflow:handoff
 ```
 
 **Records**:
@@ -601,12 +601,12 @@ Document work handoff between agents.
 - Next steps
 - Context for next agent
 
-### /AgileFlow:context
+### /agileflow:context
 
 Generate context export for web AI tools.
 
 ```
-/AgileFlow:context
+/agileflow:context
 ```
 
 **Exports**:
@@ -615,12 +615,12 @@ Generate context export for web AI tools.
 - Configuration
 - Recent changes
 
-### /AgileFlow:session-init
+### /agileflow:session-init
 
 Initialize session harness with test verification.
 
 ```
-/AgileFlow:session-init
+/agileflow:session-init
 ```
 
 **Sets up**:
@@ -629,12 +629,12 @@ Initialize session harness with test verification.
 - Verification baseline
 - Monitoring
 
-### /AgileFlow:resume
+### /agileflow:resume
 
 Resume work with verification and context loading.
 
 ```
-/AgileFlow:resume
+/agileflow:resume
 ```
 
 **Loads**:
@@ -643,12 +643,12 @@ Resume work with verification and context loading.
 - Pending actions
 - Test status
 
-### /AgileFlow:story-validate
+### /agileflow:story-validate
 
 Validate story completeness before development.
 
 ```
-/AgileFlow:story-validate AF-001
+/agileflow:story-validate AF-001
 ```
 
 **Checks**:
@@ -670,16 +670,16 @@ Some commands work well together:
 
 ```bash
 # Create and assign a story
-/AgileFlow:story
-/AgileFlow:assign AF-001 --owner AG-API
+/agileflow:story
+/agileflow:assign AF-001 --owner AG-API
 
 # Plan sprint and show board
-/AgileFlow:sprint
-/AgileFlow:board
+/agileflow:sprint
+/agileflow:board
 
 # Complete story and create PR
-/AgileFlow:status AF-001 done
-/AgileFlow:pr AF-001
+/agileflow:status AF-001 done
+/agileflow:pr AF-001
 ```
 
 ### Global Options

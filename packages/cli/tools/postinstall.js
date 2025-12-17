@@ -91,7 +91,7 @@ function shouldSkipInstall() {
   // Get the installation directory (user's project root)
   const installDir = process.cwd();
 
-  // Skip if .agileflow or .claude/commands/AgileFlow folder already exists
+  // Skip if .agileflow or .claude/commands/agileflow folder already exists
   const agileflowPath = path.join(installDir, '.agileflow');
   const claudeAgileflowPath = path.join(installDir, '.claude', 'commands', 'AgileFlow');
 

@@ -4,7 +4,7 @@ Research findings, investigations, and technical explorations.
 
 ## Format
 
-Use `/AgileFlow:research` to create new research notes.
+Use `/agileflow:research` to create new research notes.
 
 | Date | Topic | Path | Summary |
 |------|-------|------|---------|

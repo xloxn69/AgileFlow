@@ -3,7 +3,7 @@
 /**
  * Babysit Command Content Injector
  *
- * Injects agent list and command references into /AgileFlow:babysit command file.
+ * Injects agent list and command references into /agileflow:babysit command file.
  * Handles multiple AUTOGEN sections.
  */
 

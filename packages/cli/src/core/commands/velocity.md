@@ -203,7 +203,7 @@ Actual: ● ─ ●
 
 3. **Long-term**:
    - Maintain 8-10 points/week sustained velocity
-   - Reserve 20% for tech debt (/AgileFlow:tech-debt command)
+   - Reserve 20% for tech debt (/agileflow:tech-debt command)
    - Keep story sizes ≤1.5d for predictability
 
 ---
@@ -358,7 +358,7 @@ WORKFLOW
 INTEGRATION
 
 - Save velocity history to docs/08-project/velocity/
-- Update /AgileFlow:stakeholder-update with velocity data
+- Update /agileflow:stakeholder-update with velocity data
 - Alert if velocity drops >20% from average
 - Suggest sprint planning capacity based on velocity
 

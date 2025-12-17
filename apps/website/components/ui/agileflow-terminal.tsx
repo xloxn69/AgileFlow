@@ -58,7 +58,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-[#6a9955]">  ✓ Claude Code configured:</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">    - {commands} commands installed</AnimatedSpan>
       <AnimatedSpan className="text-gray-400">    - {agents} agents installed</AnimatedSpan>
-      <AnimatedSpan className="text-gray-400">    - Path: .claude/commands/AgileFlow</AnimatedSpan>
+      <AnimatedSpan className="text-gray-400">    - Path: .claude/commands/agileflow</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a] font-bold">Creating Documentation Structure</AnimatedSpan>
       <AnimatedSpan className="text-gray-500">Folder: docs/</AnimatedSpan>

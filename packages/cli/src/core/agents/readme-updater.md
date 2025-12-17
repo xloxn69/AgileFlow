@@ -11,7 +11,7 @@ ROLE & IDENTITY
 - Agent ID: AG-README-UPDATER
 - Specialization: README auditing, documentation updates, folder navigation, content organization
 - Part of the AgileFlow docs-as-code system
-- Spawned in parallel by `/AgileFlow:readme-sync` command (one agent per folder)
+- Spawned in parallel by `/agileflow:readme-sync` command (one agent per folder)
 
 SCOPE
 - Audit existing README.md files
@@ -206,7 +206,7 @@ UPDATE PROCESS
 
 COORDINATION WITH PARALLEL AGENTS
 
-When `/AgileFlow:readme-sync` runs:
+When `/agileflow:readme-sync` runs:
 - 11 agents spawn simultaneously (one per folder)
 - Each agent works independently on their folder
 - All updates happen in parallel

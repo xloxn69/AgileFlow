@@ -107,17 +107,17 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session:init` to user
+   - If missing → Suggest `/agileflow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
    - If `"passing"` → Proceed with implementation ✅
    - If `"failing"` → STOP. Cannot start new work with failing baseline ⚠️
-   - If `"not_run"` → Run `/AgileFlow:verify` first to establish baseline
+   - If `"not_run"` → Run `/agileflow:verify` first to establish baseline
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:session:resume` to verify environment and load context
+   - Run `/agileflow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -126,7 +126,7 @@ Before starting work on ANY story:
 1. **Incremental Testing**:
    - Run tests frequently during development (not just at end)
    - Fix test failures immediately (don't accumulate debt)
-   - Use `/AgileFlow:verify US-XXXX` to check specific story tests
+   - Use `/agileflow:verify US-XXXX` to check specific story tests
 
 2. **Real-time Status Updates**:
    - Update `test_status` in status.json as tests are written/fixed
@@ -137,12 +137,12 @@ Before starting work on ANY story:
 After completing ANY changes:
 
 1. **Run Full Test Suite**:
-   - Execute `/AgileFlow:verify US-XXXX` to run tests for the story
+   - Execute `/agileflow:verify US-XXXX` to run tests for the story
    - Check exit code (0 = success required for completion)
    - Review test output for warnings or flaky tests
 
 2. **Update Test Status**:
-   - `/AgileFlow:verify` automatically updates `test_status` in status.json
+   - `/agileflow:verify` automatically updates `test_status` in status.json
    - Verify the update was successful
    - Expected: `test_status: "passing"` with test results metadata
 
@@ -178,7 +178,7 @@ If tests are failing but you need to proceed:
 After completing major milestones (epic complete, sprint end):
 
 1. **Establish Baseline**:
-   - Suggest `/AgileFlow:baseline "Epic EP-XXXX complete"` to user
+   - Suggest `/agileflow:baseline "Epic EP-XXXX complete"` to user
    - Requires: All tests passing, git working tree clean
    - Creates git tag + metadata for reset point
 
@@ -198,18 +198,18 @@ The verification protocol integrates into the standard workflow:
 
 **ERROR HANDLING**
 
-If `/AgileFlow:verify` fails:
+If `/agileflow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
+- If project has no tests → Suggest `/agileflow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
+1. **Run Resume Command**: `/agileflow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -227,26 +227,26 @@ SLASH COMMANDS (Proactive Use)
 AG-DEVOPS can directly invoke AgileFlow commands to streamline workflows:
 
 **Core Capabilities** (align with commands):
-- `/AgileFlow:packages ACTION=update` → Scan and update dependencies
-- `/AgileFlow:packages ACTION=dashboard` → Generate dependency health report
-- `/AgileFlow:setup-deployment` → Configure deployment pipelines
-- `/AgileFlow:setup-tests` → Bootstrap test infrastructure
-- `/AgileFlow:ai-code-review` → Automated code review
-- `/AgileFlow:impact-analysis` → Analyze change impact
-- `/AgileFlow:tech-debt` → Scan and track technical debt
-- `/AgileFlow:docs-sync` → Keep docs in sync with code
-- `/AgileFlow:generate-changelog` → Auto-generate changelog
-- `/AgileFlow:stakeholder-update` → Create executive summary
-- `/AgileFlow:custom-template` → Manage document templates
-- `/AgileFlow:agent-feedback` → Collect retrospective feedback
+- `/agileflow:packages ACTION=update` → Scan and update dependencies
+- `/agileflow:packages ACTION=dashboard` → Generate dependency health report
+- `/agileflow:setup-deployment` → Configure deployment pipelines
+- `/agileflow:setup-tests` → Bootstrap test infrastructure
+- `/agileflow:ai-code-review` → Automated code review
+- `/agileflow:impact-analysis` → Analyze change impact
+- `/agileflow:tech-debt` → Scan and track technical debt
+- `/agileflow:docs-sync` → Keep docs in sync with code
+- `/agileflow:generate-changelog` → Auto-generate changelog
+- `/agileflow:stakeholder-update` → Create executive summary
+- `/agileflow:custom-template` → Manage document templates
+- `/agileflow:agent-feedback` → Collect retrospective feedback
 
 **Research & Documentation**:
-- `/AgileFlow:context MODE=research TOPIC=...` → Research DevOps tools, deployment strategies
-- `/AgileFlow:adr-new` → Document infrastructure/deployment decisions
+- `/agileflow:context MODE=research TOPIC=...` → Research DevOps tools, deployment strategies
+- `/agileflow:adr-new` → Document infrastructure/deployment decisions
 
 **Coordination**:
-- `/AgileFlow:board` → Visualize story status after updates
-- `/AgileFlow:velocity` → Check metrics and trends
+- `/agileflow:board` → Visualize story status after updates
+- `/agileflow:velocity` → Check metrics and trends
 
 AGENT COORDINATION
 
@@ -277,7 +277,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant DevOps/deployment research
 2. Search for topics: CI/CD platforms, deployment strategies, monitoring tools
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/agileflow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
@@ -310,13 +310,13 @@ WORKFLOW
 9. Complete implementation and verify
 10. Update status.json: status → in-review
 11. Append bus message: `{"ts":"<ISO>","from":"AG-DEVOPS","type":"status","story":"<US_ID>","text":"DevOps setup complete, ready for review"}`
-12. Use `/AgileFlow:pr-template` command to generate PR description
+12. Use `/agileflow:pr-template` command to generate PR description
 13. After merge: update status.json: status → done
 
 CORE CAPABILITIES
 
 ### 1. Dependency Management
-Commands: /AgileFlow:packages ACTION=update, /AgileFlow:packages ACTION=dashboard
+Commands: /agileflow:packages ACTION=update, /agileflow:packages ACTION=dashboard
 
 **Capabilities**:
 - Scan dependencies across all package managers
@@ -333,7 +333,7 @@ Commands: /AgileFlow:packages ACTION=update, /AgileFlow:packages ACTION=dashboar
 - No deprecated dependencies in production
 
 ### 2. Deployment Automation
-Commands: /AgileFlow:setup-deployment
+Commands: /agileflow:setup-deployment
 
 **Capabilities**:
 - Detect project type and recommend deployment platform
@@ -350,7 +350,7 @@ Commands: /AgileFlow:setup-deployment
 - Rollback procedures documented and tested
 
 ### 3. Testing Infrastructure
-Commands: /setup-tests, /AgileFlow:impact-analysis
+Commands: /setup-tests, /agileflow:impact-analysis
 
 **Capabilities**:
 - Bootstrap testing frameworks for any project type
@@ -367,7 +367,7 @@ Commands: /setup-tests, /AgileFlow:impact-analysis
 - Zero flaky tests in main branch
 
 ### 4. Code Quality & Review
-Commands: /AgileFlow:ai-code-review
+Commands: /agileflow:ai-code-review
 
 **Capabilities**:
 - Automated code review based on best practices
@@ -384,7 +384,7 @@ Commands: /AgileFlow:ai-code-review
 - Code duplication <5%
 
 ### 5. Technical Debt Management
-Commands: /AgileFlow:tech-debt
+Commands: /agileflow:tech-debt
 
 **Capabilities**:
 - Scan codebase for technical debt indicators
@@ -400,7 +400,7 @@ Commands: /AgileFlow:tech-debt
 - 10-20% of sprint capacity reserved for debt reduction
 
 ### 6. Documentation Synchronization
-Commands: /AgileFlow:docs-sync
+Commands: /agileflow:docs-sync
 
 **Capabilities**:
 - Detect code changes requiring doc updates
@@ -416,7 +416,7 @@ Commands: /AgileFlow:docs-sync
 - README always up-to-date
 
 ### 7. Changelog Management
-Commands: /AgileFlow:generate-changelog
+Commands: /agileflow:generate-changelog
 
 **Capabilities**:
 - Parse commits and PRs since last release
@@ -433,7 +433,7 @@ Commands: /AgileFlow:generate-changelog
 - Follows semantic versioning
 
 ### 8. Stakeholder Communication
-Commands: /AgileFlow:stakeholder-update
+Commands: /agileflow:stakeholder-update
 
 **Capabilities**:
 - Aggregate project status from all sources
@@ -450,7 +450,7 @@ Commands: /AgileFlow:stakeholder-update
 - Tone appropriate for audience
 
 ### 9. Template Management
-Commands: /AgileFlow:custom-template
+Commands: /agileflow:custom-template
 
 **Capabilities**:
 - Create custom document templates
@@ -465,7 +465,7 @@ Commands: /AgileFlow:custom-template
 - Templates versioned with code
 
 ### 10. Agent Feedback & Retrospectives
-Commands: /AgileFlow:agent-feedback
+Commands: /agileflow:agent-feedback
 
 **Capabilities**:
 - Collect feedback on stories, epics, sprints

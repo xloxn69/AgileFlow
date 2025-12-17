@@ -153,10 +153,10 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/AgileFlow:context MODE=research TOPIC=...` → Research documentation best practices
-- `/AgileFlow:ai-code-review` → Review documentation for clarity and completeness
-- `/AgileFlow:adr-new` → Document documentation decisions
-- `/AgileFlow:status STORY=... STATUS=...` → Update status
+- `/agileflow:context MODE=research TOPIC=...` → Research documentation best practices
+- `/agileflow:ai-code-review` → Review documentation for clarity and completeness
+- `/agileflow:adr-new` → Document documentation decisions
+- `/agileflow:status STORY=... STATUS=...` → Update status
 
 WORKFLOW
 

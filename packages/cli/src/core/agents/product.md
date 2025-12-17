@@ -212,10 +212,10 @@ COORDINATION WITH EPIC-PLANNER
 
 SLASH COMMANDS
 
-- `/AgileFlow:context MODE=research TOPIC=...` → Research user needs, competitive analysis
-- `/AgileFlow:adr-new` → Document product decisions
-- `/AgileFlow:tech-debt` → Document product debt (unclear requirements, scope creep)
-- `/AgileFlow:status STORY=... STATUS=...` → Update status
+- `/agileflow:context MODE=research TOPIC=...` → Research user needs, competitive analysis
+- `/agileflow:adr-new` → Document product decisions
+- `/agileflow:tech-debt` → Document product debt (unclear requirements, scope creep)
+- `/agileflow:status STORY=... STATUS=...` → Update status
 
 RESEARCH INTEGRATION
 
@@ -226,8 +226,8 @@ RESEARCH INTEGRATION
 4. Research industry standards
 
 **Suggest Research**:
-- `/AgileFlow:context MODE=research TOPIC="Best practices for [feature type]"`
-- `/AgileFlow:context MODE=research TOPIC="User needs analysis for [user type]"`
+- `/agileflow:context MODE=research TOPIC="Best practices for [feature type]"`
+- `/agileflow:context MODE=research TOPIC="User needs analysis for [user type]"`
 
 WORKFLOW
 

@@ -235,7 +235,7 @@ Group updates by SCOPE:
    - Run update commands
    - Run tests (if available)
    - Commit with message: "chore(deps): update dependencies (<scope>)"
-   - Push and create PR using /AgileFlow:pr-template
+   - Push and create PR using /agileflow:pr-template
 
 ### Integration
 - Save report to docs/08-project/dependency-report-<YYYYMMDD>.md
@@ -283,7 +283,7 @@ None
 ## Moderate (3)
 [...]
 
-**Recommendation**: Run /AgileFlow:packages ACTION=update SCOPE=security
+**Recommendation**: Run /agileflow:packages ACTION=update SCOPE=security
 ```
 
 ---
@@ -292,29 +292,29 @@ None
 
 ```bash
 # Show dependency dashboard (default)
-/AgileFlow:packages
-/AgileFlow:packages ACTION=dashboard
+/agileflow:packages
+/agileflow:packages ACTION=dashboard
 
 # Export dashboard as HTML
-/AgileFlow:packages ACTION=dashboard OUTPUT=html
+/agileflow:packages ACTION=dashboard OUTPUT=html
 
 # Export as JSON for tooling
-/AgileFlow:packages ACTION=dashboard OUTPUT=json > deps.json
+/agileflow:packages ACTION=dashboard OUTPUT=json > deps.json
 
 # Security audit only
-/AgileFlow:packages ACTION=audit
+/agileflow:packages ACTION=audit
 
 # Update security vulnerabilities
-/AgileFlow:packages ACTION=update SCOPE=security
+/agileflow:packages ACTION=update SCOPE=security
 
 # Update all minor and patch versions
-/AgileFlow:packages ACTION=update SCOPE=minor
+/agileflow:packages ACTION=update SCOPE=minor
 
 # Update all with auto-PR
-/AgileFlow:packages ACTION=update SCOPE=all AUTO_PR=yes
+/agileflow:packages ACTION=update SCOPE=all AUTO_PR=yes
 
 # Update only production dependencies
-/AgileFlow:packages ACTION=update INCLUDE_DEV=no
+/agileflow:packages ACTION=update INCLUDE_DEV=no
 ```
 
 ---
@@ -330,7 +330,7 @@ Suggest adding automated checks:
   run: npm outdated || true  # Don't fail, just warn
 
 - name: Generate dashboard
-  run: npx claude-code /AgileFlow:packages ACTION=dashboard
+  run: npx claude-code /agileflow:packages ACTION=dashboard
 ```
 
 Suggest Dependabot config (.github/dependabot.yml):

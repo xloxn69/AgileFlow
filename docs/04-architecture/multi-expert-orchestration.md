@@ -136,14 +136,14 @@ Available experts for orchestration:
 
 | Domain | Expert | Specialization |
 |--------|--------|----------------|
-| database | `/AgileFlow:agents:database` | Schema, queries, migrations |
-| api | `/AgileFlow:agents:api` | Endpoints, REST, GraphQL |
-| ui | `/AgileFlow:agents:ui` | Components, styling, UX |
-| security | `/AgileFlow:agents:security` | Auth, OWASP, vulnerabilities |
-| testing | `/AgileFlow:agents:testing` | Unit, integration, E2E |
-| performance | `/AgileFlow:agents:performance` | Optimization, caching |
-| devops | `/AgileFlow:agents:devops` | CI/CD, deployment |
-| documentation | `/AgileFlow:agents:documentation` | API docs, guides |
+| database | `/agileflow:agents:database` | Schema, queries, migrations |
+| api | `/agileflow:agents:api` | Endpoints, REST, GraphQL |
+| ui | `/agileflow:agents:ui` | Components, styling, UX |
+| security | `/agileflow:agents:security` | Auth, OWASP, vulnerabilities |
+| testing | `/agileflow:agents:testing` | Unit, integration, E2E |
+| performance | `/agileflow:agents:performance` | Optimization, caching |
+| devops | `/agileflow:agents:devops` | CI/CD, deployment |
+| documentation | `/agileflow:agents:documentation` | API docs, guides |
 
 ---
 

@@ -31,7 +31,7 @@ class ClaudeCodeSetup extends BaseIdeSetup {
     // Clean up old installation first
     await this.cleanup(projectDir);
 
-    // Create .claude/commands/AgileFlow directory
+    // Create .claude/commands/agileflow directory
     const claudeDir = path.join(projectDir, this.configDir);
     const commandsDir = path.join(claudeDir, this.commandsDir);
     const agileflowCommandsDir = path.join(commandsDir, 'AgileFlow');

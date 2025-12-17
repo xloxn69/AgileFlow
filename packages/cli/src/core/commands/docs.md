@@ -148,7 +148,7 @@ CI INTEGRATION
 Suggest adding to PR checks:
 ```yaml
 - name: Check docs sync
-  run: npx claude-code /AgileFlow:docs-sync BRANCH=${{ github.head_ref }}
+  run: npx claude-code /agileflow:docs-sync BRANCH=${{ github.head_ref }}
   # Fail if critical docs missing (e.g., public API endpoints)
 ```
 

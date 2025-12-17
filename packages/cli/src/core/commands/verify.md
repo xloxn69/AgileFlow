@@ -5,7 +5,7 @@ argument-hint: [story_id] (optional)
 
 # Verify Project Tests
 
-You are running the `/AgileFlow:verify` command to execute project tests and update test status for stories.
+You are running the `/agileflow:verify` command to execute project tests and update test status for stories.
 
 ## Command Purpose
 
@@ -34,8 +34,8 @@ Mark each step complete as you finish it. This ensures nothing is forgotten.
 
 ## Usage
 
-- `/AgileFlow:verify` - Run all tests, update all `in_progress` stories
-- `/AgileFlow:verify US-0042` - Run tests and update specific story's test status
+- `/agileflow:verify` - Run all tests, update all `in_progress` stories
+- `/agileflow:verify US-0042` - Run tests and update specific story's test status
 
 ## Execution Flow
 
@@ -46,7 +46,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten.
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "⚠️  Session harness not initialized"
   echo ""
-  echo "Run /AgileFlow:session:init to set up test verification"
+  echo "Run /agileflow:session:init to set up test verification"
   exit 1
 fi
 ```
@@ -212,7 +212,7 @@ Updated stories:
 
 The verify command requires session harness configuration.
 
-Run /AgileFlow:session:init to:
+Run /agileflow:session:init to:
 1. Detect your project type and test command
 2. Create environment.json configuration
 3. Enable test verification for all stories
@@ -247,7 +247,7 @@ Update environment.json if needed.
 
 File docs/09-agents/status.json is invalid or missing.
 
-Run /AgileFlow:setup to initialize AgileFlow structure.
+Run /agileflow:setup to initialize AgileFlow structure.
 ```
 
 ### Specific Story Not Found
@@ -264,8 +264,8 @@ Run without story_id to verify all in_progress stories.
 ## Integration Points
 
 ### Used By
-- `/AgileFlow:session:resume` - Runs verify as part of session startup
-- `/AgileFlow:baseline` - Requires passing tests before creating baseline
+- `/agileflow:session:resume` - Runs verify as part of session startup
+- `/agileflow:baseline` - Requires passing tests before creating baseline
 - Development agents - Should run verify after implementation
 
 ### Uses
@@ -286,4 +286,4 @@ Run without story_id to verify all in_progress stories.
 ## Example Execution
 
 ```
-User: /AgileFlow:verify
+User: /agileflow:verify

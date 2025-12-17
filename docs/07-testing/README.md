@@ -7,4 +7,4 @@ Test cases, acceptance criteria, and testing strategies.
 - **acceptance/**: Acceptance test definitions
 - **test-cases/**: Detailed test case documentation
 
-Use `/AgileFlow:tests` to set up testing infrastructure.
+Use `/agileflow:tests` to set up testing infrastructure.

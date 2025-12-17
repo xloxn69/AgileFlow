@@ -77,17 +77,17 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session:init` to user
+   - If missing → Suggest `/agileflow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
    - If `"passing"` → Proceed with implementation ✅
    - If `"failing"` → STOP. Cannot start new work with failing baseline ⚠️
-   - If `"not_run"` → Run `/AgileFlow:verify` first to establish baseline
+   - If `"not_run"` → Run `/agileflow:verify` first to establish baseline
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:session:resume` to verify environment and load context
+   - Run `/agileflow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -96,7 +96,7 @@ Before starting work on ANY story:
 1. **Incremental Testing**:
    - Run tests frequently during development (not just at end)
    - Fix test failures immediately (don't accumulate debt)
-   - Use `/AgileFlow:verify US-XXXX` to check specific story tests
+   - Use `/agileflow:verify US-XXXX` to check specific story tests
 
 2. **Real-time Status Updates**:
    - Update `test_status` in status.json as tests are written/fixed
@@ -107,12 +107,12 @@ Before starting work on ANY story:
 After completing ANY changes:
 
 1. **Run Full Test Suite**:
-   - Execute `/AgileFlow:verify US-XXXX` to run tests for the story
+   - Execute `/agileflow:verify US-XXXX` to run tests for the story
    - Check exit code (0 = success required for completion)
    - Review test output for warnings or flaky tests
 
 2. **Update Test Status**:
-   - `/AgileFlow:verify` automatically updates `test_status` in status.json
+   - `/agileflow:verify` automatically updates `test_status` in status.json
    - Verify the update was successful
    - Expected: `test_status: "passing"` with test results metadata
 
@@ -148,7 +148,7 @@ If tests are failing but you need to proceed:
 After completing major milestones (epic complete, sprint end):
 
 1. **Establish Baseline**:
-   - Suggest `/AgileFlow:baseline "Epic EP-XXXX complete"` to user
+   - Suggest `/agileflow:baseline "Epic EP-XXXX complete"` to user
    - Requires: All tests passing, git working tree clean
    - Creates git tag + metadata for reset point
 
@@ -168,18 +168,18 @@ The verification protocol integrates into the standard workflow:
 
 **ERROR HANDLING**
 
-If `/AgileFlow:verify` fails:
+If `/agileflow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
+- If project has no tests → Suggest `/agileflow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
+1. **Run Resume Command**: `/agileflow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -256,9 +256,9 @@ RESEARCH INTEGRATION
 4. Research common vulnerabilities in that tech stack
 
 **Suggest Research**:
-- `/AgileFlow:context MODE=research TOPIC="OWASP Top 10 for [framework] and how to prevent"`
-- `/AgileFlow:context MODE=research TOPIC="JWT best practices and token refresh strategy"`
-- `/AgileFlow:context MODE=research TOPIC="Input validation patterns for [language]"`
+- `/agileflow:context MODE=research TOPIC="OWASP Top 10 for [framework] and how to prevent"`
+- `/agileflow:context MODE=research TOPIC="JWT best practices and token refresh strategy"`
+- `/agileflow:context MODE=research TOPIC="Input validation patterns for [language]"`
 
 THREAT MODELING (for major features)
 
@@ -273,19 +273,19 @@ When implementing significant features, consider:
 SLASH COMMANDS (Proactive Use)
 
 **Security Research & Analysis**:
-- `/AgileFlow:context MODE=research TOPIC=...` → Research security patterns, vulnerabilities, compliance
-- `/AgileFlow:impact-analysis` → Analyze security impact of code changes
+- `/agileflow:context MODE=research TOPIC=...` → Research security patterns, vulnerabilities, compliance
+- `/agileflow:impact-analysis` → Analyze security impact of code changes
 
 **Quality & Review**:
-- `/AgileFlow:ai-code-review` → Review code for security issues before approval
-- `/AgileFlow:tech-debt` → Document security debt discovered during review
+- `/agileflow:ai-code-review` → Review code for security issues before approval
+- `/agileflow:tech-debt` → Document security debt discovered during review
 
 **Documentation**:
-- `/AgileFlow:adr-new` → Document security decisions (auth strategy, encryption approach, secret management)
+- `/agileflow:adr-new` → Document security decisions (auth strategy, encryption approach, secret management)
 
 **Coordination**:
-- `/AgileFlow:board` → View security-related stories in progress
-- `/AgileFlow:status STORY=... STATUS=...` → Update security review status
+- `/agileflow:board` → View security-related stories in progress
+- `/agileflow:status STORY=... STATUS=...` → Update security review status
 
 AGENT COORDINATION
 

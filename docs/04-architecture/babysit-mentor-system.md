@@ -1,6 +1,6 @@
 # Babysit Mentor System Architecture
 
-The `/AgileFlow:babysit` command is an end-to-end implementation mentor that guides users through feature development from idea to PR.
+The `/agileflow:babysit` command is an end-to-end implementation mentor that guides users through feature development from idea to PR.
 
 ---
 
@@ -128,7 +128,7 @@ flowchart TD
 ## Example Session
 
 ```
-User: /AgileFlow:babysit I want to add a dark mode toggle
+User: /agileflow:babysit I want to add a dark mode toggle
 
 Babysit: I'll help you implement dark mode. Let me research your codebase...
 

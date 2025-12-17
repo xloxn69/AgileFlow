@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🚀 AgileFlow v2.19.0 loaded - Type /AgileFlow:help for commands'"
+            "command": "echo '🚀 AgileFlow v2.19.0 loaded - Type /agileflow:help for commands'"
           },
           {
             "type": "command",
@@ -18,7 +18,7 @@
           },
           {
             "type": "command",
-            "command": "if [ -d docs ]; then echo '✅ AgileFlow docs/ structure found'; else echo '⚠️  No docs/ structure - run /AgileFlow:setup-system'; fi"
+            "command": "if [ -d docs ]; then echo '✅ AgileFlow docs/ structure found'; else echo '⚠️  No docs/ structure - run /agileflow:setup-system'; fi"
           }
         ]
       }

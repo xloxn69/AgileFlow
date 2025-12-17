@@ -58,13 +58,13 @@ npx agileflow uninstall   # Remove from project
 
 **Initialize the system:**
 ```
-/AgileFlow:setup
+/agileflow:setup
 ```
 Scaffolds docs structure, templates, and optional CI configuration.
 
 **Get help:**
 ```
-/AgileFlow:help
+/agileflow:help
 ```
 View system overview and available commands.
 
@@ -78,7 +78,7 @@ Interactive mentor guides you through epic/story creation, implementation, and P
 
 | IDE | Status | Config Location |
 |-----|--------|-----------------|
-| Claude Code | ✅ Supported | `.claude/commands/AgileFlow/` |
+| Claude Code | ✅ Supported | `.claude/commands/agileflow/` |
 | Cursor | ✅ Supported | `.cursor/rules/agileflow/` |
 | Windsurf | ✅ Supported | `.windsurf/workflows/agileflow/` |
 
@@ -99,7 +99,7 @@ AgileFlow combines three proven methodologies:
 <details>
 <summary><strong>📁 Folder Structure</strong> (click to expand)</summary>
 
-After running `/AgileFlow:setup`:
+After running `/agileflow:setup`:
 
 ```
 docs/
@@ -126,58 +126,58 @@ docs/
 <summary><strong>📚 Commands</strong> (41 total - click to expand)</summary>
 
 ### Core Workflow
-- `/AgileFlow:setup` - Bootstrap the entire system
-- `/AgileFlow:help` - Display system overview
-- `/AgileFlow:babysit` - Interactive mentor for end-to-end implementation
+- `/agileflow:setup` - Bootstrap the entire system
+- `/agileflow:help` - Display system overview
+- `/agileflow:babysit` - Interactive mentor for end-to-end implementation
 
 ### Planning & Structure
-- `/AgileFlow:epic` - Create a new epic
-- `/AgileFlow:story` - Create a user story with acceptance criteria
-- `/AgileFlow:story-validate` - Validate story completeness before development
-- `/AgileFlow:sprint` - Data-driven sprint planning with velocity forecasting
-- `/AgileFlow:adr` - Create an Architecture Decision Record
-- `/AgileFlow:agent` - Onboard a new agent
+- `/agileflow:epic` - Create a new epic
+- `/agileflow:story` - Create a user story with acceptance criteria
+- `/agileflow:story-validate` - Validate story completeness before development
+- `/agileflow:sprint` - Data-driven sprint planning with velocity forecasting
+- `/agileflow:adr` - Create an Architecture Decision Record
+- `/agileflow:agent` - Onboard a new agent
 
 ### Task Management
-- `/AgileFlow:assign` - Assign/reassign a story
-- `/AgileFlow:status` - Update story status
-- `/AgileFlow:handoff` - Document handoff between agents
+- `/agileflow:assign` - Assign/reassign a story
+- `/agileflow:status` - Update story status
+- `/agileflow:handoff` - Document handoff between agents
 
 ### Quality & CI
-- `/AgileFlow:pr` - Generate PR description
-- `/AgileFlow:ci` - Bootstrap CI workflow
-- `/AgileFlow:readme-sync` - Sync folder READMEs
-- `/AgileFlow:tests` - Automated testing infrastructure setup
-- `/AgileFlow:review` - AI-powered code review
-- `/AgileFlow:verify` - Run tests and update story test status (Session Harness)
-- `/AgileFlow:session-init` - Initialize session harness with test verification (Phase 2)
-- `/AgileFlow:resume` - Resume session with environment verification and context (Phase 2)
-- `/AgileFlow:baseline` - Mark current state as verified baseline (Phase 2)
-- `/AgileFlow:compress` - Compress status.json (fixes token limit issues)
+- `/agileflow:pr` - Generate PR description
+- `/agileflow:ci` - Bootstrap CI workflow
+- `/agileflow:readme-sync` - Sync folder READMEs
+- `/agileflow:tests` - Automated testing infrastructure setup
+- `/agileflow:review` - AI-powered code review
+- `/agileflow:verify` - Run tests and update story test status (Session Harness)
+- `/agileflow:session-init` - Initialize session harness with test verification (Phase 2)
+- `/agileflow:resume` - Resume session with environment verification and context (Phase 2)
+- `/agileflow:baseline` - Mark current state as verified baseline (Phase 2)
+- `/agileflow:compress` - Compress status.json (fixes token limit issues)
 
 ### Automation & DevOps
-- `/AgileFlow:packages` - Manage dependencies (dashboard, updates, security audits)
-- `/AgileFlow:docs` - Synchronize docs with code changes
-- `/AgileFlow:impact` - Analyze change impact on codebase
-- `/AgileFlow:debt` - Track and prioritize technical debt
-- `/AgileFlow:deploy` - Automated deployment pipeline setup
-- `/AgileFlow:changelog` - Auto-generate changelog from commits
-- `/AgileFlow:auto` - Generate stories from PRDs/mockups/specs
-- `/AgileFlow:template` - Create and manage custom templates
-- `/AgileFlow:feedback` - Collect feedback for continuous improvement
-- `/AgileFlow:update` - Generate stakeholder reports
+- `/agileflow:packages` - Manage dependencies (dashboard, updates, security audits)
+- `/agileflow:docs` - Synchronize docs with code changes
+- `/agileflow:impact` - Analyze change impact on codebase
+- `/agileflow:debt` - Track and prioritize technical debt
+- `/agileflow:deploy` - Automated deployment pipeline setup
+- `/agileflow:changelog` - Auto-generate changelog from commits
+- `/agileflow:auto` - Generate stories from PRDs/mockups/specs
+- `/agileflow:template` - Create and manage custom templates
+- `/agileflow:feedback` - Collect feedback for continuous improvement
+- `/agileflow:update` - Generate stakeholder reports
 
 ### Visualization & Analytics
-- `/AgileFlow:board` - Visual kanban board with WIP limits
-- `/AgileFlow:blockers` - Comprehensive blocker tracking with resolution suggestions
-- `/AgileFlow:velocity` - Velocity tracking and forecasting
-- `/AgileFlow:metrics` - Analytics dashboard (cycle time, lead time, throughput, flow efficiency)
-- `/AgileFlow:retro` - Automated retrospective generator with insights
-- `/AgileFlow:deps` - Dependency graph visualization with critical path detection
+- `/agileflow:board` - Visual kanban board with WIP limits
+- `/agileflow:blockers` - Comprehensive blocker tracking with resolution suggestions
+- `/agileflow:velocity` - Velocity tracking and forecasting
+- `/agileflow:metrics` - Analytics dashboard (cycle time, lead time, throughput, flow efficiency)
+- `/agileflow:retro` - Automated retrospective generator with insights
+- `/agileflow:deps` - Dependency graph visualization with critical path detection
 
 ### Web AI Integration
-- `/AgileFlow:context` - Generate/export/manage context for web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.)
-- `/AgileFlow:research` - Save research notes
+- `/agileflow:context` - Generate/export/manage context for web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.)
+- `/agileflow:research` - Save research notes
 
 </details>
 
@@ -331,7 +331,7 @@ Hooks are automatic triggers that execute commands in response to events:
        "SessionStart": [{
          "hooks": [{
            "type": "command",
-           "command": "echo '🚀 AgileFlow loaded - Type /AgileFlow:help'"
+           "command": "echo '🚀 AgileFlow loaded - Type /agileflow:help'"
          }]
        }]
      }
@@ -380,8 +380,8 @@ Hooks are automatic triggers that execute commands in response to events:
 1. **Pick a story** - Use `mentor` or check `docs/09-agents/status.json`
 2. **Implement to AC** - Follow acceptance criteria
 3. **Write tests** - Reference `docs/07-testing/test-cases/<STORY_ID>.md`
-4. **Update status** - Use `/AgileFlow:status`
-5. **Create PR** - Use `/AgileFlow:pr`
+4. **Update status** - Use `/agileflow:status`
+5. **Create PR** - Use `/agileflow:pr`
 6. **Mark done** - Update status after merge
 
 ### Multi-Agent Collaboration
@@ -389,7 +389,7 @@ Hooks are automatic triggers that execute commands in response to events:
 AgileFlow uses a message bus (`docs/09-agents/bus/log.jsonl`) for coordination:
 - Agents update `docs/09-agents/status.json` with current work
 - Messages logged to bus for async communication
-- Use `/AgileFlow:handoff` to transfer work between agents
+- Use `/agileflow:handoff` to transfer work between agents
 - WIP limit: max 2 stories per agent
 
 ### Git Worktrees for Context Preservation
@@ -404,12 +404,12 @@ For advanced users handling urgent hotfixes during feature work:
 
 **Quick Start:**
 ```bash
-# Use helper script (created by /AgileFlow:setup)
+# Use helper script (created by /agileflow:setup)
 ./docs/00-meta/scripts/worktree-create.sh auth-hotfix
 
 # Open in new window
 code ../myapp-auth-hotfix
-/AgileFlow:babysit
+/agileflow:babysit
 ```
 
 See `docs/00-meta/guides/worktrees.md` for comprehensive guide.
@@ -418,11 +418,11 @@ See `docs/00-meta/guides/worktrees.md` for comprehensive guide.
 
 Share context with web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.):
 
-1. Run `/AgileFlow:context` to generate/refresh context
-2. Use `/AgileFlow:context MODE=export` for concise excerpt
+1. Run `/agileflow:context` to generate/refresh context
+2. Use `/agileflow:context MODE=export` for concise excerpt
 3. Paste into web AI tool for research/ideation
-4. Use `/AgileFlow:context MODE=research TOPIC="..."` for structured prompts
-5. Save results with `/AgileFlow:research`
+4. Use `/agileflow:context MODE=research TOPIC="..."` for structured prompts
+5. Save results with `/agileflow:research`
 
 ### Session Harness System (v2.24.0+)
 
@@ -441,22 +441,22 @@ Session Harness System tracks test status, verifies baselines, and maintains ses
 **Quick Start:**
 ```bash
 # First time setup (interactive)
-/AgileFlow:session-init
+/agileflow:session-init
 
 # Start each session (or auto-run via hook)
-/AgileFlow:resume
+/agileflow:resume
 
 # Run tests and update test status
-/AgileFlow:verify
+/agileflow:verify
 
 # Create verified checkpoint
-/AgileFlow:baseline "Sprint 12 complete"
+/agileflow:baseline "Sprint 12 complete"
 ```
 
 **How It Works:**
 1. **Test Tracking**: Every story has `test_status` field (passing/failing/not_run)
 2. **Pre-Implementation**: Agents check test_status before starting work
-3. **Post-Implementation**: Agents run `/AgileFlow:verify` before marking complete
+3. **Post-Implementation**: Agents run `/agileflow:verify` before marking complete
 4. **Session Resume**: Loads context and detects regressions
 5. **Baselines**: Git tags mark known-good states for reset points
 
@@ -483,7 +483,7 @@ Prevent "file too large" errors:
 
 ```bash
 # Compress status.json (removes verbose fields)
-/AgileFlow:compress
+/agileflow:compress
 
 # Typical result: 80-90% size reduction
 ```
@@ -496,19 +496,19 @@ Full story content remains in `docs/06-stories/` markdown files (no data loss).
 
 ### Creating an Epic with Stories
 ```
-/AgileFlow:epic EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API"
+/agileflow:epic EPIC=EP-0001 TITLE="User Authentication" OWNER=AG-API GOAL="Secure user login and registration" STORIES="US-0001|Login form|AG-UI,US-0002|Auth API|AG-API"
 ```
 
 ### Working on a Story
 ```
-/AgileFlow:assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
+/agileflow:assign STORY=US-0001 NEW_OWNER=AG-UI NEW_STATUS=in-progress NOTE="Starting implementation"
 # ... do the work ...
-/AgileFlow:status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
+/agileflow:status STORY=US-0001 STATUS=in-review SUMMARY="Login form complete with tests" PR=https://github.com/...
 ```
 
 ### Recording a Decision
 ```
-/AgileFlow:adr NUMBER=0001 TITLE="Use JWT for authentication" CONTEXT="Need stateless auth for API" DECISION="JWT with 15min access + refresh tokens" CONSEQUENCES="Simpler scaling but requires token refresh flow"
+/agileflow:adr NUMBER=0001 TITLE="Use JWT for authentication" CONTEXT="Need stateless auth for API" DECISION="JWT with 15min access + refresh tokens" CONSEQUENCES="Simpler scaling but requires token refresh flow"
 ```
 
 ## Templates

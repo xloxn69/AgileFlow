@@ -115,7 +115,7 @@ function generateCommandList(commandsDir) {
 
   commands.forEach(cmd => {
     const argHint = cmd.argumentHint ? ` ${cmd.argumentHint}` : '';
-    output += `- \`/AgileFlow:${cmd.name}${argHint}\` - ${cmd.description}\n`;
+    output += `- \`/agileflow:${cmd.name}${argHint}\` - ${cmd.description}\n`;
   });
 
   return output;
