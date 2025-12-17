@@ -2,7 +2,7 @@
 description: Interactive mentor for end-to-end feature implementation
 ---
 
-# /AgileFlow:babysit
+# /agileflow:babysit
 
 End-to-end mentor for implementing features (search stories, consult/create research, create missing pieces, guide implementation; can run commands).
 
@@ -35,7 +35,7 @@ GOAL
   3) Analyze architecture and plan small steps; assess implementation approach; propose file changes; write code & tests safely.
   4) Update docs/09-agents/status.json and bus/log.jsonl (valid JSON).
   5) Prepare PR description and next actions.
-  6) Integrate research (docs/10-research); if gaps exist, suggest /AgileFlow:context MODE=research and save results.
+  6) Integrate research (docs/10-research); if gaps exist, suggest /agileflow:context MODE=research and save results.
   7) Ensure minimal CI exists; offer to create/update .github/workflows/ci.yml or fix it if failing.
 
 🔴 ⚠️ MANDATORY CONTEXT LOADING ON FIRST RUN ⚠️ 🔴
@@ -161,11 +161,11 @@ After loading context, analyze status.json, roadmap, and README TODOs to generat
     },
     {
       "label": "Research: JWT best practices",
-      "description": "📚 Prep work for Auth epic | Save time debugging later | /AgileFlow:context MODE=research"
+      "description": "📚 Prep work for Auth epic | Save time debugging later | /agileflow:context MODE=research"
     },
     {
       "label": "Create new epic/story",
-      "description": "💡 Start something new | Use /AgileFlow:epic or /AgileFlow:story"
+      "description": "💡 Start something new | Use /agileflow:epic or /agileflow:story"
     },
     {
       "label": "Other",
@@ -184,11 +184,11 @@ After loading context, analyze status.json, roadmap, and README TODOs to generat
 - **Limit to 5-6 options** - More than 6 creates decision paralysis
 - **"Other" is always last** - Custom input option
 
-**If research is missing/outdated**: Include research option with tip about /AgileFlow:context MODE=research
+**If research is missing/outdated**: Include research option with tip about /agileflow:context MODE=research
 
 RESEARCH INTEGRATION
 
-**💡 TIP: `/AgileFlow:context MODE=research` CAN HELP AVOID DEBUGGING HEADACHES**
+**💡 TIP: `/agileflow:context MODE=research` CAN HELP AVOID DEBUGGING HEADACHES**
 
 Consider using MODE=research when implementing new features - it can help you avoid common pitfalls, security issues, and save time debugging by learning from best practices upfront.
 
@@ -208,7 +208,7 @@ Consider using MODE=research when implementing new features - it can help you av
 
 **INTEGRATION WITH EXISTING RESEARCH**:
 - If a relevant note exists in docs/10-research: summarize 5–8 bullets + path; apply caveats to the plan.
-- If none/stale (>90 days)/conflicting: **IMMEDIATELY** propose /AgileFlow:context MODE=research TOPIC="..."; after the user pastes results, offer to save:
+- If none/stale (>90 days)/conflicting: **IMMEDIATELY** propose /agileflow:context MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
 DEFINITION OF READY
@@ -217,7 +217,7 @@ DEFINITION OF READY
 - ✓ Test stub at docs/07-testing/test-cases/<US_ID>.md
 - ✓ Dependencies resolved and documented
 - ✓ Previous Story Insights included (if applicable to epic)
-- ✓ Story validated via `/AgileFlow:story-validate` (all checks passing)
+- ✓ Story validated via `/agileflow:story-validate` (all checks passing)
 
 ARCHITECTURE CONTEXT GUIDANCE
 
@@ -433,7 +433,7 @@ Response:
 
 **WHEN TO USE MULTI-EXPERT ORCHESTRATION**:
 
-For complex cross-domain tasks, use `/AgileFlow:multi-expert` instead of single agent:
+For complex cross-domain tasks, use `/agileflow:multi-expert` instead of single agent:
 
 | Scenario | Use Multi-Expert |
 |----------|------------------|
@@ -452,7 +452,7 @@ For complex cross-domain tasks, use `/AgileFlow:multi-expert` instead of single 
 
 **How to invoke**:
 ```
-SlashCommand("/AgileFlow:multi-expert <question>")
+SlashCommand("/agileflow:multi-expert <question>")
 ```
 
 Or spawn directly:
@@ -493,7 +493,7 @@ CI INTEGRATION
 - On request, run tests/build/lint and summarize.
 
 IMPLEMENTATION FLOW
-1) Validate story readiness: `/AgileFlow:story-validate <STORY_ID>`
+1) Validate story readiness: `/agileflow:story-validate <STORY_ID>`
 2) Read relevant practices docs based on task type
 3) Read story's Architecture Context section FIRST
 4) Check Previous Story Insights (if not first in epic)

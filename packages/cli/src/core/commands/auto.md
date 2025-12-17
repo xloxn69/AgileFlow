@@ -338,7 +338,7 @@ INTEGRATION
 
 - Link back to source: Add "Source: <path or URL>" in story frontmatter
 - Update source doc with story IDs (if editable markdown)
-- Suggest running /AgileFlow:readme-sync on docs/06-stories/
+- Suggest running /agileflow:readme-sync on docs/06-stories/
 
 LIMITATIONS & WARNINGS
 

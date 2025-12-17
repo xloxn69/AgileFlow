@@ -3,7 +3,7 @@ description: Deploy multiple domain experts on the same problem for higher confi
 argument-hint: <question or task>
 ---
 
-# /AgileFlow:multi-expert
+# /agileflow:multi-expert
 
 Deploy multiple Agent Experts on the same problem. Each expert validates independently, then results are synthesized for higher confidence answers.
 

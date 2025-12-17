@@ -331,7 +331,7 @@ function compareVersions(a, b) {
  */
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
-    'claude-code': '.claude/commands/AgileFlow',
+    'claude-code': '.claude/commands/agileflow',
     'cursor': '.cursor/rules/agileflow',
     'windsurf': '.windsurf/workflows/agileflow',
   };

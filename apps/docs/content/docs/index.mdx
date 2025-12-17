@@ -36,7 +36,7 @@ npx agileflow install
 Then create your first story:
 
 ```bash
-/AgileFlow:story
+/agileflow:story
 ```
 
 That's it! AgileFlow will guide you through creating a properly formatted user story with acceptance criteria, story points, and test scenarios.
@@ -47,10 +47,10 @@ That's it! AgileFlow will guide you through creating a properly formatted user s
 
 From story creation to deployment, AgileFlow provides commands for every stage of development:
 
-- `/AgileFlow:story` - Create user stories
-- `/AgileFlow:sprint` - Plan sprints with velocity tracking
-- `/AgileFlow:pr` - Generate pull request descriptions
-- `/AgileFlow:adr` - Document architecture decisions
+- `/agileflow:story` - Create user stories
+- `/agileflow:sprint` - Plan sprints with velocity tracking
+- `/agileflow:pr` - Generate pull request descriptions
+- `/agileflow:adr` - Document architecture decisions
 - [View all commands →](/commands)
 
 ### 26 Specialized Agents
@@ -174,11 +174,11 @@ Here's a typical AgileFlow workflow:
 
 ```bash
 # 1. Create a feature epic
-/AgileFlow:epic
+/agileflow:epic
 > "Complete user authentication system"
 
 # 2. Plan the sprint
-/AgileFlow:sprint
+/agileflow:sprint
 > Select stories from backlog
 > Review team capacity (25 points)
 > Set sprint goal
@@ -189,21 +189,21 @@ Here's a typical AgileFlow workflow:
 @testing add auth tests for AF-001
 
 # 4. Track progress
-/AgileFlow:board
+/agileflow:board
 > View kanban board
 > See work in progress
 
 # 5. Create pull request
-/AgileFlow:pr AF-001
+/agileflow:pr AF-001
 > Auto-generated PR description
 > Testing instructions included
 
 # 6. Document decision
-/AgileFlow:adr
+/agileflow:adr
 > "Use JWT for authentication"
 
 # 7. Deploy
-/AgileFlow:deploy
+/agileflow:deploy
 > Automated deployment to production
 ```
 

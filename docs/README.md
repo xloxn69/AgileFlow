@@ -19,7 +19,7 @@ This directory contains all AgileFlow documentation and project management files
 ## Getting Started
 
 Use AgileFlow slash commands to work with these directories:
-- `/AgileFlow:epic` - Create a new epic
-- `/AgileFlow:story` - Create a user story
-- `/AgileFlow:status` - Update story status
-- `/AgileFlow:help` - See all available commands
+- `/agileflow:epic` - Create a new epic
+- `/agileflow:story` - Create a user story
+- `/agileflow:status` - Update story status
+- `/agileflow:help` - See all available commands

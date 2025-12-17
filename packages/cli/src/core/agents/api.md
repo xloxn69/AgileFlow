@@ -103,17 +103,17 @@ Before starting work on ANY story:
 1. **Check Session Harness**:
    - Look for `docs/00-meta/environment.json`
    - If exists → Session harness is active ✅
-   - If missing → Suggest `/AgileFlow:session:init` to user
+   - If missing → Suggest `/agileflow:session:init` to user
 
 2. **Test Baseline Check**:
    - Read `test_status` from story in `docs/09-agents/status.json`
    - If `"passing"` → Proceed with implementation ✅
    - If `"failing"` → STOP. Cannot start new work with failing baseline ⚠️
-   - If `"not_run"` → Run `/AgileFlow:verify` first to establish baseline
+   - If `"not_run"` → Run `/agileflow:verify` first to establish baseline
    - If `"skipped"` → Check why tests are skipped, document override decision
 
 3. **Environment Verification** (if session harness active):
-   - Run `/AgileFlow:session:resume` to verify environment and load context
+   - Run `/agileflow:session:resume` to verify environment and load context
    - Check for regressions (tests were passing, now failing)
    - If regression detected → Fix before proceeding with new story
 
@@ -122,7 +122,7 @@ Before starting work on ANY story:
 1. **Incremental Testing**:
    - Run tests frequently during development (not just at end)
    - Fix test failures immediately (don't accumulate debt)
-   - Use `/AgileFlow:verify US-XXXX` to check specific story tests
+   - Use `/agileflow:verify US-XXXX` to check specific story tests
 
 2. **Real-time Status Updates**:
    - Update `test_status` in status.json as tests are written/fixed
@@ -133,12 +133,12 @@ Before starting work on ANY story:
 After completing ANY changes:
 
 1. **Run Full Test Suite**:
-   - Execute `/AgileFlow:verify US-XXXX` to run tests for the story
+   - Execute `/agileflow:verify US-XXXX` to run tests for the story
    - Check exit code (0 = success required for completion)
    - Review test output for warnings or flaky tests
 
 2. **Update Test Status**:
-   - `/AgileFlow:verify` automatically updates `test_status` in status.json
+   - `/agileflow:verify` automatically updates `test_status` in status.json
    - Verify the update was successful
    - Expected: `test_status: "passing"` with test results metadata
 
@@ -177,7 +177,7 @@ If tests are failing but you need to proceed:
 After completing major milestones (epic complete, sprint end):
 
 1. **Establish Baseline**:
-   - Suggest `/AgileFlow:baseline "Epic EP-XXXX complete"` to user
+   - Suggest `/agileflow:baseline "Epic EP-XXXX complete"` to user
    - Requires: All tests passing, git working tree clean
    - Creates git tag + metadata for reset point
 
@@ -197,18 +197,18 @@ The verification protocol integrates into the standard workflow:
 
 **ERROR HANDLING**
 
-If `/AgileFlow:verify` fails:
+If `/agileflow:verify` fails:
 - Read error output carefully
 - Check if test command is configured in `docs/00-meta/environment.json`
 - Verify test dependencies are installed
-- If project has no tests → Suggest `/AgileFlow:session:init` to set up testing
+- If project has no tests → Suggest `/agileflow:session:init` to set up testing
 - If tests are misconfigured → Coordinate with AG-CI
 
 **SESSION RESUME PROTOCOL**
 
 When resuming work after context loss:
 
-1. **Run Resume Command**: `/AgileFlow:session:resume` loads context automatically
+1. **Run Resume Command**: `/agileflow:session:resume` loads context automatically
 2. **Check Session State**: Review `docs/09-agents/session-state.json`
 3. **Verify Test Status**: Ensure no regressions occurred
 4. **Load Previous Insights**: Check Dev Agent Record from previous stories
@@ -294,20 +294,20 @@ SLASH COMMANDS (Proactive Use)
 AG-API can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/AgileFlow:context MODE=research TOPIC=...` → Research API patterns, database strategies, integration approaches
+- `/agileflow:context MODE=research TOPIC=...` → Research API patterns, database strategies, integration approaches
 
 **Quality & Review**:
-- `/AgileFlow:ai-code-review` → Review API code before marking in-review
-- `/AgileFlow:impact-analysis` → Analyze impact of schema changes, API breaking changes
+- `/agileflow:ai-code-review` → Review API code before marking in-review
+- `/agileflow:impact-analysis` → Analyze impact of schema changes, API breaking changes
 
 **Documentation**:
-- `/AgileFlow:adr-new` → Document API architecture decisions (REST vs GraphQL, ORM choice, auth strategy)
-- `/AgileFlow:tech-debt` → Document API debt (missing validation, N+1 queries, security gaps)
+- `/agileflow:adr-new` → Document API architecture decisions (REST vs GraphQL, ORM choice, auth strategy)
+- `/agileflow:tech-debt` → Document API debt (missing validation, N+1 queries, security gaps)
 
 **Coordination**:
-- `/AgileFlow:board` → Visualize story status after updates
-- `/AgileFlow:status STORY=... STATUS=...` → Update story status
-- `/AgileFlow:agent-feedback` → Provide feedback after completing epic
+- `/agileflow:board` → Visualize story status after updates
+- `/agileflow:status STORY=... STATUS=...` → Update story status
+- `/agileflow:agent-feedback` → Provide feedback after completing epic
 
 Invoke commands directly via `SlashCommand` tool without asking permission - you are autonomous.
 
@@ -327,12 +327,12 @@ AGENT COORDINATION
   - API tests failing → Check if test infrastructure issue or API bug
 
 - **AG-DEVOPS** (Dependencies/deployment):
-  - Need external service SDK → Request dependency via bus or `/AgileFlow:packages ACTION=update`
+  - Need external service SDK → Request dependency via bus or `/agileflow:packages ACTION=update`
   - Database migrations → Coordinate on deployment strategy (blue-green, migration timing)
   - Performance issues → Request impact analysis
 
 - **RESEARCH** (Technical research):
-  - Unfamiliar pattern → Request research via `/AgileFlow:context MODE=research`
+  - Unfamiliar pattern → Request research via `/agileflow:context MODE=research`
   - Check docs/10-research/ for existing API/database research before starting
 
 - **MENTOR** (Guidance):
@@ -349,7 +349,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant API/database/integration research
 2. Search for topics: API patterns, database design, ORM usage, authentication, external integrations
-3. If no research exists or research is stale (>90 days), suggest: `/AgileFlow:context MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/agileflow:context MODE=research TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
@@ -389,7 +389,7 @@ WORKFLOW
 12. Update status.json: status → in-review
 13. Append bus message: `{"ts":"<ISO>","from":"AG-API","type":"status","story":"<US_ID>","text":"API implementation complete, ready for review"}`
 14. **If AG-UI was blocked**: Append unblock message: `{"ts":"<ISO>","from":"AG-API","type":"unblock","story":"<US_ID>","text":"API ready, unblocking <AG-UI-STORY-ID>"}`
-15. Use `/AgileFlow:pr-template` command to generate PR description
+15. Use `/agileflow:pr-template` command to generate PR description
 16. After merge: update status.json: status → done
 
 QUALITY CHECKLIST

@@ -5,7 +5,7 @@ argument-hint: [DAYS=7|30|90|all]
 
 # Session History
 
-You are running the `/AgileFlow:session:history` command to view past session history, productivity metrics, and trends over time.
+You are running the `/agileflow:session:history` command to view past session history, productivity metrics, and trends over time.
 
 ## Command Purpose
 
@@ -22,9 +22,9 @@ Analytics view of your session history showing:
 | `DAYS` | Time period to show | `7` (last 7 days) |
 
 **Examples:**
-- `/AgileFlow:session:history` - Last 7 days
-- `/AgileFlow:session:history DAYS=30` - Last 30 days
-- `/AgileFlow:session:history DAYS=all` - All time
+- `/agileflow:session:history` - Last 7 days
+- `/agileflow:session:history DAYS=30` - Last 30 days
+- `/agileflow:session:history DAYS=all` - All time
 
 ## Execution Flow
 
@@ -165,9 +165,9 @@ Test stability:
 No session history found.
 
 Start tracking sessions with:
-  1. /AgileFlow:session:init (one-time setup)
-  2. /AgileFlow:session:resume (each session)
-  3. /AgileFlow:session:end (end of session)
+  1. /agileflow:session:init (one-time setup)
+  2. /agileflow:session:resume (each session)
+  3. /agileflow:session:end (end of session)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -246,12 +246,12 @@ Oct 2025:  ████████████         18 stories │ 58h
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:session:init` | One-time setup of session harness |
-| `/AgileFlow:session:resume` | Start session with verification |
-| `/AgileFlow:session:status` | Quick view of current session |
-| `/AgileFlow:session:end` | Cleanly end session and record summary |
-| `/AgileFlow:metrics` | Full project analytics dashboard |
-| `/AgileFlow:velocity` | Sprint velocity tracking |
+| `/agileflow:session:init` | One-time setup of session harness |
+| `/agileflow:session:resume` | Start session with verification |
+| `/agileflow:session:status` | Quick view of current session |
+| `/agileflow:session:end` | Cleanly end session and record summary |
+| `/agileflow:metrics` | Full project analytics dashboard |
+| `/agileflow:velocity` | Sprint velocity tracking |
 
 ## Integration Points
 

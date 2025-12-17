@@ -3,7 +3,7 @@
 /**
  * Help Command Content Injector
  *
- * Injects command list into /AgileFlow:help command file.
+ * Injects command list into /agileflow:help command file.
  * Finds AUTOGEN markers and replaces content with generated command directory.
  */
 
@@ -33,7 +33,7 @@ function generateCommandList(commands) {
     lines.push(`**${category}:**`);
     for (const cmd of cmds) {
       const hint = cmd.argumentHint ? ` ${cmd.argumentHint}` : '';
-      lines.push(`- \`/AgileFlow:${cmd.name}${hint}\` - ${cmd.description}`);
+      lines.push(`- \`/agileflow:${cmd.name}${hint}\` - ${cmd.description}`);
     }
     lines.push(''); // Blank line between categories
   }

@@ -250,7 +250,7 @@ Suggest adding to CI (weekly):
 ```yaml
 - cron: '0 0 * * 1'  # Monday
 - name: Technical debt scan
-  run: npx claude-code /AgileFlow:tech-debt SCAN=full OUTPUT=report
+  run: npx claude-code /agileflow:tech-debt SCAN=full OUTPUT=report
 ```
 
 RULES

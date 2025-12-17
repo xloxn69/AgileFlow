@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # Resume AgileFlow Session
 
-You are running the `/AgileFlow:session:resume` command to start an AgileFlow session with environment verification, test checking, and context loading.
+You are running the `/agileflow:session:resume` command to start an AgileFlow session with environment verification, test checking, and context loading.
 
 ## Command Purpose
 
@@ -17,7 +17,7 @@ Standard startup routine for every AgileFlow session. Verifies environment, runs
 ```
 1. Check if session harness initialized
 2. Run init script (if configured)
-3. Verify tests (/AgileFlow:verify)
+3. Verify tests (/agileflow:verify)
 4. Load git context (commits, branch, status)
 5. Load AgileFlow context (in-progress stories, recent completions)
 6. Update session-state.json with current session metadata
@@ -29,11 +29,11 @@ Mark each step complete as you finish it. This ensures comprehensive session sta
 
 **When to use:**
 - Manually: Start of each coding session
-- Automatically: Via SessionStart hook (configured in `/AgileFlow:session:init`)
+- Automatically: Via SessionStart hook (configured in `/agileflow:session:init`)
 
 ## Prerequisites
 
-- Session harness must be initialized (`/AgileFlow:session:init`)
+- Session harness must be initialized (`/agileflow:session:init`)
 - Must be in project root directory
 
 ## Execution Flow
@@ -44,7 +44,7 @@ Mark each step complete as you finish it. This ensures comprehensive session sta
 if [ ! -f "docs/00-meta/environment.json" ]; then
   echo "⚠️  Session harness not initialized"
   echo ""
-  echo "Run /AgileFlow:session:init to set up test verification"
+  echo "Run /agileflow:session:init to set up test verification"
   echo ""
   echo "Or continue without session harness? [y/N]: "
 
@@ -89,7 +89,7 @@ fi
 
 ### 3. Verify Tests
 
-Run `/AgileFlow:verify` to check current test status:
+Run `/agileflow:verify` to check current test status:
 
 ```
 🧪 Running tests...
@@ -279,7 +279,7 @@ Next steps:
   2. Check Architecture Context for implementation guidance
   3. Review Previous Story Insights above
   4. Implement to acceptance criteria
-  5. Run /AgileFlow:verify before marking complete
+  5. Run /agileflow:verify before marking complete
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -294,7 +294,7 @@ If session harness not initialized, provide basic context:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⚠️  Session harness not initialized
-   Run /AgileFlow:session:init for:
+   Run /agileflow:session:init for:
    • Automatic test verification
    • Session state tracking
    • Baseline management
@@ -332,9 +332,9 @@ No stories in progress yet. Ready to start work!
 
 Next steps:
   1. Review available stories: docs/06-stories/
-  2. Assign yourself a story: /AgileFlow:assign
+  2. Assign yourself a story: /agileflow:assign
   3. Start implementation following AC
-  4. Run /AgileFlow:verify before completion
+  4. Run /agileflow:verify before completion
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -352,7 +352,7 @@ Since then:
   • 45 commits
   • 3 new epics added
 
-Consider running /AgileFlow:session:status for full overview
+Consider running /agileflow:session:status for full overview
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -361,10 +361,10 @@ Consider running /AgileFlow:session:status for full overview
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:session:init` | One-time setup of session harness |
-| `/AgileFlow:session:status` | View current session state and activity |
-| `/AgileFlow:session:end` | Cleanly end session and record summary |
-| `/AgileFlow:session:history` | View past session history and metrics |
+| `/agileflow:session:init` | One-time setup of session harness |
+| `/agileflow:session:status` | View current session state and activity |
+| `/agileflow:session:end` | Cleanly end session and record summary |
+| `/agileflow:session:history` | View past session history and metrics |
 
 ## Error Handling
 
@@ -433,10 +433,10 @@ Choice [1/2/3]: _
 
 ### Called By
 - SessionStart hook (if configured)
-- User manually via `/AgileFlow:session:resume`
+- User manually via `/agileflow:session:resume`
 
 ### Calls
-- `/AgileFlow:verify` - Test verification
+- `/agileflow:verify` - Test verification
 - Init script (`docs/00-meta/init.sh`)
 
 ### Reads

@@ -363,7 +363,7 @@ If an agent fails:
 ## Example Workflow
 
 ```
-1. User runs: /AgileFlow:configure
+1. User runs: /agileflow:configure
 
 2. Orchestrator detects current status:
    ✅ Git initialized

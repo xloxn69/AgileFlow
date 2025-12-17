@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # Session Harness Initialization
 
-You are running the `/AgileFlow:session:init` command to set up test verification and session management for the AgileFlow project.
+You are running the `/agileflow:session:init` command to set up test verification and session management for the AgileFlow project.
 
 ## Command Purpose
 
@@ -21,7 +21,7 @@ First-time setup of the **Session Harness System**. Detects project configuratio
 4. Create docs/00-meta/environment.json
 5. Create docs/00-meta/init.sh
 6. Create docs/09-agents/session-state.json
-7. Run initial test verification (/AgileFlow:verify)
+7. Run initial test verification (/agileflow:verify)
 8. Create baseline git tag (if tests pass)
 9. Configure SessionStart hook (optional)
 10. Display final summary
@@ -31,7 +31,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 
 ## Prerequisites
 
-- AgileFlow must be initialized (`/AgileFlow:setup` must have been run)
+- AgileFlow must be initialized (`/agileflow:setup` must have been run)
 - Project must have a test suite configured
 - Must be in project root directory
 
@@ -44,7 +44,7 @@ Mark each step complete as you finish it. This ensures nothing is forgotten duri
 if [ ! -f "docs/09-agents/status.json" ]; then
   echo "❌ AgileFlow not initialized"
   echo ""
-  echo "Run /AgileFlow:setup first to create the docs structure"
+  echo "Run /agileflow:setup first to create the docs structure"
   exit 1
 fi
 
@@ -220,7 +220,7 @@ Initialize session state file:
 
 ### 7. Run Initial Test Verification
 
-Run `/AgileFlow:verify` to establish baseline test status:
+Run `/agileflow:verify` to establish baseline test status:
 
 ```
 🧪 Running initial test verification...
@@ -321,9 +321,9 @@ echo "✅ SessionStart hook configured"
 echo "✅ docs/00-meta/resume-session.sh created"
 ```
 
-**IMPORTANT**: The hook calls a **shell script** (`bash docs/00-meta/resume-session.sh`), NOT the slash command `/AgileFlow:session:resume`. This is because:
+**IMPORTANT**: The hook calls a **shell script** (`bash docs/00-meta/resume-session.sh`), NOT the slash command `/agileflow:session:resume`. This is because:
 - Hooks execute shell commands, not Claude Code slash commands
-- The shell script replicates `/AgileFlow:session:resume` functionality
+- The shell script replicates `/agileflow:session:resume` functionality
 - This enables true automatic session resumption
 
 ### 10. Final Summary
@@ -353,9 +353,9 @@ Configuration:
 
 Next Steps:
   1. Restart Claude Code to activate SessionStart hook
-  2. Run /AgileFlow:verify to check tests anytime
-  3. Run /AgileFlow:baseline to mark new baselines
-  4. Run /AgileFlow:session:resume manually or let the hook run it
+  2. Run /agileflow:verify to check tests anytime
+  3. Run /agileflow:baseline to mark new baselines
+  4. Run /agileflow:session:resume manually or let the hook run it
 
 On Next Session:
   - Hook will automatically run: bash docs/00-meta/resume-session.sh
@@ -369,10 +369,10 @@ Session harness is ready! 🚀
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:session:resume` | Start session with verification and context loading |
-| `/AgileFlow:session:status` | View current session state and activity |
-| `/AgileFlow:session:end` | Cleanly end session and record summary |
-| `/AgileFlow:session:history` | View past session history and metrics |
+| `/agileflow:session:resume` | Start session with verification and context loading |
+| `/agileflow:session:status` | View current session state and activity |
+| `/agileflow:session:end` | Cleanly end session and record summary |
+| `/agileflow:session:history` | View past session history and metrics |
 
 ## Error Handling
 
@@ -430,10 +430,10 @@ This is optional - you can add baseline tags manually later using:
 ## Integration Points
 
 ### Called By
-- `/AgileFlow:setup` - Optionally runs session:init during initial setup
+- `/agileflow:setup` - Optionally runs session:init during initial setup
 
 ### Calls
-- `/AgileFlow:verify` - For initial test verification
+- `/agileflow:verify` - For initial test verification
 - Template system - Uses templates/environment.json, templates/init.sh
 
 ### Creates

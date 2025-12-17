@@ -108,7 +108,7 @@ Technical decisions, trade-offs, and alternatives considered.
 
 ## Format
 
-Use \`/AgileFlow:adr\` to create new decision records.
+Use \`/agileflow:adr\` to create new decision records.
 
 Each ADR should include:
 - **Context**: What problem are we solving?
@@ -138,7 +138,7 @@ Large features broken down into user stories.
 
 ## Format
 
-Use \`/AgileFlow:epic\` to create new epics.
+Use \`/agileflow:epic\` to create new epics.
 
 Each epic includes:
 - Epic ID (EP-XXXX)
@@ -153,7 +153,7 @@ Implementation tasks with acceptance criteria and technical details.
 
 ## Format
 
-Use \`/AgileFlow:story\` to create new stories.
+Use \`/agileflow:story\` to create new stories.
 
 Each story includes:
 - Story ID (US-XXXX)
@@ -173,7 +173,7 @@ Test cases, acceptance criteria, and testing strategies.
 - **acceptance/**: Acceptance test definitions
 - **test-cases/**: Detailed test case documentation
 
-Use \`/AgileFlow:tests\` to set up testing infrastructure.
+Use \`/agileflow:tests\` to set up testing infrastructure.
 `,
 
     [`${docsFolder}/08-project/README.md`]: `# Project Management
@@ -198,7 +198,7 @@ Real-time status of stories being worked on by agents.
 - **status-archive.json**: Archived completed stories
 - **bus/log.jsonl**: Agent communication log
 
-Use \`/AgileFlow:status\` to update story status.
+Use \`/agileflow:status\` to update story status.
 `,
 
     [`${docsFolder}/10-research/README.md`]: `# Research Notes
@@ -207,7 +207,7 @@ Research findings, investigations, and technical explorations.
 
 ## Format
 
-Use \`/AgileFlow:research\` to create new research notes.
+Use \`/agileflow:research\` to create new research notes.
 
 | Date | Topic | Path | Summary |
 |------|-------|------|---------|

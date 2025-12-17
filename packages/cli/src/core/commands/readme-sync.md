@@ -16,7 +16,7 @@ Synchronize a folder's README.md with its current contents by spawning the readm
 
 1. **Extract folder path from user's message**:
    - User might say: "sync docs/02-practices"
-   - Or: "/AgileFlow:readme-sync docs/04-architecture"
+   - Or: "/agileflow:readme-sync docs/04-architecture"
    - Or: "update README for docs/06-stories"
 
 2. **If folder path is clear**, spawn the subagent immediately:
@@ -52,7 +52,7 @@ User: "sync docs/02-practices"
 User: "update readme for docs/06-stories"
 → Spawn readme-updater with prompt: "Audit and synchronize README.md for docs/06-stories"
 
-User: "/AgileFlow:readme-sync"
+User: "/agileflow:readme-sync"
 → Ask: "Which folder should I sync?"
 → User responds: "docs/04-architecture"
 → Spawn readme-updater with that folder
@@ -134,13 +134,13 @@ Update README.md with these changes? (YES/NO)
 
 ```bash
 # Sync docs/02-practices folder
-/AgileFlow:readme-sync FOLDER=docs/02-practices
+/agileflow:readme-sync FOLDER=docs/02-practices
 
 # Sync docs/04-architecture folder
-/AgileFlow:readme-sync FOLDER=docs/04-architecture
+/agileflow:readme-sync FOLDER=docs/04-architecture
 
 # Sync src/components folder (if it has README)
-/AgileFlow:readme-sync FOLDER=src/components
+/agileflow:readme-sync FOLDER=src/components
 ```
 
 ## What It Updates
@@ -156,12 +156,12 @@ Only the `## Contents` section of README.md:
 Run the command for each folder one at a time, or create a script:
 ```bash
 for folder in docs/0[0-9]-*; do
-  /AgileFlow:readme-sync FOLDER="$folder"
+  /agileflow:readme-sync FOLDER="$folder"
 done
 ```
 
 ## Related Commands
 
-- `/AgileFlow:doc-coverage` - Report on documentation completeness
-- `/AgileFlow:impact-analysis` - See what changed
-- `/AgileFlow:board` - View project status
+- `/agileflow:doc-coverage` - Report on documentation completeness
+- `/agileflow:impact-analysis` - See what changed
+- `/agileflow:board` - View project status

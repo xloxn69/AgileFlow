@@ -25,7 +25,7 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
   const selectedMeta = useMemo(() => {
     if (!selected) return null;
     return {
-      label: `/AgileFlow:${selected.command.name}`,
+      label: `/agileflow:${selected.command.name}`,
       description: selected.command.description,
       exampleHtml: selected.command.exampleHtml,
     };
@@ -113,7 +113,7 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
                                         track('command_select', { categoryId: category.id, command: cmd.name });
                                       }}
                                     >
-                                      /AgileFlow:{cmd.name}
+                                      /agileflow:{cmd.name}
                                     </button>
                                   );
                                 })}

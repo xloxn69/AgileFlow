@@ -254,7 +254,7 @@ jobs:
           fetch-depth: 0  # Get all tags
 
       - name: Generate changelog
-        run: npx claude-code /AgileFlow:generate-changelog VERSION=${{ github.event.inputs.version }}
+        run: npx claude-code /agileflow:generate-changelog VERSION=${{ github.event.inputs.version }}
 
       - name: Commit changelog
         run: |

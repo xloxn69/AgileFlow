@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # End Session
 
-You are running the `/AgileFlow:session:end` command to cleanly close the current AgileFlow session. This records what was accomplished, updates session history, and prepares for the next session.
+You are running the `/agileflow:session:end` command to cleanly close the current AgileFlow session. This records what was accomplished, updates session history, and prepares for the next session.
 
 ## Command Purpose
 
@@ -44,7 +44,7 @@ Proper session closure that:
 if [ ! -f "docs/09-agents/session-state.json" ]; then
   echo "⚠️  No active session to end"
   echo ""
-  echo "Run /AgileFlow:session:resume to start a session first"
+  echo "Run /agileflow:session:resume to start a session first"
   exit 0
 fi
 
@@ -198,7 +198,7 @@ Ready to pick up:
   • US-0045: Add email verification
   • US-0046: Create admin dashboard
 
-Run /AgileFlow:session:resume to start next session
+Run /agileflow:session:resume to start next session
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -289,10 +289,10 @@ Completed:
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:session:init` | One-time setup of session harness |
-| `/AgileFlow:session:resume` | Start session with verification |
-| `/AgileFlow:session:status` | Quick view of current session |
-| `/AgileFlow:session:history` | View past sessions and analytics |
+| `/agileflow:session:init` | One-time setup of session harness |
+| `/agileflow:session:resume` | Start session with verification |
+| `/agileflow:session:status` | Quick view of current session |
+| `/agileflow:session:history` | View past sessions and analytics |
 
 ## Integration Points
 
@@ -305,7 +305,7 @@ Completed:
 - `docs/09-agents/session-state.json` - Moves current to last, updates history
 
 ### Optionally Runs
-- `/AgileFlow:verify` - Final test check
+- `/agileflow:verify` - Final test check
 
 ## Implementation Notes
 

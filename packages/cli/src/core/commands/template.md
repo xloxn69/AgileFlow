@@ -105,7 +105,7 @@ Show all available templates:
 - incident-report.md (created 2025-10-10)
 - sprint-retro.md (created 2025-10-01)
 
-Usage: /AgileFlow:custom-template ACTION=use TYPE=custom NAME=meeting-notes
+Usage: /agileflow:custom-template ACTION=use TYPE=custom NAME=meeting-notes
 ```
 
 ### 2. Create Template
@@ -433,9 +433,9 @@ INTEGRATION
 
 ### Story Creation
 
-When `/AgileFlow:story-new` is called, use story-template.md:
+When `/agileflow:story-new` is called, use story-template.md:
 ```bash
-/AgileFlow:story-new EPIC=EP-0001 STORY=US-0050 TITLE="Login form"
+/agileflow:story-new EPIC=EP-0001 STORY=US-0050 TITLE="Login form"
 # Internally uses docs/00-meta/templates/story-template.md
 ```
 

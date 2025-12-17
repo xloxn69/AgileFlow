@@ -5,7 +5,7 @@ argument-hint: (no arguments)
 
 # Session Status
 
-You are running the `/AgileFlow:session:status` command to view a quick snapshot of the current session state, including what you're working on, session duration, uncommitted changes, and test status.
+You are running the `/agileflow:session:status` command to view a quick snapshot of the current session state, including what you're working on, session duration, uncommitted changes, and test status.
 
 ## Command Purpose
 
@@ -25,7 +25,7 @@ Read from `docs/09-agents/session-state.json`:
 if [ ! -f "docs/09-agents/session-state.json" ]; then
   echo "⚠️  No active session"
   echo ""
-  echo "Run /AgileFlow:session:resume to start a session"
+  echo "Run /agileflow:session:resume to start a session"
   exit 0
 fi
 ```
@@ -114,9 +114,9 @@ Command: npm test
 ⚡ Quick Actions
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-• Run tests: /AgileFlow:verify
-• End session: /AgileFlow:session:end
-• View full context: /AgileFlow:session:resume
+• Run tests: /agileflow:verify
+• End session: /agileflow:session:end
+• View full context: /agileflow:session:resume
 • View story: docs/06-stories/EP-0001/US-0043.md
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -139,7 +139,7 @@ For a shorter output, show minimal info:
 No session is currently tracked.
 
 To start a session:
-  /AgileFlow:session:resume
+  /agileflow:session:resume
 
 This will:
   • Run environment initialization
@@ -171,7 +171,7 @@ Ready stories (5):
   • US-0047: Add user roles
   • US-0048: Implement audit logging
 
-Assign a story: /AgileFlow:assign STORY=US-0044
+Assign a story: /agileflow:assign STORY=US-0044
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -196,7 +196,7 @@ Failed tests:
   ❌ auth.test.ts:42 - Session redirect
   ❌ auth.test.ts:67 - Token persistence
 
-Run /AgileFlow:verify to see full output
+Run /agileflow:verify to see full output
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -215,7 +215,7 @@ Duration: 8h 15m
 Consider:
   • Taking a break
   • Committing your work
-  • Running /AgileFlow:session:end to save progress
+  • Running /agileflow:session:end to save progress
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -224,10 +224,10 @@ Consider:
 
 | Command | Purpose |
 |---------|---------|
-| `/AgileFlow:session:init` | One-time setup of session harness |
-| `/AgileFlow:session:resume` | Start session with full verification |
-| `/AgileFlow:session:end` | Cleanly end session and record summary |
-| `/AgileFlow:session:history` | View past session history and metrics |
+| `/agileflow:session:init` | One-time setup of session harness |
+| `/agileflow:session:resume` | Start session with full verification |
+| `/agileflow:session:end` | Cleanly end session and record summary |
+| `/agileflow:session:history` | View past session history and metrics |
 
 ## Integration Points
 
@@ -237,7 +237,7 @@ Consider:
 - Git status - Uncommitted changes
 
 ### Does NOT
-- Run tests (use `/AgileFlow:verify` for that)
+- Run tests (use `/agileflow:verify` for that)
 - Modify any files
 - Start a new session
 

@@ -64,7 +64,7 @@ function HeroSystem() {
         <div className="rounded-tile border border-border bg-white/80 p-4 lg:col-span-3">
           <div className="mb-3 text-xs font-medium tracking-caps text-muted">commands</div>
           <div className="space-y-2">
-            {['/AgileFlow:setup', '/AgileFlow:story', '/AgileFlow:adr'].map((c) => (
+            {['/agileflow:setup', '/agileflow:story', '/agileflow:adr'].map((c) => (
               <div
                 key={c}
                 className="flex items-center justify-between rounded-full border border-hairline bg-white px-3 py-2 font-mono text-[12px] text-ink"

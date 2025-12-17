@@ -50,8 +50,8 @@ This skill activates when:
    - Include: Problem, Impact, Proposed Solution, Effort, Priority Score, Status
 
 6. **Suggest actions**:
-   - **High priority (>10)**: Create story via `/AgileFlow:story`
-   - **Major refactoring**: Document via `/AgileFlow:adr-new`
+   - **High priority (>10)**: Create story via `/agileflow:story`
+   - **Major refactoring**: Document via `/agileflow:adr-new`
    - **Blocking features**: Update status.json with blocked stories
 
 ## Tech Debt Item Template

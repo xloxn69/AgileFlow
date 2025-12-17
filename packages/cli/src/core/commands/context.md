@@ -197,18 +197,18 @@ When user pastes research results back:
 
 ```bash
 # Generate/refresh full context brief (default)
-/AgileFlow:context
-/AgileFlow:context MODE=full
+/agileflow:context
+/agileflow:context MODE=full
 
 # Export concise excerpt for pasting
-/AgileFlow:context MODE=export
+/agileflow:context MODE=export
 
 # Add a quick note
-/AgileFlow:context MODE=note NOTE="User reported auth bug in production"
+/agileflow:context MODE=note NOTE="User reported auth bug in production"
 
 # Build research prompt
-/AgileFlow:context MODE=research TOPIC="Implement OAuth 2.0 with Google"
-/AgileFlow:context MODE=research TOPIC="Add Stripe payments" DETAILS="Launch by end of sprint"
+/agileflow:context MODE=research TOPIC="Implement OAuth 2.0 with Google"
+/agileflow:context MODE=research TOPIC="Add Stripe payments" DETAILS="Launch by end of sprint"
 ```
 
 ---
