@@ -6,7 +6,10 @@ AgileFlow is an agile workflow system for Claude Code that provides slash comman
 
 ## System Architecture
 
-![Diagram 1](images/agileflow-cli-overview-1.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-1.dark.svg">
+  <img alt="Diagram 1" src="images/agileflow-cli-overview-1.light.svg">
+</picture>
 
 
 ---
@@ -15,42 +18,60 @@ AgileFlow is an agile workflow system for Claude Code that provides slash comman
 
 When you run `npx agileflow setup`, this structure is created:
 
-![Diagram 2](images/agileflow-cli-overview-2.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-2.dark.svg">
+  <img alt="Diagram 2" src="images/agileflow-cli-overview-2.light.svg">
+</picture>
 
 
 ---
 
 ## Command Flow
 
-![Diagram 3](images/agileflow-cli-overview-3.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-3.dark.svg">
+  <img alt="Diagram 3" src="images/agileflow-cli-overview-3.light.svg">
+</picture>
 
 
 ---
 
 ## Component Layers
 
-![Diagram 4](images/agileflow-cli-overview-4.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-4.dark.svg">
+  <img alt="Diagram 4" src="images/agileflow-cli-overview-4.light.svg">
+</picture>
 
 
 ---
 
 ## Data Flow
 
-![Diagram 5](images/agileflow-cli-overview-5.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-5.dark.svg">
+  <img alt="Diagram 5" src="images/agileflow-cli-overview-5.light.svg">
+</picture>
 
 
 ---
 
 ## State Management
 
-![Diagram 6](images/agileflow-cli-overview-6.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-6.dark.svg">
+  <img alt="Diagram 6" src="images/agileflow-cli-overview-6.light.svg">
+</picture>
 
 
 ---
 
 ## Agent Communication
 
-![Diagram 7](images/agileflow-cli-overview-7.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-7.dark.svg">
+  <img alt="Diagram 7" src="images/agileflow-cli-overview-7.light.svg">
+</picture>
 
 
 ---
@@ -71,7 +92,10 @@ When you run `npx agileflow setup`, this structure is created:
 
 ## Integration with Claude Code
 
-![Diagram 8](images/agileflow-cli-overview-8.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agileflow-cli-overview-8.dark.svg">
+  <img alt="Diagram 8" src="images/agileflow-cli-overview-8.light.svg">
+</picture>
 
 
 ---
