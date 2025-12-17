@@ -6,14 +6,20 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
 
 ## Overview
 
-![Diagram 1](images/multi-expert-orchestration-1.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-1.dark.svg">
+  <img alt="Diagram 1" src="images/multi-expert-orchestration-1.light.svg">
+</picture>
 
 
 ---
 
 ## When to Use Multi-Expert
 
-![Diagram 2](images/multi-expert-orchestration-2.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-2.dark.svg">
+  <img alt="Diagram 2" src="images/multi-expert-orchestration-2.light.svg">
+</picture>
 
 
 **Use Multi-Expert when:**
@@ -26,28 +32,40 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
 
 ## Expert Selection Process
 
-![Diagram 3](images/multi-expert-orchestration-3.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-3.dark.svg">
+  <img alt="Diagram 3" src="images/multi-expert-orchestration-3.light.svg">
+</picture>
 
 
 ---
 
 ## Parallel Execution Pattern
 
-![Diagram 4](images/multi-expert-orchestration-4.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-4.dark.svg">
+  <img alt="Diagram 4" src="images/multi-expert-orchestration-4.light.svg">
+</picture>
 
 
 ---
 
 ## Synthesis Process
 
-![Diagram 5](images/multi-expert-orchestration-5.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-5.dark.svg">
+  <img alt="Diagram 5" src="images/multi-expert-orchestration-5.light.svg">
+</picture>
 
 
 ---
 
 ## Confidence Scoring
 
-![Diagram 6](images/multi-expert-orchestration-6.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-6.dark.svg">
+  <img alt="Diagram 6" src="images/multi-expert-orchestration-6.light.svg">
+</picture>
 
 
 | Experts Agree | Confidence | Action |
@@ -60,7 +78,10 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
 
 ## Output Format
 
-![Diagram 7](images/multi-expert-orchestration-7.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-7.dark.svg">
+  <img alt="Diagram 7" src="images/multi-expert-orchestration-7.light.svg">
+</picture>
 
 
 ### Example Output
@@ -101,7 +122,10 @@ Implement JWT-based auth with:
 
 ## Sequence: Full Orchestration
 
-![Diagram 8](images/multi-expert-orchestration-8.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/multi-expert-orchestration-8.dark.svg">
+  <img alt="Diagram 8" src="images/multi-expert-orchestration-8.light.svg">
+</picture>
 
 
 ---

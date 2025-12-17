@@ -8,7 +8,10 @@ The Agent Expert System enables self-improving AI agents that learn from their w
 
 ## Overview
 
-![Diagram 1](images/agent-expert-system-1.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-1.dark.svg">
+  <img alt="Diagram 1" src="images/agent-expert-system-1.light.svg">
+</picture>
 
 
 ---
@@ -17,7 +20,10 @@ The Agent Expert System enables self-improving AI agents that learn from their w
 
 Every Agent Expert follows the same workflow pattern:
 
-![Diagram 2](images/agent-expert-system-2.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-2.dark.svg">
+  <img alt="Diagram 2" src="images/agent-expert-system-2.light.svg">
+</picture>
 
 
 ---
@@ -26,7 +32,10 @@ Every Agent Expert follows the same workflow pattern:
 
 Each domain expert has a dedicated directory with mental models and workflows:
 
-![Diagram 3](images/agent-expert-system-3.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-3.dark.svg">
+  <img alt="Diagram 3" src="images/agent-expert-system-3.light.svg">
+</picture>
 
 
 ### expertise.yaml Schema
@@ -62,7 +71,10 @@ learnings:
 
 The `/AgileFlow:babysit` command automatically routes requests to appropriate domain experts:
 
-![Diagram 4](images/agent-expert-system-4.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-4.dark.svg">
+  <img alt="Diagram 4" src="images/agent-expert-system-4.light.svg">
+</picture>
 
 
 ---
@@ -71,7 +83,10 @@ The `/AgileFlow:babysit` command automatically routes requests to appropriate do
 
 After completing work, agents update their expertise files:
 
-![Diagram 5](images/agent-expert-system-5.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-5.dark.svg">
+  <img alt="Diagram 5" src="images/agent-expert-system-5.light.svg">
+</picture>
 
 
 ---
@@ -80,21 +95,30 @@ After completing work, agents update their expertise files:
 
 For complex cross-domain tasks, multiple experts can be deployed in parallel:
 
-![Diagram 6](images/agent-expert-system-6.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-6.dark.svg">
+  <img alt="Diagram 6" src="images/agent-expert-system-6.light.svg">
+</picture>
 
 
 ---
 
 ## State Diagram: Expert Lifecycle
 
-![Diagram 7](images/agent-expert-system-7.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-7.dark.svg">
+  <img alt="Diagram 7" src="images/agent-expert-system-7.light.svg">
+</picture>
 
 
 ---
 
 ## Integration Points
 
-![Diagram 8](images/agent-expert-system-8.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-8.dark.svg">
+  <img alt="Diagram 8" src="images/agent-expert-system-8.light.svg">
+</picture>
 
 
 ---

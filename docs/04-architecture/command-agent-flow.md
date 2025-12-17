@@ -6,28 +6,40 @@ This document describes how slash commands and agents work together in AgileFlow
 
 ## Command Types
 
-![Diagram 1](images/command-agent-flow-1.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-1.dark.svg">
+  <img alt="Diagram 1" src="images/command-agent-flow-1.light.svg">
+</picture>
 
 
 ---
 
 ## Command Execution Flow
 
-![Diagram 2](images/command-agent-flow-2.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-2.dark.svg">
+  <img alt="Diagram 2" src="images/command-agent-flow-2.light.svg">
+</picture>
 
 
 ---
 
 ## Agent Execution Pattern
 
-![Diagram 3](images/command-agent-flow-3.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-3.dark.svg">
+  <img alt="Diagram 3" src="images/command-agent-flow-3.light.svg">
+</picture>
 
 
 ---
 
 ## Agent vs Command Relationship
 
-![Diagram 4](images/command-agent-flow-4.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-4.dark.svg">
+  <img alt="Diagram 4" src="images/command-agent-flow-4.light.svg">
+</picture>
 
 
 **Key distinction:**
@@ -38,14 +50,20 @@ This document describes how slash commands and agents work together in AgileFlow
 
 ## Babysit Routing Logic
 
-![Diagram 5](images/command-agent-flow-5.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-5.dark.svg">
+  <img alt="Diagram 5" src="images/command-agent-flow-5.light.svg">
+</picture>
 
 
 ---
 
 ## State Updates
 
-![Diagram 6](images/command-agent-flow-6.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-6.dark.svg">
+  <img alt="Diagram 6" src="images/command-agent-flow-6.light.svg">
+</picture>
 
 
 ---
@@ -54,31 +72,46 @@ This document describes how slash commands and agents work together in AgileFlow
 
 ### Tracking Commands
 
-![Diagram 7](images/command-agent-flow-7.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-7.dark.svg">
+  <img alt="Diagram 7" src="images/command-agent-flow-7.light.svg">
+</picture>
 
 
 ### Workflow Commands
 
-![Diagram 8](images/command-agent-flow-8.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-8.dark.svg">
+  <img alt="Diagram 8" src="images/command-agent-flow-8.light.svg">
+</picture>
 
 
 ### Session Commands
 
-![Diagram 9](images/command-agent-flow-9.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-9.dark.svg">
+  <img alt="Diagram 9" src="images/command-agent-flow-9.light.svg">
+</picture>
 
 
 ---
 
 ## Agent Specialization Map
 
-![Diagram 10](images/command-agent-flow-10.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-10.dark.svg">
+  <img alt="Diagram 10" src="images/command-agent-flow-10.light.svg">
+</picture>
 
 
 ---
 
 ## Error Handling
 
-![Diagram 11](images/command-agent-flow-11.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/command-agent-flow-11.dark.svg">
+  <img alt="Diagram 11" src="images/command-agent-flow-11.light.svg">
+</picture>
 
 
 ---

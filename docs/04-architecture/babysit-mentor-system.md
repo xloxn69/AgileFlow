@@ -6,14 +6,20 @@ The `/AgileFlow:babysit` command is an end-to-end implementation mentor that gui
 
 ## Overview
 
-![Diagram 1](images/babysit-mentor-system-1.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-1.dark.svg">
+  <img alt="Diagram 1" src="images/babysit-mentor-system-1.light.svg">
+</picture>
 
 
 ---
 
 ## Core Responsibilities
 
-![Diagram 2](images/babysit-mentor-system-2.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-2.dark.svg">
+  <img alt="Diagram 2" src="images/babysit-mentor-system-2.light.svg">
+</picture>
 
 
 ---
@@ -22,7 +28,10 @@ The `/AgileFlow:babysit` command is an end-to-end implementation mentor that gui
 
 Babysit automatically detects domains from user requests and spawns appropriate experts:
 
-![Diagram 3](images/babysit-mentor-system-3.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-3.dark.svg">
+  <img alt="Diagram 3" src="images/babysit-mentor-system-3.light.svg">
+</picture>
 
 
 ### Domain Keyword Map
@@ -42,14 +51,20 @@ Babysit automatically detects domains from user requests and spawns appropriate 
 
 ## Workflow Sequence
 
-![Diagram 4](images/babysit-mentor-system-4.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-4.dark.svg">
+  <img alt="Diagram 4" src="images/babysit-mentor-system-4.light.svg">
+</picture>
 
 
 ---
 
 ## State Management
 
-![Diagram 5](images/babysit-mentor-system-5.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-5.dark.svg">
+  <img alt="Diagram 5" src="images/babysit-mentor-system-5.light.svg">
+</picture>
 
 
 ---
@@ -60,14 +75,20 @@ When a request spans multiple domains, babysit can either:
 1. **Sequential**: Route to experts one at a time
 2. **Parallel**: Use multi-expert orchestration
 
-![Diagram 6](images/babysit-mentor-system-6.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-6.dark.svg">
+  <img alt="Diagram 6" src="images/babysit-mentor-system-6.light.svg">
+</picture>
 
 
 ---
 
 ## Integration Points
 
-![Diagram 7](images/babysit-mentor-system-7.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-7.dark.svg">
+  <img alt="Diagram 7" src="images/babysit-mentor-system-7.light.svg">
+</picture>
 
 
 ---
