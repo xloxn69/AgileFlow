@@ -38,23 +38,11 @@ scripts/
 # Playwright MCP (local dev tool)
 .playwright-mcp/
 
-# Claude Settings (user-specific files only)
-# NOTE: .claude/settings.json is NOT gitignored (project-level config)
-# NOTE: .claude/settings.local.example.json is NOT gitignored (template for users)
-.claude/settings.local.json
-.claude/prompt-log.txt
-.claude/session.log
-.claude/activity.log
-.claude/context.log
-.claude/hook.log
-.claude/*.log
-.claude/cache/
+# Claude Code (user-specific, not part of plugin repo)
+.claude/
 
-# User Project Artifacts (created by /AgileFlow:setup - not part of plugin repo)
-# NOTE: docs/ is NOW PUBLIC for contributor visibility (research, decisions, practices)
-# NOTE: apps/docs/ is the Fumadocs documentation website
+# AgileFlow installed files (created by /AgileFlow:setup)
 .agileflow/
-.claude/commands/AgileFlow/
 
 # Sensitive/internal docs files (keep private)
 docs/00-meta/
