@@ -8,9 +8,10 @@ The `/agileflow:babysit` command is an end-to-end implementation mentor that gui
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-1.dark.svg">
-  <img alt="Diagram 1" src="images/babysit-mentor-system-1.light.svg">
+  <img alt="Babysit Overview" src="images/babysit-mentor-system-1.light.svg">
 </picture>
 
+> Babysit as orchestration layer: receives user intent, analyzes codebase, creates epics/stories, routes to domain experts, and produces PRs.
 
 ---
 
@@ -18,9 +19,10 @@ The `/agileflow:babysit` command is an end-to-end implementation mentor that gui
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-2.dark.svg">
-  <img alt="Diagram 2" src="images/babysit-mentor-system-2.light.svg">
+  <img alt="Core Responsibilities" src="images/babysit-mentor-system-2.light.svg">
 </picture>
 
+> Seven key responsibilities: context loading, suggestion engine, story validation, expert spawning, status tracking, research integration, and PR generation.
 
 ---
 
@@ -30,8 +32,10 @@ Babysit automatically detects domains from user requests and spawns appropriate 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-3.dark.svg">
-  <img alt="Diagram 3" src="images/babysit-mentor-system-3.light.svg">
+  <img alt="Domain Expert Routing" src="images/babysit-mentor-system-3.light.svg">
 </picture>
+
+> Keyword detection maps requests to 25 domain experts. Example: "API endpoint" → api expert, "database schema" → database expert.
 
 
 ### Domain Keyword Map
@@ -56,6 +60,7 @@ Babysit automatically detects domains from user requests and spawns appropriate 
   <img alt="Diagram 4" src="images/babysit-mentor-system-4.light.svg">
 </picture>
 
+> Complete workflow sequence: user request → codebase analysis → plan proposal → story creation → expert routing → implementation → PR generation.
 
 ---
 
@@ -66,6 +71,7 @@ Babysit automatically detects domains from user requests and spawns appropriate 
   <img alt="Diagram 5" src="images/babysit-mentor-system-5.light.svg">
 </picture>
 
+> State transitions through babysit lifecycle: idle → planning → executing → reviewing → completing, with user confirmation gates.
 
 ---
 
@@ -80,6 +86,7 @@ When a request spans multiple domains, babysit can either:
   <img alt="Diagram 6" src="images/babysit-mentor-system-6.light.svg">
 </picture>
 
+> Multi-domain task handling: sequential mode routes to experts one at a time, parallel mode uses multi-expert orchestration for concurrent analysis.
 
 ---
 
@@ -90,6 +97,7 @@ When a request spans multiple domains, babysit can either:
   <img alt="Diagram 7" src="images/babysit-mentor-system-7.light.svg">
 </picture>
 
+> Integration touchpoints: status.json for story tracking, bus/log.jsonl for agent messaging, research notes, and git operations for PR creation.
 
 ---
 

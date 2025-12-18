@@ -11,6 +11,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 1" src="images/multi-expert-orchestration-1.light.svg">
 </picture>
 
+> Multi-expert overview: orchestrator receives complex request, deploys multiple domain experts in parallel, synthesizes their analyses into unified recommendation.
 
 ---
 
@@ -21,6 +22,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 2" src="images/multi-expert-orchestration-2.light.svg">
 </picture>
 
+> Decision flowchart: use multi-expert when task spans 3+ domains, requires diverse perspectives, or needs validation from multiple angles.
 
 **Use Multi-Expert when:**
 - Task spans 3+ domains (e.g., "Add user authentication" touches DB, API, UI, Security)
@@ -37,6 +39,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 3" src="images/multi-expert-orchestration-3.light.svg">
 </picture>
 
+> Expert selection process: analyze request keywords → identify relevant domains → select 3-5 experts → load their expertise files → prepare prompts.
 
 ---
 
@@ -47,6 +50,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 4" src="images/multi-expert-orchestration-4.light.svg">
 </picture>
 
+> Parallel execution: all selected experts run simultaneously via Task tool with run_in_background, results collected via TaskOutput when complete.
 
 ---
 
@@ -57,6 +61,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 5" src="images/multi-expert-orchestration-5.light.svg">
 </picture>
 
+> Synthesis process: collect expert responses → identify agreements and disagreements → weight by domain relevance → generate unified recommendation.
 
 ---
 
@@ -67,6 +72,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 6" src="images/multi-expert-orchestration-6.light.svg">
 </picture>
 
+> Confidence scoring: HIGH when 3+ experts agree, MEDIUM when 2 agree, LOW when all differ. Higher confidence enables auto-proceeding.
 
 | Experts Agree | Confidence | Action |
 |---------------|------------|--------|
@@ -83,6 +89,7 @@ Multi-Expert Orchestration deploys multiple domain experts in parallel to analyz
   <img alt="Diagram 7" src="images/multi-expert-orchestration-7.light.svg">
 </picture>
 
+> Output format structure: header with experts deployed and confidence, key findings, unique insights per expert, areas of disagreement, unified recommendation, action items.
 
 ### Example Output
 
@@ -127,6 +134,7 @@ Implement JWT-based auth with:
   <img alt="Diagram 8" src="images/multi-expert-orchestration-8.light.svg">
 </picture>
 
+> Full orchestration sequence: user request → expert selection → parallel spawning → result collection → synthesis → confidence scoring → output generation.
 
 ---
 
