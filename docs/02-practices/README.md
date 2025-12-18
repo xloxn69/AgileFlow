@@ -9,6 +9,9 @@ Project-specific practices, conventions, and standards for YOUR codebase.
 - **releasing.md**: Release process and versioning
 - **security.md**: Security practices and guidelines
 - **ci.md**: CI/CD configuration and workflows
+- **diagrams.md**: Mermaid diagram generation with light/dark themes
+- **ask-user-question.md**: Using the AskUserQuestion tool effectively
+- **async-agent-spawning.md**: Launch, monitor, and retrieve background agents
 - **prompts/agents/**: Custom agent prompts for this project
 
 **Note**: This is for YOUR project's practices (styling, typography, component patterns, API conventions), NOT AgileFlow system practices (those go in 00-meta/).
