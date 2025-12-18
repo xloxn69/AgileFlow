@@ -78,31 +78,27 @@ Waits until agent completes, then returns full results.
 
 ## Async Workflow
 
-```
-1. LAUNCH ────────────────────────────────────────────────
-   Task(subagent_type, prompt, run_in_background: true)
-   ├── Agent 1 → agentId: a779035
-   ├── Agent 2 → agentId: a55c778
-   └── Agent 3 → agentId: aec0748
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-1.dark.svg">
+  <img alt="Async Workflow Sequence" src="images/async-agent-spawning-1.light.svg">
+</picture>
 
-2. MONITOR ───────────────────────────────────────────────
-   TaskOutput(task_id, block: false)
-   └── Returns: status: "running" + progress so far
-
-3. RETRIEVE ──────────────────────────────────────────────
-   TaskOutput(task_id, block: true)
-   └── Returns: status: "completed" + full results
-
-4. RESUME (optional) ─────────────────────────────────────
-   Task(resume: agentId, prompt: "continue...")
-   └── Agent continues with full prior context
-```
+**Workflow steps:**
+1. **LAUNCH** - Task with `run_in_background: true` returns agentId immediately
+2. **MONITOR** - TaskOutput with `block: false` checks progress without waiting
+3. **RETRIEVE** - TaskOutput with `block: true` waits for completion
+4. **RESUME** - Task with `resume: agentId` continues previous work
 
 ---
 
 ## Common Patterns
 
 ### Parallel Search
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-2.dark.svg">
+  <img alt="Parallel Search Pattern" src="images/async-agent-spawning-2.light.svg">
+</picture>
 
 Launch multiple agents simultaneously for comprehensive search:
 
@@ -172,18 +168,16 @@ Agent retains full context from previous execution.
 
 ### Sync vs Async Decision
 
-```
-Use SYNC (default) when:
-├── Single quick lookup
-├── Result needed immediately
-└── Simple task < 30 seconds
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-4.dark.svg">
+  <img alt="Sync vs Async Decision" src="images/async-agent-spawning-4.light.svg">
+</picture>
 
-Use ASYNC (run_in_background: true) when:
-├── Multiple parallel searches needed
-├── Long-running analysis
-├── Want to work while agent runs
-└── Complex multi-file exploration
-```
+| Use SYNC (default) when | Use ASYNC when |
+|-------------------------|----------------|
+| Single quick lookup | Multiple parallel searches |
+| Result needed immediately | Long-running analysis |
+| Simple task < 30 seconds | Want to work while agent runs |
 
 ---
 
@@ -282,6 +276,13 @@ If agent is still running, `block: false` returns partial progress. Check `statu
 status: "running"  → Still working, partial results
 status: "completed" → Done, full results available
 ```
+
+### Agent State Lifecycle
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-3.dark.svg">
+  <img alt="Agent State Lifecycle" src="images/async-agent-spawning-3.light.svg">
+</picture>
 
 ---
 
