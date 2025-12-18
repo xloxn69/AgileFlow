@@ -1,69 +1,41 @@
 ---
 description: Synchronize a folder's README.md with its current contents
+argument-hint: FOLDER=<path> | FOLDER=all
 ---
 
 # readme-sync
 
-Synchronize a folder's README.md with its current contents by spawning the readme-updater subagent.
+Synchronize a folder's README.md with its current contents.
 
 ## Prompt
 
-**ROLE**: README Sync Command Handler
+ROLE: README Synchronizer
 
-**OBJECTIVE**: Spawn the `readme-updater` subagent to synchronize a folder's README.md with its current contents.
+INPUTS
+FOLDER=<path>   Path to folder (e.g., docs/02-practices)
+FOLDER=all      Sync all docs/ subfolders
 
-**WORKFLOW**:
+ACTIONS
+1) If FOLDER=all:
+   - List all docs/*/ subdirectories
+   - For each, run the sync workflow below
+   - Report summary of all folders updated
 
-1. **Extract folder path from user's message**:
-   - User might say: "sync docs/02-practices"
-   - Or: "/agileflow:readme-sync docs/04-architecture"
-   - Or: "update README for docs/06-stories"
+2) If FOLDER=<path>:
+   - Validate folder exists
+   - List all files and subdirectories in FOLDER
+   - Read current README.md (if exists)
+   - Extract descriptions from each file (first heading or sentence)
+   - Build new "## Contents" section with all files listed
+   - Show proposed changes (diff format)
+   - Ask: "Update README.md? (YES/NO)"
+   - If YES: Update only "## Contents" section (preserve everything else)
+   - Report what was changed
 
-2. **If folder path is clear**, spawn the subagent immediately:
-   ```
-   Use the Task tool to spawn readme-updater subagent:
+3) If FOLDER is missing:
+   - Ask: "Which folder should I sync? (e.g., docs/02-practices, or 'all')"
 
-   Task(
-     description: "Sync README.md for [folder]",
-     prompt: "Audit and synchronize README.md for the folder: [folder_path]
-
-     Your task:
-     1. List all files and subdirectories in [folder_path]
-     2. Read the current README.md (if exists)
-     3. Extract descriptions from each file (first heading or sentence)
-     4. Build a new '## Contents' section with all files listed
-     5. Show the proposed changes (diff format)
-     6. Ask user to confirm: 'Update README.md? (YES/NO)'
-     7. If YES: Update only the '## Contents' section (preserve everything else)
-     8. Report what was changed",
-     subagent_type: "readme-updater"
-   )
-   ```
-
-3. **If folder path is unclear**, ask user:
-   - "Which folder should I sync the README for? (e.g., docs/02-practices)"
-   - Then spawn the subagent with the provided folder
-
-**EXAMPLE INVOCATIONS**:
-
-User: "sync docs/02-practices"
-→ Spawn readme-updater with prompt: "Audit and synchronize README.md for docs/02-practices"
-
-User: "update readme for docs/06-stories"
-→ Spawn readme-updater with prompt: "Audit and synchronize README.md for docs/06-stories"
-
-User: "/agileflow:readme-sync"
-→ Ask: "Which folder should I sync?"
-→ User responds: "docs/04-architecture"
-→ Spawn readme-updater with that folder
-
-**KEY POINTS**:
-- This command is just a launcher - it spawns the subagent
-- The subagent (readme-updater) does the actual work
-- Subagent has tools: Bash, Read, Edit, Write
-- Subagent will handle all file discovery, diffing, and updating
-
-## How It Works
+WORKFLOW DETAILS
 
 ### Step 1: List Folder Contents
 ```bash
@@ -93,75 +65,64 @@ Generate markdown bullet list:
 - If YES: Use Edit tool to update "## Contents" section
 - If NO: Abort without changes
 
-## Example Output
+EXAMPLE OUTPUT
 
 ```
 📁 Syncing docs/02-practices/README.md
 =====================================
 
-Found 7 files:
+Found 8 files:
   • README.md (existing)
   • testing.md – Test strategy, patterns, test infrastructure
   • git-branching.md – Git workflow, branching strategy, commit conventions
   • ci.md – CI/CD pipeline configuration, testing gates
   • security.md – Security practices, input validation, authentication
   • releasing.md – Release procedures, versioning, changelog
-  • prompts/ (directory) – Agent customization prompts
+  • diagrams.md – Mermaid diagram generation with light/dark themes
+  • async-agent-spawning.md – Launch, monitor, and retrieve background agents
+  • ask-user-question.md – Using the AskUserQuestion tool effectively
 
 Proposed Changes to ## Contents Section:
 ─────────────────────────────────────────
-- testing.md – Test strategy, patterns, test infrastructure
-- git-branching.md – Git workflow, branching strategy, commit conventions
-- ci.md – CI/CD pipeline configuration, testing gates
-- security.md – Security practices, input validation, authentication
-- releasing.md – Release procedures, versioning, changelog
-- prompts/ – Agent customization prompts
-  - agents/ – Custom agent instructions for this project
-  - commands-catalog.md – Reference list of slash commands
+- **testing.md** – Test strategy, patterns, test infrastructure
+- **git-branching.md** – Git workflow, branching strategy, commit conventions
+- **ci.md** – CI/CD pipeline configuration, testing gates
+- **security.md** – Security practices, input validation, authentication
+- **releasing.md** – Release procedures, versioning, changelog
+- **diagrams.md** – Mermaid diagram generation with light/dark themes
+- **async-agent-spawning.md** – Launch, monitor, and retrieve background agents
+- **ask-user-question.md** – Using the AskUserQuestion tool effectively
 
 Update README.md with these changes? (YES/NO)
 ```
 
-## When to Use
-
+WHEN TO USE
 - After adding new files to a folder (keep README current)
 - Before major releases (ensure docs match code)
 - During documentation cleanup (quarterly maintenance)
 - After reorganizing folder structure (update navigation)
 - When README "Contents" section is out of date
+- Use FOLDER=all to sync entire docs/ directory at once
 
-## Usage Examples
-
+USAGE EXAMPLES
 ```bash
-# Sync docs/02-practices folder
+# Sync single folder
 /agileflow:readme-sync FOLDER=docs/02-practices
 
-# Sync docs/04-architecture folder
-/agileflow:readme-sync FOLDER=docs/04-architecture
+# Sync all docs folders
+/agileflow:readme-sync FOLDER=all
 
-# Sync src/components folder (if it has README)
-/agileflow:readme-sync FOLDER=src/components
+# Sync architecture docs
+/agileflow:readme-sync FOLDER=docs/04-architecture
 ```
 
-## What It Updates
-
+WHAT IT UPDATES
 Only the `## Contents` section of README.md:
 - Removes old file listings
 - Adds all current files with descriptions
 - Maintains all other sections unchanged
 - Preserves custom notes and links
 
-## How to Sync Multiple Folders
-
-Run the command for each folder one at a time, or create a script:
-```bash
-for folder in docs/0[0-9]-*; do
-  /agileflow:readme-sync FOLDER="$folder"
-done
-```
-
-## Related Commands
-
-- `/agileflow:doc-coverage` - Report on documentation completeness
-- `/agileflow:impact-analysis` - See what changed
-- `/agileflow:board` - View project status
+RELATED
+- [Diagram Practice](docs/02-practices/diagrams.md) - How to create diagrams
+- [Async Agent Spawning](docs/02-practices/async-agent-spawning.md) - Background agent patterns
