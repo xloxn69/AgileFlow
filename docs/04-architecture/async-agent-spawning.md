@@ -83,6 +83,8 @@ Waits until agent completes, then returns full results.
   <img alt="Async Workflow Sequence" src="images/async-agent-spawning-1.light.svg">
 </picture>
 
+> Sequence diagram showing the full async lifecycle: parallel agent launches, non-blocking progress checks, blocking result retrieval, and optional agent resume.
+
 **Workflow steps:**
 1. **LAUNCH** - Task with `run_in_background: true` returns agentId immediately
 2. **MONITOR** - TaskOutput with `block: false` checks progress without waiting
@@ -99,6 +101,8 @@ Waits until agent completes, then returns full results.
   <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-2.dark.svg">
   <img alt="Parallel Search Pattern" src="images/async-agent-spawning-2.light.svg">
 </picture>
+
+> Flowchart showing three Task calls in a single message that execute in parallel, each returning independent results.
 
 Launch multiple agents simultaneously for comprehensive search:
 
@@ -172,6 +176,8 @@ Agent retains full context from previous execution.
   <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-4.dark.svg">
   <img alt="Sync vs Async Decision" src="images/async-agent-spawning-4.light.svg">
 </picture>
+
+> Decision flowchart comparing sync (blocking) vs async (background) execution paths, helping you choose the right approach for your task.
 
 | Use SYNC (default) when | Use ASYNC when |
 |-------------------------|----------------|
@@ -283,6 +289,8 @@ status: "completed" → Done, full results available
   <source media="(prefers-color-scheme: dark)" srcset="images/async-agent-spawning-3.dark.svg">
   <img alt="Agent State Lifecycle" src="images/async-agent-spawning-3.light.svg">
 </picture>
+
+> State diagram showing agent lifecycle: Launched → Running (with progress checks) → Completed, with optional Resume path back to Running.
 
 ---
 
