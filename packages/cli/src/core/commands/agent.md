@@ -1,5 +1,6 @@
 ---
 description: Onboard a new agent with profile and contract
+argument-hint: AGENT_ID=<id> ROLE=<role> [TOOLS=<list>] [SCOPE=<dirs>]
 ---
 
 # agent-new

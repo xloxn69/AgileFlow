@@ -1,5 +1,6 @@
 ---
 description: Generate pull request description from story
+argument-hint: STORY=<US-ID> [TITLE=<text>] [TEST_EVIDENCE=<text>]
 ---
 
 # pr-template
