@@ -1,5 +1,6 @@
 ---
 description: AI-powered code review with quality suggestions
+argument-hint: [BRANCH=<name>] [BASE=<branch>] [FOCUS=all|security|performance|style]
 ---
 
 # ai-code-review

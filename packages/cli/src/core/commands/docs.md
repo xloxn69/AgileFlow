@@ -1,5 +1,6 @@
 ---
 description: Synchronize documentation with code changes
+argument-hint: [BRANCH=<name>] [BASE=<branch>] [AUTO_CREATE=yes|no]
 ---
 
 # docs-sync

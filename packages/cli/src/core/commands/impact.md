@@ -1,5 +1,6 @@
 ---
 description: Analyze change impact across codebase
+argument-hint: [FILES=<paths>] [BASE=<branch>] [RUN_TESTS=yes|no]
 ---
 
 # impact-analysis

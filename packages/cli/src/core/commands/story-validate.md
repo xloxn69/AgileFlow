@@ -1,5 +1,6 @@
 ---
 description: Validate story completeness before development
+argument-hint: STORY=<US-ID>
 ---
 
 # story-validate
