@@ -10,7 +10,6 @@ System architecture, component design, and technical documentation for AgileFlow
 |----------|-------------|
 | [AgileFlow CLI Overview](./agileflow-cli-overview.md) | High-level system architecture and component layers |
 | [Agent Expert System](./agent-expert-system.md) | Self-improving agents with expertise files |
-| [Async Agent Spawning](./async-agent-spawning.md) | Launch, monitor, and retrieve background agents |
 | [Multi-Expert Orchestration](./multi-expert-orchestration.md) | Parallel expert analysis and synthesis |
 | [Babysit Mentor System](./babysit-mentor-system.md) | End-to-end implementation mentor |
 | [Command & Agent Flow](./command-agent-flow.md) | How commands and agents work together |
