@@ -10,9 +10,10 @@ The Agent Expert System enables self-improving AI agents that learn from their w
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-1.dark.svg">
-  <img alt="Diagram 1" src="images/agent-expert-system-1.light.svg">
+  <img alt="Agent Expert System Overview" src="images/agent-expert-system-1.light.svg">
 </picture>
 
+> High-level architecture showing 25 domain experts, each with expertise files (mental models), and their relationship to the orchestration layer.
 
 ---
 
@@ -22,9 +23,10 @@ Every Agent Expert follows the same workflow pattern:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-2.dark.svg">
-  <img alt="Diagram 2" src="images/agent-expert-system-2.light.svg">
+  <img alt="Three-Step Workflow" src="images/agent-expert-system-2.light.svg">
 </picture>
 
+> The core workflow: (1) Load expertise, (2) Execute task with validated knowledge, (3) Self-improve by updating expertise file.
 
 ---
 
@@ -34,9 +36,10 @@ Each domain expert has a dedicated directory with mental models and workflows:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-3.dark.svg">
-  <img alt="Diagram 3" src="images/agent-expert-system-3.light.svg">
+  <img alt="Expertise File Structure" src="images/agent-expert-system-3.light.svg">
 </picture>
 
+> File structure per expert: expertise.yaml (knowledge), question.md (Q&A workflow), self-improve.md (update protocol), workflow.md (full task chain).
 
 ### expertise.yaml Schema
 
@@ -73,9 +76,10 @@ The `/agileflow:babysit` command automatically routes requests to appropriate do
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-4.dark.svg">
-  <img alt="Diagram 4" src="images/agent-expert-system-4.light.svg">
+  <img alt="Domain Expert Routing" src="images/agent-expert-system-4.light.svg">
 </picture>
 
+> Babysit analyzes user request, detects domain (UI, API, database, etc.), and spawns appropriate expert with relevant expertise pre-loaded.
 
 ---
 
@@ -85,9 +89,10 @@ After completing work, agents update their expertise files:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-5.dark.svg">
-  <img alt="Diagram 5" src="images/agent-expert-system-5.light.svg">
+  <img alt="Self-Improvement Protocol" src="images/agent-expert-system-5.light.svg">
 </picture>
 
+> After task completion: agent reflects on what was learned, updates expertise.yaml with new patterns/anti-patterns, adds to learnings section.
 
 ---
 
@@ -97,9 +102,10 @@ For complex cross-domain tasks, multiple experts can be deployed in parallel:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-6.dark.svg">
-  <img alt="Diagram 6" src="images/agent-expert-system-6.light.svg">
+  <img alt="Multi-Expert Orchestration" src="images/agent-expert-system-6.light.svg">
 </picture>
 
+> Orchestrator spawns multiple experts (e.g., API + Security + Database), collects responses, and synthesizes into unified answer.
 
 ---
 
@@ -107,9 +113,10 @@ For complex cross-domain tasks, multiple experts can be deployed in parallel:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-7.dark.svg">
-  <img alt="Diagram 7" src="images/agent-expert-system-7.light.svg">
+  <img alt="Expert Lifecycle States" src="images/agent-expert-system-7.light.svg">
 </picture>
 
+> Expert states: Idle → Loading Expertise → Validating → Executing → Self-Improving → Idle. Shows complete lifecycle with state transitions.
 
 ---
 
@@ -117,9 +124,10 @@ For complex cross-domain tasks, multiple experts can be deployed in parallel:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="images/agent-expert-system-8.dark.svg">
-  <img alt="Diagram 8" src="images/agent-expert-system-8.light.svg">
+  <img alt="Integration Points" src="images/agent-expert-system-8.light.svg">
 </picture>
 
+> How experts integrate with other AgileFlow components: babysit spawning, status.json updates, bus/log.jsonl messages, and file system operations.
 
 ---
 
