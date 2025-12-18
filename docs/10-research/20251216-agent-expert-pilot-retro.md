@@ -62,10 +62,11 @@ The Agent Expert pilot successfully implemented self-improving expertise systems
 - Can't quantitatively compare before/after yet
 - Success measurement is currently qualitative only
 
-### 4. Babysit Not Integrated
-- Original research suggested babysit should spawn experts
-- Deferred to keep pilot lean
-- Users must manually invoke domain agents vs. babysit orchestrating
+### 4. ~~Babysit Not Integrated~~ **RESOLVED**
+- ~~Original research suggested babysit should spawn experts~~
+- ~~Deferred to keep pilot lean~~
+- ~~Users must manually invoke domain agents vs. babysit orchestrating~~
+- **UPDATE (2025-12-17)**: Babysit integration complete. See `babysit.md` lines 345-476 for "AUTOMATIC DOMAIN EXPERT SPAWNING" section with 26 domain detection rules.
 
 ---
 
@@ -84,15 +85,17 @@ The Agent Expert pilot successfully implemented self-improving expertise systems
 - Measure accuracy of responses
 - Note token usage patterns
 
-### 3. Prioritize High-Impact Agents First
-- **testing**: Frequently used, high benefit from knowing test structure
-- **ci**: Needs to know workflow files, test commands
-- **devops**: Benefits from infrastructure file knowledge
-- **security**: Critical to know auth patterns, vulnerability locations
+### 3. ~~Prioritize High-Impact Agents First~~ **COMPLETED**
+- ~~**testing**: Frequently used, high benefit from knowing test structure~~
+- ~~**ci**: Needs to know workflow files, test commands~~
+- ~~**devops**: Benefits from infrastructure file knowledge~~
+- ~~**security**: Critical to know auth patterns, vulnerability locations~~
+- **UPDATE (2025-12-17)**: All 25 agents now have expert files. Full rollout completed.
 
-### 4. Consider Babysit Integration After 50% Rollout
-- Once enough experts exist, babysit can delegate effectively
-- Avoid premature integration before experts prove themselves
+### 4. ~~Consider Babysit Integration After 50% Rollout~~ **COMPLETED**
+- ~~Once enough experts exist, babysit can delegate effectively~~
+- ~~Avoid premature integration before experts prove themselves~~
+- **UPDATE (2025-12-17)**: Babysit integration implemented with auto-spawn and domain detection.
 
 ### 5. Add Expertise File Size Monitoring
 - Alert if files exceed 200 lines
@@ -219,11 +222,18 @@ The Agent Expert pilot demonstrates:
 
 ### Next Steps
 
-1. Begin Phase 1 rollout with testing, ci, devops, security agents
-2. Establish baseline metrics before upgrading each agent
-3. Create validation script for expertise files
-4. Schedule Phase 2-4 implementation
-5. Plan babysit integration for after 50% agent coverage
+1. ~~Begin Phase 1 rollout with testing, ci, devops, security agents~~ ✅ **DONE** (2025-12-17)
+2. ~~Establish baseline metrics before upgrading each agent~~ (Skipped - full rollout completed)
+3. ~~Create validation script for expertise files~~ ✅ **DONE** (2025-12-17)
+4. ~~Schedule Phase 2-4 implementation~~ ✅ **DONE** - All 25 agents upgraded (2025-12-17)
+5. ~~Plan babysit integration for after 50% agent coverage~~ ✅ **DONE** (2025-12-17)
+
+**Remaining Optional Improvements:**
+- [x] Create `scripts/validate-expertise.sh` to check path validity ✅ **DONE** (2025-12-17)
+- [x] Add expertise file size monitoring ✅ (Included in validate-expertise.sh)
+- [x] Implement metrics collection ✅ **DONE** (2025-12-17) - Created `scripts/expertise-metrics.sh` dashboard
+
+**Note**: Before/after comparison not possible (no historical baseline). Metrics dashboard tracks ongoing health instead.
 
 ---
 
