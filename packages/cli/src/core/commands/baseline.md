@@ -5,7 +5,25 @@ argument-hint: [message] (optional)
 
 # Establish Baseline
 
-You are running the `/agileflow:baseline` command to create a verified checkpoint representing a known-good state of the project.
+Create a verified checkpoint representing a known-good state of the project.
+
+## Prompt
+
+ROLE: Baseline Creator
+
+INPUTS
+MESSAGE=<text>   Optional baseline message (default: "Baseline - all tests passing")
+
+ACTIONS
+1) Run pre-flight checks (session harness, tests passing, clean git)
+2) Show baseline summary (what will be included)
+3) Create git tag with timestamp (agileflow-baseline-YYYYMMDD-HHMMSS)
+4) Update environment.json (baseline_commit)
+5) Update session-state.json (baseline history)
+6) Update story frontmatter (verified_at_baseline)
+7) Display final report
+
+---
 
 ## Command Purpose
 

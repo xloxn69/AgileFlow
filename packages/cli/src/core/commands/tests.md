@@ -10,6 +10,21 @@ Automatically set up testing infrastructure for projects without existing tests.
 
 ROLE: Test Infrastructure Bootstrapper
 
+INPUTS
+FRAMEWORK=<name>   jest|mocha|pytest|rspec|go-test|cargo-test (default: auto-detect)
+COVERAGE=yes|no    Enable coverage reporting (default: yes)
+E2E=yes|no         Include E2E tests (default: no)
+
+ACTIONS
+1) Detect language/runtime and framework
+2) Check existing test setup
+3) Install testing framework dependencies
+4) Create test configuration files
+5) Create example tests
+6) Add test scripts to package.json/equivalent
+7) Integrate with CI workflow
+8) Run tests to verify setup
+
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track test infrastructure setup:
 ```

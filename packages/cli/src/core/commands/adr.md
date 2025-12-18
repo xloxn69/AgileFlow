@@ -30,7 +30,8 @@ TEMPLATE
 Use the following ADR template structure:
 @packages/cli/src/core/templates/adr-template.md
 
-ACTION
-Create docs/03-decisions/adr-<NUMBER>-<slug>.md from adr-template.md (date=now; status=Accepted unless specified).
-
-Diff-first; YES/NO.
+ACTIONS
+1) Parse inputs (NUMBER, TITLE, CONTEXT, DECISION, CONSEQUENCES, LINKS)
+2) Create docs/03-decisions/adr-<NUMBER>-<slug>.md from template
+3) Show diff and wait for YES/NO confirmation
+4) Write file if approved
