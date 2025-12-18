@@ -151,8 +151,6 @@ Use `/agileflow:pr` to generate PR descriptions:
 ## Test plan
 - [ ] Manual testing checklist
 - [ ] Automated tests pass
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
 ---
