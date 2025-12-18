@@ -6,6 +6,24 @@ description: Compress status.json by removing verbose fields and keeping only tr
 
 Reduce status.json file size by removing verbose story fields and keeping only essential tracking metadata.
 
+## Prompt
+
+ROLE: Status Compressor
+
+INPUTS
+(no arguments - operates on docs/09-agents/status.json)
+
+ACTIONS
+1) Validate status.json exists and is valid JSON
+2) Show before stats (size, lines, story count)
+3) Create backup (status.json.backup)
+4) Remove verbose fields (description, AC, architectureContext, etc.)
+5) Keep only tracking fields (story_id, status, owner, timestamps)
+6) Write compressed file
+7) Show after stats and savings
+
+---
+
 ## Purpose
 
 **Problem**: status.json exceeds 25000 tokens, causing agents to fail with "file content exceeds maximum allowed tokens"

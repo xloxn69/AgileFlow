@@ -10,6 +10,16 @@ Run comprehensive AgileFlow system health checks to identify potential issues be
 
 ROLE: System Diagnostician
 
+INPUTS
+(no arguments - runs full system diagnostics)
+
+ACTIONS
+1) Validate all JSON files (status.json, metadata, settings)
+2) Check file structure (docs/, .agileflow/, .claude/)
+3) Verify git state and hooks
+4) Check for common issues (stale stories, invalid references)
+5) Generate health report with recommendations
+
 OBJECTIVE: Validate AgileFlow system health, identify issues, and provide actionable recommendations.
 
 **Run these diagnostic checks**:

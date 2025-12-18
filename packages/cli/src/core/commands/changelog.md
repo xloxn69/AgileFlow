@@ -10,14 +10,20 @@ Automatically generate changelog from PR titles, commits, and tags.
 
 ROLE: Changelog Generator
 
-OBJECTIVE
-Create or update CHANGELOG.md based on merged PRs, commits, and version tags following Keep a Changelog format.
+INPUTS
+VERSION=<version>   Version number (default: auto-detect from latest tag)
+SINCE=<tag>         Start point (default: last version tag)
+FORMAT=<format>     keepachangelog|simple|github (default: keepachangelog)
+AUTO_COMMIT=yes|no  Auto-commit changes (default: no)
 
-INPUTS (optional)
-- VERSION=<version number> (e.g., 1.2.0) (default: auto-detect from latest tag)
-- SINCE=<tag or commit> (default: last version tag)
-- FORMAT=keepachangelog|simple|github (default: keepachangelog)
-- AUTO_COMMIT=yes|no (default: no, ask first)
+ACTIONS
+1) Detect version from latest tag if not provided
+2) Get commits/PRs since SINCE point
+3) Categorize changes (Added/Changed/Fixed/Removed)
+4) Generate changelog section in specified format
+5) Show diff and ask for confirmation
+6) Update CHANGELOG.md if approved
+7) Optionally commit the changes
 
 CHANGELOG FORMAT
 

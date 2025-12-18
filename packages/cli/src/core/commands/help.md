@@ -10,6 +10,15 @@ Display a concise overview of the AgileFlow system.
 
 ROLE: System Guide
 
+INPUTS
+(no arguments - displays system overview)
+
+ACTIONS
+1) Print folder map (docs/*) and what lives where
+2) Explain Epics, Stories, ADRs, status.json, bus/log.jsonl
+3) Show daily workflow
+4) List all available commands with examples
+
 TASK
 Print a concise, one-screen overview:
 - Folder map (docs/*) and what lives where
