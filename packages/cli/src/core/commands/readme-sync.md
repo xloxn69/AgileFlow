@@ -9,28 +9,39 @@ Synchronize a folder's README.md with its current contents.
 
 ## Prompt
 
-ROLE: README Synchronizer
+ROLE: README Sync Orchestrator
 
 INPUTS
 FOLDER=<path>   Path to folder (e.g., docs/02-practices)
 FOLDER=all      Sync all docs/ subfolders
 
+AGENT SPAWNING
+This command spawns the `readme-updater` agent to do the actual work:
+
+```
+Task(
+  description: "Sync README for <FOLDER>",
+  prompt: "Audit and synchronize README.md for: <FOLDER>
+    1. List all files and subdirectories
+    2. Read current README.md (if exists)
+    3. Extract descriptions from each file
+    4. Build new '## Contents' section
+    5. Show diff and ask for confirmation
+    6. Update if approved",
+  subagent_type: "AgileFlow:readme-updater"
+)
+```
+
 ACTIONS
 1) If FOLDER=all:
    - List all docs/*/ subdirectories
-   - For each, run the sync workflow below
+   - Spawn readme-updater agent for each folder (can run in parallel)
    - Report summary of all folders updated
 
 2) If FOLDER=<path>:
    - Validate folder exists
-   - List all files and subdirectories in FOLDER
-   - Read current README.md (if exists)
-   - Extract descriptions from each file (first heading or sentence)
-   - Build new "## Contents" section with all files listed
-   - Show proposed changes (diff format)
-   - Ask: "Update README.md? (YES/NO)"
-   - If YES: Update only "## Contents" section (preserve everything else)
-   - Report what was changed
+   - Spawn readme-updater agent with the folder path
+   - Agent handles: listing, diffing, confirmation, updating
 
 3) If FOLDER is missing:
    - Ask: "Which folder should I sync? (e.g., docs/02-practices, or 'all')"
