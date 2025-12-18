@@ -49,6 +49,19 @@ Use GitHub's `<picture>` element:
 </picture>
 ```
 
+**Always add a caption comment below each diagram** using blockquote syntax:
+
+```markdown
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/my-diagram.dark.svg">
+  <img alt="My Diagram" src="images/my-diagram.light.svg">
+</picture>
+
+> Brief description of what the diagram shows and its key insights.
+```
+
+This provides context for readers and improves accessibility.
+
 **Alternative (older method):**
 ```markdown
 ![](./diagram.dark.svg#gh-dark-mode-only)
@@ -108,6 +121,7 @@ These colors are based on [GitHub Primer](https://primer.style/) design system f
 - **Use transparent background** (`-b transparent`) so diagrams blend with GitHub's page background
 - **Avoid special characters** in node labels - escape or rephrase if needed
 - **Test on GitHub mobile** after pushing to verify rendering
+- **Add blockquote captions** (`> Description...`) below every diagram to explain what it shows
 
 ## Related
 
