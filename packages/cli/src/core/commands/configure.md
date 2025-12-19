@@ -1,5 +1,5 @@
 ---
-description: Configure advanced AgileFlow features (git, hooks, archival, CI)
+description: Configure advanced AgileFlow features (git, hooks, archival, CI, status line)
 argument-hint: (interactive menu)
 ---
 
@@ -33,6 +33,7 @@ Each feature is handled by a specialized agent:
 - **Hooks System** (`AgileFlow:agents:configuration:hooks`) - Event-driven automation
 - **Auto-Archival** (`AgileFlow:agents:configuration:archival`) - Status.json size management
 - **CI/CD** (`AgileFlow:agents:configuration:ci`) - Automated testing and quality checks
+- **Status Line** (`AgileFlow:agents:configuration:status-line`) - Custom Claude Code status bar with AgileFlow context
 
 ## Detection Phase (Run First)
 
@@ -112,6 +113,15 @@ else
   CI_CONFIGURED=false
 fi
 
+# Check status line
+if [ -f scripts/agileflow-statusline.sh ] && grep -q "statusLine" .claude/settings.json 2>/dev/null; then
+  echo "✅ Status line configured"
+  STATUSLINE_CONFIGURED=true
+else
+  echo "❌ Status line not configured"
+  STATUSLINE_CONFIGURED=false
+fi
+
 echo "===================================="
 echo ""
 ```
@@ -151,7 +161,8 @@ The AskUserQuestion tool allows you to prompt the user for input. It requires XM
     {"label": "Attribution Settings", "description": "Configure CLAUDE.md attribution policy"},
     {"label": "Hooks System", "description": "Set up event-driven automation"},
     {"label": "Auto-Archival", "description": "Manage status.json file size"},
-    {"label": "CI/CD", "description": "Set up automated testing"}
+    {"label": "CI/CD", "description": "Set up automated testing"},
+    {"label": "Status Line", "description": "Custom status bar with story/WIP/context info"}
   ]
 }]</parameter>
 </invoke>
@@ -169,7 +180,8 @@ The AskUserQuestion tool allows you to prompt the user for input. It requires XM
     {"label": "Attribution Settings", "description": "Configure CLAUDE.md attribution policy"},
     {"label": "Hooks System", "description": "Set up event-driven automation"},
     {"label": "Auto-Archival", "description": "Manage status.json file size"},
-    {"label": "CI/CD", "description": "Set up automated testing"}
+    {"label": "CI/CD", "description": "Set up automated testing"},
+    {"label": "Status Line", "description": "Custom status bar with story/WIP/context info"}
   ]
 }]</parameter>
 </invoke>
@@ -190,6 +202,7 @@ Available options:
 3. Hooks System (event-driven automation)
 4. Auto-Archival (status.json size management)
 5. CI/CD (automated testing and quality checks)
+6. Status Line (custom status bar with story/WIP/context info)
 
 You can select multiple options. Features already configured are marked with ✅.
 
@@ -199,6 +212,7 @@ Current status:
 - Hooks System: [✅ Configured / ❌ Not configured]
 - Auto-Archival: [✅ Configured / ❌ Not configured]
 - CI/CD: [✅ Configured / ❌ Not configured]
+- Status Line: [✅ Configured / ❌ Not configured]
 
 Select features to configure:
 ```
@@ -261,6 +275,16 @@ Task({
 })
 ```
 
+#### Status Line Agent
+
+```javascript
+Task({
+  subagent_type: "AgileFlow:agents:configuration:status-line",
+  description: "Configure status line",
+  prompt: "Set up a custom AgileFlow status line for Claude Code. Ask user which components to display (story, WIP, context %, cost, git branch), create the statusline script, configure .claude/settings.json, and document in CLAUDE.md."
+})
+```
+
 ### Parallel Execution
 
 **CRITICAL**: Spawn multiple agents in a **single message** for parallel execution:
@@ -281,12 +305,14 @@ Task({ subagent_type: "AgileFlow:agents:configuration:hooks", ... })
 
 Some agents have dependencies:
 - **Auto-Archival** depends on **Hooks System** (needs .claude/settings.json to exist)
+- **Status Line** depends on **Hooks System** (needs .claude/settings.json to exist)
 - **Git Config**, **Attribution**, and **CI/CD** are independent (can run in parallel)
 
 **Execution Strategy**:
 1. If user selects Git + Attribution + CI: Run in parallel (no dependencies)
 2. If user selects Hooks + Archival: Run hooks FIRST, then archival (dependency)
-3. If user selects all 5: Run Git + Attribution + CI in parallel, wait, then run Hooks, wait, then run Archival
+3. If user selects Hooks + Status Line: Run hooks FIRST, then status line (dependency)
+4. If user selects all 6: Run Git + Attribution + CI in parallel, wait, then run Hooks, wait, then run Archival + Status Line in parallel
 
 ## Agent Result Handling
 
@@ -301,6 +327,7 @@ Results:
 - Hooks System: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - Auto-Archival: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - CI/CD: [✅ Configured / ❌ Failed / ⏭️ Skipped]
+- Status Line: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 
 Next steps:
 [Agent-specific next steps from results]
@@ -360,6 +387,13 @@ If an agent fails:
 - Create workflow file (`.github/workflows/ci.yml`, `.gitlab-ci.yml`, or `.circleci/config.yml`)
 - Document in CLAUDE.md with CI status, badge URL, and troubleshooting
 
+### 6. Status Line (status-line agent)
+- Ask user which components to display (story, WIP, context %, cost, git branch)
+- Create `scripts/agileflow-statusline.sh` script
+- Add `statusLine` configuration to `.claude/settings.json`
+- Document in CLAUDE.md
+- **CRITICAL**: Remind user to restart Claude Code
+
 ## Example Workflow
 
 ```
@@ -372,9 +406,10 @@ If an agent fails:
    ❌ Hooks system not configured
    ❌ Auto-archival not configured
    ❌ CI/CD not configured
+   ❌ Status line not configured
 
 3. Orchestrator presents menu using AskUserQuestion:
-   "Select features to configure: [Git Repository, Attribution Settings, Hooks System, Auto-Archival, CI/CD]"
+   "Select features to configure: [Git Repository, Attribution Settings, Hooks System, Auto-Archival, CI/CD, Status Line]"
 
 4. User selects: ["Attribution Settings", "Hooks System", "CI/CD"]
 
@@ -399,9 +434,9 @@ If an agent fails:
 - ALWAYS run detection phase first
 - Use AskUserQuestion tool for interactive menus
 - Spawn agents in parallel when possible (single message)
-- Respect agent dependencies (hooks before archival)
+- Respect agent dependencies (hooks before archival, hooks before status-line)
 - Display clear results summary after completion
-- Remind user to restart Claude Code if hooks were configured
+- Remind user to restart Claude Code if hooks or status line were configured
 - Be idempotent (safe to run multiple times)
 
 ## Output
@@ -411,4 +446,4 @@ If an agent fails:
 - Agent spawn confirmations
 - Final results summary
 - Next steps (agent-specific guidance)
-- **CRITICAL reminder** if hooks configured: "🔴 RESTART CLAUDE CODE NOW!"
+- **CRITICAL reminder** if hooks or status line configured: "🔴 RESTART CLAUDE CODE NOW!"
