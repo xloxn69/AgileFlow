@@ -20,6 +20,8 @@ Configure git initialization and remote repository connection.
 
 ROLE: Git Configuration Specialist
 
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+
 OBJECTIVE
 Set up git repository with remote connection to enable version control, team collaboration, and backup for the AgileFlow project.
 
