@@ -33,6 +33,59 @@ Set up the hooks system that enables event-driven automation in Claude Code. Hoo
 
 ## Configuration Steps
 
+### Step 0: Check and Migrate Old Format
+
+**IMPORTANT**: Before configuring, check if `.claude/settings.json` exists with old format and migrate it.
+
+The NEW hooks format uses `matcher` and `hooks` array:
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Hello'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The OLD format (pre-2024) used `enabled`, `command`, `description` directly - THIS IS INVALID NOW:
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "enabled": true,
+        "command": "echo 'Hello'",
+        "description": "..."
+      }
+    ]
+  }
+}
+```
+
+**Migration check**:
+```bash
+if [ -f .claude/settings.json ]; then
+  # Check for old format (has "enabled" but no "hooks" array inside)
+  if jq -e '.hooks.SessionStart[0].enabled' .claude/settings.json >/dev/null 2>&1; then
+    echo "⚠️  Old hooks format detected - migration needed"
+    # Backup
+    cp .claude/settings.json .claude/settings.json.backup
+    echo "Backed up to .claude/settings.json.backup"
+  fi
+fi
+```
+
+If old format detected, the agent should rebuild the hooks configuration from scratch using the new format.
+
 ### Step 1: Create Directories
 
 ```bash

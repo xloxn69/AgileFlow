@@ -223,15 +223,45 @@ else
 fi
 ```
 
+**Check for old statusLine format** (string instead of object):
+
+The NEW format uses an object:
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash scripts/agileflow-statusline.sh",
+    "padding": 0
+  }
+}
+```
+
+The OLD format (invalid) was just a string:
+```json
+{
+  "statusLine": "bash scripts/agileflow-statusline.sh"
+}
+```
+
+```bash
+# Check for old string format
+if [ -f .claude/settings.json ]; then
+  OLD_FORMAT=$(jq -r 'if .statusLine | type == "string" then "yes" else "no" end' .claude/settings.json 2>/dev/null)
+  if [ "$OLD_FORMAT" = "yes" ]; then
+    echo "⚠️  Old statusLine format detected (string) - will be replaced with object format"
+  fi
+fi
+```
+
 Add or update the statusLine configuration:
 
-Use `jq` to add/update the statusLine field:
+Use `jq` to add/update the statusLine field (this will replace old string format):
 
 ```bash
 # Backup existing settings
 cp .claude/settings.json .claude/settings.json.backup 2>/dev/null
 
-# Add statusLine configuration
+# Add statusLine configuration (replaces any old format)
 jq '. + {"statusLine": {"type": "command", "command": "bash scripts/agileflow-statusline.sh", "padding": 0}}' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
 ```
 
