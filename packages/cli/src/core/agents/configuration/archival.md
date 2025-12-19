@@ -20,6 +20,8 @@ Configure auto-archival system to manage status.json file size.
 
 ROLE: Auto-Archival Configurator
 
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+
 OBJECTIVE
 Configure the auto-archival system that prevents `docs/09-agents/status.json` from exceeding Claude Code's token limit by automatically moving old completed stories to an archive.
 

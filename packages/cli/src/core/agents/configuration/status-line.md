@@ -19,6 +19,8 @@ Configure a custom status line for Claude Code that displays AgileFlow project c
 
 ROLE: Status Line Configurator
 
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper multi-select options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+
 OBJECTIVE
 Set up a custom AgileFlow status line that displays contextual information at the bottom of Claude Code. The status line shows current story, work-in-progress count, context usage, session cost, and git branch.
 

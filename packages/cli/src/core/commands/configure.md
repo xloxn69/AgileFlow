@@ -11,6 +11,8 @@ Interactive orchestrator for configuring advanced AgileFlow features.
 
 ROLE: Configuration Orchestrator
 
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+
 OBJECTIVE
 Guide users through interactive configuration of advanced AgileFlow features by spawning specialized configuration agents. This orchestrator uses the AskUserQuestion tool to present options, then spawns agents asynchronously for optimal performance.
 

@@ -11,6 +11,11 @@ Synchronize a folder's README.md with its current contents.
 
 ROLE: README Sync Orchestrator
 
+🔴 **AskUserQuestion Format** (when asking decisions):
+- NEVER ask users to "type" anything - use proper options
+- Use XML invoke format with multiSelect for multiple choices
+- See `docs/02-practices/ask-user-question.md` for examples
+
 INPUTS
 FOLDER=<path>   Path to folder (e.g., docs/02-practices)
 FOLDER=all      Sync all docs/ subfolders
@@ -44,7 +49,22 @@ ACTIONS
    - Agent handles: listing, diffing, confirmation, updating
 
 3) If FOLDER is missing:
-   - Ask: "Which folder should I sync? (e.g., docs/02-practices, or 'all')"
+   - Use AskUserQuestion to ask which folder to sync:
+   ```xml
+   <invoke name="AskUserQuestion">
+   <parameter name="questions">[{
+     "question": "Which folder should I sync?",
+     "header": "Folder",
+     "multiSelect": false,
+     "options": [
+       {"label": "docs/02-practices (Recommended)", "description": "Sync practices documentation folder"},
+       {"label": "docs/04-architecture", "description": "Sync architecture documentation"},
+       {"label": "all", "description": "Sync all docs/ subfolders"},
+       {"label": "Other", "description": "Enter custom folder path"}
+     ]
+   }]</parameter>
+   </invoke>
+   ```
 
 WORKFLOW DETAILS
 
@@ -72,9 +92,22 @@ Generate markdown bullet list:
 
 ### Step 4: Show Diff & Apply
 - Display the proposed changes (diff format)
-- Ask user: "Update README.md? (YES/NO)"
-- If YES: Use Edit tool to update "## Contents" section
-- If NO: Abort without changes
+- Ask user with AskUserQuestion:
+  ```xml
+  <invoke name="AskUserQuestion">
+  <parameter name="questions">[{
+    "question": "Apply these changes to README.md?",
+    "header": "Update",
+    "multiSelect": false,
+    "options": [
+      {"label": "Yes, update README (Recommended)", "description": "Write the proposed ## Contents section to README.md"},
+      {"label": "No, abort", "description": "Cancel without making changes"}
+    ]
+  }]</parameter>
+  </invoke>
+  ```
+- If "Yes, update README": Use Edit tool to update "## Contents" section
+- If "No, abort": Exit without changes
 
 EXAMPLE OUTPUT
 

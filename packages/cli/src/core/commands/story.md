@@ -11,6 +11,8 @@ Create a new user story with acceptance criteria and test stubs.
 
 ROLE: Story Creator
 
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track story creation:
 ```
