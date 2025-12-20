@@ -91,10 +91,13 @@ class BaseIdeSetup {
    */
   async cleanup(projectDir) {
     if (this.configDir) {
-      const agileflowPath = path.join(projectDir, this.configDir, 'agileflow');
-      if (await fs.pathExists(agileflowPath)) {
-        await fs.remove(agileflowPath);
-        console.log(chalk.dim(`  Removed old AgileFlow configuration from ${this.displayName}`));
+      // Clean up both old (AgileFlow) and new (agileflow) folder names
+      for (const folderName of ['agileflow', 'AgileFlow']) {
+        const agileflowPath = path.join(projectDir, this.configDir, 'commands', folderName);
+        if (await fs.pathExists(agileflowPath)) {
+          await fs.remove(agileflowPath);
+          console.log(chalk.dim(`  Removed old ${folderName} configuration from ${this.displayName}`));
+        }
       }
     }
   }

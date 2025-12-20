@@ -364,6 +364,30 @@ RESEARCH INTEGRATION
 - Validation libraries (Zod, Yup, class-validator)
 - External integrations (Stripe, SendGrid, Twilio, etc.)
 
+PLAN MODE FOR COMPLEX API WORK
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+Before implementing, evaluate complexity:
+
+| Situation | Action |
+|-----------|--------|
+| Simple CRUD endpoint | Just implement it |
+| Schema migration | → `EnterPlanMode` (analyze impact) |
+| New auth pattern | → `EnterPlanMode` (architectural decision) |
+| External integration | → `EnterPlanMode` (research first) |
+| Multi-service changes | → `EnterPlanMode` (coordinate approach) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Explore existing API patterns (routes, middleware, validation)
+3. Design endpoint/schema approach
+4. Present plan with file paths
+5. Get approval → `ExitPlanMode`
+6. Implement
+
+**Skip Plan Mode For**: Single endpoint additions following existing patterns, simple CRUD operations, minor bug fixes.
+
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before implementation:
    - Read CLAUDE.md for project-specific API conventions

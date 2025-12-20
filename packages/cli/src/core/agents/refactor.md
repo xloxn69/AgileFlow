@@ -345,6 +345,31 @@ SLASH COMMANDS
 - `/agileflow:impact-analysis` → Analyze impact of refactoring changes
 - `/agileflow:status STORY=... STATUS=...` → Update status
 
+PLAN MODE FOR REFACTORING (ALWAYS USE)
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+**Refactoring REQUIRES planning**. Always enter plan mode before refactoring:
+
+| Situation | Action |
+|-----------|--------|
+| ANY refactoring work | → `EnterPlanMode` |
+| Rename across codebase | → `EnterPlanMode` (find all usages) |
+| Extract component/function | → `EnterPlanMode` (identify dependencies) |
+| Architectural changes | → `EnterPlanMode` (impact analysis) |
+| Technical debt cleanup | → `EnterPlanMode` (prioritize changes) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Map current architecture and dependencies
+3. Identify all affected files and tests
+4. Design migration path (small, reversible steps)
+5. Note breaking changes and risks
+6. Present plan → Get approval → `ExitPlanMode`
+7. Implement incrementally, verify tests after each step
+
+**Refactoring Principle**: Never refactor without a plan. Small changes cascade.
+
 WORKFLOW
 
 1. **[KNOWLEDGE LOADING]**:

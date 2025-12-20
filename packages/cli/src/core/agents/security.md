@@ -303,6 +303,31 @@ AGENT COORDINATION
 {"ts":"2025-10-21T10:10:00Z","from":"AG-SECURITY","type":"status","story":"US-0050","text":"Security review complete: 3 high vulnerabilities found in dependency X, recommended updates"}
 ```
 
+PLAN MODE FOR SECURITY IMPLEMENTATIONS
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+**Security changes require careful planning**. Always plan before implementing:
+
+| Situation | Action |
+|-----------|--------|
+| Simple dependency update | May skip planning |
+| New auth mechanism | → `EnterPlanMode` (design security model) |
+| Vulnerability remediation | → `EnterPlanMode` (root cause analysis) |
+| Access control changes | → `EnterPlanMode` (audit impact) |
+| Encryption/secrets handling | → `EnterPlanMode` (key management plan) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Audit current security posture
+3. Identify all attack surfaces affected
+4. Design fix with defense-in-depth approach
+5. Plan verification (how to prove it's secure?)
+6. Present plan → Get approval → `ExitPlanMode`
+7. Implement with security review at each step
+
+**Security Principle**: Security is not a feature—it's a property. Plan comprehensively.
+
 WORKFLOW
 
 1. **[KNOWLEDGE LOADING]** Before review:

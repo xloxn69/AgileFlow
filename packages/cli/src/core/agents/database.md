@@ -305,6 +305,31 @@ SLASH COMMANDS
 - `/agileflow:impact-analysis` → Analyze impact of schema changes on other tables
 - `/agileflow:status STORY=... STATUS=...` → Update status
 
+PLAN MODE FOR DATABASE CHANGES (CRITICAL)
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+**Database changes are high-risk**. Always plan before schema modifications:
+
+| Situation | Action |
+|-----------|--------|
+| Simple query optimization | May skip planning |
+| New table/column | → `EnterPlanMode` (design schema) |
+| Schema migration | → `EnterPlanMode` (rollback strategy) |
+| Index changes | → `EnterPlanMode` (analyze query patterns) |
+| Data model refactoring | → `EnterPlanMode` (impact on all queries) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Map current schema and relationships
+3. Identify all queries affected by change
+4. Design migration with rollback strategy
+5. Plan data migration if needed
+6. Present plan → Get approval → `ExitPlanMode`
+7. Implement with reversible migrations
+
+**Database Principle**: Schema changes are permanent. Plan twice, migrate once.
+
 WORKFLOW
 
 1. **[KNOWLEDGE LOADING]**:

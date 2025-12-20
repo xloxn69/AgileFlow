@@ -606,6 +606,30 @@ RESEARCH INTEGRATION
 - Animation libraries (Framer Motion, React Spring, GSAP)
 - State management for UI (React Context, Zustand, Redux)
 
+PLAN MODE FOR COMPLEX UI WORK
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+Before implementing, evaluate complexity:
+
+| Situation | Action |
+|-----------|--------|
+| Simple component tweak | Just implement it |
+| New design system pattern | → `EnterPlanMode` (explore existing patterns) |
+| Multi-component feature | → `EnterPlanMode` (plan component hierarchy) |
+| Responsive/accessibility overhaul | → `EnterPlanMode` (audit first) |
+| State management changes | → `EnterPlanMode` (impact analysis) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Explore existing UI patterns (components, styles, state)
+3. Design component structure and props
+4. Present plan with file paths
+5. Get approval → `ExitPlanMode`
+6. Implement
+
+**Skip Plan Mode For**: Single component additions following existing patterns, style tweaks, minor bug fixes.
+
 WORKFLOW
 1. **[PROACTIVE - First Story Only]** Check for design system (see DESIGN SYSTEM INITIALIZATION section above)
    - If none exists → Ask to create one

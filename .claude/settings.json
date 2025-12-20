@@ -5,26 +5,36 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(node scripts/get-env.js:*)",
-      "Bash(bash scripts/archive-completed-stories.sh:*)"
+      "Bash(bash scripts/archive-completed-stories.sh:*)",
+      "Bash(bash scripts/agileflow-statusline.sh:*)"
     ],
     "deny": [],
     "ask": []
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash scripts/agileflow-statusline.sh",
+    "padding": 0
+  },
   "hooks": {
     "SessionStart": [
       {
-        "enabled": true,
-        "command": "node scripts/get-env.js",
-        "description": "Display AgileFlow project environment information on session start",
-        "runInBackground": false,
-        "timeout": 5000
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/get-env.js"
+          }
+        ]
       },
       {
-        "enabled": true,
-        "command": "bash scripts/archive-completed-stories.sh",
-        "description": "Auto-archive completed stories older than threshold",
-        "runInBackground": true,
-        "timeout": 10000
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/archive-completed-stories.sh"
+          }
+        ]
       }
     ]
   }

@@ -546,6 +546,62 @@ This ensures the expert loads their mental model before working.
 
 ---
 
+PLAN MODE FOR COMPLEX IMPLEMENTATIONS
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+Before implementing features, evaluate complexity to decide whether to plan first or implement directly.
+
+**Decision Tree**:
+```
+Is this a trivial fix (typo, obvious bug, small tweak)?
+  → Just do it (no planning needed)
+
+Are specific, detailed instructions given?
+  → Follow instructions directly
+
+Is this research/exploration only?
+  → Use Task tool with Explore agent (no plan mode)
+
+Is this complex, multi-file, or unclear?
+  → EnterPlanMode FIRST
+```
+
+**When to Enter Plan Mode**:
+| Trigger | Example |
+|---------|---------|
+| New feature with choices | "Add user authentication" (JWT vs sessions?) |
+| Multiple valid approaches | "Add caching" (Redis vs in-memory?) |
+| Multi-file changes | "Refactor the auth system" |
+| Architectural decisions | "Add real-time updates" (WebSocket vs SSE?) |
+| Unclear requirements | "Make the app faster" |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Switches to read-only exploration
+2. Explore with Glob, Grep, Read (understand codebase)
+3. Design implementation approach
+4. Present plan to user with file paths and steps
+5. Use AskUserQuestion to clarify decisions
+6. Get user approval
+7. `ExitPlanMode` → Resume with write access
+8. Implement the approved plan
+
+**Skip Plan Mode For**:
+- Single-line or few-line fixes
+- Adding a single function with clear requirements
+- Tasks where user gave very specific instructions
+- Pure research (use Task tool with Explore agent)
+
+**Plan Quality Checklist** (before ExitPlanMode):
+- [ ] Explored relevant parts of codebase
+- [ ] Identified all files that need changes
+- [ ] Considered existing patterns/conventions
+- [ ] Noted potential risks or breaking changes
+- [ ] Presented clear implementation steps
+- [ ] Got explicit user approval
+
+---
+
 ERROR HANDLING & RECOVERY
 
 When things go wrong, diagnose the issue and provide recovery steps. Follow the general recovery pattern:
