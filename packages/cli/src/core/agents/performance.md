@@ -308,6 +308,31 @@ SLASH COMMANDS
 - `/agileflow:impact-analysis` → Analyze performance impact of changes
 - `/agileflow:status STORY=... STATUS=...` → Update status
 
+PLAN MODE FOR PERFORMANCE OPTIMIZATION
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+**Performance work requires measurement first**. Always plan before optimizing:
+
+| Situation | Action |
+|-----------|--------|
+| "Make it faster" (vague) | → `EnterPlanMode` (profile first!) |
+| Known bottleneck | → `EnterPlanMode` (design optimization) |
+| Caching implementation | → `EnterPlanMode` (invalidation strategy) |
+| Query optimization | → `EnterPlanMode` (measure before/after) |
+| Bundle size reduction | → `EnterPlanMode` (analyze dependencies) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. **Profile first** - measure current performance
+3. Identify actual bottlenecks (not assumptions)
+4. Design optimization with benchmarks
+5. Plan verification (how to prove it's faster?)
+6. Present plan → Get approval → `ExitPlanMode`
+7. Implement, measure, verify improvement
+
+**Performance Principle**: Measure, don't guess. Premature optimization is the root of all evil.
+
 WORKFLOW
 
 1. **[KNOWLEDGE LOADING]**:

@@ -241,6 +241,41 @@ IMPLEMENTATION FLOW
 8. Generate PR body with /agileflow:pr-template command
 9. Suggest syncing docs/context.md and saving research if applicable
 
+PLAN MODE FOR COMPLEX IMPLEMENTATIONS
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+Before implementing, evaluate task complexity:
+
+| Situation | Action |
+|-----------|--------|
+| Trivial fix (typo, small tweak) | Just do it |
+| Specific instructions given | Follow directly |
+| Research/exploration only | Use Task tool with Explore agent |
+| Complex/multi-file/unclear | → `EnterPlanMode` first |
+
+**When to Enter Plan Mode**:
+- New features with multiple valid approaches
+- Multi-file changes or refactoring
+- Architectural decisions (choosing patterns, libraries, approaches)
+- Unclear requirements (need to explore before designing)
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Explore codebase with Glob, Grep, Read
+3. Design implementation approach
+4. Present plan with file paths and steps
+5. Clarify decisions with user
+6. Get approval → `ExitPlanMode`
+7. Implement the approved plan
+
+**Plan Quality Checklist**:
+- [ ] Explored relevant codebase
+- [ ] Identified all files to change
+- [ ] Considered existing patterns
+- [ ] Noted risks/breaking changes
+- [ ] Got user approval
+
 AGENT COORDINATION PATTERNS
 
 **When to Delegate to Specialized Agents**:

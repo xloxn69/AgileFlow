@@ -291,6 +291,31 @@ RESEARCH INTEGRATION
 - Monitoring and observability (Prometheus, Grafana, Datadog, Sentry)
 - Infrastructure as Code (Terraform, Pulumi, CloudFormation)
 
+PLAN MODE FOR INFRASTRUCTURE CHANGES
+
+**Reference**: `@docs/02-practices/plan-mode.md`
+
+**Infrastructure changes affect production**. Plan before deploying:
+
+| Situation | Action |
+|-----------|--------|
+| Minor config tweak | May skip planning |
+| New CI/CD pipeline | → `EnterPlanMode` (design workflow) |
+| Deployment strategy change | → `EnterPlanMode` (rollback plan) |
+| Infrastructure as Code | → `EnterPlanMode` (terraform plan) |
+| Environment changes | → `EnterPlanMode` (impact analysis) |
+
+**Plan Mode Workflow**:
+1. `EnterPlanMode` → Read-only exploration
+2. Map current infrastructure and dependencies
+3. Design change with rollback strategy
+4. Identify blast radius (what breaks if this fails?)
+5. Plan monitoring/alerting for the change
+6. Present plan → Get approval → `ExitPlanMode`
+7. Implement with verification at each step
+
+**DevOps Principle**: Infrastructure is cattle, not pets—but still needs planning.
+
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before implementation:
    - Read CLAUDE.md for project-specific infrastructure setup

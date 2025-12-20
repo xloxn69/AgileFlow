@@ -20,6 +20,60 @@ class ClaudeCodeSetup extends BaseIdeSetup {
   }
 
   /**
+   * Recursively install commands from a source directory
+   * @param {string} sourceDir - Source directory path
+   * @param {string} targetDir - Target directory path
+   * @param {string} agileflowDir - AgileFlow installation directory (for dynamic content)
+   * @param {boolean} injectDynamic - Whether to inject dynamic content (only for top-level commands)
+   * @returns {Promise<{commands: number, subdirs: number}>} Count of installed items
+   */
+  async installCommandsRecursive(sourceDir, targetDir, agileflowDir, injectDynamic = false) {
+    let commandCount = 0;
+    let subdirCount = 0;
+
+    if (!(await this.exists(sourceDir))) {
+      return { commands: 0, subdirs: 0 };
+    }
+
+    await this.ensureDir(targetDir);
+
+    const entries = await fs.readdir(sourceDir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const sourcePath = path.join(sourceDir, entry.name);
+      const targetPath = path.join(targetDir, entry.name);
+
+      if (entry.isFile() && entry.name.endsWith('.md')) {
+        // Read and process .md file
+        let content = await this.readFile(sourcePath);
+
+        // Inject dynamic content if enabled (for top-level commands)
+        if (injectDynamic) {
+          content = this.injectDynamicContent(content, agileflowDir);
+        }
+
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        await this.writeFile(targetPath, content);
+        commandCount++;
+      } else if (entry.isDirectory()) {
+        // Recursively process subdirectory
+        const subResult = await this.installCommandsRecursive(
+          sourcePath,
+          targetPath,
+          agileflowDir,
+          false // Don't inject dynamic content in subdirectories
+        );
+        commandCount += subResult.commands;
+        subdirCount += 1 + subResult.subdirs;
+      }
+    }
+
+    return { commands: commandCount, subdirs: subdirCount };
+  }
+
+  /**
    * Setup Claude Code IDE configuration
    * @param {string} projectDir - Project directory
    * @param {string} agileflowDir - AgileFlow installation directory
@@ -34,66 +88,43 @@ class ClaudeCodeSetup extends BaseIdeSetup {
     // Create .claude/commands/agileflow directory
     const claudeDir = path.join(projectDir, this.configDir);
     const commandsDir = path.join(claudeDir, this.commandsDir);
-    const agileflowCommandsDir = path.join(commandsDir, 'AgileFlow');
+    const agileflowCommandsDir = path.join(commandsDir, 'agileflow');
 
     await this.ensureDir(agileflowCommandsDir);
 
-    // Get commands from AgileFlow installation
+    // Recursively install all commands (including subdirectories like agents/, session/)
     const commandsSource = path.join(agileflowDir, 'commands');
-    let commandCount = 0;
+    const commandResult = await this.installCommandsRecursive(
+      commandsSource,
+      agileflowCommandsDir,
+      agileflowDir,
+      true // Inject dynamic content for top-level commands
+    );
 
-    if (await this.exists(commandsSource)) {
-      const commands = await this.scanDirectory(commandsSource, '.md');
-
-      for (const command of commands) {
-        // Read the original command content
-        let content = await this.readFile(command.path);
-
-        // Inject dynamic content (agent lists, command lists)
-        content = this.injectDynamicContent(content, agileflowDir);
-
-        // Replace docs/ references with custom folder name
-        content = this.replaceDocsReferences(content);
-
-        const targetPath = path.join(agileflowCommandsDir, `${command.name}.md`);
-        await this.writeFile(targetPath, content);
-        commandCount++;
-      }
-    }
-
-    // Create agents subdirectory
-    const agileflowAgentsDir = path.join(agileflowCommandsDir, 'agents');
-    await this.ensureDir(agileflowAgentsDir);
-
-    // Get agents from AgileFlow installation
+    // Also install agents (they're in a separate directory in agileflowDir)
     const agentsSource = path.join(agileflowDir, 'agents');
-    let agentCount = 0;
+    const agentsTargetDir = path.join(agileflowCommandsDir, 'agents');
+    const agentResult = await this.installCommandsRecursive(
+      agentsSource,
+      agentsTargetDir,
+      agileflowDir,
+      false // No dynamic content for agents
+    );
 
-    if (await this.exists(agentsSource)) {
-      const agents = await this.scanDirectory(agentsSource, '.md');
-
-      for (const agent of agents) {
-        // Read the original agent content
-        let content = await this.readFile(agent.path);
-
-        // Replace docs/ references with custom folder name
-        content = this.replaceDocsReferences(content);
-
-        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.md`);
-        await this.writeFile(targetPath, content);
-        agentCount++;
-      }
-    }
+    const totalCommands = commandResult.commands + agentResult.commands;
+    const totalSubdirs = commandResult.subdirs + (agentResult.commands > 0 ? 1 : 0) + agentResult.subdirs;
 
     console.log(chalk.green(`  ✓ ${this.displayName} configured:`));
-    console.log(chalk.dim(`    - ${commandCount} commands installed`));
-    console.log(chalk.dim(`    - ${agentCount} agents installed`));
+    console.log(chalk.dim(`    - ${totalCommands} commands installed`));
+    if (totalSubdirs > 0) {
+      console.log(chalk.dim(`    - ${totalSubdirs} subdirectories`));
+    }
     console.log(chalk.dim(`    - Path: ${path.relative(projectDir, agileflowCommandsDir)}`));
 
     return {
       success: true,
-      commands: commandCount,
-      agents: agentCount,
+      commands: totalCommands,
+      subdirs: totalSubdirs,
     };
   }
 }
