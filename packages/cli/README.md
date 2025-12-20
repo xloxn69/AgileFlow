@@ -41,6 +41,7 @@ This will:
 agileflow setup       # Set up AgileFlow in project
 agileflow status      # Check installation + updates
 agileflow update      # Update to latest version
+agileflow list        # List installed components
 agileflow doctor      # Diagnose issues
 agileflow uninstall   # Remove from project
 ```
@@ -50,6 +51,7 @@ agileflow uninstall   # Remove from project
 npx agileflow setup       # Set up AgileFlow in project
 npx agileflow status      # Check installation + updates
 npx agileflow update      # Update to latest version
+npx agileflow list        # List installed components
 npx agileflow doctor      # Diagnose issues
 npx agileflow uninstall   # Remove from project
 ```
