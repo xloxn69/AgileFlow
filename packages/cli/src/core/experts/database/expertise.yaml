@@ -7,8 +7,8 @@
 # NOT a source of truth - always validate against actual code.
 
 domain: database
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 # Key files the database expert needs to know
 files:
@@ -44,15 +44,33 @@ files:
       purpose: Seed data for development/testing
       conventions: "Idempotent, can run multiple times"
 
+  # AgileFlow-specific JSON data stores (not SQL databases)
+  json_stores:
+    - path: docs/09-agents/status.json
+      purpose: "Story and epic tracking (AgileFlow's 'database')"
+      schema:
+        updated: "ISO timestamp"
+        epics: "Map of EP-ID to {title, status, completed, summary}"
+        stories: "Map of US-ID to {title, epic, owner, status, priority, estimate, depends_on, test_status}"
+    - path: docs/09-agents/bus/log.jsonl
+      purpose: "Agent coordination messages (append-only log)"
+      format: "JSON Lines, one message per line"
+    - path: docs/09-agents/archive/
+      purpose: "Archived completed stories by month"
+      pattern: "YYYY-MM.json"
+
 # Common database relationships
 # Self-improve will populate project-specific relationships
-relationships: []
-  # Example - will be populated by self-improve:
-  # - parent: users
-  #   child: posts
-  #   type: one-to-many
-  #   cascade: delete
-  #   foreign_key: user_id
+relationships:
+  # AgileFlow JSON relationships
+  - parent: epics
+    child: stories
+    type: one-to-many
+    key: "stories[*].epic references epics[EP-ID]"
+  - parent: stories
+    child: test_cases
+    type: one-to-one
+    location: "docs/07-testing/test-cases/"
 
 # Database patterns the expert should recognize and follow
 patterns:
@@ -81,6 +99,21 @@ patterns:
     location: Index definitions
     example: "idx_users_email, idx_posts_user_id_created_at"
 
+  - name: "JSON Single Source of Truth"
+    description: "AgileFlow uses status.json as primary data store"
+    location: docs/09-agents/status.json
+    pattern: "Read-modify-write with updated timestamp"
+
+  - name: "JSON Lines for Logs"
+    description: "Append-only logs use .jsonl format"
+    location: docs/09-agents/bus/log.jsonl
+    pattern: "One JSON object per line, append only"
+
+  - name: "Monthly Archival"
+    description: "Completed stories archived by month to keep status.json lean"
+    location: docs/09-agents/archive/YYYY-MM.json
+    script: scripts/archive-completed-stories.sh
+
 # Conventions the database expert should follow
 conventions:
   - "Tables: lowercase, plural (users, posts, categories)"
@@ -93,7 +126,27 @@ conventions:
   - "Migrations must be reversible (up and down)"
   - "No SELECT * in production code"
   - "Index columns used in WHERE, JOIN, ORDER BY"
+  - "JSON stores: always update 'updated' timestamp when modifying"
+  - "JSON Lines: append only, never modify existing lines"
 
-# Learnings accumulated through self-improve
-# AUTO-UPDATED - do not edit manually
-learnings: []
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed AgileFlow data storage"
+    insight: "AgileFlow uses JSON files instead of SQL: status.json for tracking, log.jsonl for coordination, archive/ for historical data"
+    source: "docs/09-agents/"
+
+  - date: 2025-12-21
+    context: "Analyzed status.json schema"
+    insight: "Two main collections: epics (EP-ID keys) and stories (US-ID keys); stories have owner, status, priority, estimate, depends_on, test_status"
+    source: "docs/09-agents/status.json"
+
+  - date: 2025-12-21
+    context: "Analyzed archival pattern"
+    insight: "scripts/archive-completed-stories.sh moves done stories >7 days old to archive/YYYY-MM.json to keep status.json performant"
+    source: "scripts/archive-completed-stories.sh, CLAUDE.md"
+
+  - date: 2025-12-21
+    context: "Analyzed JSON Lines pattern"
+    insight: "bus/log.jsonl uses append-only JSON Lines format for agent messages; each line is independent JSON object"
+    source: "docs/09-agents/bus/log.jsonl"
