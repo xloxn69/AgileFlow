@@ -3,8 +3,8 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: datamigration
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   migrations:
@@ -104,4 +104,38 @@ migration_checklist:
     - "Migration documented in history"
 
 # Learnings are AUTO-UPDATED by self-improve.md
-learnings: []
+learnings:
+  - date: 2025-12-21
+    context: AgileFlow auto-archival system
+    learning: |
+      JSON-based data migration pattern: AgileFlow uses scripts/archive-completed-stories.sh
+      to automatically migrate completed stories from status.json to archive/YYYY-MM.json files.
+      This is a time-based migration (7-day threshold) that keeps the active status file lean
+      while preserving historical data in monthly archives. The migration is idempotent and
+      runs automatically on session start via SessionStart hook.
+
+  - date: 2025-12-21
+    context: AgileFlow status.json compression
+    learning: |
+      Data compression migration: The scripts/compress-status.sh script performs field-level
+      migration by removing verbose fields (like descriptions, acceptance criteria) while
+      preserving essential data. This is a vertical migration (reducing fields per record)
+      rather than horizontal (moving records between files). Useful for reducing file size
+      without losing critical tracking data.
+
+  - date: 2025-12-21
+    context: AgileFlow archival configuration
+    learning: |
+      Configuration-driven migration: Migration behavior is controlled via
+      docs/00-meta/agileflow-metadata.json with archival.threshold_days and archival.enabled
+      settings. This allows users to customize migration behavior without code changes.
+      The threshold_days acts as a temporal boundary for data migration decisions.
+
+  - date: 2025-12-21
+    context: AgileFlow JSON data patterns
+    learning: |
+      JSON file migration differs from SQL migrations: No schema enforcement, no transactions,
+      no referential integrity. Instead, rely on: (1) atomic file writes, (2) backup before
+      modify, (3) validation via JSON.parse, (4) idempotent scripts that check for existing
+      data before migrating. AgileFlow's archival system demonstrates these patterns well -
+      it checks if story already exists in archive before moving it.

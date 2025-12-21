@@ -3,8 +3,8 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: monitoring
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   logging:
@@ -140,4 +140,35 @@ slo_targets:
 
 # Learnings are AUTO-UPDATED by self-improve.md
 # Do not edit manually - let the agent learn from experience
-learnings: []
+learnings:
+  - date: 2025-12-21
+    context: "AgileFlow monitoring patterns"
+    learning: |
+      Session hooks run on SessionStart via .claude/settings.json hooks configuration.
+      The default SessionStart hook executes 'node scripts/get-env.js' to display
+      project info, git status, and system details at session start. This provides
+      immediate context about the development environment.
+
+  - date: 2025-12-21
+    context: "AgileFlow status line implementation"
+    learning: |
+      Status line shows real-time project context in Claude Code status bar via
+      scripts/agileflow-statusline.sh. Components include: git branch (color-coded),
+      current story from status.json, WIP count (yellow if >1, red if >3), and
+      completion percentage. This provides at-a-glance project health visibility.
+
+  - date: 2025-12-21
+    context: "AgileFlow agent activity logging"
+    learning: |
+      Agent communication is logged to docs/09-agents/bus/log.jsonl in append-only
+      format. Each entry is a JSON line with timestamp, agent_id, message_type, and
+      payload. This enables audit trails and debugging of multi-agent workflows
+      without corrupting the log file with concurrent writes.
+
+  - date: 2025-12-21
+    context: "AgileFlow validation script patterns"
+    learning: |
+      Validation scripts (e.g., scripts/validate-*.sh) output PASS/WARN/FAIL status
+      codes with colored output for health checks. Scripts validate configuration,
+      file structure, and dependencies. Exit code 0 = all checks passed, non-zero =
+      failures detected. This standardized format enables automated CI/CD integration.

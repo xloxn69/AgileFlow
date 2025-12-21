@@ -3,8 +3,8 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: design
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   design_system:
@@ -94,4 +94,23 @@ design_tokens:
     - caption, overline
 
 # Learnings are AUTO-UPDATED by self-improve.md
-learnings: []
+learnings:
+  - date: 2025-12-21
+    context: AgileFlow CLI Brand Identity
+    insight: "AgileFlow uses #e8683a (burnt orange/terracotta) as its brand color consistently across UI elements (ui.js, docs-setup.js, IDE installers). Logo uses Unicode block-style ASCII art for terminal aesthetics."
+    application: "When designing CLI interfaces or documentation for AgileFlow, use #e8683a for highlights and branding elements. Maintain ASCII art style for visual consistency."
+
+  - date: 2025-12-21
+    context: CLI Design Patterns
+    insight: "AgileFlow CLI uses chalk for terminal colors, inquirer for interactive prompts, and ora for loading spinners. This creates a cohesive, professional CLI experience."
+    application: "When adding new CLI features, use these established libraries: chalk for styling, inquirer for user input, ora for async operations. Don't introduce competing libraries."
+
+  - date: 2025-12-21
+    context: Semantic Color System
+    insight: "AgileFlow uses semantic colors in terminal output: green=success/main branch, yellow=warning/WIP items, red=error/fix branches, cyan=feature branches, dim=informational. This creates intuitive visual hierarchy."
+    application: "Apply consistent semantic colors across all CLI output. Users learn to recognize patterns (e.g., yellow always means caution, green means success)."
+
+  - date: 2025-12-21
+    context: Documentation UX Pattern
+    insight: "README files use collapsible <details> tags to hide advanced content, keeping docs scannable while providing depth. Example: installation steps, troubleshooting, advanced features."
+    application: "Structure documentation with progressive disclosure: essential info visible, advanced details collapsed. Use <details><summary> for long sections like troubleshooting or API references."

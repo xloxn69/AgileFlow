@@ -3,8 +3,8 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: qa
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   test_strategy:
@@ -88,4 +88,23 @@ quality_gates:
   - "Performance benchmarks met"
 
 # Learnings are AUTO-UPDATED by self-improve.md
-learnings: []
+learnings:
+  - date: 2025-12-21
+    context: "AgileFlow expertise validation system"
+    learning: "validate-expertise.sh performs comprehensive checks on expertise.yaml files: file existence, YAML validity, required fields (domain, last_updated, version, learnings), and staleness detection (warns if last_updated >30 days old). Critical for maintaining expert knowledge quality."
+    applied_to: "All expert domains"
+
+  - date: 2025-12-21
+    context: "Story testing workflow"
+    learning: "test_status field in status.json tracks testing state: 'passing', 'failing', or 'not_run'. QA expert should verify test_status before approving stories. /agileflow:verify command must run successfully before marking story as 'in-review'."
+    applied_to: "Story validation and review gates"
+
+  - date: 2025-12-21
+    context: "Expertise health monitoring"
+    learning: "expertise-metrics.sh provides dashboard view of all expert domains: shows last_updated dates, versions, learning counts, and staleness warnings. Use this to identify experts needing knowledge updates. Run periodically to maintain expertise freshness."
+    applied_to: "Expert knowledge maintenance"
+
+  - date: 2025-12-21
+    context: "Session-based test verification"
+    learning: "/agileflow:baseline command establishes test baseline at session start, while /agileflow:verify runs tests and compares against baseline. This session harness pattern ensures tests pass before story approval. QA expert should encourage use of baseline/verify workflow."
+    applied_to: "Test verification and story completion gates"
