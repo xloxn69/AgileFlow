@@ -1,7 +1,8 @@
 domain: security
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
+# AgileFlow-specific security patterns (learned from actual codebase)
 files:
   auth:
     - path: src/auth/
@@ -22,6 +23,25 @@ files:
       purpose: Rate limiting rules
     - path: src/middleware/csrf.ts
       purpose: CSRF protection
+
+  # AgileFlow-specific secret management
+  secrets_management:
+    - path: .npmrc
+      purpose: "npm token (GITIGNORED - never commit)"
+      note: "Contains NPM_TOKEN for publishing"
+    - path: .mcp.json
+      purpose: "MCP secrets (GITIGNORED)"
+    - path: .env
+      purpose: "Environment secrets (GITIGNORED)"
+
+  gitignored_security:
+    - path: .gitignore
+      purpose: "Ensures sensitive files are not committed"
+      sensitive_patterns:
+        - ".npmrc"
+        - ".mcp.json"
+        - ".env"
+        - "CLAUDE.md (internal docs)"
 
   compliance:
     - path: docs/03-decisions/
@@ -44,6 +64,9 @@ relationships:
   - component: encryption
     patterns: [bcrypt, crypto]
     files: [src/lib/crypto.ts]
+  - component: secrets
+    storage: "GitHub Secrets for CI, local gitignored files"
+    files: [".npmrc", ".mcp.json", ".env"]
 
 patterns:
   - name: JWT with Refresh Tokens
@@ -55,6 +78,23 @@ patterns:
   - name: Defense in Depth
     description: "Multiple layers of security controls"
 
+  - name: GitHub Secrets for CI
+    description: "Store tokens in GitHub Secrets, reference in workflows"
+    location: ".github/workflows/npm-publish.yml"
+    example: "NPM_TOKEN stored in GitHub Secrets, used for npm publish"
+
+  - name: Gitignored Secrets
+    description: "Local secret files excluded from version control"
+    location: ".gitignore"
+    files: [".npmrc", ".mcp.json", ".env", "CLAUDE.md"]
+
+  - name: No Hardcoded Secrets
+    description: "Never commit tokens, passwords, or API keys"
+    violation_examples:
+      - "Hardcoded NPM_TOKEN in code"
+      - "API keys in JavaScript files"
+      - "Passwords in config files"
+
 conventions:
   - "Never hardcode secrets in code"
   - "Always validate user input on backend"
@@ -63,6 +103,9 @@ conventions:
   - "JWT signed with RS256 or HS256"
   - "HTTPS required in production"
   - "Security headers: HSTS, CSP, X-Frame-Options"
+  - "Store CI secrets in GitHub Secrets (NPM_TOKEN)"
+  - "Gitignore sensitive files (.npmrc, .mcp.json, .env)"
+  - "Warn user if they try to commit credentials files"
 
 owasp_top_10:
   - "A01: Broken Access Control"
@@ -76,4 +119,24 @@ owasp_top_10:
   - "A09: Logging Failures"
   - "A10: SSRF"
 
-learnings: []  # AUTO-UPDATED by self-improve
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed AgileFlow secret management"
+    insight: "NPM_TOKEN stored in GitHub Secrets for CI; local .npmrc gitignored; never commit tokens"
+    source: "CLAUDE.md, .github/workflows/npm-publish.yml"
+
+  - date: 2025-12-21
+    context: "Analyzed gitignored sensitive files"
+    insight: ".npmrc, .mcp.json, CLAUDE.md are gitignored to prevent accidental secret commits"
+    source: ".gitignore"
+
+  - date: 2025-12-21
+    context: "Analyzed CI secrets pattern"
+    insight: "GitHub Actions uses secrets.NPM_TOKEN for npm publish; workflow verifies package version matches tag before publishing"
+    source: ".github/workflows/npm-publish.yml"
+
+  - date: 2025-12-21
+    context: "Analyzed commit guidelines"
+    insight: "CLAUDE.md explicitly states: do not commit files that likely contain secrets (.env, credentials.json); warn user if requested"
+    source: "CLAUDE.md"
