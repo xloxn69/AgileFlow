@@ -148,7 +148,7 @@ chmod +x scripts/get-env.js
 
 ### Step 3: Create Claude Settings with Welcome Hook
 
-Create `.claude/settings.json` with basic SessionStart hook:
+Create `.claude/settings.json` with SessionStart hook that shows project status:
 
 ```json
 {
@@ -159,7 +159,7 @@ Create `.claude/settings.json` with basic SessionStart hook:
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🚀 AgileFlow loaded - Type /agileflow:help to see available commands'"
+            "command": "node scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
           }
         ]
       }
@@ -168,6 +168,79 @@ Create `.claude/settings.json` with basic SessionStart hook:
     "Stop": []
   }
 }
+```
+
+**Note**: The `agileflow-welcome.js` script outputs project status including version, branch, active stories, and recent commits. If it doesn't exist, it falls back to a simple message.
+
+### Step 3.5: Create Welcome Script
+
+Create `scripts/agileflow-welcome.js` for SessionStart:
+
+```javascript
+#!/usr/bin/env node
+/**
+ * agileflow-welcome.js - SessionStart hook script
+ * Outputs project status for Claude context
+ */
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const rootDir = process.cwd();
+
+// Get version
+let version = 'unknown';
+try {
+  const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
+  version = pkg.version || 'unknown';
+} catch (e) {}
+
+// Get git info
+let branch = 'unknown';
+let commit = 'unknown';
+let recentCommits = [];
+try {
+  branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+  commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  recentCommits = execSync('git log --oneline -3', { encoding: 'utf8' }).trim().split('\n');
+} catch (e) {}
+
+// Get AgileFlow status
+let activeStories = [];
+let wipCount = 0;
+try {
+  const statusPath = path.join(rootDir, 'docs/09-agents/status.json');
+  if (fs.existsSync(statusPath)) {
+    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
+    if (status.stories) {
+      Object.entries(status.stories).forEach(([id, story]) => {
+        if (story.status === 'in_progress') {
+          activeStories.push(`${id}: ${story.title}`);
+          wipCount++;
+        }
+      });
+    }
+  }
+} catch (e) {}
+
+// Output
+console.log(`Project: ${path.basename(rootDir)} v${version}`);
+console.log(`Branch: ${branch} (${commit})`);
+console.log(`---`);
+if (activeStories.length > 0) {
+  console.log(`Active Stories (${wipCount} WIP):`);
+  activeStories.forEach(s => console.log(`  - ${s}`));
+} else {
+  console.log('No stories in progress');
+}
+console.log(`---`);
+console.log('Recent commits:');
+recentCommits.slice(0, 3).forEach(c => console.log(`  ${c}`));
+```
+
+Make executable:
+```bash
+chmod +x scripts/agileflow-welcome.js
 ```
 
 ### Step 4: Update .gitignore
