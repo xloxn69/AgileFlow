@@ -225,13 +225,30 @@ try {
   }
 } catch (e) {}
 
-// Compact output (4 lines max)
-console.log(`${path.basename(rootDir)} v${version} | ${branch} (${commit})`);
-const statusParts = [wipCount > 0 ? `WIP: ${wipCount}` : 'No active work'];
-if (blockedCount > 0) statusParts.push(`Blocked: ${blockedCount}`);
-console.log(statusParts.join(' | '));
-if (activeStory) console.log(`Current: ${activeStory.id} - ${activeStory.title}`);
-if (lastCommit) console.log(`Last: ${lastCommit}`);
+// ANSI colors
+const c = {
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+  red: '\x1b[31m',
+};
+
+// Compact colorful output (4 lines max)
+const branchColor = branch === 'main' ? c.green : c.cyan;
+console.log(`${c.bold}${path.basename(rootDir)}${c.reset} ${c.dim}v${version}${c.reset} | ${branchColor}${branch}${c.reset} ${c.dim}(${commit})${c.reset}`);
+
+const wipColor = wipCount > 0 ? c.yellow : c.dim;
+const blockedColor = c.red;
+let statusLine = wipCount > 0 ? `${wipColor}WIP: ${wipCount}${c.reset}` : `${c.dim}No active work${c.reset}`;
+if (blockedCount > 0) statusLine += ` | ${blockedColor}Blocked: ${blockedCount}${c.reset}`;
+console.log(statusLine);
+
+if (activeStory) console.log(`${c.blue}Current:${c.reset} ${activeStory.id} - ${activeStory.title}`);
+if (lastCommit) console.log(`${c.dim}Last: ${lastCommit}${c.reset}`);
 ```
 
 Make executable:
