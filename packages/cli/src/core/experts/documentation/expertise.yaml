@@ -1,61 +1,134 @@
 domain: documentation
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
+# AgileFlow-specific documentation structure (learned from actual codebase)
 files:
-  docs:
+  root_docs:
     - path: README.md
-      purpose: Project root documentation
-    - path: docs/
-      purpose: Main documentation directory
-    - path: CHANGELOG.md
-      purpose: Release notes and version history
-    - path: CONTRIBUTING.md
-      purpose: Contribution guidelines
+      purpose: Main project documentation (537 lines)
+      sections:
+        - "Quick Start (installation, CLI commands)"
+        - "Supported IDEs (Claude Code, Cursor, Windsurf)"
+        - "Why AgileFlow (methodology)"
+        - "Folder Structure (docs/ layout)"
+        - "Commands (41 slash commands)"
+        - "Subagents (26 specialized agents)"
+        - "Skills (23 auto-activating)"
+        - "Hooks System (event-driven automation)"
+        - "Advanced Topics (workflow, collaboration)"
+    - path: packages/cli/README.md
+      purpose: npm package README (identical to root)
+      note: "Synced with root README"
+    - path: SUBAGENTS.md
+      purpose: Detailed subagent documentation
 
-  api_docs:
-    - path: docs/api/
-      purpose: API documentation
-    - path: openapi.yaml
-      purpose: OpenAPI specification
-    - path: swagger.json
-      purpose: Swagger definition
+  docs_structure:
+    - path: docs/00-meta/
+      purpose: AgileFlow system metadata (guides, templates, scripts)
+    - path: docs/01-brainstorming/
+      purpose: Ideas and sketches
+    - path: docs/02-practices/
+      purpose: Codebase practices (styling, testing, git, CI)
+      note: "USER's project practices, not AgileFlow's"
+    - path: docs/03-decisions/
+      purpose: Architecture Decision Records (ADRs)
+      pattern: "adr-NNNN-title.md"
+    - path: docs/04-architecture/
+      purpose: System architecture documentation
+    - path: docs/05-epics/
+      purpose: Epic definitions
+      pattern: "ep-NNNN-title.md"
+    - path: docs/06-stories/
+      purpose: User stories (grouped by epic)
+      pattern: "US-NNNN.md"
+    - path: docs/07-testing/
+      purpose: Test cases and acceptance criteria
+    - path: docs/08-project/
+      purpose: Project management (roadmap, backlog, milestones)
+    - path: docs/09-agents/
+      purpose: Agent coordination
+      key_files:
+        - "status.json (story tracking)"
+        - "bus/log.jsonl (agent messages)"
+    - path: docs/10-research/
+      purpose: Research notes and findings
+      pattern: "YYYYMMDD-slug.md"
 
-  guides:
-    - path: docs/guides/
-      purpose: User and developer guides
-    - path: docs/tutorials/
-      purpose: Step-by-step tutorials
-    - path: docs/architecture/
-      purpose: Architecture documentation
+  templates:
+    - path: docs/00-meta/templates/
+      purpose: Document templates
+      templates:
+        - "epic-template.md"
+        - "story-template.md"
+        - "adr-template.md"
+        - "agent-profile-template.md"
+        - "research-template.md"
 
 relationships:
-  - doc_type: readme
-    location: README.md, */README.md
-    purpose: "Entry point for each directory"
-  - doc_type: api
-    location: docs/api/, openapi.yaml
-    generated_from: "Code annotations, JSDoc, TypeDoc"
-  - doc_type: changelog
-    location: CHANGELOG.md
-    format: "Keep a Changelog"
+  - name: readme_sync
+    files: ["README.md", "packages/cli/README.md"]
+    rule: "Should be identical or synced"
+
+  - name: status_json
+    file: "docs/09-agents/status.json"
+    purpose: "Single source of truth for story statuses"
+    consumers: ["babysit", "board", "status", "verify"]
+
+  - name: agent_bus
+    file: "docs/09-agents/bus/log.jsonl"
+    purpose: "Agent coordination messages"
+    format: "JSON Lines, append-only"
+
+  - name: research_index
+    file: "docs/10-research/README.md"
+    purpose: "Index of research notes"
+    updated_by: "research agent after saving notes"
 
 patterns:
-  - name: README Per Directory
-    description: "Each major directory has its own README"
-  - name: Code Examples
-    description: "All docs include working code examples"
-  - name: Auto-Generated API Docs
-    description: "API docs generated from code comments"
-  - name: Versioned Docs
-    description: "Docs versioned with code releases"
+  - name: Docs-as-Code
+    description: "Documentation versioned with code in git"
+
+  - name: Numbered Directories
+    description: "docs/ uses NN-name/ pattern (00-meta through 10-research)"
+
+  - name: Status Tracking
+    description: "status.json tracks all stories with owners, status, dependencies"
+
+  - name: Collapsible Sections
+    description: "README uses <details> tags for long sections"
+
+  - name: Badge Headers
+    description: "READMEs start with npm version, command count, agent count badges"
 
 conventions:
-  - "Markdown format for all documentation"
-  - "Code examples must be tested/runnable"
-  - "Include both quick start and detailed guides"
-  - "Update docs in same PR as code changes"
-  - "Broken link checker runs in CI"
-  - "Screenshots updated when UI changes"
+  - "Use numbered directories in docs/ (00-meta through 10-research)"
+  - "Status.json is single source of truth for story tracking"
+  - "Research notes follow YYYYMMDD-slug.md pattern"
+  - "ADRs follow adr-NNNN-title.md pattern"
+  - "Use <details> tags for collapsible README sections"
+  - "Include badges (npm version, counts) at top of README"
+  - "Each folder should have README.md explaining its purpose"
+  - "NO AI attribution in commits or documentation (see CLAUDE.md)"
 
-learnings: []  # AUTO-UPDATED by self-improve
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed docs/ directory structure"
+    insight: "10 numbered directories (00-meta through 10-research) organize all project documentation"
+    source: "docs/"
+
+  - date: 2025-12-21
+    context: "Analyzed README structure"
+    insight: "Main README is 537 lines with collapsible sections; uses badges for quick stats"
+    source: "README.md"
+
+  - date: 2025-12-21
+    context: "Analyzed status tracking"
+    insight: "status.json in docs/09-agents/ tracks all stories with owner, status, dependencies, test_status"
+    source: "docs/09-agents/status.json"
+
+  - date: 2025-12-21
+    context: "Analyzed research pattern"
+    insight: "Research notes use YYYYMMDD-slug.md pattern in docs/10-research/"
+    source: "docs/10-research/"
