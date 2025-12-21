@@ -7,8 +7,8 @@
 # NOT a source of truth - always validate against actual code.
 
 domain: ui
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 # Key files the UI expert needs to know
 files:
@@ -61,6 +61,12 @@ files:
       purpose: General utilities
       conventions: "Pure functions"
 
+  # AgileFlow CLI-specific (Node.js CLI, not web UI)
+  cli_ui:
+    - path: packages/cli/tools/cli/lib/ui.js
+      purpose: "CLI UI utilities (logo, prompts, colors)"
+      exports: [displayLogo, displaySection, success, warning, error, info, promptInstall, confirm]
+
 # Component registry
 # Self-improve will populate project-specific components
 relationships: []
@@ -105,6 +111,21 @@ patterns:
     location: Interactive components
     requirements: [keyboard-nav, screen-reader, focus-visible]
 
+  - name: "CLI Colored Output"
+    description: "Use chalk for terminal colors with semantic meaning"
+    location: packages/cli/tools/cli/lib/ui.js
+    colors:
+      - "green (success): ✓ messages"
+      - "yellow (warning): ⚠ messages"
+      - "red (error): ✗ messages"
+      - "dim (info): informational text"
+      - "#e8683a (brand): AgileFlow logo and headers"
+
+  - name: "Interactive Prompts"
+    description: "Use inquirer for multi-step CLI wizards"
+    location: packages/cli/tools/cli/lib/ui.js
+    types: [input, checkbox, confirm]
+
 # Conventions the UI expert should follow
 conventions:
   - "Components: PascalCase (Button, UserCard, NavMenu)"
@@ -116,7 +137,27 @@ conventions:
   - "Effects: useEffect with proper deps array"
   - "Accessibility: Always include aria-label for icons, role for custom elements"
   - "Testing: React Testing Library, test user interactions"
+  - "CLI colors: chalk with semantic colors (green=success, red=error, yellow=warn)"
+  - "CLI prompts: inquirer with validation functions"
 
-# Learnings accumulated through self-improve
-# AUTO-UPDATED - do not edit manually
-learnings: []
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed AgileFlow CLI UI patterns"
+    insight: "CLI uses chalk for colored output with brand color #e8683a; semantic colors: green=success, yellow=warning, red=error, dim=info"
+    source: "packages/cli/tools/cli/lib/ui.js"
+
+  - date: 2025-12-21
+    context: "Analyzed CLI interactive prompts"
+    insight: "Uses inquirer.prompt() with input, checkbox, confirm types; includes validation functions for user input"
+    source: "packages/cli/tools/cli/lib/ui.js"
+
+  - date: 2025-12-21
+    context: "Analyzed ASCII logo pattern"
+    insight: "displayLogo() renders Unicode block-style ASCII art with brand color; shows version from package.json"
+    source: "packages/cli/tools/cli/lib/ui.js"
+
+  - date: 2025-12-21
+    context: "Analyzed IDE choices UI"
+    insight: "IDE_CHOICES array with name, value, checked, configDir, description for checkbox prompts"
+    source: "packages/cli/tools/cli/lib/ui.js"
