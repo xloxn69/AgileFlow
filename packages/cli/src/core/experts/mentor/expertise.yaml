@@ -3,25 +3,27 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: mentor
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
+# AgileFlow-specific mentor/babysit workflow (learned from actual codebase)
 files:
   coordination:
     - path: docs/09-agents/status.json
       purpose: "Single source of truth for story statuses"
+      fields: ["owner", "status", "priority", "estimate", "depends_on", "test_status"]
       conventions: "Update after every status change"
     - path: docs/09-agents/bus/log.jsonl
       purpose: "Agent coordination message bus"
-      conventions: "Append-only, newest last"
+      conventions: "Append-only JSON Lines, newest last"
 
   planning:
     - path: docs/05-epics/
       purpose: "Epic definitions"
-      conventions: "EP-#### naming"
+      conventions: "EP-#### naming (e.g., EP-0001)"
     - path: docs/06-stories/
       purpose: "User stories"
-      conventions: "US-#### naming, organized by epic"
+      conventions: "US-#### naming, organized by epic subdirectory"
     - path: docs/07-testing/test-cases/
       purpose: "Test stubs for stories"
       conventions: "One per story"
@@ -30,61 +32,84 @@ files:
     - path: docs/10-research/
       purpose: "Technical research notes"
       conventions: "YYYYMMDD-slug.md format"
+      example_notes:
+        - "20251216-agent-experts-self-improving-agents.md"
+        - "20251216-mermaid-js-diagramming.md"
     - path: docs/03-decisions/
       purpose: "Architecture Decision Records"
-      conventions: "ADR-#### format"
+      conventions: "adr-NNNN-title.md format"
 
   project:
     - path: CLAUDE.md
-      purpose: "Project context and conventions"
+      purpose: "Project context and conventions (internal)"
     - path: docs/08-project/roadmap.md
       purpose: "Product roadmap"
     - path: docs/08-project/backlog.md
       purpose: "Feature backlog"
 
+  agent_experts:
+    - path: packages/cli/src/core/experts/
+      purpose: "Agent expertise files (25 domains)"
+      pattern: "<domain>/expertise.yaml, question.md, self-improve.md, workflow.md"
+    - path: packages/cli/src/core/agents/
+      purpose: "Agent prompt files (26+ agents)"
+      pattern: "<agent>.md with YAML frontmatter"
+
 relationships:
   - parent: mentor
     child: specialized_agents
     type: coordinates
-    notes: "Mentor orchestrates AG-UI, AG-API, AG-CI, etc."
+    notes: "Mentor spawns Agent Experts with pre-loaded domain knowledge"
   - parent: epics
     child: stories
     type: contains
-    notes: "Epics break down into stories"
+    notes: "Epics break down into 3-10 stories (EP-0001 had 6)"
   - parent: research
     child: planning
     type: informs
-    notes: "Research informs epic/story planning"
+    notes: "Research informs epic planning (see EP-0001 research link)"
+  - parent: status_json
+    child: stories
+    type: tracks
+    notes: "status.json is single source of truth for all story tracking"
 
 patterns:
-  - name: End-to-End Flow
-    description: "Feature request → Epic → Stories → Implementation → PR"
-    location: N/A
-    example: "Guide user from idea to merged code"
+  - name: Babysit Workflow
+    description: "Interactive mentor guiding from idea to PR"
+    location: packages/cli/src/core/commands/babysit.md
+    flow: "Ask what to work on → Check status.json → Create/update stories → Spawn agents → Verify → Commit"
 
-  - name: Definition of Ready
-    description: "Story has AC, test stub, no blockers"
+  - name: Session Harness
+    description: "Test verification before marking complete"
+    commands:
+      - "/agileflow:verify STORY=US-XXXX"
+      - "/agileflow:baseline 'description'"
+    location: "Session init verifies build/tests"
+
+  - name: Story Status Flow
+    description: "Stories progress through defined states"
+    states: ["ready", "in_progress", "in_review", "done"]
     location: docs/09-agents/status.json
-    example: "status: ready"
 
-  - name: Agent Handoff
-    description: "Transfer story ownership between agents"
-    location: docs/09-agents/bus/log.jsonl
-    example: '{"type":"handoff","from":"MENTOR","to":"AG-UI"}'
+  - name: Agent Expertise Workflow
+    description: "Three-step: Plan → Build → Self-Improve"
+    location: packages/cli/src/core/experts/
+    benefit: "Agents accumulate learnings over time"
 
-  - name: Research Integration
-    description: "Check research before planning, create if missing"
-    location: docs/10-research/
-    example: "Research → Plan → Build → Review"
+  - name: Auto-Archival
+    description: "Completed stories archived after 7 days"
+    script: scripts/archive-completed-stories.sh
+    destination: "docs/09-agents/archive/YYYY-MM.json"
 
 conventions:
-  - "Always check existing epics/stories before creating new"
-  - "Ensure Definition of Ready before assigning work"
-  - "Coordinate agents via bus messages"
-  - "Update status.json after every change"
+  - "Always check existing epics/stories in status.json before creating new"
+  - "Use /agileflow:verify before marking story in_review"
+  - "Update status.json after every status change"
   - "WIP limit: max 2 stories per agent"
-  - "Integrate research into planning"
-  - "Small batches: 0.5-2 day stories"
+  - "Stories typically 2-3 hours (not days)"
+  - "Spawn Agent Experts (not generic agents) for domain work"
+  - "Research notes inform epic planning"
+  - "NO AI attribution in commits (per CLAUDE.md)"
 
 agent_roster:
   - id: AG-UI
@@ -94,13 +119,34 @@ agent_roster:
   - id: AG-CI
     scope: "Test infrastructure, pipelines, quality tools"
   - id: AG-DEVOPS
-    scope: "Deployment, dependencies, technical debt"
+    scope: "Deployment, dependencies, technical debt, release process"
   - id: EPIC-PLANNER
     scope: "Epic/story decomposition"
   - id: ADR-WRITER
     scope: "Architecture decisions"
   - id: RESEARCH
     scope: "Technical research"
+  - id: MENTOR
+    scope: "End-to-end guidance (babysit)"
 
-# Learnings are AUTO-UPDATED by self-improve.md
-learnings: []
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed babysit workflow"
+    insight: "Babysit command guides from 'What to work on?' through story creation, agent spawning, verification, and commit"
+    source: "packages/cli/src/core/commands/babysit.md"
+
+  - date: 2025-12-21
+    context: "Analyzed status.json structure"
+    insight: "Tracks epics (title, status, completed, summary) and stories (owner, status, priority, estimate, depends_on, test_status)"
+    source: "docs/09-agents/status.json"
+
+  - date: 2025-12-21
+    context: "Analyzed Agent Expert system"
+    insight: "25 domain experts with expertise.yaml, question.md, self-improve.md, workflow.md; agents load expertise first before tasks"
+    source: "packages/cli/src/core/experts/"
+
+  - date: 2025-12-21
+    context: "Analyzed auto-archival system"
+    insight: "scripts/archive-completed-stories.sh moves done stories >7 days old to archive/YYYY-MM.json; runs on session start"
+    source: "CLAUDE.md, scripts/archive-completed-stories.sh"
