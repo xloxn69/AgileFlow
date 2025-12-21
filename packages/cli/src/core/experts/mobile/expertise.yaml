@@ -3,8 +3,8 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: mobile
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   react_native:
@@ -119,4 +119,18 @@ performance_targets:
 
 # Learnings are AUTO-UPDATED by self-improve.md
 # Do not edit manually - let the agent learn from experience
-learnings: []
+learnings:
+  - id: agileflow-context
+    date: 2025-12-21
+    learning: "AgileFlow is a Node.js CLI tool, not a mobile application. This mobile expert assists with mobile development projects that use AgileFlow, but the AgileFlow codebase itself has no mobile-specific patterns."
+    context: "Initial seeding"
+
+  - id: project-agnostic-expertise
+    date: 2025-12-21
+    learning: "Mobile expertise in this file provides generic React Native, Flutter, and native mobile patterns. Project-specific mobile learnings will be accumulated through self-improve.md as the agent works on actual mobile projects."
+    context: "Understanding AgileFlow's role"
+
+  - id: cli-vs-mobile
+    date: 2025-12-21
+    learning: "When working on AgileFlow itself, mobile expertise is not applicable. When helping users build mobile apps, these patterns guide architecture, component structure, and platform conventions."
+    context: "Clarifying domain boundaries"

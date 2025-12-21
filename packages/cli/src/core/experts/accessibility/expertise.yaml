@@ -1,6 +1,6 @@
 domain: accessibility
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
 files:
   components:
@@ -21,6 +21,12 @@ files:
     - path: ACCESSIBILITY.md
       purpose: Accessibility statement
 
+  cli:
+    - path: packages/cli/src/core/
+      purpose: CLI commands and agents (primary accessibility focus for AgileFlow)
+    - path: packages/cli/tools/
+      purpose: CLI tools and installers
+
 relationships:
   - component_type: form
     requirements: [labels, error_messages, focus_management]
@@ -31,6 +37,9 @@ relationships:
   - component_type: navigation
     requirements: [keyboard_nav, skip_links, landmarks]
     aria: [role=navigation, aria-current]
+  - component_type: cli_prompt
+    requirements: [clear_instructions, keyboard_only, error_feedback]
+    libraries: [inquirer, chalk, ora]
 
 patterns:
   - name: Focus Management
@@ -45,6 +54,15 @@ patterns:
   - name: Color Contrast
     description: "4.5:1 for text, 3:1 for large text"
     implementation: "Use contrast checker tools"
+  - name: CLI Semantic Colors
+    description: "Terminal colors convey meaning consistently"
+    implementation: "Green=success, Red=error, Yellow=warning, Cyan=info, no color-only indicators"
+  - name: CLI Progress Feedback
+    description: "Visual feedback for long-running operations"
+    implementation: "Ora spinners with descriptive text, percentage indicators where applicable"
+  - name: CLI Error Messages
+    description: "Clear, actionable error messages"
+    implementation: "Context + problem + solution, colored output with chalk, exit codes for automation"
 
 conventions:
   - "WCAG 2.1 AA minimum, AAA preferred"
@@ -54,6 +72,10 @@ conventions:
   - "Color never sole indicator of meaning"
   - "Motion respects prefers-reduced-motion"
   - "Skip links for keyboard users"
+  - "CLI: Always provide text with colored output (never color-only)"
+  - "CLI: All prompts keyboard-navigable (arrow keys, tab, enter)"
+  - "CLI: Error messages include context and next steps"
+  - "CLI: Progress indicators have descriptive text"
 
 wcag_checklist:
   perceivable:
@@ -74,4 +96,20 @@ wcag_checklist:
     - "4.1.1 Parsing (A)"
     - "4.1.2 Name, Role, Value (A)"
 
-learnings: []  # AUTO-UPDATED by self-improve
+learnings:
+  - date: 2025-12-21
+    context: "AgileFlow CLI accessibility patterns"
+    insight: "AgileFlow is a CLI tool, not a web application. Accessibility focuses on terminal UX: clear error messages with semantic colors (chalk), keyboard-friendly prompts (inquirer), progress indicators (ora spinners), and consistent color conventions (green=success, red=error, yellow=warning)."
+    impact: "Shifted accessibility focus from WCAG web patterns to CLI usability patterns. All user-facing output should be screen-reader friendly by always pairing colors with descriptive text."
+  - date: 2025-12-21
+    context: "CLI semantic color system"
+    insight: "Terminal colors must never be the sole indicator of meaning. Always include descriptive text alongside colored output. Example: '✓ Success: Installation complete' (green) vs just green checkmark."
+    impact: "Ensures CLI output is accessible to users with color blindness or screen readers. All installers (ui.js, docs-setup.js) follow this pattern."
+  - date: 2025-12-21
+    context: "Interactive prompts accessibility"
+    insight: "All CLI prompts use inquirer library which provides built-in keyboard navigation (arrow keys, tab, enter, escape). Prompts always include clear instructions and validation error messages."
+    impact: "Users can navigate all AgileFlow prompts without mouse. Validation errors are actionable and specific (e.g., 'Please enter a valid directory path' vs 'Invalid input')."
+  - date: 2025-12-21
+    context: "Long-running operation feedback"
+    insight: "AgileFlow uses ora spinners for operations >1 second. Spinners always have descriptive text explaining current action (e.g., 'Installing dependencies...' not just spinner). Completion shows success/failure with clear messaging."
+    impact: "Users always know what's happening during installs, setups, and file operations. No silent failures or mysterious waiting periods. Screen readers can announce status changes."
