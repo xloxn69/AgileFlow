@@ -225,7 +225,7 @@ try {
   }
 } catch (e) {}
 
-// ANSI colors
+// ANSI colors (including brand color #e8683a as RGB)
 const c = {
   reset: '\x1b[0m',
   bold: '\x1b[1m',
@@ -235,11 +235,12 @@ const c = {
   blue: '\x1b[34m',
   cyan: '\x1b[36m',
   red: '\x1b[31m',
+  brand: '\x1b[38;2;232;104;58m', // #e8683a - AgileFlow brand orange
 };
 
 // Compact colorful output (4 lines max)
 const branchColor = branch === 'main' ? c.green : c.cyan;
-console.log(`${c.bold}${path.basename(rootDir)}${c.reset} ${c.dim}v${version}${c.reset} | ${branchColor}${branch}${c.reset} ${c.dim}(${commit})${c.reset}`);
+console.log(`${c.brand}${c.bold}${path.basename(rootDir)}${c.reset} ${c.dim}v${version}${c.reset} | ${branchColor}${branch}${c.reset} ${c.dim}(${commit})${c.reset}`);
 
 const wipColor = wipCount > 0 ? c.yellow : c.dim;
 const blockedColor = c.red;
