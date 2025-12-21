@@ -36,6 +36,17 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/precompact-context.sh"
+          }
+        ]
+      }
     ]
   }
 }
