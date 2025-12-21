@@ -1,67 +1,112 @@
 domain: testing
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
+# AgileFlow testing approach (validation scripts, not unit tests)
 files:
-  test_files:
-    - path: tests/
-      purpose: Main test directory
-      conventions: "*.test.ts, *.spec.ts pattern"
-    - path: __tests__/
-      purpose: Alternative test directory (Jest convention)
-    - path: src/**/*.test.ts
-      purpose: Co-located test files
+  validation_scripts:
+    - path: scripts/validate-expertise.sh
+      purpose: Validate agent expertise files
+      checks:
+        - "File existence (expertise.yaml, question.md, self-improve.md, workflow.md)"
+        - "YAML validity"
+        - "Learnings populated (non-empty)"
+        - "Staleness (last_updated age)"
+      output: "PASS/WARN/FAIL per expert with summary"
 
-  config:
-    - path: jest.config.js
-      purpose: Jest configuration
-    - path: vitest.config.ts
-      purpose: Vitest configuration
-    - path: playwright.config.ts
-      purpose: E2E test configuration
-    - path: cypress.config.ts
-      purpose: Cypress E2E configuration
+    - path: scripts/expertise-metrics.sh
+      purpose: Dashboard for expertise health metrics
+      metrics:
+        - "Total experts count"
+        - "With learnings percentage"
+        - "Total learnings recorded"
+        - "Average file size"
+        - "Staleness distribution"
 
-  fixtures:
-    - path: tests/fixtures/
-      purpose: Test data and fixtures
-    - path: tests/mocks/
-      purpose: Mock implementations
-    - path: tests/__mocks__/
-      purpose: Jest module mocks
+  story_testing:
+    - path: docs/07-testing/
+      purpose: Test documentation directory
+      subdirs:
+        - "test-cases/ - Story-specific test stubs"
+    - path: docs/09-agents/status.json
+      purpose: Story status with test_status field
+      test_statuses: ["passing", "failing", "not_run"]
+
+  manual_verification:
+    - path: "npm run build"
+      purpose: Verify no build errors
+      note: "Currently echoes 'No build configured yet'"
+    - path: "npm run lint"
+      purpose: Verify linting passes
+      note: "Currently echoes 'No linting configured yet'"
 
 relationships:
-  - test_type: unit
-    location: tests/unit/ OR src/**/*.test.ts
-    framework: jest OR vitest
-    pattern: "Test single function/class in isolation"
-  - test_type: integration
-    location: tests/integration/
-    framework: jest OR vitest
-    pattern: "Test multiple components together"
-  - test_type: e2e
-    location: tests/e2e/ OR e2e/
-    framework: playwright OR cypress
-    pattern: "Test full user workflows"
+  - name: expertise_validation
+    script: "scripts/validate-expertise.sh"
+    validates: "packages/cli/src/core/experts/*/expertise.yaml"
+    run_when: "Before release, after expert modifications"
+
+  - name: story_test_tracking
+    file: "docs/09-agents/status.json"
+    field: "test_status"
+    used_by: ["/agileflow:verify", "babysit", "story-validate"]
+
+  - name: session_harness
+    commands:
+      - "/agileflow:verify - Run tests for story"
+      - "/agileflow:baseline - Mark verified state"
+      - "/agileflow:session-init - Initialize test tracking"
 
 patterns:
-  - name: AAA Pattern
-    description: "Arrange-Act-Assert structure for all tests"
-    example: "// Arrange: setup, // Act: execute, // Assert: verify"
-  - name: Test Fixtures
-    description: "Reusable test data objects"
-    location: tests/fixtures/
-  - name: Mocking Strategy
-    description: "Mock external dependencies, not internal modules"
-  - name: Coverage Thresholds
-    description: "80% for critical paths, 70% minimum overall"
+  - name: Shell Script Validation
+    description: "Bash scripts with colored output (PASS/WARN/FAIL)"
+    pattern: "Use chalk-like escape codes for terminal colors"
+    location: "scripts/"
+
+  - name: Story Test Status
+    description: "Each story tracks test_status in status.json"
+    values: ["passing", "failing", "not_run"]
+    workflow: "Agents run /agileflow:verify before marking complete"
+
+  - name: Expertise Validation
+    description: "Check expertise files for completeness and staleness"
+    script: "scripts/validate-expertise.sh"
+    thresholds:
+      - "WARN: No learnings"
+      - "WARN: >90 days since update"
+
+  - name: Session Harness
+    description: "Test verification system for agent work"
+    commands:
+      - "/agileflow:verify STORY=US-XXXX"
+      - "/agileflow:baseline 'description'"
 
 conventions:
-  - "Test files named *.test.ts or *.spec.ts"
-  - "Describe blocks group related tests"
-  - "Test names describe behavior, not implementation"
-  - "One assertion per test (mostly)"
-  - "No test interdependence (each test isolated)"
-  - "Fast tests (<100ms for unit, <10s for integration)"
+  - "Use validate-expertise.sh to check expert files"
+  - "Story test_status tracked in status.json"
+  - "Agents must verify tests before marking story in-review"
+  - "Validation scripts use colored terminal output"
+  - "PASS=green, WARN=yellow, FAIL=red in script output"
+  - "No automated unit tests yet - validation is script-based"
 
-learnings: []  # AUTO-UPDATED by self-improve
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed AgileFlow testing approach"
+    insight: "AgileFlow uses shell script validation (validate-expertise.sh) rather than unit tests; package.json shows 'No tests configured yet'"
+    source: "scripts/, packages/cli/package.json"
+
+  - date: 2025-12-21
+    context: "Analyzed expertise validation"
+    insight: "validate-expertise.sh checks 25 experts for file existence, YAML validity, learnings, staleness"
+    source: "scripts/validate-expertise.sh"
+
+  - date: 2025-12-21
+    context: "Analyzed story test tracking"
+    insight: "Stories have test_status field in status.json (passing/failing/not_run); Session Harness commands verify before completion"
+    source: "docs/09-agents/status.json, babysit.md"
+
+  - date: 2025-12-21
+    context: "Analyzed metrics dashboard"
+    insight: "expertise-metrics.sh provides dashboard with learnings count, staleness distribution, average file size"
+    source: "scripts/expertise-metrics.sh"
