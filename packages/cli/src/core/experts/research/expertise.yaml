@@ -3,85 +3,109 @@
 # AUTO-UPDATED by self-improve.md after completing work
 
 domain: research
-last_updated: 2025-12-16
-version: 1.0
+last_updated: 2025-12-21
+version: 1.1
 
+# AgileFlow-specific research patterns (learned from actual codebase)
 files:
   research_notes:
     - path: docs/10-research/
       purpose: "Technical research notes"
-      conventions: "YYYYMMDD-slug.md naming"
+      conventions: "YYYYMMDD-slug.md naming (e.g., 20251216-agent-experts-self-improving-agents.md)"
+      current_notes:
+        - "20251216-agent-experts-self-improving-agents.md"
+        - "20251216-mermaid-js-diagramming.md"
+        - "20251217-mermaid-svg-styling.md"
+        - "20251216-agent-expert-pilot-retro.md"
     - path: docs/10-research/README.md
       purpose: "Research index (newest first)"
 
   templates:
-    - path: docs/10-research/template.md
-      purpose: "Research note template"
+    - path: docs/00-meta/templates/research-template.md
+      purpose: "Research note template with standard sections"
 
   sources:
     - path: docs/10-research/sources/
-      purpose: "Saved source materials"
+      purpose: "Saved source materials (if needed)"
 
   coordination:
     - path: docs/09-agents/bus/log.jsonl
       purpose: "Research requests from other agents"
+    - path: docs/05-epics/
+      purpose: "Epics reference research notes"
 
 relationships:
-  - parent: research_requests
-    child: research_notes
-    type: produces
-    notes: "Requests produce research notes"
+  - parent: research_notes
+    child: epics
+    type: informs
+    notes: "Research informs epic planning (EP-0001 references agent-experts research)"
   - parent: research_notes
     child: adrs
     type: informs
     notes: "Research informs ADR alternatives"
-  - parent: research_notes
-    child: epic_planning
-    type: informs
-    notes: "Research informs epic planning"
+  - parent: retro_notes
+    child: improvements
+    type: drives
+    notes: "Retrospectives drive next iteration improvements"
 
 patterns:
+  - name: Research Note Naming
+    description: "YYYYMMDD-slug.md format with descriptive slug"
+    location: docs/10-research/
+    examples:
+      - "20251216-agent-experts-self-improving-agents.md"
+      - "20251216-mermaid-js-diagramming.md"
+      - "20251216-agent-expert-pilot-retro.md"
+
   - name: Research Note Structure
-    description: "Summary, approaches, pros/cons, recommendation"
+    description: "Standard sections for comprehensive research"
     location: docs/10-research/
-    example: |
-      # Topic Research
-      ## TL;DR
-      ## Approaches
-      ## Pros/Cons
-      ## Recommendation
+    sections:
+      - "TL;DR (executive summary)"
+      - "Problem/Goal"
+      - "Approaches Considered"
+      - "Pros/Cons Analysis"
+      - "Recommendation"
+      - "Implementation Steps"
+      - "References"
 
-  - name: ChatGPT Prompt Building
-    description: "Structured prompt for external research"
-    location: N/A
-    example: "Build comprehensive prompt with all required sections"
-
-  - name: Research Staleness
-    description: "Research >90 days old may need refresh"
+  - name: Retrospective Notes
+    description: "Post-implementation learnings"
     location: docs/10-research/
-    example: "Check date, flag if stale"
+    example: "20251216-agent-expert-pilot-retro.md"
+    sections:
+      - "What Worked"
+      - "What Didn't"
+      - "Lessons Learned"
+      - "Next Steps"
 
-  - name: Source Attribution
-    description: "Cite sources with title, URL, access date"
-    location: docs/10-research/
-    example: "[Official Docs](url) - accessed 2025-12-16"
+  - name: Epic Research Link
+    description: "Epics reference research via relative links"
+    location: docs/05-epics/
+    example: "See [Research](../10-research/20251216-agent-experts-self-improving-agents.md)"
+
+  - name: Context Export
+    description: "/agileflow:context for external AI research"
+    command: "/agileflow:context MODE=research TOPIC=<topic>"
+    purpose: "Generate prompt for ChatGPT/external AI with project context"
 
 conventions:
   - "Check existing research before starting new"
-  - "Use official documentation as primary source"
-  - "Cite all sources with access date"
+  - "Use YYYYMMDD-slug.md naming for all research notes"
+  - "Update docs/10-research/README.md index after creating note"
+  - "Reference research from epics with relative links"
+  - "Include TL;DR at top for quick scanning"
   - "Flag research >90 days old as potentially stale"
-  - "Update index after creating research note"
-  - "Notify requesting agent when complete"
-  - "Include pros/cons for all alternatives"
+  - "Create retrospective notes after major implementations"
+  - "Use /agileflow:context for external AI research prompts"
 
 research_categories:
   - "Technology evaluation (framework, library)"
-  - "Architecture patterns (design patterns)"
+  - "Architecture patterns (Agent Expert system)"
   - "Best practices (testing, security)"
-  - "Integration research (third-party services)"
-  - "Performance optimization (benchmarks)"
-  - "Compliance requirements (GDPR, HIPAA)"
+  - "Implementation retrospectives"
+  - "Diagramming/visualization (Mermaid)"
+  - "Compliance requirements"
 
 prompt_sections:
   - "TL;DR summary"
@@ -96,5 +120,24 @@ prompt_sections:
   - "Rollback plan"
   - "Risks and gotchas"
 
-# Learnings are AUTO-UPDATED by self-improve.md
-learnings: []
+# Learned from AgileFlow codebase exploration
+learnings:
+  - date: 2025-12-21
+    context: "Analyzed research directory contents"
+    insight: "4 research notes exist with YYYYMMDD-slug.md naming; topics include agent experts, mermaid diagramming, pilot retro"
+    source: "docs/10-research/"
+
+  - date: 2025-12-21
+    context: "Analyzed epic-research relationship"
+    insight: "EP-0001 references research note with relative link (../10-research/20251216-agent-experts-self-improving-agents.md)"
+    source: "docs/05-epics/ep-0001-agent-expert-pilot.md"
+
+  - date: 2025-12-21
+    context: "Analyzed retrospective pattern"
+    insight: "Post-implementation retros capture What Worked, What Didn't, Lessons Learned, Next Steps (see pilot retro)"
+    source: "docs/10-research/20251216-agent-expert-pilot-retro.md"
+
+  - date: 2025-12-21
+    context: "Analyzed context command"
+    insight: "/agileflow:context MODE=research generates external AI prompts with project context for deep research"
+    source: "packages/cli/src/core/commands/context.md"
