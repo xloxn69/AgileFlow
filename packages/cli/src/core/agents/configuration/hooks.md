@@ -180,7 +180,7 @@ Create `scripts/agileflow-welcome.js` for SessionStart:
 #!/usr/bin/env node
 /**
  * agileflow-welcome.js - SessionStart hook script
- * Outputs project status for Claude context
+ * Outputs compact project status for Claude context
  */
 const fs = require('fs');
 const path = require('path');
@@ -198,16 +198,17 @@ try {
 // Get git info
 let branch = 'unknown';
 let commit = 'unknown';
-let recentCommits = [];
+let lastCommit = '';
 try {
   branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
   commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-  recentCommits = execSync('git log --oneline -3', { encoding: 'utf8' }).trim().split('\n');
+  lastCommit = execSync('git log --oneline -1', { encoding: 'utf8' }).trim();
 } catch (e) {}
 
 // Get AgileFlow status
-let activeStories = [];
+let activeStory = null;
 let wipCount = 0;
+let blockedCount = 0;
 try {
   const statusPath = path.join(rootDir, 'docs/09-agents/status.json');
   if (fs.existsSync(statusPath)) {
@@ -215,27 +216,22 @@ try {
     if (status.stories) {
       Object.entries(status.stories).forEach(([id, story]) => {
         if (story.status === 'in_progress') {
-          activeStories.push(`${id}: ${story.title}`);
+          if (!activeStory) activeStory = { id, title: story.title };
           wipCount++;
         }
+        if (story.status === 'blocked') blockedCount++;
       });
     }
   }
 } catch (e) {}
 
-// Output
-console.log(`Project: ${path.basename(rootDir)} v${version}`);
-console.log(`Branch: ${branch} (${commit})`);
-console.log(`---`);
-if (activeStories.length > 0) {
-  console.log(`Active Stories (${wipCount} WIP):`);
-  activeStories.forEach(s => console.log(`  - ${s}`));
-} else {
-  console.log('No stories in progress');
-}
-console.log(`---`);
-console.log('Recent commits:');
-recentCommits.slice(0, 3).forEach(c => console.log(`  ${c}`));
+// Compact output (4 lines max)
+console.log(`${path.basename(rootDir)} v${version} | ${branch} (${commit})`);
+const statusParts = [wipCount > 0 ? `WIP: ${wipCount}` : 'No active work'];
+if (blockedCount > 0) statusParts.push(`Blocked: ${blockedCount}`);
+console.log(statusParts.join(' | '));
+if (activeStory) console.log(`Current: ${activeStory.id} - ${activeStory.title}`);
+if (lastCommit) console.log(`Last: ${lastCommit}`);
 ```
 
 Make executable:
