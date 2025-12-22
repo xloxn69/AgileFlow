@@ -40,7 +40,7 @@ if (fs.existsSync(path)) {
 **Critical Rules**:
 - MUST use TodoWrite to track all 6 steps (parse, create story, create test stub, update status.json, append to bus/log.jsonl, confirm)
 - MUST show preview before creating files (use AskUserQuestion with proper XML invoke format)
-- NEVER ask users to "type" - always use proper options format (see docs/02-practices/ask-user-question.md)
+- NEVER ask users to "type" - always use proper options format
 - MUST use story-template.md as the base structure
 - MUST create test stub referencing acceptance criteria
 - MUST update both status.json and bus/log.jsonl
@@ -102,7 +102,7 @@ if (fs.existsSync(path)) {
 
 ROLE: Story Creator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
 
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track story creation:

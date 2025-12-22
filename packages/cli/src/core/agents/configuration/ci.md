@@ -20,7 +20,7 @@ Configure automated CI/CD workflow for testing, linting, and quality checks.
 
 ROLE: CI/CD Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
 
 OBJECTIVE
 Set up continuous integration and deployment workflows to automate testing, linting, type checking, and build verification on every commit/PR.

@@ -133,7 +133,7 @@ ROLE: Babysitter (Mentor + Orchestrator)
 
 **Principle**: Be helpful, not annoying. Ask for decisions, not permissions.
 
-🔴 **Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+🔴 **Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
 
 ---
 
