@@ -6,38 +6,10 @@ The Dynamic Content Injection system automatically generates and injects up-to-d
 
 ## Architecture Diagram
 
-```mermaid
-flowchart TB
-    subgraph Source["Source Files (packages/cli/src/core/)"]
-        CMD[commands/*.md<br/>YAML frontmatter]
-        AGT[agents/*.md<br/>YAML frontmatter]
-    end
-
-    subgraph Injector["Content Injector"]
-        SCAN[Scan directories]
-        PARSE[Parse YAML frontmatter]
-        GEN[Generate formatted lists]
-        INJECT[Replace placeholders]
-    end
-
-    subgraph Templates["Template Files"]
-        TPL[babysit.md<br/>mentor.md<br/>etc.]
-        PH1["&lt;!-- {{COMMAND_LIST}} --&gt;"]
-        PH2["&lt;!-- {{AGENT_LIST}} --&gt;"]
-    end
-
-    subgraph Output["Installed Files"]
-        OUT[.claude/commands/agileflow/<br/>babysit.md with injected content]
-    end
-
-    CMD --> SCAN
-    AGT --> SCAN
-    SCAN --> PARSE
-    PARSE --> GEN
-    TPL --> INJECT
-    GEN --> INJECT
-    INJECT --> OUT
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/dynamic-content-injection-1.dark.svg">
+  <img alt="Dynamic Content Injection Architecture" src="images/dynamic-content-injection-1.light.svg">
+</picture>
 
 > Dynamic content injection flow: Source files are scanned, frontmatter parsed, lists generated, and placeholders replaced during installation.
 
@@ -141,36 +113,10 @@ Available commands (42 total):
 
 ## Injection Process
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant CLI as npx agileflow setup
-    participant Injector as content-injector.js
-    participant FS as File System
-
-    User->>CLI: Run setup
-    CLI->>FS: Read agents/*.md
-    FS-->>CLI: Agent files
-    CLI->>Injector: generateAgentList()
-    Injector->>Injector: Parse YAML frontmatter
-    Injector->>Injector: Sort alphabetically
-    Injector-->>CLI: Formatted agent list
-
-    CLI->>FS: Read commands/*.md
-    FS-->>CLI: Command files
-    CLI->>Injector: generateCommandList()
-    Injector-->>CLI: Formatted command list
-
-    CLI->>FS: Read babysit.md template
-    FS-->>CLI: Template with placeholders
-    CLI->>Injector: injectContent()
-    Injector->>Injector: Replace {{AGENT_LIST}}
-    Injector->>Injector: Replace {{COMMAND_LIST}}
-    Injector-->>CLI: Processed content
-
-    CLI->>FS: Write to .claude/commands/
-    CLI-->>User: Installation complete
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/dynamic-content-injection-2.dark.svg">
+  <img alt="Injection Process Sequence" src="images/dynamic-content-injection-2.light.svg">
+</picture>
 
 > Sequence diagram showing the full injection process during `npx agileflow setup`.
 
