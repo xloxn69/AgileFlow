@@ -440,6 +440,29 @@ If already configured:
 </invoke>
 ```
 
+### Update Metadata with Version
+
+Record the configured version for version tracking:
+
+```bash
+node -e "
+const fs = require('fs');
+const metaPath = 'docs/00-meta/agileflow-metadata.json';
+if (!fs.existsSync(metaPath)) process.exit(0);
+
+const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+meta.features = meta.features || {};
+meta.features.statusline = {
+  enabled: true,
+  configured_version: '2.40.0',
+  configured_at: new Date().toISOString()
+};
+meta.updated = new Date().toISOString();
+fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+console.log('Updated metadata with statusline version 2.40.0');
+"
+```
+
 ## Rules
 
 - Always use AskUserQuestion for component selection
