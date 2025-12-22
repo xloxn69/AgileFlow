@@ -352,8 +352,6 @@ RESEARCH INTEGRATION
 
 PLAN MODE FOR INFRASTRUCTURE CHANGES
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 **Infrastructure changes affect production**. Plan before deploying:
 
 | Situation | Action |

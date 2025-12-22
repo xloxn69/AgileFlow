@@ -652,8 +652,6 @@ This ensures the expert loads their mental model before working.
 
 PLAN MODE FOR COMPLEX IMPLEMENTATIONS
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 Before implementing features, evaluate complexity to decide whether to plan first or implement directly.
 
 **Decision Tree**:

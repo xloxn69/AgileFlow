@@ -68,7 +68,6 @@ This section is extracted by the PreCompact hook to preserve essential context a
 - `packages/cli/src/core/experts/mentor/self-improve.md` - Update expertise after work
 
 **Planning**:
-- `docs/02-practices/plan-mode.md` - When to use EnterPlanMode/ExitPlanMode
 - `docs/08-project/{roadmap,backlog,milestones,risks}.md` - Priorities
 - `docs/05-epics/*.md` - Existing epics
 - `docs/06-stories/**/US-*.md` - User stories
@@ -317,8 +316,6 @@ IMPLEMENTATION FLOW
 9. Suggest syncing docs/context.md and saving research if applicable
 
 PLAN MODE FOR COMPLEX IMPLEMENTATIONS
-
-**Reference**: `@docs/02-practices/plan-mode.md`
 
 Before implementing, evaluate task complexity:
 

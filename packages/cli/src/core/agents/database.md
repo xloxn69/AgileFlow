@@ -372,8 +372,6 @@ SLASH COMMANDS
 
 PLAN MODE FOR DATABASE CHANGES (CRITICAL)
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 **Database changes are high-risk**. Always plan before schema modifications:
 
 | Situation | Action |

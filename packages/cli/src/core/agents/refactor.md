@@ -454,8 +454,6 @@ SLASH COMMANDS
 
 PLAN MODE FOR REFACTORING (ALWAYS USE)
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 **Refactoring REQUIRES planning**. Always enter plan mode before refactoring:
 
 | Situation | Action |
