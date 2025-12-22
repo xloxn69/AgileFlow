@@ -1,19 +1,56 @@
 # Architecture Documentation
 
-System architecture, component design, and technical documentation for AgileFlow CLI.
+System architecture, component design, and technical documentation for AgileFlow.
 
 ---
 
-## Documents
+## Reference Documentation
 
 | Document | Description |
 |----------|-------------|
-| [AgileFlow CLI Overview](./agileflow-cli-overview.md) | High-level system architecture and component layers |
+| [Commands](./commands.md) | All 41 slash commands |
+| [Subagents](./subagents.md) | All 26 specialized agents |
+| [Skills](./skills.md) | 23 auto-loaded skills |
+
+---
+
+## System Architecture
+
+| Document | Description |
+|----------|-------------|
+| [AgileFlow CLI Overview](./agileflow-cli-overview.md) | High-level system architecture |
+| [Command & Agent Flow](./command-agent-flow.md) | How commands and agents work together |
+| [Monorepo Setup](./monorepo-setup.md) | Repository structure |
+
+---
+
+## Agent Systems
+
+| Document | Description |
+|----------|-------------|
 | [Agent Expert System](./agent-expert-system.md) | Self-improving agents with expertise files |
 | [Multi-Expert Orchestration](./multi-expert-orchestration.md) | Parallel expert analysis and synthesis |
 | [Babysit Mentor System](./babysit-mentor-system.md) | End-to-end implementation mentor |
-| [Command & Agent Flow](./command-agent-flow.md) | How commands and agents work together |
-| [Monorepo Setup](./monorepo-setup.md) | Repository structure and organization |
+| [Unified Context Gathering](./unified-context-gathering.md) | How agents gather project context |
+
+---
+
+## Configuration & Session
+
+| Document | Description |
+|----------|-------------|
+| [Configuration System](./configuration-system.md) | 8 configuration agents |
+| [Hooks System](./hooks-system.md) | Event-driven automation |
+| [Session Harness](./session-harness.md) | Test verification and session continuity |
+| [PreCompact Context](./precompact-context.md) | Context preservation during compacts |
+
+---
+
+## Internal Systems
+
+| Document | Description |
+|----------|-------------|
+| [Dynamic Content Injection](./dynamic-content-injection.md) | Auto-updating command/agent lists |
 
 ---
 
@@ -24,15 +61,16 @@ System architecture, component design, and technical documentation for AgileFlow
 ```
 Presentation    →  Slash Commands, CLI Interface
 Orchestration   →  Babysit, Multi-Expert, Session
-Agent           →  25 Domain Experts
+Agent           →  26 Domain Experts
 Expert          →  Expertise Files, Mental Models
 Storage         →  status.json, docs/, bus/
 ```
 
 ### Key Components
 
-- **Commands**: 42 slash commands for agile workflows
-- **Agents**: 25 domain-specialized experts
+- **Commands**: 41 slash commands for agile workflows
+- **Agents**: 26 domain-specialized experts
+- **Skills**: 23 auto-loaded context helpers
 - **Experts**: Self-improving knowledge bases per domain
 - **State**: JSON-based tracking (status.json, bus/log.jsonl)
 
@@ -51,12 +89,6 @@ User Request → Command Parser → Agent Router → Expert System → Output
 All architecture docs use [Mermaid.js](https://mermaid.js.org/) for diagrams.
 
 See [Mermaid Research](../10-research/20251216-mermaid-js-diagramming.md) for syntax reference.
-
-**Diagram types used:**
-- **Flowchart**: Process flows, decision trees, component relationships
-- **Sequence**: API calls, agent interactions, request/response flows
-- **State**: Lifecycle states (story states, expert states)
-- **Class**: Agent relationships (when needed)
 
 ---
 
