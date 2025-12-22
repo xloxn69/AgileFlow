@@ -39,10 +39,12 @@ When a Claude Code conversation fills its context window, it "compacts" (summari
 Commands like `/agileflow:babysit` have specific behavioral rules (e.g., "MUST use AskUserQuestion"). When a compact happens mid-command, these rules would normally be lost.
 
 **How it works:**
-1. Commands register themselves in `docs/09-agents/session-state.json` under `active_command`
-2. Commands define `compact_context.preserve_rules` in their frontmatter
-3. PreCompact hook reads the active command and outputs its rules
+1. Commands register themselves in `docs/09-agents/session-state.json` under `active_commands[]` array
+2. Commands define Compact Summary sections between `<!-- COMPACT_SUMMARY_START -->` and `<!-- COMPACT_SUMMARY_END -->` markers
+3. PreCompact hook reads ALL active commands and outputs their summaries
 4. Rules survive the compact and Claude continues following them
+
+**Note (v2.40.0+):** Multiple commands can be active simultaneously (e.g., `/babysit` then `/epic`). All active command summaries are preserved.
 
 **Example frontmatter in a command:**
 ```yaml
@@ -95,60 +97,59 @@ The script should include:
 4. **Key conventions** from CLAUDE.md
 5. **Post-compact action reminders**
 
-**Key section for active command detection:**
+**Key section for multi-command detection (v2.40.0+):**
 
 ```bash
 # ============================================================
-# ACTIVE COMMAND DETECTION
+# ACTIVE COMMANDS DETECTION (supports multiple commands)
 # ============================================================
-ACTIVE_COMMAND=""
-COMMAND_RULES=""
+COMMAND_SUMMARIES=""
 
 if [ -f "docs/09-agents/session-state.json" ]; then
-  ACTIVE_COMMAND=$(node -p "
+  # Get all active command names as space-separated list
+  ACTIVE_COMMANDS=$(node -p "
     const s = require('./docs/09-agents/session-state.json');
-    s.active_command?.name || '';
+    (s.active_commands || []).map(c => c.name).join(' ');
   " 2>/dev/null || echo "")
 
-  if [ ! -z "$ACTIVE_COMMAND" ] && [ "$ACTIVE_COMMAND" != "null" ]; then
-    # Look for the command file
+  for ACTIVE_COMMAND in $ACTIVE_COMMANDS; do
+    # Look for the command file (source first for development)
     COMMAND_FILE=""
-    if [ -f ".agileflow/commands/${ACTIVE_COMMAND}.md" ]; then
+    if [ -f "packages/cli/src/core/commands/${ACTIVE_COMMAND}.md" ]; then
+      COMMAND_FILE="packages/cli/src/core/commands/${ACTIVE_COMMAND}.md"
+    elif [ -f ".agileflow/commands/${ACTIVE_COMMAND}.md" ]; then
       COMMAND_FILE=".agileflow/commands/${ACTIVE_COMMAND}.md"
     elif [ -f ".claude/commands/agileflow/${ACTIVE_COMMAND}.md" ]; then
       COMMAND_FILE=".claude/commands/agileflow/${ACTIVE_COMMAND}.md"
     fi
 
     if [ ! -z "$COMMAND_FILE" ]; then
-      # Extract preserve_rules from YAML frontmatter
-      COMMAND_RULES=$(node -e "
+      # Extract Compact Summary between markers
+      SUMMARY=$(node -e "
         const fs = require('fs');
         const content = fs.readFileSync('$COMMAND_FILE', 'utf8');
-        const match = content.match(/^---\\n([\\s\\S]*?)\\n---/);
-        if (!match) process.exit(0);
-        const rulesMatch = match[1].match(/preserve_rules:\\s*\\n([\\s\\S]*?)(?=\\n\\s*[a-z_]+:|$)/);
-        if (!rulesMatch) process.exit(0);
-        const rules = rulesMatch[1].split('\\n')
-          .filter(line => line.trim().startsWith('-'))
-          .map(line => line.replace(/^\\s*-\\s*[\"']?/, '').replace(/[\"']?\\s*$/, ''))
-          .filter(Boolean);
-        if (rules.length > 0) {
-          console.log('## ACTIVE COMMAND RULES (MUST FOLLOW)');
-          rules.forEach(rule => console.log('- ' + rule));
+        const match = content.match(/<!-- COMPACT_SUMMARY_START[\\s\\S]*?-->([\\s\\S]*?)<!-- COMPACT_SUMMARY_END -->/);
+        if (match) {
+          console.log('## ACTIVE COMMAND: /agileflow:${ACTIVE_COMMAND}');
+          console.log('');
+          console.log(match[1].trim());
         }
       " 2>/dev/null || echo "")
+
+      if [ ! -z "$SUMMARY" ]; then
+        COMMAND_SUMMARIES="${COMMAND_SUMMARIES}\n\n${SUMMARY}"
+      fi
     fi
-  fi
+  done
 fi
 
-# Output active command rules if present
-if [ ! -z "$COMMAND_RULES" ]; then
-  echo ""
-  echo "$COMMAND_RULES"
+# Output all active command summaries
+if [ ! -z "$COMMAND_SUMMARIES" ]; then
+  echo -e "$COMMAND_SUMMARIES"
 fi
 ```
 
-See `.agileflow/templates/precompact-context.sh` for the full implementation.
+See `scripts/precompact-context.sh` for the full implementation.
 
 ### Step 3: Make Script Executable
 
@@ -180,7 +181,35 @@ Read current `.claude/settings.json` and add PreCompact hook:
 
 **Important:** Merge this with existing hooks - don't overwrite SessionStart or other hooks.
 
-### Step 5: Test the Hook
+### Step 5: Update Metadata with Version
+
+Record the configured version in metadata for version tracking:
+
+```bash
+node -e "
+const fs = require('fs');
+const metaPath = 'docs/00-meta/agileflow-metadata.json';
+const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+
+// Initialize features object if needed
+meta.features = meta.features || {};
+
+// Record precompact configuration
+meta.features.precompact = {
+  enabled: true,
+  configured_version: '2.40.0',
+  configured_at: new Date().toISOString()
+};
+
+meta.updated = new Date().toISOString();
+fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+console.log('Updated metadata with precompact version 2.40.0');
+"
+```
+
+**Why version tracking?** Users with older configurations will see warnings in the welcome screen if their PreCompact is outdated (e.g., using old single-command pattern instead of multi-command support).
+
+### Step 6: Test the Hook
 
 ```bash
 bash scripts/precompact-context.sh
@@ -193,7 +222,7 @@ Should output project context. Verify it shows:
 - Key conventions from CLAUDE.md
 - Key directories
 
-### Step 6: Document in CLAUDE.md
+### Step 7: Document in CLAUDE.md
 
 Add to CLAUDE.md:
 
