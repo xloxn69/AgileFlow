@@ -4,8 +4,9 @@
 
 [![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](#commands)
-[![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
+[![Subagents](https://img.shields.io/badge/subagents-26-orange)](#subagents)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
+[![Experts](https://img.shields.io/badge/experts-26-green)](#agent-expert-system)
 
 **AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
 
@@ -131,6 +132,8 @@ docs/
 - `/agileflow:setup` - Bootstrap the entire system
 - `/agileflow:help` - Display system overview
 - `/agileflow:babysit` - Interactive mentor for end-to-end implementation
+- `/agileflow:configure` - Interactive configuration menu for all AgileFlow features
+- `/agileflow:diagnose` - System health diagnostics
 
 ### Planning & Structure
 - `/agileflow:epic` - Create a new epic
@@ -151,10 +154,13 @@ docs/
 - `/agileflow:readme-sync` - Sync folder READMEs
 - `/agileflow:tests` - Automated testing infrastructure setup
 - `/agileflow:review` - AI-powered code review
-- `/agileflow:verify` - Run tests and update story test status (Session Harness)
-- `/agileflow:session-init` - Initialize session harness with test verification (Phase 2)
-- `/agileflow:resume` - Resume session with environment verification and context (Phase 2)
-- `/agileflow:baseline` - Mark current state as verified baseline (Phase 2)
+- `/agileflow:verify` - Run tests and update story test status
+- `/agileflow:session:init` - Initialize session harness with test verification
+- `/agileflow:session:resume` - Resume session with environment verification and context
+- `/agileflow:session:status` - View current session state and activity
+- `/agileflow:session:end` - Cleanly end session and record summary
+- `/agileflow:session:history` - View past session history and metrics
+- `/agileflow:baseline` - Mark current state as verified baseline
 - `/agileflow:compress` - Compress status.json (fixes token limit issues)
 
 ### Automation & DevOps
@@ -181,12 +187,16 @@ docs/
 - `/agileflow:context` - Generate/export/manage context for web AI tools (ChatGPT, Perplexity, Gemini, Claude, etc.)
 - `/agileflow:research` - Save research notes
 
+### Expert System
+- `/agileflow:multi-expert` - Deploy multiple domain experts for complex cross-domain analysis
+- `/agileflow:validate-expertise` - Validate expertise files for drift and staleness
+
 </details>
 
 <details>
 <summary><strong>🤖 Subagents</strong> (26 specialized agents - click to expand)</summary>
 
-AgileFlow includes **26 specialized subagents** that operate in separate context windows for focused work. See [SUBAGENTS.md](SUBAGENTS.md) for complete documentation.
+AgileFlow includes **26 specialized subagents** that operate in separate context windows for focused work.
 
 ### Core Implementation Agents
 
@@ -220,22 +230,36 @@ AgileFlow includes **26 specialized subagents** that operate in separate context
 - Conducts technical research, builds research prompts, saves notes
 - Invocation: "Use the research subagent to research authentication approaches"
 
-### Additional Specialized Agents
-- `devops` - DevOps & Automation
-- `security` - Security & Compliance
-- `database` - Database & Data Layer
-- `testing` - Testing & QA Automation
-- `product` - Product Management & Prioritization
-- `performance` - Performance Optimization
-- `mobile` - Mobile Development
-- `integrations` - Third-Party Integrations
-- `refactor` - Code Refactoring & Technical Debt
-- `design` - Design Systems & UI/UX
-- `accessibility` - Accessibility Compliance (WCAG)
-- `analytics` - Analytics & Metrics Implementation
-- `datamigration` - Data Migration & ETL
-- `qa` - Quality Assurance & Test Planning
-- And more...
+### All 26 Specialized Agents
+
+| Agent | Focus Area |
+|-------|------------|
+| `ui` | Frontend components, styling, accessibility |
+| `api` | Backend APIs, business logic, data models |
+| `ci` | CI/CD pipelines, quality automation |
+| `database` | Schema design, migrations, query optimization |
+| `devops` | Infrastructure, deployment, automation |
+| `security` | Auth, vulnerabilities, compliance |
+| `testing` | Test strategies, coverage, mocking |
+| `performance` | Profiling, caching, optimization |
+| `mobile` | React Native, Flutter, mobile-specific |
+| `integrations` | Third-party APIs, webhooks |
+| `refactor` | Technical debt, code quality |
+| `design` | Design systems, UI/UX patterns |
+| `accessibility` | WCAG compliance, assistive tech |
+| `analytics` | Event tracking, metrics dashboards |
+| `datamigration` | ETL, zero-downtime migrations |
+| `monitoring` | Observability, logging, alerting |
+| `compliance` | GDPR, HIPAA, SOC2, audit trails |
+| `qa` | Test planning, release readiness |
+| `product` | Requirements, user stories, AC |
+| `documentation` | Technical docs, API docs, guides |
+| `mentor` | End-to-end implementation guidance |
+| `epic-planner` | Feature breakdown, story creation |
+| `adr-writer` | Architecture decision records |
+| `research` | Technical research, best practices |
+| `readme-updater` | Documentation maintenance |
+| `multi-expert` | Cross-domain expert orchestration |
 
 **When to Use Subagents:**
 - Complex, multi-step implementation work
@@ -248,6 +272,72 @@ AgileFlow includes **26 specialized subagents** that operate in separate context
 - Status updates and assignments
 - Generating templates or prompts
 - Simple file operations
+
+</details>
+
+<details>
+<summary><strong>🧠 Agent Expert System</strong> (26 self-improving experts - click to expand)</summary>
+
+Every subagent is backed by an **Agent Expert System** - a self-improving knowledge base that learns from each project.
+
+### How It Works
+
+Each of the 26 domain experts has:
+- **expertise.yaml** - Mental models, patterns, anti-patterns, key files
+- **question.md** - Workflow for answering domain questions
+- **self-improve.md** - Protocol for updating expertise after tasks
+- **workflow.md** - Full task execution chain
+
+### Three-Step Expert Workflow
+
+```
+1. LOAD EXPERTISE    →  Read expertise.yaml, validate against actual code
+2. EXECUTE TASK      →  Work with validated knowledge + patterns
+3. SELF-IMPROVE      →  Update expertise.yaml with new learnings
+```
+
+### Example: Database Expert
+
+```yaml
+# packages/cli/src/core/experts/database/expertise.yaml
+domain: database
+mental_models:
+  - name: Schema Design Patterns
+    key_files:
+      - src/db/schema.ts
+      - prisma/schema.prisma
+    patterns:
+      - Use UUID for primary keys
+      - Add indexes on foreign keys
+    anti_patterns:
+      - N+1 queries
+      - Missing cascades
+```
+
+### Available Expert Domains
+
+| Domain | Expertise Focus |
+|--------|-----------------|
+| `database` | Schema design, migrations, query optimization |
+| `api` | REST/GraphQL patterns, validation, error handling |
+| `ui` | Components, styling, accessibility, state management |
+| `security` | Auth patterns, vulnerabilities, compliance |
+| `testing` | Test strategies, coverage, mocking patterns |
+| `performance` | Profiling, caching, optimization techniques |
+| `devops` | CI/CD, deployment, infrastructure |
+| ... | [26 domains total](docs/04-architecture/agent-expert-system.md) |
+
+### Multi-Expert Orchestration
+
+For complex cross-domain tasks, use `/agileflow:multi-expert`:
+
+```
+/agileflow:multi-expert Is this authentication implementation secure?
+```
+
+Deploys 3-5 relevant experts in parallel, synthesizes their analyses into unified recommendations.
+
+**Learn More:** See [Agent Expert System Architecture](docs/04-architecture/agent-expert-system.md)
 
 </details>
 
@@ -375,6 +465,90 @@ Hooks are automatic triggers that execute commands in response to events:
 </details>
 
 <details>
+<summary><strong>⚙️ Configuration System</strong> (8 configuration agents - click to expand)</summary>
+
+AgileFlow includes a unified configuration system accessible via `/agileflow:configure`.
+
+### Quick Access
+
+```
+/agileflow:configure
+```
+
+Opens an interactive menu to configure all AgileFlow features.
+
+### Configuration Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `configuration:hooks` | Set up event-driven automation (SessionStart, PreCompact, etc.) |
+| `configuration:precompact` | Context preservation during conversation compacts |
+| `configuration:status-line` | Custom Claude Code status bar with project info |
+| `configuration:git-config` | Git repository initialization and remote setup |
+| `configuration:ci` | CI/CD workflow for automated testing and quality |
+| `configuration:archival` | Auto-archival of completed stories (keeps status.json lean) |
+| `configuration:attribution` | Git attribution preferences in CLAUDE.md |
+| `configuration:verify` | Verify all configurations work correctly |
+
+### PreCompact Context Preservation
+
+Ensures command context (like `/babysit` rules) survives conversation compaction:
+
+```
+1. Command runs → Registers as "active"
+2. Conversation compacts → PreCompact hook extracts rules
+3. New context → Rules are preserved and followed
+```
+
+**Learn More:** See [PreCompact Architecture](docs/04-architecture/precompact-context.md)
+
+### Status Line
+
+Display project context in Claude Code's status bar:
+
+```
+[main] US-0007: Login Feature | WIP: 2 | Done: 85%
+```
+
+Configure with: `/agileflow:configure` → Status Line
+
+</details>
+
+<details>
+<summary><strong>📐 Architecture Documentation</strong> (click to expand)</summary>
+
+Comprehensive architecture documentation lives in `docs/04-architecture/`:
+
+| Document | Description |
+|----------|-------------|
+| [AgileFlow CLI Overview](docs/04-architecture/agileflow-cli-overview.md) | High-level system architecture |
+| [Agent Expert System](docs/04-architecture/agent-expert-system.md) | Self-improving agents with expertise files |
+| [Multi-Expert Orchestration](docs/04-architecture/multi-expert-orchestration.md) | Parallel expert analysis and synthesis |
+| [Babysit Mentor System](docs/04-architecture/babysit-mentor-system.md) | End-to-end implementation mentor |
+| [Command & Agent Flow](docs/04-architecture/command-agent-flow.md) | How commands and agents work together |
+| [PreCompact Context](docs/04-architecture/precompact-context.md) | Context preservation during compacts |
+| [Dynamic Content Injection](docs/04-architecture/dynamic-content-injection.md) | Auto-updating command/agent lists |
+| [Monorepo Setup](docs/04-architecture/monorepo-setup.md) | Repository structure |
+
+### System Layers
+
+```
+Presentation    →  Slash Commands, CLI Interface
+Orchestration   →  Babysit, Multi-Expert, Session
+Agent           →  26 Domain Experts
+Expert          →  Expertise Files, Mental Models
+Storage         →  status.json, docs/, bus/
+```
+
+### Other Documentation
+
+- **Research Notes:** `docs/10-research/` - Technical investigations and best practices
+- **ADRs:** `docs/03-decisions/` - Architecture Decision Records
+- **Practices:** `docs/02-practices/` - Team conventions and patterns
+
+</details>
+
+<details>
 <summary><strong>🔧 Advanced Topics</strong> (click to expand)</summary>
 
 ### Daily Workflow
@@ -443,16 +617,19 @@ Session Harness System tracks test status, verifies baselines, and maintains ses
 **Quick Start:**
 ```bash
 # First time setup (interactive)
-/agileflow:session-init
+/agileflow:session:init
 
 # Start each session (or auto-run via hook)
-/agileflow:resume
+/agileflow:session:resume
 
 # Run tests and update test status
 /agileflow:verify
 
 # Create verified checkpoint
 /agileflow:baseline "Sprint 12 complete"
+
+# End session cleanly
+/agileflow:session:end
 ```
 
 **How It Works:**
