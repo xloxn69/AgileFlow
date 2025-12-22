@@ -85,14 +85,14 @@ This provides context for readers and improves accessibility.
 
 3. **Embed with picture tag** in your markdown
 
-4. **Keep the .mmd source** in `/tmp/mermaid-extract/` or version control for future edits
+4. **Keep the .mmd source** in `docs/04-architecture/images/` alongside the SVGs for future edits
 
 ## Regenerating All Diagrams
 
 If you need to regenerate all diagrams (e.g., after config changes):
 
 ```bash
-for mmd in /tmp/mermaid-extract/*.mmd; do
+for mmd in docs/04-architecture/images/*.mmd; do
   name=$(basename "$mmd" .mmd)
   npx mmdc -i "$mmd" -o "docs/04-architecture/images/${name}.light.svg" -c mermaid.light.json -b transparent
   npx mmdc -i "$mmd" -o "docs/04-architecture/images/${name}.dark.svg" -c mermaid.dark.json -b transparent

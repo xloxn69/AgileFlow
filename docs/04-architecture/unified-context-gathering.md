@@ -42,13 +42,13 @@ The Unified Context Gathering system provides a single-script solution for loadi
 
 Every command and agent has a standardized STEP 0 section:
 
-```markdown
+````markdown
 ## STEP 0: Gather Context
 
 ```bash
 node scripts/obtain-context.js <command-name>
 ```
-```
+````
 
 ### 2. Script Execution
 
@@ -158,7 +158,7 @@ Context gathered in single execution. Ready for task selection.
 
 Add this section after the YAML frontmatter:
 
-```markdown
+````markdown
 ## STEP 0: Gather Context
 
 ```bash
@@ -166,7 +166,7 @@ node scripts/obtain-context.js <your-command-name>
 ```
 
 ---
-```
+````
 
 ## Related Documentation
 
