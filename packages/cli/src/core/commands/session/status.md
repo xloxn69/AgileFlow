@@ -5,7 +5,34 @@ argument-hint: (no arguments)
 
 # Session Status
 
-You are running the `/agileflow:session:status` command to view a quick snapshot of the current session state, including what you're working on, session duration, uncommitted changes, and test status.
+You are running the `/agileflow:session:status` command to view a quick snapshot of the current session.
+
+## IMMEDIATE ACTIONS
+
+**Execute these steps NOW (read-only, fast):**
+
+### Step 1: Read session-state.json
+```bash
+cat docs/09-agents/session-state.json
+```
+If `current_session` is null, display "No active session" and suggest `/agileflow:session:resume`.
+
+### Step 2: Calculate current duration
+Get current time and calculate duration from `current_session.started_at`.
+
+### Step 3: Get git status (quick)
+```bash
+git status --short | wc -l
+git branch --show-current
+```
+
+### Step 4: Display compact summary
+Output a one-liner or short summary:
+```
+Session: {id} | Duration: {duration} | Story: {current_story} | Branch: {branch} | Uncommitted: {count}
+```
+
+**This command is READ-ONLY. It never modifies files or runs tests.**
 
 ## Command Purpose
 

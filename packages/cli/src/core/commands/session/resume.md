@@ -7,22 +7,50 @@ argument-hint: (no arguments)
 
 You are running the `/agileflow:session:resume` command to start an AgileFlow session with environment verification, test checking, and context loading.
 
-## Command Purpose
+## IMMEDIATE ACTIONS
 
-Standard startup routine for every AgileFlow session. Verifies environment, runs tests, loads context from previous work, and provides a comprehensive summary to resume productive work immediately.
+**Execute these steps NOW in order:**
+
+### Step 1: Read session-state.json
+```bash
+cat docs/09-agents/session-state.json
+```
+
+### Step 2: Read status.json for current stories
+```bash
+cat docs/09-agents/status.json
+```
+
+### Step 3: Get git context
+```bash
+git branch --show-current && git log --oneline -5 && git status --short
+```
+
+### Step 4: Update session-state.json with new session
+Use the Write tool to update `docs/09-agents/session-state.json`:
+- Set `current_session.id` to `sess-YYYYMMDD-HHMMSS` (current timestamp)
+- Set `current_session.started_at` to current ISO timestamp
+- Set `current_session.branch` to current git branch
+- Set `current_session.head_sha_start` to current HEAD
+- Keep `last_session` as-is (from previous read)
+
+### Step 5: Display session summary
+Output a formatted summary showing:
+- Last session info (if exists)
+- Current work (in-progress stories from status.json)
+- Ready queue (ready stories from status.json)
+- Git status (branch, recent commits)
+- Next steps
 
 ## TODO LIST TRACKING
 
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track session resumption:
 ```
-1. Check if session harness initialized
-2. Run init script (if configured)
-3. Verify tests (/agileflow:verify)
-4. Load git context (commits, branch, status)
-5. Load AgileFlow context (in-progress stories, recent completions)
-6. Update session-state.json with current session metadata
-7. Generate and display session summary
-8. Load Previous Story Insights (if applicable)
+1. Read session-state.json
+2. Read status.json
+3. Get git context (branch, commits, status)
+4. Update session-state.json with new session
+5. Display session summary
 ```
 
 Mark each step complete as you finish it. This ensures comprehensive session startup.

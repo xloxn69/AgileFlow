@@ -3,6 +3,62 @@ description: AI-powered code review with quality suggestions
 argument-hint: [BRANCH=<name>] [BASE=<branch>] [FOCUS=all|security|performance|style]
 ---
 
+<!-- COMPACT_SUMMARY_START
+This section is extracted by the PreCompact hook to preserve essential context across conversation compacts.
+-->
+
+## Compact Summary
+
+AI Code Reviewer that analyzes git diffs for quality, security, performance, and best practices issues.
+
+### Critical Behavioral Rules
+- **NEVER auto-commit fixes without approval** - Always ask first
+- **Be constructive, not critical** - Provide actionable feedback with examples
+- **Show both bad and good code examples** - Use ❌ BAD and ✅ GOOD markers
+- **Prioritize by severity** - CRITICAL → HIGH → MEDIUM → LOW
+- **Block merge for CRITICAL issues** - Must be fixed before approval
+- **Celebrate good practices** - Include "Positive Observations" section
+- **Provide specific fixes** - Include code snippets, not just descriptions
+
+### Core Workflow
+1. Get git diff: `git diff <BASE>...<BRANCH>`
+2. Analyze changes across 6 categories: Code Quality, Security, Performance, Best Practices, Testing, Documentation
+3. Generate structured report with issue count by severity (CRITICAL/HIGH/MEDIUM/LOW)
+4. Calculate code quality score (0-100) with breakdown by category
+5. Ask user about actions: auto-fix issues, create follow-up stories, block merge
+6. Save report to `docs/08-project/code-reviews/<YYYYMMDD>-<BRANCH>.md`
+
+### Key Files
+- **Input**: Git diff between BASE and BRANCH
+- **Custom rules**: `.agileflow/review-rules.md`, `docs/02-practices/code-standards.md`
+- **Output**: `docs/08-project/code-reviews/<YYYYMMDD>-<BRANCH>.md`
+
+### Optional Arguments
+- `BRANCH=<name>` - Branch to review (default: current)
+- `BASE=<branch>` - Base branch for comparison (default: main/master)
+- `FOCUS=all|security|performance|style|tests` - Review scope (default: all)
+- `SEVERITY=critical|high|medium|low|all` - Filter by severity (default: all)
+
+### Security Checks
+- SQL injection, XSS vulnerabilities
+- Hardcoded secrets/credentials
+- Insecure dependencies, unsafe deserialization
+- Missing input validation, authentication/authorization issues
+
+### Performance Checks
+- N+1 query problems
+- Inefficient algorithms (O(n²) vs O(n))
+- Missing database indexes
+- Memory leaks, large bundle sizes
+
+### Quality Metrics
+- Cyclomatic complexity (threshold: 10)
+- Function length (target: <50 lines)
+- File length (target: <500 lines)
+- Test coverage (aim: >80%)
+
+<!-- COMPACT_SUMMARY_END -->
+
 # ai-code-review
 
 Perform AI-powered code review based on coding standards and best practices.

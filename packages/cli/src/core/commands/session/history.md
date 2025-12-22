@@ -5,15 +5,34 @@ argument-hint: [DAYS=7|30|90|all]
 
 # Session History
 
-You are running the `/agileflow:session:history` command to view past session history, productivity metrics, and trends over time.
+You are running the `/agileflow:session:history` command to view past session history and productivity metrics.
 
-## Command Purpose
+## IMMEDIATE ACTIONS
 
-Analytics view of your session history showing:
-- Past sessions with duration and accomplishments
-- Productivity trends over time
-- Test regression frequency
-- Average session length and story completion rate
+**Execute these steps NOW (read-only):**
+
+### Step 1: Read session-state.json
+```bash
+cat docs/09-agents/session-state.json
+```
+
+### Step 2: Parse the DAYS argument
+Default is 7. Accepted values: 7, 30, 90, all
+
+### Step 3: Filter and aggregate history
+From `session_history` array:
+- Count total sessions
+- Sum duration_minutes
+- Sum stories_completed
+- Count test_regressions
+
+### Step 4: Display formatted output
+Show:
+- Summary metrics (total sessions, time, stories)
+- Daily breakdown with ASCII bar chart
+- Trends compared to previous period
+
+**This command is READ-ONLY. It never modifies files.**
 
 ## Arguments
 

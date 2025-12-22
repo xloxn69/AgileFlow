@@ -32,6 +32,29 @@ When a Claude Code conversation fills its context window, it "compacts" (summari
 - Active work context is preserved (current story, branch)
 - Key file paths are remembered
 - Team conventions don't get lost
+- **Active command rules are preserved** (e.g., babysit's AskUserQuestion requirement)
+
+## Active Command Preservation
+
+Commands like `/agileflow:babysit` have specific behavioral rules (e.g., "MUST use AskUserQuestion"). When a compact happens mid-command, these rules would normally be lost.
+
+**How it works:**
+1. Commands register themselves in `docs/09-agents/session-state.json` under `active_command`
+2. Commands define `compact_context.preserve_rules` in their frontmatter
+3. PreCompact hook reads the active command and outputs its rules
+4. Rules survive the compact and Claude continues following them
+
+**Example frontmatter in a command:**
+```yaml
+---
+description: Interactive mentor
+compact_context:
+  priority: critical
+  preserve_rules:
+    - "MUST use AskUserQuestion for all decisions"
+    - "MUST track progress with TodoWrite"
+---
+```
 
 ## Configuration Steps
 
@@ -56,89 +79,76 @@ fi
 
 ### Step 2: Create PreCompact Script
 
-Create `scripts/precompact-context.sh`:
+Copy from AgileFlow template or create `scripts/precompact-context.sh`:
 
 ```bash
-#!/bin/bash
-#
-# AgileFlow PreCompact Hook
-#
-# Outputs critical context that should survive conversation compacts.
-# Mirrors the context that /agileflow:babysit loads on startup.
-#
-
-# Get current version from package.json
-VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
-
-# Get current git branch
-BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
-
-# Get current story from status.json (if exists)
-CURRENT_STORY=""
-WIP_COUNT=0
-if [ -f "docs/09-agents/status.json" ]; then
-  CURRENT_STORY=$(node -p "
-    const s = require('./docs/09-agents/status.json');
-    const stories = Object.entries(s.stories || {})
-      .filter(([,v]) => v.status === 'in_progress')
-      .map(([k,v]) => k + ': ' + v.title)
-      .join(', ');
-    stories || 'None in progress';
-  " 2>/dev/null || echo "Unable to read")
-
-  WIP_COUNT=$(node -p "
-    const s = require('./docs/09-agents/status.json');
-    Object.values(s.stories || {}).filter(v => v.status === 'in_progress').length;
-  " 2>/dev/null || echo "0")
-fi
-
-# Get recent epics
-EPICS=""
-if [ -d "docs/05-epics" ]; then
-  EPICS=$(ls docs/05-epics/*.md 2>/dev/null | head -5 | xargs -I {} basename {} .md | tr '\n' ', ' | sed 's/,$//')
-fi
-
-# Get practices list
-PRACTICES=""
-if [ -d "docs/02-practices" ]; then
-  PRACTICES=$(ls docs/02-practices/*.md 2>/dev/null | head -8 | xargs -I {} basename {} .md | tr '\n' ', ' | sed 's/,$//')
-fi
-
-# Output context for Claude to preserve
-cat << EOF
-AGILEFLOW PROJECT CONTEXT (preserve during compact):
-====================================================
-
-## Project Status
-- Project: $(basename "$(pwd)") v${VERSION}
-- Branch: ${BRANCH}
-- Active Stories: ${CURRENT_STORY}
-- WIP Count: ${WIP_COUNT}
-
-## Key Files to Check After Compact
-- CLAUDE.md - Project system prompt with conventions
-- README.md - Project overview and setup
-- docs/09-agents/status.json - Story statuses and assignments
-- docs/02-practices/ - Codebase practices (${PRACTICES:-check folder})
-
-## Active Epics
-${EPICS:-Check docs/05-epics/ for epic files}
-
-## Key Conventions (from CLAUDE.md)
-$(grep -A 15 "## Key\|## Critical\|## Important\|CRITICAL:" CLAUDE.md 2>/dev/null | head -20 || echo "- Read CLAUDE.md for project conventions")
-
-## Recent Agent Activity
-$(tail -3 docs/09-agents/bus/log.jsonl 2>/dev/null | head -3 || echo "- Check docs/09-agents/bus/log.jsonl for recent activity")
-
-## Post-Compact Actions
-1. Re-read CLAUDE.md if unsure about conventions
-2. Check status.json for current story state
-3. Review docs/02-practices/ for implementation patterns
-4. Check git log for recent changes
-
-====================================================
-EOF
+# Copy from .agileflow/templates/precompact-context.sh if available
+cp .agileflow/templates/precompact-context.sh scripts/precompact-context.sh 2>/dev/null || \
+  echo "Template not found - creating from scratch"
 ```
+
+The script should include:
+
+1. **Project status** (version, branch, active stories, WIP count)
+2. **Active command detection** - reads `docs/09-agents/session-state.json` for `active_command`
+3. **Command rules extraction** - if active command found, extracts `compact_context.preserve_rules` from command's frontmatter
+4. **Key conventions** from CLAUDE.md
+5. **Post-compact action reminders**
+
+**Key section for active command detection:**
+
+```bash
+# ============================================================
+# ACTIVE COMMAND DETECTION
+# ============================================================
+ACTIVE_COMMAND=""
+COMMAND_RULES=""
+
+if [ -f "docs/09-agents/session-state.json" ]; then
+  ACTIVE_COMMAND=$(node -p "
+    const s = require('./docs/09-agents/session-state.json');
+    s.active_command?.name || '';
+  " 2>/dev/null || echo "")
+
+  if [ ! -z "$ACTIVE_COMMAND" ] && [ "$ACTIVE_COMMAND" != "null" ]; then
+    # Look for the command file
+    COMMAND_FILE=""
+    if [ -f ".agileflow/commands/${ACTIVE_COMMAND}.md" ]; then
+      COMMAND_FILE=".agileflow/commands/${ACTIVE_COMMAND}.md"
+    elif [ -f ".claude/commands/agileflow/${ACTIVE_COMMAND}.md" ]; then
+      COMMAND_FILE=".claude/commands/agileflow/${ACTIVE_COMMAND}.md"
+    fi
+
+    if [ ! -z "$COMMAND_FILE" ]; then
+      # Extract preserve_rules from YAML frontmatter
+      COMMAND_RULES=$(node -e "
+        const fs = require('fs');
+        const content = fs.readFileSync('$COMMAND_FILE', 'utf8');
+        const match = content.match(/^---\\n([\\s\\S]*?)\\n---/);
+        if (!match) process.exit(0);
+        const rulesMatch = match[1].match(/preserve_rules:\\s*\\n([\\s\\S]*?)(?=\\n\\s*[a-z_]+:|$)/);
+        if (!rulesMatch) process.exit(0);
+        const rules = rulesMatch[1].split('\\n')
+          .filter(line => line.trim().startsWith('-'))
+          .map(line => line.replace(/^\\s*-\\s*[\"']?/, '').replace(/[\"']?\\s*$/, ''))
+          .filter(Boolean);
+        if (rules.length > 0) {
+          console.log('## ACTIVE COMMAND RULES (MUST FOLLOW)');
+          rules.forEach(rule => console.log('- ' + rule));
+        }
+      " 2>/dev/null || echo "")
+    fi
+  fi
+fi
+
+# Output active command rules if present
+if [ ! -z "$COMMAND_RULES" ]; then
+  echo ""
+  echo "$COMMAND_RULES"
+fi
+```
+
+See `.agileflow/templates/precompact-context.sh` for the full implementation.
 
 ### Step 3: Make Script Executable
 
