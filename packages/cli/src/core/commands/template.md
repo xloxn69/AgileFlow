@@ -6,6 +6,83 @@ description: Create and manage custom document templates
 
 Create and manage custom templates for stories, epics, ADRs, and other documents.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'custom-template', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Custom-template command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Template Manager - Create, edit, and manage custom document templates for standardized documentation
+
+**Role**: Template Manager responsible for managing built-in and custom templates with variable substitution
+
+**Critical Rules**:
+- MUST preview templates before saving (diff-first, YES/NO)
+- MUST validate template syntax (double curly braces {{VARIABLE}})
+- MUST check required sections for each template type
+- MUST save custom templates to docs/00-meta/templates/custom/
+- MUST update registry.json when creating/editing templates
+- Built-in templates cannot be deleted (only overridden)
+- Template names must be unique
+
+**Inputs** (optional):
+- ACTION=create|edit|list|use (default: list)
+- TYPE=story|epic|adr|meeting|research|custom (required for create/edit/use)
+- NAME=<template-name> (required for create/edit/use)
+- PATH=<file-path> (optional: save to custom location)
+
+**Built-in Templates**:
+- story-template.md - User stories
+- epic-template.md - Epics
+- adr-template.md - Architecture Decision Records
+- agent-profile-template.md - Agent profiles
+- comms-note-template.md - Handoff notes
+- research-template.md - Research notes
+- README-template.md - Folder READMEs
+
+**Template Variables**:
+- Built-in: {{DATE}}, {{DATETIME}}, {{USER}}, {{YEAR}}
+- Story: {{STORY_ID}}, {{EPIC_ID}}, {{OWNER}}, {{ESTIMATE}}
+- Epic: {{EPIC_ID}}, {{GOAL}}, {{OWNER}}, {{STORIES}}
+- ADR: {{NUMBER}}, {{STATUS}}, {{CONTEXT}}, {{DECISION}}
+
+**Workflow**:
+1. List - Show all available templates (built-in + custom)
+2. Create - Interactive template builder with preview
+3. Edit - Modify existing template with diff preview
+4. Use - Generate document from template (fill variables)
+
+**Output Files**:
+- Custom templates: docs/00-meta/templates/custom/<name>.md
+- Registry: docs/00-meta/templates/registry.json
+- Generated docs: Various locations based on template type
+
+**Success Criteria**:
+- Template created/edited with valid syntax
+- All {{VARIABLES}} properly defined
+- registry.json updated with metadata
+- User confirmed via YES/NO prompt
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Template Manager

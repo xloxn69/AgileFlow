@@ -4,7 +4,92 @@ description: Collect and process agent feedback
 
 # agent-feedback
 
+STEP 0: ACTIVATE COMPACT SUMMARY MODE
+Before reading the full command, execute this script to display the compact summary:
+```bash
+sed -n '/<!-- COMPACT_SUMMARY_START -->/,/<!-- COMPACT_SUMMARY_END -->/p' "$(dirname "$0")/feedback.md" | grep -v "COMPACT_SUMMARY"
+```
+If the user confirms they want the full details, continue. Otherwise, stop here.
+
 Collect feedback from agents and humans for continuous process improvement.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Collect feedback on stories, agents, and processes for continuous improvement
+
+**Quick Usage**:
+```
+/agileflow:agent-feedback SCOPE=story STORY=US-0042
+/agileflow:agent-feedback SCOPE=epic EPIC=EP-0010
+/agileflow:agent-feedback SCOPE=sprint
+```
+
+**What It Does**:
+1. Prompts for feedback at trigger points (story done, epic complete, sprint end)
+2. Collects structured feedback (ratings, comments, blockers)
+3. Saves feedback to `docs/08-project/feedback/`
+4. Analyzes patterns and generates insights
+5. Suggests improvement stories for recurring issues
+6. Tracks metrics over time (clarity, estimates, blockers)
+
+**Required Inputs**:
+- `SCOPE=story|epic|sprint` - Feedback scope (default: story)
+
+**Optional Inputs**:
+- `STORY=<US-ID>` - Story ID (required if SCOPE=story)
+- `EPIC=<EP-ID>` - Epic ID (required if SCOPE=epic)
+- `ANONYMOUS=yes|no` - Anonymous feedback (default: no)
+
+**Output Files**:
+- Feedback notes: `docs/08-project/feedback/<YYYYMMDD>-<ID>.md`
+- Summary log: `docs/08-project/retrospectives.md`
+- Optional: Improvement stories for issues
+
+**Feedback Types**:
+1. **Story Completion**: Clarity, smoothness, estimate accuracy (1-5 scale)
+2. **Agent Performance**: Completion rate, test coverage, reliability
+3. **Epic Retrospective**: Success metrics, wins, challenges, learnings
+4. **Sprint Retrospective**: Continue/Stop/Start, experiments, blockers
+
+**Metrics Tracked**:
+- Avg story clarity score (target: >4.0)
+- Estimate accuracy (target: within 50%)
+- Blocker frequency (target: <20% of stories)
+- Test coverage avg
+- Completion velocity
+
+**Workflow**:
+1. Auto-prompt at trigger (story→done, epic complete, sprint end)
+2. Present feedback form with pre-filled context
+3. Ask: "Provide feedback now? (YES/NO/LATER)"
+4. Collect ratings and comments
+5. Save to feedback files
+6. Analyze patterns across feedback
+7. Suggest improvement stories for recurring issues
+
+**Example Story Feedback**:
+```markdown
+## Story Feedback: US-0042
+
+**Completed by**: agent-api
+**Date**: 2025-12-22
+
+### Ratings (1-5)
+- AC clarity: 5 (crystal clear)
+- Dependencies resolved: 4 (one minor blocker)
+- Estimate accuracy: 5 (spot on)
+- Implementation smoothness: 4 (smooth)
+
+### What Went Well
+- Clear acceptance criteria with examples
+- All tests passed on first run
+- Good documentation
+
+### What Could Be Improved
+- Database schema migration took longer than expected
+```
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

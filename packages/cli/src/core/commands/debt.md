@@ -4,7 +4,90 @@ description: Track and prioritize technical debt items
 
 # tech-debt
 
+STEP 0: ACTIVATE COMPACT SUMMARY MODE
+Before reading the full command, execute this script to display the compact summary:
+```bash
+sed -n '/<!-- COMPACT_SUMMARY_START -->/,/<!-- COMPACT_SUMMARY_END -->/p' "$(dirname "$0")/debt.md" | grep -v "COMPACT_SUMMARY"
+```
+If the user confirms they want the full details, continue. Otherwise, stop here.
+
 Track and visualize technical debt across the codebase.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Identify, categorize, and prioritize technical debt for refactoring
+
+**Quick Usage**:
+```
+/agileflow:tech-debt SCAN=quick OUTPUT=report THRESHOLD=medium
+```
+
+**What It Does**:
+1. Scans codebase for debt indicators (TODO, complexity, duplication)
+2. Searches stories tagged with `tech-debt: true`
+3. Analyzes ADRs for deprecated decisions
+4. Reviews git history for high-churn files
+5. Categorizes debt by type (Architecture, Code Quality, Testing, etc.)
+6. Scores each item by Severity × Scope × Pain
+7. Generates prioritized debt report
+8. Optionally creates stories for critical debt
+
+**Required Inputs**:
+- None (all optional with smart defaults)
+
+**Optional Inputs**:
+- `SCAN=full|quick` - Scan depth (default: quick)
+- `OUTPUT=report|stories|both` - Output type (default: report)
+- `THRESHOLD=high|medium|low` - Minimum severity (default: medium)
+
+**Output Files**:
+- Debt report: `docs/08-project/tech-debt-<YYYYMMDD>.md`
+- Optional: Stories for top debt items
+- Optional: Dashboard at `docs/08-project/debt-dashboard.md`
+
+**Debt Categories**:
+- Architecture: Wrong abstractions, tight coupling
+- Code Quality: Duplication, complexity, style issues
+- Documentation: Missing, outdated, incomplete
+- Testing: Low coverage, flaky tests, missing E2E
+- Security: Outdated deps, exposed secrets, weak auth
+- Performance: N+1 queries, memory leaks, slow ops
+- Dependencies: Outdated packages, unmaintained libs
+
+**Scoring Formula**:
+```
+Score = (Severity × Scope × Pain) / 10
+- Severity: 1-10 (impact level)
+- Scope: 1-10 (files affected)
+- Pain: 1-10 (developer frustration)
+```
+
+**Workflow**:
+1. Scan for debt indicators across codebase
+2. Categorize and score each item
+3. Generate prioritized report
+4. Ask: "Generate stories for critical debt? (YES/NO)"
+5. Ask: "Save report to docs/08-project/? (YES/NO)"
+6. Suggest adding debt review to roadmap
+
+**Example Report Section**:
+```markdown
+## Critical Debt (Score >80)
+
+### 1. Auth service tightly coupled to database
+**Type**: Architecture | **Score**: 87
+**Impact**: Blocks US-0055 (OAuth), US-0061 (2FA)
+**Files**: src/services/auth.ts (287 lines, complexity 18)
+**Estimate**: 3-5 days
+
+### 2. Missing integration tests for payments
+**Type**: Testing | **Score**: 85
+**Impact**: High regression risk, blocking production
+**Files**: src/api/payments/*.ts (12 files, 0% coverage)
+**Estimate**: 2-3 days
+```
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

@@ -6,6 +6,93 @@ description: Auto-generate stories from PRDs, mockups, or specs
 
 Automatically generate user stories from product artifacts like PRDs, mockups, or API docs.
 
+## STEP 0: Activate Command
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'auto', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ auto command activated');
+}
+"
+```
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Command**: `auto-story`
+**Purpose**: Auto-generate user stories from PRDs, mockups, API specs, or design docs
+
+**Quick Usage**:
+```
+/agileflow:auto-story SOURCE=docs/requirements/auth-prd.md EPIC=EP-0010 OWNER=AG-API AUTO_CREATE=no
+```
+
+**What It Does**:
+1. Reads source file/URL and identifies document type
+2. Extracts features, requirements, and user flows
+3. Groups related requirements into logical stories
+4. Generates stories with Given/When/Then acceptance criteria
+5. Shows preview with estimates and suggested owners
+6. Creates epic (if needed), story files, and test stubs
+7. Updates status.json and bus/log.jsonl
+
+**Supported Source Types**:
+- **PRDs** (.md, .docx, .pdf) → Parses features, success criteria, personas
+- **UI Mockups** (Figma URL, .png with OCR) → Extracts screens, interactions, forms
+- **API Docs** (OpenAPI/Swagger JSON) → Generates stories per endpoint
+- **User Flows** (Mermaid .mmd, PlantUML) → Extracts journey steps and decision points
+
+**Story Generation Rules (INVEST)**:
+- **Independent**: No dependencies on other stories
+- **Negotiable**: Details can be adjusted
+- **Valuable**: Delivers user-facing value
+- **Estimable**: Sized 0.5-2 days
+- **Small**: Completable in 1 sprint
+- **Testable**: Clear acceptance criteria
+
+**Estimates**:
+- 0.5d: Simple CRUD, basic UI component
+- 1d: Standard feature with validation and tests
+- 1.5d: Complex logic or integration
+- 2d: Significant refactor or architecture change
+- >2d: Break into smaller stories
+
+**Example PRD → Stories**:
+```markdown
+PRD: "User Authentication Feature"
+→ Epic: EP-0010 "User Authentication"
+  → US-0050: Registration with email verification (1.5d, AG-API)
+  → US-0051: Login with session management (1d, AG-API)
+  → US-0052: Password reset flow (1d, AG-API)
+  → US-0053: OAuth login (Google) (1.5d, AG-API)
+  → US-0054: Rate limiting (0.5d, AG-CI)
+```
+
+**Output Preview**:
+```
+Story Generation Preview
+Source: docs/requirements/auth-prd.md
+Epic: EP-0010 (User Authentication)
+Stories to Create: 5
+Total Estimate: 6 days
+
+Create these stories? (YES/NO)
+```
+
+**Best Practices**:
+- Always preview before creating (AUTO_CREATE=no by default)
+- Review AI-generated stories for accuracy
+- Add technical context manually if needed
+- Validate estimates based on team velocity
+- Link stories back to source document
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Story Generator

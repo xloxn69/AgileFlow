@@ -6,19 +6,24 @@ model: haiku
 
 # blockers
 
-## STEP 0: Activation (Run First, Silently)
+## STEP 0: Activation
 
 ```bash
-# Activate compact summary mode
-node /home/coder/AgileFlow/scripts/activate-compact-summary.js blockers
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'blockers', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ blockers command activated');
+}
+"
 ```
 
-This script:
-- Sets `COMPACT_SUMMARY=true` environment variable for this command
-- Enables summarized output (hides detailed prompt, shows only summary section)
-- User can override with `COMPACT_SUMMARY=false` to see full details
+---
 
-<!-- BEGIN_COMPACT_SUMMARY -->
+<!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
 **Purpose**: Track and resolve all blockers across AgileFlow with actionable suggestions and cross-agent coordination.
@@ -89,7 +94,7 @@ This script:
 - `/adr-new` - Document architectural decisions
 - `/agileflow:board` - Visualize current state
 - `/agileflow:validate-system` - Check for inconsistencies
-<!-- END_COMPACT_SUMMARY -->
+<!-- COMPACT_SUMMARY_END -->
 
 Comprehensive blocker tracking, resolution suggestions, and cross-agent coordination (leverages v2.7.0 AG-API unblocking capabilities).
 

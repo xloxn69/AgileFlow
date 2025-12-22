@@ -4,7 +4,82 @@ description: Compress status.json by removing verbose fields and keeping only tr
 
 # compress
 
+STEP 0: ACTIVATE COMPACT SUMMARY MODE
+Before reading the full command, execute this script to display the compact summary:
+```bash
+sed -n '/<!-- COMPACT_SUMMARY_START -->/,/<!-- COMPACT_SUMMARY_END -->/p' "$(dirname "$0")/compress.md" | grep -v "COMPACT_SUMMARY"
+```
+If the user confirms they want the full details, continue. Otherwise, stop here.
+
 Reduce status.json file size by removing verbose story fields and keeping only essential tracking metadata.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Compress status.json by removing verbose fields and keeping only tracking metadata
+
+**Quick Usage**:
+```
+/agileflow:compress
+```
+
+**What It Does**:
+1. Validates status.json exists and is valid JSON
+2. Shows before stats (size, lines, story count)
+3. Creates backup (status.json.backup)
+4. Removes verbose fields (description, AC, architectureContext, etc.)
+5. Keeps only tracking fields (story_id, status, owner, timestamps)
+6. Writes compressed file
+7. Shows after stats and savings
+
+**Required Inputs**:
+- None (operates on `docs/09-agents/status.json`)
+
+**Optional Inputs**:
+- None
+
+**Output Files**:
+- Updates `docs/09-agents/status.json` (compressed)
+- Creates `docs/09-agents/status.json.backup` (original)
+
+**Fields Removed**:
+- description, acceptanceCriteria
+- architectureContext, technicalNotes
+- testingStrategy, devAgentRecord
+- previousStoryInsights
+- All other large text fields
+
+**Fields Kept**:
+- story_id, epic, title, owner, status
+- estimate, created, updated, completed_at
+- dependencies, branch, summary
+- last_update, assigned_at
+
+**Workflow**:
+1. Validate status.json exists and is valid
+2. Show before stats (stories, size, lines)
+3. Create backup copy
+4. Strip verbose fields from each story
+5. Write compressed version
+6. Show after stats and savings percentage
+7. Display status summary by state
+
+**Example Output**:
+```
+📊 Before: 145 stories, 384KB, 12,847 lines
+📊 After: 145 stories, 42KB, 1,203 lines
+💾 Saved: 89% (342KB)
+✅ Estimated tokens: ~10,500 (under 25000 limit)
+
+📋 Status Summary:
+   ready: 23 | in-progress: 8 | blocked: 2 | done: 112
+```
+
+**When to Use**:
+- status.json exceeds 25000 tokens
+- Agents fail with "file content exceeds maximum allowed tokens"
+- After major epic completion (many verbose stories)
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

@@ -6,6 +6,57 @@ description: Display AgileFlow system overview and commands
 
 Display a concise overview of the AgileFlow system.
 
+---
+
+## STEP 0: Activation
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'help', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ help command activated');
+}
+"
+```
+
+---
+
+## STEP 0: Activation (Documentation)
+
+**PURPOSE**: Immediately load full context before executing any logic.
+
+**ACTIONS**:
+1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/help.md` (this file) in its entirety
+2. Absorb all instructions, rules, and examples
+3. Proceed to execution phase with complete context
+
+**WHY**: Prevents incomplete instruction loading and ensures consistent behavior.
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+- **Command**: /agileflow:help
+- **Purpose**: Display AgileFlow system overview
+- **No Arguments**: Shows system overview automatically
+- **Output**: Markdown overview (no file writes)
+- **Key Actions**:
+  1. Print folder map (docs/*)
+  2. Explain Epics, Stories, ADRs, status.json, bus/log.jsonl
+  3. Show daily workflow
+  4. List all available commands with examples
+- **Workflow**: Pick story → Implement to AC → Tests → PR → Update status
+- **WIP Limit**: Max 2 stories/agent
+- **Command List**: Dynamic injection via <!-- {{COMMAND_LIST}} -->
+- **Related**: All AgileFlow commands, system documentation
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: System Guide

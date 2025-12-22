@@ -6,6 +6,102 @@ description: Generate stakeholder progress report
 
 Generate stakeholder communication updates from project status.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'stakeholder-update', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Stakeholder-update command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Stakeholder Communication Generator - Generate high-level project updates from status, epics, stories, and git history
+
+**Role**: Stakeholder Communication Generator responsible for creating executive summaries, progress reports, and metrics
+
+**Critical Rules**:
+- MUST aggregate data from 10 sources (status.json, epics, stories, backlog, roadmap, milestones, risks, git history, bus log, ADRs)
+- MUST preview update before sending (diff-first, YES/NO/EDIT)
+- MUST save all updates to docs/08-project/updates/ for history
+- MUST be honest about blockers and risks
+- MUST focus on business value, not technical jargon (for exec/client)
+- MUST include specific numbers and metrics
+- MUST highlight trends (improving/declining)
+- NEVER expose sensitive data (credentials, internal conflicts)
+
+**Inputs** (optional):
+- PERIOD=week|sprint|month|quarter|custom (default: week)
+- START_DATE=<YYYY-MM-DD> (optional: for custom period)
+- END_DATE=<YYYY-MM-DD> (optional: for custom period)
+- AUDIENCE=exec|client|team|board (default: exec)
+- FORMAT=email|markdown|slides|pdf (default: markdown)
+
+**Data Sources**:
+1. docs/09-agents/status.json - Current story status
+2. docs/05-epics/*.md - Epic progress
+3. docs/06-stories/**/US-*.md - Story details
+4. docs/08-project/backlog.md - Backlog items
+5. docs/08-project/roadmap.md - Roadmap milestones
+6. docs/08-project/milestones.md - Milestone targets
+7. docs/08-project/risks.md - Risk register
+8. Git history - Commits, PRs merged
+9. docs/09-agents/bus/log.jsonl - Activity context
+10. docs/03-decisions/adr-*.md - Recent decisions
+
+**Update Structure**:
+- Executive Summary (2-3 sentences, overall status, key accomplishments, critical issues)
+- Progress This Period (stories completed, epics progress, milestones reached)
+- Upcoming Work (next priorities, upcoming milestones)
+- Metrics (velocity, completion rate, quality metrics)
+- Blockers & Risks (current blockers, risk mitigation)
+- Decisions Made (recent ADRs)
+- Budget/Resources (sprint capacity, team changes)
+
+**Audience Customization**:
+- Executive: High-level, business impact, metrics/ROI, risks early, 1-page max
+- Client: Feature-focused, user benefits, transparent, screenshots/demos, contract deliverables
+- Team: Technical detail, architecture decisions, celebrate wins, retrospective insights, action items
+- Board: Strategic overview, financial implications, competitive positioning, long-term roadmap, risk assessment
+
+**Workflow**:
+1. Determine period (this week, last sprint, etc.)
+2. Collect data from all 10 sources
+3. Calculate metrics and trends
+4. Identify completed work
+5. Identify blockers and risks
+6. Format for audience
+7. Preview (show to user)
+8. Ask: "Send update? (YES/NO/EDIT)"
+9. If YES: Save to docs/08-project/updates/<YYYYMMDD>-update.md and optionally email stakeholders
+
+**Output Files**:
+- Update: docs/08-project/updates/<YYYYMMDD>-update.md
+- Log entry: docs/09-agents/bus/log.jsonl
+
+**Success Criteria**:
+- All data sources aggregated
+- Metrics calculated with trends
+- Formatted for target audience
+- Saved to updates directory
+- User confirmed via YES/NO/EDIT prompt
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Stakeholder Communication Generator

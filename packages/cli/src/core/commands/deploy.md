@@ -4,7 +4,80 @@ description: Set up automated deployment pipeline
 
 # setup-deployment
 
+STEP 0: ACTIVATE COMPACT SUMMARY MODE
+Before reading the full command, execute this script to display the compact summary:
+```bash
+sed -n '/<!-- COMPACT_SUMMARY_START -->/,/<!-- COMPACT_SUMMARY_END -->/p' "$(dirname "$0")/deploy.md" | grep -v "COMPACT_SUMMARY"
+```
+If the user confirms they want the full details, continue. Otherwise, stop here.
+
 Automatically set up deployment pipeline for the project.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Auto-configure CI/CD deployment pipeline for your project type
+
+**Quick Usage**:
+```
+/agileflow:setup-deployment PLATFORM=auto ENV=both AUTO_DEPLOY=no
+```
+
+**What It Does**:
+1. Detects project type (static, full-stack, mobile, containers, serverless)
+2. Recommends deployment platform based on project
+3. Generates platform-specific configuration files
+4. Creates CI/CD workflow file
+5. Creates .env.example and secrets management docs
+6. Shows configuration preview
+7. Creates files after YES/NO confirmation
+8. Displays next steps (add secrets, connect repo, test deploy)
+
+**Required Inputs**:
+- None (all optional with auto-detection)
+
+**Optional Inputs**:
+- `PLATFORM=auto|vercel|netlify|heroku|aws|gcp|docker|eas` (default: auto)
+- `ENV=staging|production|both` (default: both)
+- `AUTO_DEPLOY=yes|no` (default: no, manual trigger)
+
+**Output Files**:
+- Platform config (vercel.json, netlify.toml, Dockerfile, etc.)
+- `.github/workflows/deploy.yml` - CI/CD workflow
+- `.env.example` - Secrets template
+- `docs/02-practices/deployment.md` - Deployment guide
+- `docs/02-practices/secrets-management.md` - Secrets guide
+
+**Platform Recommendations**:
+- Next.js / React → Vercel
+- Static sites → Netlify
+- Node.js server → Railway, Heroku
+- Docker apps → Fly.io
+- Mobile (Expo) → EAS
+- Serverless → AWS Lambda, Vercel Functions
+
+**Workflow**:
+1. Detect project type from package.json, Dockerfile, etc.
+2. Recommend deployment platform
+3. Generate platform-specific config files
+4. Create CI/CD workflow (staging + production)
+5. Create environment management templates
+6. Show preview of all files
+7. Ask: "Create deployment configuration? (YES/NO)"
+8. If YES: Write files and show next steps
+
+**Example Next Steps**:
+```
+✅ Deployment configured for Vercel!
+
+Next steps:
+1. Add secrets: vercel env add DATABASE_URL
+2. Link repo: vercel link
+3. Test deploy: git push origin staging
+4. Check logs: vercel logs
+5. Deploy prod: merge staging → main
+```
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

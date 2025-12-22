@@ -7,6 +7,63 @@ argument-hint: STORY=<US-ID>
 
 Validate a specific story for completeness, architecture context, and readiness for development.
 
+---
+
+## STEP 0: Activation
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'story-validate', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ story-validate command activated');
+}
+"
+```
+
+---
+
+## STEP 0: Activation (Documentation)
+
+**PURPOSE**: Immediately load full context before executing any logic.
+
+**ACTIONS**:
+1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/story-validate.md` (this file) in its entirety
+2. Absorb all instructions, rules, and examples
+3. Proceed to execution phase with complete context
+
+**WHY**: Prevents incomplete instruction loading and ensures consistent behavior.
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+- **Command**: /agileflow:story-validate
+- **Purpose**: Validate story completeness and readiness for development
+- **Arguments**: STORY=<US-ID>
+- **TodoList**: Required for tracking 7-step validation workflow
+- **Validation Checks**:
+  1. Required sections presence (metadata, description, AC, Architecture Context, etc.)
+  2. Architecture Context validation (populated with real source citations)
+  3. Acceptance Criteria validation (Given/When/Then format, 2-5 criteria)
+  4. Story completeness (estimation, dependencies, owner, status)
+  5. Dev Agent Record structure (placeholders OK at ready/draft stage)
+  6. Previous Story Insights (if not first story in epic)
+  7. Cross-story consistency (epic alignment, capacity, dependencies)
+- **Output Format**: Validation report with ✅ PASSED, ❌ FAILED, ⚠️ WARNINGS sections
+- **Report Sections**: Summary, Next Steps, Ready for Development YES/NO
+- **Architecture Context**: CRITICAL - must have real citations [Source: architecture/{file}.md#{section}]
+- **AC Format**: Strict Given/When/Then required (not bullet points)
+- **Read-Only**: Never modifies story, only validates
+- **Exit Code**: 0 if ready, 1 if issues found
+- **Related**: Story template, Architecture docs, status.json
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Story Validator

@@ -6,6 +6,65 @@ description: Manage dependencies with updates and security audits
 
 Manage project package dependencies (npm, pip, cargo, etc.) with dashboard, updates, and security audits.
 
+---
+
+## STEP 0: Activation
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'packages', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ packages command activated');
+}
+"
+```
+
+---
+
+## STEP 0: Activation (Documentation)
+
+**PURPOSE**: Immediately load full context before executing any logic.
+
+**ACTIONS**:
+1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/packages.md` (this file) in its entirety
+2. Absorb all instructions, rules, and examples
+3. Proceed to execution phase with complete context
+
+**WHY**: Prevents incomplete instruction loading and ensures consistent behavior.
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+- **Command**: /agileflow:packages
+- **Purpose**: Manage dependencies with dashboards, updates, and security audits
+- **Arguments**:
+  - ACTION=dashboard|update|audit (default: dashboard)
+  - SCOPE=all|security|major|minor|patch (for update, default: all)
+  - OUTPUT=markdown|html|json|csv (for dashboard, default: markdown)
+  - INCLUDE_DEV=yes|no (default: yes)
+  - SAVE_TO=<path> (default: docs/08-project/dependencies-dashboard.md)
+  - AUTO_PR=yes|no (for update, default: no)
+- **Actions**:
+  1. Detect package manager (npm, pip, cargo, etc.)
+  2. Run analysis based on ACTION
+  3. Generate report with findings
+  4. For update: show plan and wait for YES/NO approval
+  5. Apply updates if approved
+  6. Save reports to docs/08-project/
+  7. Create stories for security issues if needed
+- **TodoList**: Required for tracking 7-step workflow
+- **Output**: Dashboard report, update report, or audit report
+- **Safety**: Never auto-update without approval, preview all commands
+- **Related**: Security audits, CI integration, Dependabot config
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Package Dependency Manager
