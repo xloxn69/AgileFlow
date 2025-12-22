@@ -5,28 +5,58 @@ argument-hint: (no arguments)
 
 # End Session
 
-You are running the `/agileflow:session:end` command to cleanly close the current AgileFlow session. This records what was accomplished, updates session history, and prepares for the next session.
+You are running the `/agileflow:session:end` command to cleanly close the current AgileFlow session.
 
-## Command Purpose
+## IMMEDIATE ACTIONS
 
-Proper session closure that:
-- Records stories completed during the session
-- Captures commits made
-- Saves final test status
-- Updates session history for analytics
-- Provides a summary of accomplishments
+**Execute these steps NOW in order:**
+
+### Step 1: Read session-state.json
+```bash
+cat docs/09-agents/session-state.json
+```
+If `current_session` is null, display "No active session" and stop.
+
+### Step 2: Get end timestamp and calculate duration
+```bash
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+Calculate duration from `current_session.started_at` to now.
+
+### Step 3: Get git activity since session start
+```bash
+git log --oneline HEAD~20..HEAD 2>/dev/null | head -10
+git diff --stat --shortstat 2>/dev/null | tail -1
+```
+
+### Step 4: Check status.json for completed stories
+Read `docs/09-agents/status.json` and identify stories with `status: "done"` that were completed during this session.
+
+### Step 5: Update session-state.json
+Use the Write tool to update the file:
+- Move `current_session` data to `last_session`
+- Add `ended_at` and `duration_minutes` to `last_session`
+- Add `stories_completed` array with story IDs completed this session
+- Set `current_session` to `null`
+- Append to `session_history` array (daily aggregate)
+
+### Step 6: Display session summary
+Output a formatted summary showing:
+- Session duration
+- Stories completed
+- Commits made
+- What to work on next
 
 ## TODO LIST TRACKING
 
 **CRITICAL**: Immediately create a todo list using TodoWrite tool:
 ```
-1. Check for active session
-2. Run final test verification (optional)
-3. Capture session metrics (duration, commits, stories)
-4. Update session-state.json (move current to last)
-5. Append to session history
+1. Read session-state.json (check for active session)
+2. Calculate session duration
+3. Get git activity
+4. Check completed stories
+5. Update session-state.json (move current to last)
 6. Display session summary
-7. Suggest next actions
 ```
 
 ## When to Use

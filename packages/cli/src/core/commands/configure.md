@@ -3,6 +3,62 @@ description: Configure advanced AgileFlow features (git, hooks, archival, CI, st
 argument-hint: (interactive menu)
 ---
 
+<!-- COMPACT_SUMMARY_START
+This section is extracted by the PreCompact hook to preserve essential context across conversation compacts.
+-->
+
+## Compact Summary
+
+Interactive orchestrator that guides users through advanced AgileFlow configuration by detecting status, presenting menus, and spawning specialized configuration agents.
+
+### Critical Behavioral Rules
+
+- **ALWAYS run detection phase FIRST** before presenting options
+- **USE AskUserQuestion tool** with XML invoke format and JSON parameters for all interactive menus
+- **NEVER ask users to "type" anything** - use proper options format (see docs/02-practices/ask-user-question.md)
+- **Spawn agents in PARALLEL** (single message) when no dependencies exist
+- **Respect agent dependencies**: Hooks System MUST run before Auto-Archival, Status Line, and PreCompact
+- **Reminder required**: If hooks or status line configured, display "🔴 RESTART CLAUDE CODE NOW!"
+- **Be idempotent**: Safe to run multiple times, reconfiguration allowed
+
+### Core Workflow
+
+1. **Detection Phase**: Run bash script to detect current config status (git, remote, CLAUDE.md, hooks, archival, CI/CD, status line, precompact)
+2. **Interactive Menu**: Use AskUserQuestion tool with `multiSelect: true` to let user select features
+3. **Spawn Agents**: Launch configuration agents based on selections:
+   - Independent (parallel): Git Config, Attribution, CI/CD
+   - Dependent (sequential): Hooks → (Archival + Status Line + PreCompact)
+4. **Results Summary**: Display ✅/❌/⏭️ for each feature with agent-specific next steps
+
+### Available Configuration Agents
+
+- **git-config**: Initialize git repo and add remote
+- **attribution**: Configure CLAUDE.md AI attribution policy
+- **hooks**: Deploy .claude/settings.json with SessionStart welcome hook
+- **archival**: Auto-archive completed stories (threshold-based)
+- **ci**: Set up GitHub Actions/GitLab CI/CircleCI workflows
+- **status-line**: Custom Claude Code status bar (story/WIP/completion)
+- **precompact**: Preserve context during conversation compacts
+
+### Agent Dependencies
+
+- Auto-Archival → Hooks System (requires .claude/settings.json)
+- Status Line → Hooks System (requires .claude/settings.json)
+- PreCompact → Hooks System (requires .claude/settings.json)
+- Git Config, Attribution, CI/CD → Independent (no dependencies)
+
+### Key Files
+
+- `.claude/settings.json` - Hooks configuration (created by hooks agent)
+- `CLAUDE.md` - Attribution policy (created by attribution agent)
+- `docs/00-meta/agileflow-metadata.json` - Git and archival config
+- `scripts/archive-completed-stories.sh` - Archival script
+- `scripts/agileflow-statusline.sh` - Status line script
+- `scripts/precompact-context.sh` - PreCompact hook script
+- `.github/workflows/ci.yml` - GitHub Actions workflow (CI agent)
+
+<!-- COMPACT_SUMMARY_END -->
+
 # configure
 
 Interactive orchestrator for configuring advanced AgileFlow features.

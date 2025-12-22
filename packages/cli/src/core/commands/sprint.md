@@ -4,6 +4,66 @@ argument-hint: [SPRINT=<id>] [DURATION=<days>] [AGENTS=<list>] [MODE=suggest|com
 model: haiku
 ---
 
+<!-- COMPACT_SUMMARY_START
+This section is extracted by the PreCompact hook to preserve essential context across conversation compacts.
+-->
+
+## Compact Summary
+
+Sprint Planner that creates data-driven sprint commitments based on historical velocity, agent capacity, and dependency validation.
+
+### Critical Behavioral Rules
+- **ALWAYS create a TodoWrite list** with 8 steps before starting sprint planning
+- **Load knowledge sources silently first** (status.json, bus/log.jsonl, backlog.md, roadmap.md, milestones.md, epics, stories)
+- **Calculate historical velocity** from last 30 days of completed stories in bus/log.jsonl before selecting stories
+- **Respect WIP limits**: Max 2 stories in-progress per agent
+- **Validate dependencies resolved**: Only select stories where all deps have status="done"
+- **Never commit without preview**: MODE=suggest shows preview, MODE=commit requires diff preview and updates
+- **Show diff before committing**: Always display git diff for status.json and milestones.md changes
+- **Sequence dependent stories**: Recommend execution order for stories with dependency chains
+- **Warn about cross-agent coordination**: Alert when AG-API work must complete before AG-UI
+
+### Core Workflow
+1. Analyze current agent capacity (WIP slots available per agent)
+2. Calculate historical velocity from bus/log.jsonl (completed stories in last 30 days)
+3. Extract ready stories from status.json (status="ready")
+4. Filter by resolved dependencies (all deps must be status="done")
+5. Prioritize by backlog.md order, epic focus, milestone deadlines
+6. Select stories until capacity reached (based on historical velocity)
+7. Assess risks (dependency chains, cross-agent coordination, epic staleness)
+8. Generate sprint plan report with recommendations
+9. If MODE=commit: Update status.json with sprint metadata and append to milestones.md
+
+### Key Files
+- **docs/09-agents/status.json** - Current story status, WIP, agent assignments (updated in MODE=commit)
+- **docs/09-agents/bus/log.jsonl** - Historical velocity data (completed stories with timestamps)
+- **docs/08-project/backlog.md** - Priority order for story selection
+- **docs/08-project/roadmap.md** - Strategic priorities and focus areas
+- **docs/08-project/milestones.md** - Sprint milestones and deadlines (appended in MODE=commit)
+- **docs/05-epics/*.md** - Epic goals and priorities
+- **docs/06-stories/**/US-*.md** - Story details, acceptance criteria, estimates
+
+### Selection Criteria Priority Order
+1. Must be status="ready" (Definition of Ready met)
+2. Dependencies resolved (all deps status="done")
+3. Backlog priority (from backlog.md)
+4. Epic alignment (FOCUS_EPIC parameter)
+5. Milestone deadlines (from milestones.md)
+6. Team capacity (don't exceed calculated velocity)
+7. Agent balance (distribute work evenly)
+
+### Output Format Must Include
+- Capacity analysis (historical velocity, agent slots)
+- Backlog status (ready/blocked counts)
+- Recommended commitment (selected stories with estimates, priorities, dependencies)
+- Deferred stories (capacity reached)
+- Sprint goals (based on epic distribution)
+- Risks and dependencies (cross-agent coordination, dependency chains)
+- Recommendations (sequencing, monitoring, next commands)
+- Next steps (different for MODE=suggest vs MODE=commit)
+
+<!-- COMPACT_SUMMARY_END -->
+
 # sprint-plan
 
 Intelligent sprint planning with capacity-based story selection, dependency validation, and velocity forecasting.

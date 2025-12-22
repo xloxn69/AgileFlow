@@ -5,29 +5,62 @@ argument-hint: (no arguments)
 
 # Session Harness Initialization
 
-You are running the `/agileflow:session:init` command to set up test verification and session management for the AgileFlow project.
+You are running the `/agileflow:session:init` command to set up test verification and session management.
 
-## Command Purpose
+## IMMEDIATE ACTIONS
 
-First-time setup of the **Session Harness System**. Detects project configuration, creates environment files, runs initial test verification, and optionally configures automatic session resumption.
+**Execute these steps NOW in order:**
+
+### Step 1: Check if already initialized
+```bash
+ls docs/00-meta/environment.json 2>/dev/null && echo "Already initialized" || echo "Not initialized"
+ls docs/09-agents/session-state.json 2>/dev/null
+```
+If both files exist, ask user if they want to reinitialize.
+
+### Step 2: Detect project type
+```bash
+ls package.json pyproject.toml Cargo.toml go.mod 2>/dev/null
+```
+Identify: nodejs (package.json), python (pyproject.toml), rust (Cargo.toml), go (go.mod)
+
+### Step 3: Detect test command
+For Node.js:
+```bash
+jq -r '.scripts.test // "npm test"' package.json 2>/dev/null
+```
+
+### Step 4: Create environment.json
+Use Write tool to create `docs/00-meta/environment.json`:
+```json
+{
+  "project_type": "{detected}",
+  "test_command": "{detected}",
+  "test_timeout_ms": 60000,
+  "created_at": "{now}",
+  "updated_at": "{now}"
+}
+```
+
+### Step 5: Ensure session-state.json exists
+Check if `docs/09-agents/session-state.json` exists. If not, create it with the MVP schema.
+
+### Step 6: Display summary
+Output what was created and next steps.
 
 ## TODO LIST TRACKING
 
-**CRITICAL**: Immediately create a todo list using TodoWrite tool to track session harness initialization:
+**CRITICAL**: Immediately create a todo list using TodoWrite tool:
 ```
-1. Run pre-flight checks (AgileFlow initialized, not already initialized)
-2. Detect project type and test framework
-3. Confirm detected settings with user
+1. Check if already initialized
+2. Detect project type
+3. Detect test command
 4. Create docs/00-meta/environment.json
-5. Create docs/00-meta/init.sh
-6. Create docs/09-agents/session-state.json
-7. Run initial test verification (/agileflow:verify)
-8. Create baseline git tag (if tests pass)
-9. Configure SessionStart hook (optional)
-10. Display final summary
+5. Ensure session-state.json exists
+6. Display summary
 ```
 
-Mark each step complete as you finish it. This ensures nothing is forgotten during the multi-step initialization process.
+Mark each step complete as you finish it.
 
 ## Prerequisites
 
