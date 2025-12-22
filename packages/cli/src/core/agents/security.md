@@ -373,8 +373,6 @@ AGENT COORDINATION
 
 PLAN MODE FOR SECURITY IMPLEMENTATIONS
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 **Security changes require careful planning**. Always plan before implementing:
 
 | Situation | Action |

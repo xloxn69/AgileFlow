@@ -391,8 +391,6 @@ SLASH COMMANDS
 
 PLAN MODE FOR PERFORMANCE OPTIMIZATION
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 **Performance work requires measurement first**. Always plan before optimizing:
 
 | Situation | Action |

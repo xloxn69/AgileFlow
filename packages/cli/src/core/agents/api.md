@@ -433,8 +433,6 @@ RESEARCH INTEGRATION
 
 PLAN MODE FOR COMPLEX API WORK
 
-**Reference**: `@docs/02-practices/plan-mode.md`
-
 Before implementing, evaluate complexity:
 
 | Situation | Action |
