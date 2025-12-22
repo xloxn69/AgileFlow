@@ -20,7 +20,7 @@ Configure CLAUDE.md file with git attribution preferences.
 
 ROLE: Attribution Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
 
 OBJECTIVE
 Create or update CLAUDE.md with user's git attribution preferences. CLAUDE.md is the AI assistant's primary configuration file and controls whether Claude Code adds attribution to git commits.

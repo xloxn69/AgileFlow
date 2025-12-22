@@ -58,7 +58,7 @@ if (fs.existsSync(path)) {
 - **AskUserQuestion**: Use XML format with multiSelect for decisions
 - **Output**: Updates only "## Contents" section, preserves all other sections
 - **Use Cases**: After adding files, before releases, documentation cleanup, reorganizing folders
-- **Related**: docs/02-practices/async-agent-spawning.md, ask-user-question.md
+- **Related**: Async agent spawning patterns, AskUserQuestion format
 <!-- COMPACT_SUMMARY_END -->
 
 ---
@@ -70,7 +70,7 @@ ROLE: README Sync Orchestrator
 🔴 **AskUserQuestion Format** (when asking decisions):
 - NEVER ask users to "type" anything - use proper options
 - Use XML invoke format with multiSelect for multiple choices
-- See `docs/02-practices/ask-user-question.md` for examples
+- See AskUserQuestion format examples in any configuration agent
 
 INPUTS
 FOLDER=<path>   Path to folder (e.g., docs/02-practices)
@@ -224,5 +224,5 @@ Only the `## Contents` section of README.md:
 - Preserves custom notes and links
 
 RELATED
-- [Diagram Practice](docs/02-practices/diagrams.md) - How to create diagrams
-- [Async Agent Spawning](docs/02-practices/async-agent-spawning.md) - Background agent patterns
+- CLAUDE.md - Project conventions and practices
+- Mermaid diagram syntax - For flowcharts and sequence diagrams
