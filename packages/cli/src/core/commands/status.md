@@ -17,7 +17,9 @@ const fs = require('fs');
 const path = 'docs/09-agents/session-state.json';
 if (fs.existsSync(path)) {
   const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  state.active_command = { name: 'status', activated_at: new Date().toISOString(), state: {} };
+  const cmd = { name: 'status', activated_at: new Date().toISOString(), state: {} };
+  state.active_commands = state.active_commands || [];
+  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
   fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
   console.log('✅ status command activated');
 }
