@@ -7,17 +7,22 @@ argument-hint: STORY=<US-ID> [TITLE=<text>] [TEST_EVIDENCE=<text>]
 
 ## STEP 0: Activation
 
-Before proceeding, run this command to activate the correct agent context:
-
 ```bash
-node /home/coder/AgileFlow/scripts/activate-command.js pr
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'pr-template', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ pr-template command activated');
+}
+"
 ```
-
-This ensures Claude loads the full command specification with all context.
 
 ---
 
-<!-- START_COMPACT_SUMMARY -->
+<!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
 **Purpose**: Generate complete, paste-ready pull request descriptions from user story files and test evidence.
@@ -88,7 +93,7 @@ This ensures Claude loads the full command specification with all context.
 - Preserve checkbox states from AC_CHECKED input
 - Format test evidence clearly and readably
 - Suggest meaningful commit messages aligned with change type
-<!-- END_COMPACT_SUMMARY -->
+<!-- COMPACT_SUMMARY_END -->
 
 ---
 

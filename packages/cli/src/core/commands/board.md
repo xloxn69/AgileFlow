@@ -7,6 +7,97 @@ model: haiku
 
 Generate a visual kanban board from current story statuses.
 
+## STEP 0: Activate Command
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'board', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ board command activated');
+}
+"
+```
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Command**: `board`
+**Purpose**: Generate visual kanban board from current story statuses
+
+**Quick Usage**:
+```
+/agileflow:board
+/agileflow:board EPIC=EP-0010
+/agileflow:board OWNER=AG-UI FORMAT=markdown
+/agileflow:board GROUP_BY=owner
+```
+
+**What It Does**:
+1. Reads `docs/09-agents/status.json` for story data
+2. Organizes stories by status (or owner/epic if specified)
+3. Calculates WIP limits and identifies violations
+4. Renders visual board with color coding
+5. Shows statistics (throughput, velocity, blockers)
+6. Suggests actions based on board state
+
+**Input Options**:
+- `EPIC=<EP_ID>` - Filter by specific epic
+- `OWNER=<agent_id>` - Filter by owner
+- `FORMAT=ascii|markdown|html` - Output format (default: ascii)
+- `GROUP_BY=status|owner|epic` - Grouping method (default: status)
+
+**Board Layout** (ASCII):
+```
+╔══════════════════════════════════════════════════════════════╗
+║                   AGILEFLOW KANBAN BOARD                      ║
+║                  Updated: 2025-12-22 14:30                    ║
+╠══════════════════════════════════════════════════════════════╣
+║ 📊 Summary: 15 stories | 3 ready | 4 in-progress | 6 done   ║
+║ ⚠️  WIP Limit: 2/agent (AG-UI: 2/2 ⚠️, AG-API: 1/2 ✓)       ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│ 📋 READY (3) │ 🔄 IN PROG   │ 👀 REVIEW    │ ✅ DONE (6)  │
+│              │ (4) WIP: 4/6 │ (2)          │              │
+├──────────────┼──────────────┼──────────────┼──────────────┤
+│ 🟢 US-0042   │ 🟡 US-0038   │ 🔵 US-0035   │ ⚪ US-0030   │
+│ Login form   │ OAuth flow   │ Pwd reset    │ User reg     │
+│ AG-UI · 1d   │ AG-API · 1.5d│ AG-API · 1d  │ AG-API · 1d  │
+└──────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+**Color Coding**:
+- 🟢 Green: High priority / ready to start
+- 🟡 Yellow: In progress / medium priority
+- 🔵 Blue: In review / low priority
+- ⚪ White: Done
+- 🔴 Red: Blocked
+- ⚠️ Warning: WIP limit exceeded
+
+**Statistics Provided**:
+- Throughput (stories completed per week)
+- Velocity (points per week)
+- Status distribution
+- Owner workload
+- Blockers and warnings
+
+**Action Suggestions**:
+- "AG-UI at WIP limit. Complete US-0038 before starting new work."
+- "US-0041 blocked. Unblock by reviewing US-0035?"
+- "3 stories ready. Which should we prioritize?"
+
+**Best Practices**:
+- Review board daily to identify bottlenecks
+- Keep WIP limits respected (default: 2/agent)
+- Export board snapshots to track velocity over time
+- Use GROUP_BY=owner to balance workload
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Board Visualizer

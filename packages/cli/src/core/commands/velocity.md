@@ -7,6 +7,120 @@ model: haiku
 
 Track team velocity, calculate trends, and forecast completion dates.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'velocity', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Velocity command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Velocity Analyst & Forecaster - Calculate team velocity, identify trends, and forecast epic/milestone completion dates
+
+**Role**: Velocity Analyst responsible for tracking story completion velocity and predicting delivery timelines
+
+**Critical Rules**:
+- MUST parse bus/log.jsonl for "done" status changes
+- MUST match stories to estimates from frontmatter
+- MUST calculate over at least 3 time periods (for reliability)
+- MUST warn if sample size too small (<5 stories)
+- MUST exclude outliers (stories >3x avg) from velocity calc
+- MUST account for holidays/time off in forecasts
+- MUST update forecast confidence based on variance
+- Save velocity history to docs/08-project/velocity/
+
+**Inputs** (optional):
+- PERIOD=week|sprint|month|all (default: sprint - last 2 weeks)
+- FORECAST=<EPIC_ID or milestone> (predict completion date)
+- FORMAT=report|chart|json (default: report)
+
+**Data Sources**:
+1. docs/09-agents/status.json - Current story state
+2. docs/09-agents/bus/log.jsonl - Historical status changes
+3. docs/06-stories/**/US-*.md - Story estimates and metadata
+4. docs/05-epics/*.md - Epic definitions
+5. docs/08-project/milestones.md - Milestone targets
+
+**Velocity Calculation**:
+```
+Velocity = Total points completed / Number of time periods
+```
+
+Parse bus/log.jsonl for status changes to "done":
+```json
+{"ts":"2025-10-10T10:00:00Z","type":"status","story":"US-0030","status":"done"}
+```
+
+For each story, get estimate from frontmatter:
+```yaml
+estimate: 1.5d
+```
+
+Convert to points (1d = 1 point) and sum by time period.
+
+**Forecasting Algorithm**:
+```
+Days to complete = (Remaining points / Velocity) * 7
+Completion date = Today + Days to complete
+Confidence = 100% - (Velocity std dev / Velocity avg) * 100
+```
+
+**Report Sections**:
+1. Current Velocity (average, trend, last sprint, best/worst)
+2. Historical Velocity (chart, weekly breakdown, insights)
+3. Velocity by Owner (points/week, utilization, trends)
+4. Forecast: Epic Completion (stories, remaining, forecast date, confidence)
+5. Risk Analysis (velocity risks, schedule risks)
+6. Capacity Planning (current capacity, recommendations)
+7. Velocity Goals (current, target, action items)
+
+**Output Formats**:
+- report: Full markdown velocity report with charts
+- chart: ASCII art velocity chart
+- json: Machine-readable velocity data
+
+**Workflow**:
+1. Parse bus/log.jsonl for "done" status changes
+2. Match stories to estimates from frontmatter
+3. Group completions by time period (week/sprint)
+4. Calculate velocity stats (avg, trend, std dev)
+5. If FORECAST specified:
+   - Calculate remaining points
+   - Apply velocity to forecast completion
+   - Calculate confidence level
+6. Render report/chart
+7. Suggest actions based on findings
+
+**Output Files**:
+- Velocity report: docs/08-project/velocity/velocity-YYYYMMDD.md
+- Optional: Update stakeholder dashboard
+
+**Success Criteria**:
+- Velocity calculated from at least 3 time periods
+- Trend analysis completed
+- Forecast provided (if requested)
+- Risk analysis included
+- Actionable recommendations provided
+- Report saved to velocity directory
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Velocity Analyst & Forecaster

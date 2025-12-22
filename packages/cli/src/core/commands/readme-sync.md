@@ -7,6 +7,60 @@ argument-hint: FOLDER=<path> | FOLDER=all
 
 Synchronize a folder's README.md with its current contents.
 
+---
+
+## STEP 0: Activation
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'readme-sync', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ readme-sync command activated');
+}
+"
+```
+
+---
+
+## STEP 0: Activation (Documentation)
+
+**PURPOSE**: Immediately load full context before executing any logic.
+
+**ACTIONS**:
+1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/readme-sync.md` (this file) in its entirety
+2. Absorb all instructions, rules, and examples
+3. Proceed to execution phase with complete context
+
+**WHY**: Prevents incomplete instruction loading and ensures consistent behavior.
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+- **Command**: /agileflow:readme-sync
+- **Purpose**: Synchronize folder README.md with current contents
+- **Arguments**: FOLDER=<path> | FOLDER=all
+- **Agent Spawning**: Spawns `readme-updater` agent for actual work
+- **Key Actions**:
+  1. List all files and subdirectories in FOLDER
+  2. Read current README.md (if exists)
+  3. Extract descriptions from each file (first heading or sentence)
+  4. Build new "## Contents" section with bullet list
+  5. Show diff and ask for confirmation via AskUserQuestion
+  6. Update if approved using Edit tool
+- **FOLDER=all**: Sync all docs/*/ subdirectories in parallel
+- **AskUserQuestion**: Use XML format with multiSelect for decisions
+- **Output**: Updates only "## Contents" section, preserves all other sections
+- **Use Cases**: After adding files, before releases, documentation cleanup, reorganizing folders
+- **Related**: docs/02-practices/async-agent-spawning.md, ask-user-question.md
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: README Sync Orchestrator

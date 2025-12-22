@@ -4,7 +4,81 @@ description: Auto-generate changelog from commit history
 
 # generate-changelog
 
+STEP 0: ACTIVATE COMPACT SUMMARY MODE
+Before reading the full command, execute this script to display the compact summary:
+```bash
+sed -n '/<!-- COMPACT_SUMMARY_START -->/,/<!-- COMPACT_SUMMARY_END -->/p' "$(dirname "$0")/changelog.md" | grep -v "COMPACT_SUMMARY"
+```
+If the user confirms they want the full details, continue. Otherwise, stop here.
+
 Automatically generate changelog from PR titles, commits, and tags.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Auto-generate changelog from commit history and PR titles
+
+**Quick Usage**:
+```
+/agileflow:generate-changelog VERSION=2.5.0 SINCE=v2.4.0 FORMAT=keepachangelog
+```
+
+**What It Does**:
+1. Detects version from latest git tag if not provided
+2. Collects commits/PRs since SINCE point
+3. Categorizes changes (Added/Changed/Fixed/Removed/Security)
+4. Generates changelog section in Keep a Changelog format
+5. Shows diff preview and waits for YES/NO confirmation
+6. Updates CHANGELOG.md if approved
+7. Optionally commits the changes
+
+**Required Inputs**:
+- None (all optional with smart defaults)
+
+**Optional Inputs**:
+- `VERSION=<version>` - Version number (default: auto-detect from latest tag)
+- `SINCE=<tag>` - Start point (default: last version tag)
+- `FORMAT=<format>` - keepachangelog|simple|github (default: keepachangelog)
+- `AUTO_COMMIT=yes|no` - Auto-commit changes (default: no)
+
+**Output Files**:
+- Updates `CHANGELOG.md` with new version section
+- Optional: Git commit with changelog update
+
+**Categorization Rules**:
+- `feat:` → Added
+- `fix:` → Fixed
+- `perf:` → Changed (performance improvement)
+- `refactor:` → Changed
+- `security:` → Security
+- `BREAKING CHANGE` or `!` → Changed (with warning)
+
+**Workflow**:
+1. Detect version from latest tag if not provided
+2. Get commits/PRs since SINCE point
+3. Parse conventional commits and categorize
+4. Suggest semantic version based on changes
+5. Generate changelog section preview
+6. Ask: "Update CHANGELOG.md? (YES/NO)"
+7. If YES: Update file and optionally commit
+
+**Example Output**:
+```markdown
+## [2.5.0] - 2025-12-22
+
+### Added
+- OAuth2 authentication support (#123)
+- Dark mode toggle (#137)
+
+### Changed
+- ⚠️ **BREAKING**: Redesigned API endpoints (#126)
+- Improved query performance by 50% (#125)
+
+### Fixed
+- Crash when user is null (#124)
+- Memory leak in WebSocket handler (#139)
+```
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

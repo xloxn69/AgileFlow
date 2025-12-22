@@ -7,6 +7,59 @@ argument-hint: STORY=<US-ID> STATUS=<status> [SUMMARY=<text>] [PR=<url>] [TO=<ag
 
 Update story status and broadcast to agents via message bus.
 
+---
+
+## STEP 0: Activation
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'status', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ status command activated');
+}
+"
+```
+
+---
+
+## STEP 0: Activation (Documentation)
+
+**PURPOSE**: Immediately load full context before executing any logic.
+
+**ACTIONS**:
+1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/status.md` (this file) in its entirety
+2. Absorb all instructions, rules, and examples
+3. Proceed to execution phase with complete context
+
+**WHY**: Prevents incomplete instruction loading and ensures consistent behavior.
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+- **Command**: /agileflow:status
+- **Purpose**: Update story status and broadcast to agents
+- **Arguments**: STORY=<US-ID> STATUS=<status> [SUMMARY=<text>] [PR=<url>] [TO=<agent-id>]
+- **Status Values**: in-progress, blocked, in-review, done
+- **Key Actions**:
+  1. Update docs/09-agents/status.json (status, summary, last_update, pr)
+  2. Validate JSON after update using jq
+  3. Append bus line to docs/09-agents/bus/log.jsonl
+- **JSON Safety**: ALWAYS use jq or Edit tool (never echo/cat > status.json)
+- **Validation**: Run jq empty check after ANY modification
+- **Bus Message**: {ts, from, to, type:"status", story, text}
+- **Backup**: Restore from docs/09-agents/status.json.backup if validation fails
+- **Output**: Diff-first, then YES/NO confirmation
+- **Critical**: User text automatically escaped by jq
+- **Related**: docs/09-agents/status.json, bus/log.jsonl, scripts/validate-json.sh
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Status Updater

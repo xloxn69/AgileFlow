@@ -7,6 +7,95 @@ argument-hint: [message] (optional)
 
 Create a verified checkpoint representing a known-good state of the project.
 
+## STEP 0: Activate Command
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'baseline', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ baseline command activated');
+}
+"
+```
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Command**: `baseline`
+**Purpose**: Create verified checkpoints representing known-good project states
+
+**Quick Usage**:
+```
+/agileflow:baseline "Sprint 3 complete - all features tested"
+/agileflow:baseline
+```
+
+**What It Does**:
+1. Runs pre-flight checks (tests passing, clean git, story tests)
+2. Shows baseline summary (what will be included)
+3. Creates git tag with timestamp (agileflow-baseline-YYYYMMDD-HHMMSS)
+4. Updates environment.json (baseline_commit)
+5. Updates session-state.json (baseline history)
+6. Updates story frontmatter (verified_at_baseline)
+7. Displays final report
+
+**Prerequisites**:
+- Session harness initialized (`/agileflow:session:init`)
+- All tests must be passing
+- Git working tree must be clean
+- All `in_progress` stories must have `test_status: passing`
+
+**When to Use**:
+- After completing an epic
+- Before risky refactoring
+- Weekly/sprint checkpoints
+- Before major dependency updates
+- After achieving significant milestones
+
+**Git Tag Format**:
+```
+agileflow-baseline-20251222-143000
+                    YYYYMMDD-HHMMSS
+```
+
+**Baseline Report Example**:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Baseline Established
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tag: agileflow-baseline-20251222-143000
+Commit: abc123def456
+Message: Sprint 3 complete - all features tested
+Tests: 42/42 passing
+Stories: US-0043, US-0044, US-0045
+
+To push to team:
+  git push origin agileflow-baseline-20251222-143000
+```
+
+**Use Cases**:
+- **After Epic**: `baseline "EP-0005: User authentication complete"`
+- **Before Refactor**: `baseline "Before auth refactor"` (safety checkpoint)
+- **Sprint End**: `baseline "Sprint 12 end - 15 stories completed"`
+
+**Restore from Baseline**:
+```bash
+git checkout agileflow-baseline-20251222-143000
+```
+
+**Best Practices**:
+- Create baselines frequently (weekly or after epics)
+- Push baseline tags to remote for team sharing
+- Use descriptive messages for future reference
+- Compare current state to baseline with `/agileflow:verify`
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Baseline Creator

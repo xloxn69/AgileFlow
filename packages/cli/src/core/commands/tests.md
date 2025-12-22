@@ -6,6 +6,96 @@ description: Set up automated testing infrastructure
 
 Automatically set up testing infrastructure for projects without existing tests.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'setup-tests', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Setup-tests command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Test Infrastructure Bootstrapper - Automatically set up testing framework, config, example tests, and CI integration
+
+**Role**: Test Infrastructure Bootstrapper responsible for detecting project type and installing appropriate testing framework
+
+**Critical Rules**:
+- MUST use TodoWrite to track all 10 steps (detect language, check existing setup, install deps, create config, create examples, create structure, add scripts, integrate CI, create docs, run tests)
+- MUST preview all changes (diff-first, YES/NO)
+- MUST create working examples, not just config
+- MUST run test suite after setup to verify
+- MUST integrate with CI immediately
+- Set reasonable coverage thresholds (70%, not 100%)
+- Create docs/02-practices/testing.md documentation
+
+**Inputs** (optional):
+- FRAMEWORK=auto|jest|mocha|pytest|rspec|go-test|cargo-test (default: auto-detect)
+- COVERAGE=yes|no (default: yes)
+- E2E=yes|no (default: no, ask if needed)
+
+**Project Detection**:
+- Node.js: package.json → Jest/Mocha
+- Python: requirements.txt, pyproject.toml → pytest
+- Ruby: Gemfile → RSpec
+- Go: go.mod → go test
+- Rust: Cargo.toml → cargo test
+- Java: pom.xml, build.gradle → JUnit
+- .NET: *.csproj → xUnit/NUnit
+
+**Directory Structure Created**:
+```
+tests/
+├── unit/           # Unit tests (isolated functions/classes)
+├── integration/    # Integration tests (multiple components)
+├── e2e/           # End-to-end tests (full user flows) [if E2E=yes]
+├── fixtures/      # Test data
+└── helpers/       # Test utilities
+```
+
+**Workflow Steps**:
+1. Detect language/runtime and framework
+2. Check existing test setup
+3. Install testing framework dependencies
+4. Create test configuration files (jest.config.js, pytest.ini, etc.)
+5. Create example tests (unit, integration, E2E if requested)
+6. Create test directory structure
+7. Add test scripts to package.json/equivalent
+8. Integrate with CI workflow (.github/workflows/ci.yml)
+9. Create docs/02-practices/testing.md documentation
+10. Run tests to verify setup
+
+**Output Files**:
+- Config: jest.config.js / pytest.ini / .rspec / etc.
+- Examples: tests/unit/example.test.ts, tests/integration/api.test.ts
+- CI: .github/workflows/ci.yml (test job added)
+- Docs: docs/02-practices/testing.md
+- Scripts: package.json updated with test commands
+
+**Success Criteria**:
+- All 10 todo items marked complete
+- Test framework installed and configured
+- Example tests created and passing
+- CI integration added
+- Documentation created
+- User confirmed via YES/NO prompt
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Test Infrastructure Bootstrapper
