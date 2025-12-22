@@ -1,6 +1,6 @@
 {
   "name": "agileflow-monorepo",
-  "version": "2.41.0",
+  "version": "2.42.0",
   "private": true,
   "description": "AgileFlow monorepo - CLI, website, and documentation",
   "workspaces": [
@@ -33,6 +33,6 @@
     "tailwindcss": "3.4.1"
   },
   "dependencies": {
-    "agileflow": "^2.40.0"
+    "agileflow": "^2.41.0"
   }
 }
