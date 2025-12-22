@@ -65,3 +65,10 @@ next-env.d.ts
 dist/
 build/
 coverage/
+
+.claude/settings.local.json
+.claude/activity.log
+.claude/context.log
+.claude/hook.log
+.claude/prompt-log.txt
+.claude/session.log

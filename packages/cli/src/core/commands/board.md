@@ -7,22 +7,13 @@ model: haiku
 
 Generate a visual kanban board from current story statuses.
 
-## STEP 0: Activate Command
+## STEP 0: Gather Context
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'board', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ board command activated');
-}
-"
+node scripts/obtain-context.js board
 ```
+
+This gathers git status, stories/epics, session state, and registers for PreCompact.
 
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary

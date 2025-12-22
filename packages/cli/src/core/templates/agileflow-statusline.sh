@@ -37,6 +37,88 @@ BRIGHT_BLUE="\033[94m"
 BRIGHT_MAGENTA="\033[95m"
 BRIGHT_CYAN="\033[96m"
 
+# Brand color (burnt orange #e8683a = RGB 232,104,58)
+BRAND="\033[38;2;232;104;58m"
+
+# ============================================================================
+# Read Component Configuration
+# ============================================================================
+# Default: all components enabled
+SHOW_AGILEFLOW=true
+SHOW_MODEL=true
+SHOW_STORY=true
+SHOW_EPIC=true
+SHOW_WIP=true
+SHOW_CONTEXT=true
+SHOW_COST=true
+SHOW_GIT=true
+
+# Check agileflow-metadata.json for component settings
+if [ -f "docs/00-meta/agileflow-metadata.json" ]; then
+  COMPONENTS=$(jq '.features.statusline.components // null' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  if [ "$COMPONENTS" != "null" ] && [ -n "$COMPONENTS" ]; then
+    # Use 'if . == null then true else . end' to properly handle false values
+    # (jq's // operator treats false as falsy and applies the fallback)
+    SHOW_AGILEFLOW=$(echo "$COMPONENTS" | jq -r '.agileflow | if . == null then true else . end')
+    SHOW_MODEL=$(echo "$COMPONENTS" | jq -r '.model | if . == null then true else . end')
+    SHOW_STORY=$(echo "$COMPONENTS" | jq -r '.story | if . == null then true else . end')
+    SHOW_EPIC=$(echo "$COMPONENTS" | jq -r '.epic | if . == null then true else . end')
+    SHOW_WIP=$(echo "$COMPONENTS" | jq -r '.wip | if . == null then true else . end')
+    SHOW_CONTEXT=$(echo "$COMPONENTS" | jq -r '.context | if . == null then true else . end')
+    SHOW_COST=$(echo "$COMPONENTS" | jq -r '.cost | if . == null then true else . end')
+    SHOW_GIT=$(echo "$COMPONENTS" | jq -r '.git | if . == null then true else . end')
+  fi
+fi
+
+# ============================================================================
+# AgileFlow Version & Update Check
+# ============================================================================
+AGILEFLOW_DISPLAY=""
+if [ "$SHOW_AGILEFLOW" = "true" ]; then
+  # Get local version from package.json or metadata
+  LOCAL_VERSION=""
+  if [ -f ".agileflow/package.json" ]; then
+    LOCAL_VERSION=$(jq -r '.version // ""' .agileflow/package.json 2>/dev/null)
+  elif [ -f "docs/00-meta/agileflow-metadata.json" ]; then
+    LOCAL_VERSION=$(jq -r '.version // ""' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  fi
+
+  if [ -n "$LOCAL_VERSION" ] && [ "$LOCAL_VERSION" != "null" ]; then
+    # Check for updates (cached for 1 hour to avoid rate limiting)
+    UPDATE_CACHE="/tmp/agileflow-update-check"
+    UPDATE_AVAILABLE=""
+    LATEST_VERSION=""
+
+    # Only check npm if cache is stale (older than 1 hour)
+    if [ ! -f "$UPDATE_CACHE" ] || [ "$(find "$UPDATE_CACHE" -mmin +60 2>/dev/null)" ]; then
+      # Quick npm check (timeout after 2 seconds)
+      LATEST_VERSION=$(timeout 2 npm view agileflow version 2>/dev/null || echo "")
+      if [ -n "$LATEST_VERSION" ]; then
+        echo "$LATEST_VERSION" > "$UPDATE_CACHE"
+      fi
+    else
+      LATEST_VERSION=$(cat "$UPDATE_CACHE" 2>/dev/null)
+    fi
+
+    # Compare versions
+    if [ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "$LOCAL_VERSION" ]; then
+      # Simple version comparison (works for semver)
+      if [ "$(printf '%s\n' "$LOCAL_VERSION" "$LATEST_VERSION" | sort -V | tail -n1)" = "$LATEST_VERSION" ] && [ "$LOCAL_VERSION" != "$LATEST_VERSION" ]; then
+        UPDATE_AVAILABLE="$LATEST_VERSION"
+      fi
+    fi
+
+    # Build display
+    if [ -n "$UPDATE_AVAILABLE" ]; then
+      AGILEFLOW_DISPLAY="${BRAND}agileflow${RESET} ${DIM}v${LOCAL_VERSION}${RESET} ${YELLOW}↑${UPDATE_AVAILABLE}${RESET}"
+    else
+      AGILEFLOW_DISPLAY="${BRAND}agileflow${RESET} ${DIM}v${LOCAL_VERSION}${RESET}"
+    fi
+  else
+    AGILEFLOW_DISPLAY="${BRAND}agileflow${RESET}"
+  fi
+fi
+
 # ============================================================================
 # Parse Input JSON
 # ============================================================================
@@ -213,42 +295,61 @@ fi
 # ============================================================================
 # Build Status Line
 # ============================================================================
-# Model with subtle styling
-OUTPUT="${DIM}[${RESET}${BOLD}${MODEL_DISPLAY}${RESET}${DIM}]${RESET}"
+OUTPUT=""
 
 # Separator
 SEP=" ${DIM}│${RESET} "
 
-# Add current story OR next story suggestion
-if [ -n "$STORY_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${STORY_DISPLAY}"
-elif [ -n "$NEXT_STORY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${NEXT_STORY}"
+# AgileFlow branding (if enabled)
+if [ "$SHOW_AGILEFLOW" = "true" ] && [ -n "$AGILEFLOW_DISPLAY" ]; then
+  OUTPUT="${AGILEFLOW_DISPLAY}"
 fi
 
-# Add epic progress (if working on a story in an epic)
-if [ -n "$EPIC_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${EPIC_DISPLAY}"
+# Model with subtle styling (if enabled)
+if [ "$SHOW_MODEL" = "true" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${DIM}[${RESET}${BOLD}${MODEL_DISPLAY}${RESET}${DIM}]${RESET}"
 fi
 
-# Add WIP count
-if [ -n "$WIP_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${WIP_DISPLAY}"
+# Add current story OR next story suggestion (if enabled)
+if [ "$SHOW_STORY" = "true" ]; then
+  if [ -n "$STORY_DISPLAY" ]; then
+    [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+    OUTPUT="${OUTPUT}${STORY_DISPLAY}"
+  elif [ -n "$NEXT_STORY" ]; then
+    [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+    OUTPUT="${OUTPUT}${NEXT_STORY}"
+  fi
 fi
 
-# Add context usage (prominent position)
-if [ -n "$CTX_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${CTX_DISPLAY}"
+# Add epic progress (if enabled and working on a story in an epic)
+if [ "$SHOW_EPIC" = "true" ] && [ -n "$EPIC_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${EPIC_DISPLAY}"
 fi
 
-# Add cost
-if [ -n "$COST_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${COST_DISPLAY}"
+# Add WIP count (if enabled)
+if [ "$SHOW_WIP" = "true" ] && [ -n "$WIP_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${WIP_DISPLAY}"
 fi
 
-# Add git branch
-if [ -n "$GIT_DISPLAY" ]; then
-  OUTPUT="${OUTPUT}${SEP}${GIT_DISPLAY}"
+# Add context usage (if enabled)
+if [ "$SHOW_CONTEXT" = "true" ] && [ -n "$CTX_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${CTX_DISPLAY}"
+fi
+
+# Add cost (if enabled)
+if [ "$SHOW_COST" = "true" ] && [ -n "$COST_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${COST_DISPLAY}"
+fi
+
+# Add git branch (if enabled)
+if [ "$SHOW_GIT" = "true" ] && [ -n "$GIT_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${GIT_DISPLAY}"
 fi
 
 echo -e "$OUTPUT"

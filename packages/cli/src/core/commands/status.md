@@ -9,26 +9,17 @@ Update story status and broadcast to agents via message bus.
 
 ---
 
-## STEP 0: Activation
+## STEP 0: Gather Context
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'status', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ status command activated');
-}
-"
+node scripts/obtain-context.js status
 ```
+
+This gathers git status, stories/epics, session state, and registers for PreCompact.
 
 ---
 
-## STEP 0: Activation (Documentation)
+## Context Loading (Documentation)
 
 **PURPOSE**: Immediately load full context before executing any logic.
 

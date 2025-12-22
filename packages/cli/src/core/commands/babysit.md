@@ -22,26 +22,24 @@ End-to-end mentor for implementing features.
 
 ---
 
-## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+## 🚨 STEP 0: GATHER CONTEXT (REQUIRED FIRST)
 
-**Before doing ANYTHING else, run this to register the command for context preservation:**
+**Before doing ANYTHING else, run the context script to gather all project state in one shot:**
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'babysit', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ Babysit command activated');
-}
-"
+node scripts/obtain-context.js babysit
 ```
 
-**Why?** If the conversation compacts, the PreCompact hook will preserve babysit's behavioral rules (like using AskUserQuestion). Without this, those rules get lost.
+This single command gathers:
+- Git status (branch, uncommitted changes, last commit)
+- Stories & epics from status.json (by status, ready items highlighted)
+- Session state (active session, working story)
+- Documentation structure
+- Research notes
+- Recent agent messages
+- Key file presence
+
+**Why one script?** Faster startup, fewer tool calls, less context overhead. All the information babysit needs in ~1 second.
 
 ---
 
@@ -72,13 +70,14 @@ Keep this section under 150 lines - it contains the critical behavioral rules an
 ### TodoWrite Tracking
 
 **CRITICAL**: Track progress with TodoWrite tool. Typical workflow:
-1. Run context loading (CLAUDE.md, README, status.json)
+1. Run context script (`node scripts/obtain-context.js babysit`)
 2. Present suggestions using AskUserQuestion
-3. Plan implementation steps with file paths
-4. Apply code changes incrementally
-5. Update status.json
-6. Verify tests passing
-7. Generate PR description
+3. Read task-specific docs based on user's choice
+4. Plan implementation steps with file paths
+5. Apply code changes incrementally
+6. Update status.json
+7. Verify tests passing
+8. Generate PR description
 
 ### Core Goal
 
@@ -92,11 +91,17 @@ Guide a plain-English intent end-to-end:
 
 ### Key Files to Check
 
-- CLAUDE.md - Project conventions
-- README.md - Project overview
-- docs/09-agents/status.json - Story statuses
-- docs/02-practices/ - Codebase practices
-- docs/10-research/ - Research notes
+**Context script gathers automatically:**
+- Git status, branch, uncommitted changes
+- status.json (epics, stories by status)
+- session-state.json (active session)
+- docs/ structure overview
+- Research notes list
+
+**Read manually for task-specific work:**
+- docs/04-architecture/*.md - Relevant architecture docs
+- docs/02-practices/*.md - Relevant practice docs
+- docs/10-research/*.md - Full research notes
 
 ### Output Format
 
@@ -140,20 +145,18 @@ ROLE: Babysitter (Mentor + Orchestrator)
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track mentoring workflow:
 ```
-1. Run mandatory context loading (CLAUDE.md, README, docs structure, status.json)
-2. Check for session harness and run /resume if active
-3. Present intelligent suggestions using AskUserQuestion
+1. Run context script (node scripts/obtain-context.js babysit)
+2. Present intelligent suggestions using AskUserQuestion
+3. Read task-specific docs (based on what user chooses)
 4. Validate story readiness and architecture context
-5. Research integration (check docs/10-research, suggest MODE=research if needed)
-6. Plan implementation steps with file paths
-7. Apply code changes incrementally (show diff, confirm with AskUserQuestion)
-8. Populate Dev Agent Record during work
-9. Update status.json
-10. Verify tests passing before marking in-review
-11. Generate PR description and next actions
+5. Plan implementation steps with file paths
+6. Apply code changes incrementally
+7. Update status.json
+8. Verify tests passing before marking in-review
+9. Generate PR description and next actions
 ```
 
-Mark each step complete as you work through the feature implementation. This ensures comprehensive mentoring without missing critical steps.
+Mark each step complete as you work through the feature implementation.
 
 GOAL
 - Guide a plain-English intent end-to-end with comprehensive analysis:
@@ -167,67 +170,72 @@ GOAL
 
 🔴 ⚠️ MANDATORY CONTEXT LOADING ON FIRST RUN ⚠️ 🔴
 
-**YOU MUST RUN THESE COMMANDS IMMEDIATELY - DO NOT SKIP - THIS IS NOT OPTIONAL**
+**Run the context script IMMEDIATELY - DO NOT SKIP:**
 
-Without this context, you cannot work effectively. Run these NOW before doing anything else:
+```bash
+node scripts/obtain-context.js babysit
+```
 
-1. **Read CLAUDE.md** (if exists) - Project system prompt with architecture & practices
-2. **Read root README.md** - Project overview, setup, architecture summary
-3. **Bash: ls -la docs/** - See all documentation folders
-4. **Bash: cat docs/README.md** - Documentation structure and navigation (if exists)
-5. **Bash: ls -la docs/02-practices/** - List codebase practice docs
-6. **Bash: cat docs/02-practices/README.md** - Index of practices (if exists)
-7. **Bash: cat docs/09-agents/status.json** - Current story statuses and assignments (if exists)
-8. **Bash: ls -la docs/05-epics/** - List active/planned epics
-9. **Bash: head -20 docs/08-project/roadmap.md** - Project roadmap/priorities (if exists)
-10. **Bash: tail -20 docs/09-agents/bus/log.jsonl** - Last agent messages (if exists)
+This single command gathers all essential context:
+- **Git**: Branch, uncommitted changes, last commit
+- **Stories**: All epics/stories from status.json, grouped by status
+- **Session**: Active session state, current story being worked on
+- **Docs**: Full documentation structure with file counts
+- **Research**: List of research notes (most recent first)
+- **Bus**: Recent agent messages
+- **Key files**: CLAUDE.md, README.md, settings presence
 
-**WHY THIS IS MANDATORY:**
-- You need to understand the project structure (what's in docs/)
-- You need to know current practices (docs/02-practices/)
-- You need to see what stories exist (docs/09-agents/status.json)
-- You need to understand project priorities (docs/08-project/)
-- You need to see recent agent decisions (docs/09-agents/bus/log.jsonl)
+**After context script, read task-specific docs based on user's choice:**
+
+| Task Domain | Read These Docs |
+|-------------|-----------------|
+| Database | `docs/04-architecture/database-*.md`, `docs/02-practices/database.md` |
+| API | `docs/04-architecture/api-*.md`, `docs/02-practices/api-design.md` |
+| UI/Frontend | `docs/04-architecture/frontend-*.md`, `docs/02-practices/styling.md` |
+| Testing | `docs/02-practices/testing.md` |
+| CI/CD | `docs/02-practices/ci.md` |
+
+**WHY ONE SCRIPT:**
+- **Faster**: 1 tool call instead of 8-10
+- **Less overhead**: Reduced context from tool call syntax
+- **Consistent**: Same structured output every time
+- **Complete**: All essential info in one shot
 
 **CONSEQUENCE OF SKIPPING:**
-- You will make decisions that contradict existing practices
+- You will make decisions that contradict existing patterns
 - You will miss existing stories/epics and duplicate work
-- You will not understand codebase conventions
-- You will fail to follow team patterns
 - THE USER WILL COMPLAIN THAT YOU'RE LAZY
 
 **DO THIS FIRST, EVERY TIME, NO EXCEPTIONS**
 
 ---
 
-KNOWLEDGE INDEX (load from above commands + read files)
+KNOWLEDGE INDEX
 
-**1. README.md Files (READ THESE FIRST)**:
-- **README.md** (root) - Project overview, setup instructions, getting started, architecture summary
-- **docs/README.md** - Documentation structure and navigation
-- **docs/02-practices/README.md** - Index of codebase practices (CRITICAL for implementation)
-- **ALL docs/**/README.md** - Folder-specific docs; map "Next steps/TODO/Open Questions/Planned/Risks"
-- **src/README.md** or module READMEs (if exist) - Code organization, module-specific docs
-- Extract critical info: TODOs, open questions, planned features, known risks, setup requirements
+**Context script provides (automatically):**
+- Git status, branch, uncommitted changes
+- Epics/stories from status.json with status grouping
+- Session state (active session, current story)
+- Documentation structure overview
+- Research notes (filenames, sorted by date)
+- Recent agent bus messages
+- Key file presence checks
 
-**2. Codebase Practices (READ BEFORE IMPLEMENTING)**:
-After reading docs/02-practices/README.md, crawl to relevant practice docs based on task:
-- **For UI work** → Read docs/02-practices/{styling.md,typography.md,component-patterns.md,accessibility.md}
-- **For API work** → Read docs/02-practices/{api-design.md,validation.md,error-handling.md,security.md}
-- **For testing** → Read docs/02-practices/testing.md
-- **For git workflow** → Read docs/02-practices/git-branching.md
-- **For CI/CD** → Read docs/02-practices/ci.md
-- **For deployment** → Read docs/02-practices/releasing.md
-- **Important**: These are the project's actual conventions - ALWAYS follow them during implementation
+**Read manually for deep dives (based on task):**
 
-**3. Core Context Files**:
-- **CLAUDE.md** (if exists) - AI assistant's system prompt with codebase practices and architecture
-- **docs/context.md** (if exists) - One-page project brief for research context
+| Task Domain | Docs to Read |
+|-------------|--------------|
+| Database | `docs/04-architecture/database-*.md`, `docs/02-practices/database.md` |
+| API | `docs/04-architecture/api-*.md`, `docs/02-practices/api-design.md` |
+| UI/Frontend | `docs/02-practices/styling.md`, `component-patterns.md` |
+| Testing | `docs/02-practices/testing.md` |
+| CI/CD | `docs/02-practices/ci.md` |
+| Full research note | `docs/10-research/<filename>.md` |
 
-**4. AgileFlow Command Files**:
+**AgileFlow Command Files**:
 <!-- {{COMMAND_LIST}} -->
 
-**5. AgileFlow State & Planning**:
+**AgileFlow State & Planning**:
 - docs/09-agents/status.json - Story statuses, assignees, dependencies
 - docs/09-agents/bus/log.jsonl (last 10 messages) - Agent coordination messages
 - docs/08-project/{roadmap.md,backlog.md,milestones.md} - Project planning
