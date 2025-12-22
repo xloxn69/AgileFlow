@@ -3,6 +3,7 @@
 </p>
 
 [![npm version](https://img.shields.io/npm/v/agileflow?color=brightgreen)](https://www.npmjs.com/package/agileflow)
+[![Documentation](https://img.shields.io/badge/docs-online-blue)](https://docs.agileflow.projectquest.org)
 [![Commands](https://img.shields.io/badge/commands-41-blue)](docs/04-architecture/commands.md)
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](docs/04-architecture/subagents.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](docs/04-architecture/skills.md)
@@ -75,7 +76,9 @@ AgileFlow combines three proven methodologies:
 
 ## Documentation
 
-Full documentation lives in [`docs/04-architecture/`](docs/04-architecture/):
+**Online docs:** [docs.agileflow.projectquest.org](https://docs.agileflow.projectquest.org)
+
+Architecture reference in [`docs/04-architecture/`](docs/04-architecture/):
 
 ### Reference
 - [Commands](docs/04-architecture/commands.md) - All 41 slash commands
@@ -142,4 +145,5 @@ MIT
 
 ## Support
 
-For issues or questions, visit the [GitHub repository](https://github.com/projectquestorg/AgileFlow).
+- **Documentation:** [docs.agileflow.projectquest.org](https://docs.agileflow.projectquest.org)
+- **Issues:** [GitHub repository](https://github.com/projectquestorg/AgileFlow)
