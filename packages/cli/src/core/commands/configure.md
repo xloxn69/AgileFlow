@@ -88,11 +88,10 @@ This command is an **orchestrator** that:
 Each feature is handled by a specialized agent:
 - **Git Config** (`AgileFlow:agents:configuration:git-config`) - Repository initialization and remote setup
 - **Attribution** (`AgileFlow:agents:configuration:attribution`) - CLAUDE.md attribution preferences
-- **Hooks System** (`AgileFlow:agents:configuration:hooks`) - Event-driven automation
+- **Hooks System** (`AgileFlow:agents:configuration:hooks`) - Event-driven automation (SessionStart, PreCompact, Stop, logging)
 - **Auto-Archival** (`AgileFlow:agents:configuration:archival`) - Status.json size management
 - **CI/CD** (`AgileFlow:agents:configuration:ci`) - Automated testing and quality checks
 - **Status Line** (`AgileFlow:agents:configuration:status-line`) - Custom Claude Code status bar with AgileFlow context
-- **PreCompact** (`AgileFlow:agents:configuration:precompact`) - Context preservation during conversation compacts
 
 ## Detection Phase (Run First)
 
@@ -321,7 +320,7 @@ Task({
 Task({
   subagent_type: "AgileFlow:agents:configuration:hooks",
   description: "Configure hooks system",
-  prompt: "Set up the hooks system for event-driven automation. Create .claude/settings.json with SessionStart welcome hook, deploy get-env.js helper, update .gitignore, and document in CLAUDE.md."
+  prompt: "Set up the hooks system for event-driven automation. Use AskUserQuestion to ask which hooks to enable (SessionStart, PreCompact, Stop, UserPromptSubmit). Deploy selected hook scripts, create .claude/settings.json, and document in CLAUDE.md."
 })
 ```
 
