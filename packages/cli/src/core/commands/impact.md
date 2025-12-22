@@ -7,6 +7,138 @@ argument-hint: [FILES=<paths>] [BASE=<branch>] [RUN_TESTS=yes|no]
 
 Analyze the impact of code changes on other parts of the codebase.
 
+## STEP 0: Activation
+
+Before reading any content below, execute this activation script:
+
+```bash
+node - <<'ACTIVATION_SCRIPT'
+const fs = require('fs');
+const path = require('path');
+
+const COMMAND_NAME = 'impact';
+const settingsPath = path.join(process.cwd(), '.claude', 'settings.json');
+
+try {
+  if (!fs.existsSync(settingsPath)) {
+    console.log(`⚠️  Settings file not found. Run: npx agileflow setup`);
+    process.exit(0);
+  }
+
+  const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+  const compactMode = settings?.commandSettings?.[COMMAND_NAME]?.compactMode ?? true;
+
+  if (compactMode) {
+    console.log('📋 Compact mode enabled. Reading summary only...');
+    process.exit(1); // Signal to read compact summary
+  } else {
+    console.log('📖 Full mode enabled. Reading complete command...');
+    process.exit(0); // Signal to read full content
+  }
+} catch (error) {
+  console.log('⚠️  Error reading settings:', error.message);
+  console.log('📖 Defaulting to full mode...');
+  process.exit(0);
+}
+ACTIVATION_SCRIPT
+```
+
+**Exit Code Interpretation:**
+- `0` → Read full content (continue to "Prompt" section)
+- `1` → Read compact summary only (skip to "Compact Summary" section)
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Analyze code change impact across codebase to prevent regressions
+
+**Core Workflow**:
+1. Detect changed files (git diff or FILES param)
+2. Build dependency graph (direct + indirect imports, 2 levels)
+3. Find related tests (unit, integration, E2E)
+4. Analyze breaking changes (function signatures, types)
+5. Generate impact report with risk levels
+6. Optionally run affected tests
+
+**Key Analysis Methods**:
+- **Static Analysis**: AST parsing for imports, dependency graphs, circular deps, dead code
+- **Test Coverage Mapping**: Parse coverage reports, map changed lines to tests
+- **Pattern Matching**: Route tests for API changes, component tests for UI, etc.
+
+**Input Parameters** (optional):
+- `FILES=<paths>` → Comma-separated file paths (default: auto-detect from git)
+- `BASE=<branch>` → Base branch for comparison (default: main/master)
+- `RUN_TESTS=yes|no` → Execute affected tests (default: yes if found)
+
+**Impact Report Structure**:
+```
+# Impact Analysis Report
+- Changed Files: N
+- Affected Files: M
+- Tests to Run: X
+
+## Direct Impacts
+For each changed file:
+- Type (API/UI/Service/Model)
+- Changes (line count)
+- Direct dependents (imports this file)
+- Indirect dependents (2-level chain)
+- Related tests (✅ exists, ⚠️ needs update, ❌ missing)
+- Related stories (from docs/06-stories/)
+- Coverage percentage
+
+## Breaking Changes Detection
+- Function signature changes
+- Type modifications
+- Affected callers with line numbers
+
+## Test Recommendations
+- Critical (always run): Direct tests
+- Recommended (affected): Integration/E2E tests
+- Optional (low risk): Peripheral tests
+```
+
+**Actions After Analysis**:
+1. Show impact summary
+2. Prompt: "Run affected tests? (YES/NO)"
+3. If YES: Execute tests with `npm test -- <test-files>`
+4. If tests fail: Show failures, suggest regression story
+5. If breaking changes: Warn user, suggest ADR, create update stories
+
+**Integration Features**:
+- CI optimization (only run affected tests)
+- Story updates (append impact notes)
+- Event logging (bus/log.jsonl)
+- Dependency visualization (tree format)
+
+**Rules**:
+- Use static analysis over running tests (faster)
+- Prioritize tests by risk (critical path first)
+- Never skip tests for modified files
+- Warn about uncovered changes
+- Suggest creating tests for gaps
+- Always diff before modifying files
+
+**Example Usage**:
+```bash
+# Auto-detect changes
+/agileflow:impact
+
+# Specific files
+/agileflow:impact FILES=src/api/auth.ts,src/middleware/jwt.ts
+
+# Different base branch
+/agileflow:impact BASE=develop
+
+# Skip test execution
+/agileflow:impact RUN_TESTS=no
+```
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Impact Analyzer

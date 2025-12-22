@@ -5,6 +5,93 @@ argument-hint: STORY=<US-ID> [TITLE=<text>] [TEST_EVIDENCE=<text>]
 
 # pr-template
 
+## STEP 0: Activation
+
+Before proceeding, run this command to activate the correct agent context:
+
+```bash
+node /home/coder/AgileFlow/scripts/activate-command.js pr
+```
+
+This ensures Claude loads the full command specification with all context.
+
+---
+
+<!-- START_COMPACT_SUMMARY -->
+## Compact Summary
+
+**Purpose**: Generate complete, paste-ready pull request descriptions from user story files and test evidence.
+
+**Role**: PR Author
+
+**Key Inputs**:
+- `STORY=<US-ID>` - User story identifier (required)
+- `TITLE=<text>` - Short PR title (optional)
+- `AC_CHECKED=<checkbox list>` - Acceptance criteria with checked/unchecked state (optional)
+- `TEST_EVIDENCE=<bullets/paths>` - Test results, screenshots, logs (optional)
+- `NOTES=<text>` - Additional context or notes (optional)
+
+**Core Workflow**:
+1. Parse all input arguments (STORY, TITLE, AC_CHECKED, TEST_EVIDENCE, NOTES)
+2. Read the story file from `docs/06-stories/<STORY>.md` to extract:
+   - Epic reference and context
+   - Story summary and description
+   - Dependencies on other stories
+   - Acceptance criteria
+3. Generate comprehensive PR description with all standard sections
+4. Output paste-ready PR body in markdown format
+5. Suggest Conventional Commit subject line for squash merges
+
+**PR Description Structure**:
+- **Title**: `<STORY>: <TITLE>` format
+- **Summary**: High-level overview of changes
+- **Linked Issues**: Story ID + dependencies from story file
+- **Checklist**: Acceptance criteria with checkbox states from AC_CHECKED
+- **Test Evidence**: Formatted test results, paths, screenshots from TEST_EVIDENCE
+- **Screenshots/GIFs**: Placeholder section for visual evidence
+- **Risk Assessment**: Potential risks and rollback plan
+- **Code Owners**: Auto-populated from @CODEOWNERS
+
+**Output Format**:
+```markdown
+## Summary
+[Generated from story summary + NOTES]
+
+## Linked Issues
+- Implements #<STORY>
+- Depends on #<DEP-1>, #<DEP-2>
+
+## Checklist
+- [x] AC1: Description
+- [ ] AC2: Description
+
+## Test Evidence
+[Formatted TEST_EVIDENCE content]
+
+## Screenshots/GIFs
+[Placeholder or provided content]
+
+## Risk Assessment
+[Analysis of potential risks and rollback strategy]
+
+## Code Owners
+@team-name
+```
+
+**Conventional Commit Suggestion**: Provides a proper commit message following conventional commit format (feat/fix/chore) based on story type.
+
+**File Operations**: Read-only - no file writes, only reads story file for context.
+
+**Best Practices**:
+- Always read the story file first to ensure accurate context
+- Include all dependencies found in story file
+- Preserve checkbox states from AC_CHECKED input
+- Format test evidence clearly and readably
+- Suggest meaningful commit messages aligned with change type
+<!-- END_COMPACT_SUMMARY -->
+
+---
+
 Generate a complete PR description from story and test evidence.
 
 ## Prompt

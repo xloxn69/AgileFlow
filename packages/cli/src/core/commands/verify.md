@@ -7,6 +7,83 @@ argument-hint: [story_id] (optional)
 
 Execute project tests and update test status for stories.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'verify', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Verify command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+
+## Compact Summary
+
+**Role**: Test Verifier - Execute project tests and update story test status
+
+**Critical Behavioral Rules**:
+1. ALWAYS run STEP 0 activation before any other action
+2. Exit code is authoritative - 0 = passing, non-zero = failing
+3. Preserve ALL other fields in status.json - only update test-related fields
+4. Update all in_progress stories if no story_id specified
+5. Generate clear visual reports with ✅/❌ indicators
+
+**Workflow**:
+1. **Pre-flight**: Check docs/00-meta/environment.json exists (session harness initialized)
+2. **Load Config**: Read test_command, test_timeout_ms from environment.json
+3. **Execute**: Run test command with timeout, capture stdout/stderr and exit code
+4. **Parse Results**: Determine test_status from exit code (passing/failing)
+5. **Update status.json**: Set test_status and test_results for target stories
+6. **Update session-state.json**: Record verification in current session (if exists)
+7. **Report**: Display test results, duration, updated stories with visual indicators
+
+**Test Status Values**:
+- `"passing"`: Exit code 0
+- `"failing"`: Exit code non-zero, timeout, or command error
+
+**Test Results Schema**:
+```json
+{
+  "last_run": "2025-12-06T10:30:00Z",
+  "command": "npm test",
+  "passed": 42,
+  "failed": 0,
+  "exit_code": 0,
+  "output_summary": "All tests passed (42/42)"
+}
+```
+
+**Output Format Requirements**:
+- Success: Show ✅ PASSED, test counts, duration, updated stories
+- Failure: Show ❌ FAILED, failed test details, warning about failing stories
+- Timeout: Show ⏱️ TIMEOUT, suggest increasing timeout or optimizing tests
+- Not Initialized: Show warning, instruct to run /agileflow:session:init
+
+**Framework-Specific Parsing** (best effort):
+- Jest/Vitest: "Tests: X passed, Y total"
+- Pytest: "X passed in Ys"
+- Cargo: "test result: ok. X passed; Y failed"
+- Go Test: "ok" line indicates pass
+
+**Integration**:
+- Used by: /agileflow:session:resume, /agileflow:baseline
+- Uses: environment.json (config), status.json (story status), session-state.json (tracking)
+
+<!-- COMPACT_SUMMARY_END -->
+
 ## Prompt
 
 ROLE: Test Verifier

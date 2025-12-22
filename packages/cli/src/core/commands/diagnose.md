@@ -4,6 +4,14 @@ description: System health diagnostics
 
 # diagnose
 
+<!-- STEP 0: ACTIVATION -->
+<function_calls>
+<invoke name="Bash">
+<parameter name="command">node /home/coder/AgileFlow/scripts/activate-command.js diagnose</parameter>
+<parameter name="description">Activate diagnose command and show compact summary</parameter>
+</invoke>
+</function_calls>
+
 Run comprehensive AgileFlow system health checks to identify potential issues before they cause failures.
 
 ## Prompt
@@ -21,6 +29,68 @@ ACTIONS
 5) Generate health report with recommendations
 
 OBJECTIVE: Validate AgileFlow system health, identify issues, and provide actionable recommendations.
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+The `diagnose` command runs comprehensive system health checks on your AgileFlow installation:
+
+**What it checks:**
+- JSON file validation (status.json, metadata, settings)
+- File structure integrity (docs/, .agileflow/, .claude/)
+- Auto-archival system configuration
+- Hooks system setup
+- File size analysis with warnings
+
+**JSON Validation:**
+- Validates all critical JSON files using jq
+- Reports file sizes and warns if status.json exceeds 100KB
+- Distinguishes between critical and optional files
+- Shows detailed error messages for invalid JSON
+
+**Auto-Archival System:**
+- Checks if archive script exists and is executable
+- Verifies hook configuration in settings.json
+- Reports archival threshold from metadata
+- Identifies missing or misconfigured components
+
+**Hooks System:**
+- Validates .claude/settings.json structure
+- Counts SessionStart, UserPromptSubmit, and Stop hooks
+- Reports configuration issues
+
+**File Size Analysis:**
+- Monitors status.json size with thresholds (50KB warning, 100KB critical)
+- Shows story counts for active and archived stories
+- Recommends archival when needed
+
+**Output Format:**
+- Uses indicators: ✅ (pass), ❌ (fail), ⚠️ (warning), ℹ️ (info)
+- Shows file sizes in KB and story counts
+- Provides actionable next steps for each issue
+- Exit code 0 (healthy) or 1 (issues found)
+
+**Common Issues Detected:**
+1. Invalid JSON syntax in configuration files
+2. Large status.json files needing archival
+3. Missing critical files (metadata, status.json)
+4. Auto-archival not configured or not executable
+5. Hooks system misconfiguration
+
+**Recommended Actions:**
+- Run after AgileFlow setup to verify installation
+- Run before major operations to catch issues early
+- Run periodically to maintain system health
+- Run after manual configuration changes
+- Use exit code in CI/CD pipelines for validation
+
+**Usage:**
+```bash
+/agileflow:diagnose
+```
+
+**No arguments required** - runs full diagnostic suite automatically.
+<!-- COMPACT_SUMMARY_END -->
 
 **Run these diagnostic checks**:
 

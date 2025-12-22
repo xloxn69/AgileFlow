@@ -8,6 +8,95 @@ model: haiku
 
 Visualize and analyze story/epic dependency graphs with critical path analysis and circular dependency detection.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'deps', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Deps command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## 📋 Compact Summary
+
+**Purpose**: Visualize and analyze story/epic dependency graphs with critical path detection, circular dependency checking, and blocking story impact analysis.
+
+**Input Parameters** (all optional):
+- SCOPE=story|epic|all (default: all)
+- EPIC=<EP_ID> (show dependencies within specific epic)
+- STORY=<US_ID> (show dependencies for specific story)
+- FORMAT=ascii|mermaid|graphviz|json (default: ascii)
+- ANALYSIS=critical-path|circular|blocking|all (default: all)
+
+**Dependency Sources**:
+1. Story frontmatter (depends_on, blocks fields)
+2. Bus log (implicit dependencies from blocked events)
+3. Epic hierarchy (parent-child relationships)
+
+**Core Analysis Types**:
+1. **Critical Path Detection**: Longest path from root to leaf story (delays here affect entire project)
+2. **Circular Dependency Detection**: Identify impossible-to-complete dependency cycles
+3. **Blocking Story Impact**: Find stories that block multiple others (high-priority bottlenecks)
+4. **Parallel Work Opportunities**: Identify stories that can be started now (no blockers)
+
+**Output Format** (ASCII default):
+```
+Story Dependency Graph
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Legend:
+  ✅ Done    🟢 Ready    🟡 In Progress    🔵 In Review    ⚪ Blocked
+
+[Visual tree showing dependencies]
+
+Critical Path:
+  US-0030 → US-0031 → US-0032 → US-0033  (11 days total)
+
+Blocking Stories:
+  US-0040 blocks: US-0041, US-0042  (⚠️ High impact)
+
+Circular Dependencies: None detected ✅
+```
+
+**Critical Rules**:
+- Parse frontmatter first (authoritative source)
+- Flag circular dependencies as errors (cannot be completed)
+- Highlight critical path stories (delays affect entire project)
+- Show actionable recommendations
+- Use consistent color coding across all formats
+
+**Common Usage**:
+```bash
+/agileflow:dependencies                    # Show all dependencies
+/agileflow:dependencies EPIC=EP-0010       # Specific epic
+/agileflow:dependencies STORY=US-0032      # Specific story
+/agileflow:dependencies ANALYSIS=critical-path  # Only critical path
+/agileflow:dependencies FORMAT=mermaid     # Export as Mermaid
+```
+
+**Integration Points**:
+- Before `/board`: Understand blockers before planning
+- After `/story-new`: Visualize impact of new story
+- In `/babysit`: Check dependencies before starting work
+- With `/metrics`: Correlate cycle time with dependency depth
+
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Dependency Graph Analyzer
