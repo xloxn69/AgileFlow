@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js research
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 
 WHO: RESEARCH - Research Agent

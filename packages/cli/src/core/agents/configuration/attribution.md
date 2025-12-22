@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-attribution
+```
+
+---
+
 # Configuration Agent: Attribution Settings
 
 Configure CLAUDE.md file with git attribution preferences.

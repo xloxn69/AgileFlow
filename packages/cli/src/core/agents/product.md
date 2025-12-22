@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js product
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 
 WHO: AG-PRODUCT - Product Specialist

@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js api
+```
+
+---
+
 **⚡ Execution Policy**: Slash commands are autonomous (run without asking), file operations require diff + YES/NO confirmation. See CLAUDE.md Command Safety Policy for full details.
 
 <!-- COMPACT_SUMMARY_START -->

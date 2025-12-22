@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-archival
+```
+
+---
+
 # Configuration Agent: Auto-Archival System
 
 Configure auto-archival system to manage status.json file size.

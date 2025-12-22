@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js adr-writer
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 # ADR-WRITER Quick Reference
 

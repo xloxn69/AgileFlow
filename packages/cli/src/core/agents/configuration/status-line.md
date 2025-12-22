@@ -11,6 +11,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-status-line
+```
+
+---
+
 # Configuration Agent: Status Line
 
 Configure a custom status line for Claude Code that displays AgileFlow project context.
@@ -44,25 +52,43 @@ The status line is a customizable bar at the bottom of Claude Code (similar to h
 
 **Example AgileFlow Status Line** (when working on a story):
 ```
-[Opus] 📋 US-0003: Login API | 📦 EP-0001: 5/6 (83%) | WIP: 1/3 | 45% ctx | $0.42 | main
+agileflow v2.42.0 │ [Opus] │ US-0003: Login API │ EP-0001 5/6 │ WIP 1 │ 45% │ $0.42 │ main
 ```
 
 **Example** (when no story in progress - shows next suggestion):
 ```
-[Opus] 🔴 Next: US-0007 | WIP: 0/3 | 45% ctx | $0.42 | main
+agileflow v2.42.0 │ [Opus] │ Next: US-0007 │ WIP 0 │ 45% │ $0.42 │ main
 ```
 
-## Available Data Points
+**Example** (with update available):
+```
+agileflow v2.41.0 ↑2.42.0 │ [Opus] │ US-0003: Login API │ 45% │ main
+```
 
-The status line can display:
-1. **Model name** - Current AI model (Opus, Sonnet, etc.)
-2. **Current story** - From `docs/09-agents/status.json` with 📋 icon
-3. **Epic progress** - Shows completion like "EP-0001: 5/6 (83%)" with 📦 icon
-4. **Next story suggestion** - When idle, shows highest priority READY story with priority color (🔴 high, 🟡 medium, 🟢 low)
-5. **WIP count** - Work in progress vs limit (e.g., 1/3)
-6. **Context usage %** - How much context window is used
-7. **Session cost** - Total cost in USD
-8. **Git branch** - Current branch name
+## Available Components
+
+The status line can display (all individually toggleable):
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `agileflow` | AgileFlow branding with version + update check | `agileflow v2.42.0` or `agileflow v2.41.0 ↑2.42.0` |
+| `model` | Current AI model | `[Opus]` |
+| `story` | Current story or next suggestion | `US-0007: Login API` or `Next: US-0008` |
+| `epic` | Epic progress | `EP-0001 5/6` |
+| `wip` | Work in progress count | `WIP 2` |
+| `context` | Context window usage % | `45%` (color-coded: green < 40%, yellow 40-60%, red > 80%) |
+| `cost` | Session cost in USD | `$0.42` |
+| `git` | Current branch (color-coded by type) | `main` (green), `feature/foo` (cyan), `fix/bar` (red) |
+
+## Color Scheme
+
+The status line uses semantic colors:
+- **Brand orange** (#e8683a): AgileFlow branding
+- **Green**: main/master branch, low context usage, healthy WIP
+- **Cyan**: feature branches
+- **Yellow**: develop branch, medium context usage, WIP at limit
+- **Red**: fix/hotfix branches, high context usage, WIP over limit
+- **Magenta**: release branches, epic progress
 
 ## Configuration Steps
 
@@ -475,6 +501,46 @@ meta.updated = new Date().toISOString();
 fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
 console.log('Updated metadata with statusline version 2.40.0');
 "
+```
+
+## Component Configuration
+
+Components can be toggled individually using the configure script:
+
+```bash
+# List current component status
+node scripts/agileflow-configure.js --components
+
+# Show specific components
+node scripts/agileflow-configure.js --show=agileflow,context,git
+
+# Hide specific components
+node scripts/agileflow-configure.js --hide=model,cost,wip
+
+# Minimal statusline (just branding and context)
+node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+```
+
+Components are stored in `docs/00-meta/agileflow-metadata.json`:
+
+```json
+{
+  "features": {
+    "statusline": {
+      "enabled": true,
+      "components": {
+        "agileflow": true,
+        "model": true,
+        "story": true,
+        "epic": true,
+        "wip": true,
+        "context": true,
+        "cost": true,
+        "git": true
+      }
+    }
+  }
+}
 ```
 
 ## Rules

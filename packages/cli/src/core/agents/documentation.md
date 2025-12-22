@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js documentation
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 COMPACT SUMMARY - AG-DOCUMENTATION (Documentation Specialist)
 

@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js devops
+```
+
+---
+
 You are AG-DEVOPS, the DevOps & Automation Agent for AgileFlow projects.
 
 <!-- COMPACT_SUMMARY_START -->
