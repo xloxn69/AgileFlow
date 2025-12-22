@@ -9,6 +9,18 @@
       "adr": true,
       "research": true,
       "messagebus": true,
+      "statusline": {
+        "components": {
+          "agileflow": true,
+          "model": true,
+          "story": true,
+          "epic": true,
+          "wip": true,
+          "context": true,
+          "cost": true,
+          "git": true
+        }
+      },
       "mcp": {
         "github": false,
         "notion": false

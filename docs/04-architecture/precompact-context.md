@@ -21,30 +21,10 @@ With this system:
 
 ### System Overview
 
-```mermaid
-flowchart TB
-    subgraph Session["Claude Code Session"]
-        U[User] -->|runs| CMD1["/babysit"]
-        U -->|runs| CMD2["/epic"]
-        CMD1 -->|STEP 0| REG1["Register in active_commands[]"]
-        CMD2 -->|STEP 0| REG2["Add to active_commands[]"]
-        REG1 --> STATE[(session-state.json)]
-        REG2 --> STATE
-    end
-
-    subgraph Compact["Conversation Compaction"]
-        TRIGGER[Context limit reached] -->|fires| HOOK["PreCompact Hook"]
-        HOOK -->|runs| SCRIPT["precompact-context.sh"]
-        SCRIPT -->|reads| STATE
-        SCRIPT -->|extracts| SUM["Compact Summaries"]
-        SUM -->|injects| CTX["Preserved Context"]
-    end
-
-    subgraph NewSession["New Session"]
-        START[Session Start] -->|fires| CLEAR["clear-active-command.js"]
-        CLEAR -->|resets| STATE
-    end
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/precompact-context-1.dark.svg">
+  <img alt="PreCompact System Overview" src="images/precompact-context-1.light.svg">
+</picture>
 
 > The PreCompact system: commands register on execution, summaries are extracted during compaction, and state resets on new sessions.
 
@@ -52,31 +32,10 @@ flowchart TB
 
 ### Command Registration Flow
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant C as Command
-    participant S as STEP 0 Script
-    participant J as session-state.json
-
-    U->>C: runs /babysit
-    C->>S: Execute activation
-    S->>J: Read current state
-    J-->>S: { active_commands: [] }
-    S->>S: Check for duplicates
-    S->>J: Push { name: "babysit", ... }
-    J-->>S: Saved
-    S-->>C: ✅ babysit activated
-
-    U->>C: runs /epic
-    C->>S: Execute activation
-    S->>J: Read current state
-    J-->>S: { active_commands: [babysit] }
-    S->>S: Check for duplicates
-    S->>J: Push { name: "epic", ... }
-    J-->>S: Saved
-    S-->>C: ✅ epic activated
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/precompact-context-2.dark.svg">
+  <img alt="Command Registration Flow" src="images/precompact-context-2.light.svg">
+</picture>
 
 > Multiple commands can be active simultaneously. Duplicates are prevented.
 
@@ -84,31 +43,10 @@ sequenceDiagram
 
 ### PreCompact Extraction Flow
 
-```mermaid
-flowchart LR
-    subgraph Input
-        STATE[(session-state.json)]
-        CMD1[babysit.md]
-        CMD2[epic.md]
-    end
-
-    subgraph Process["precompact-context.sh"]
-        READ[Read active_commands] --> LOOP{For each command}
-        LOOP --> FIND[Find command file]
-        FIND --> EXTRACT[Extract COMPACT_SUMMARY]
-        EXTRACT --> APPEND[Append to output]
-        APPEND --> LOOP
-    end
-
-    subgraph Output
-        CTX["Preserved Context<br/>with all summaries"]
-    end
-
-    STATE --> READ
-    CMD1 --> FIND
-    CMD2 --> FIND
-    APPEND --> CTX
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/precompact-context-3.dark.svg">
+  <img alt="PreCompact Extraction Flow" src="images/precompact-context-3.light.svg">
+</picture>
 
 > Each active command's Compact Summary is extracted and concatenated into the preserved context.
 

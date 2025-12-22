@@ -44,6 +44,9 @@ const FEATURES = {
   statusline: { script: 'agileflow-statusline.sh' }
 };
 
+// Statusline component names
+const STATUSLINE_COMPONENTS = ['agileflow', 'model', 'story', 'epic', 'wip', 'context', 'cost', 'git'];
+
 const PROFILES = {
   full: {
     description: 'All features enabled',
@@ -616,6 +619,89 @@ function updateGitignore() {
 }
 
 // ============================================================================
+// STATUSLINE COMPONENTS
+// ============================================================================
+
+function setStatuslineComponents(enableComponents = [], disableComponents = []) {
+  const metaPath = 'docs/00-meta/agileflow-metadata.json';
+
+  if (!fs.existsSync(metaPath)) {
+    warn('No metadata file found - run with --enable=statusline first');
+    return false;
+  }
+
+  const meta = readJSON(metaPath);
+  if (!meta) {
+    error('Cannot parse metadata file');
+    return false;
+  }
+
+  // Ensure statusline.components structure exists
+  meta.features = meta.features || {};
+  meta.features.statusline = meta.features.statusline || {};
+  meta.features.statusline.components = meta.features.statusline.components || {};
+
+  // Set defaults for any missing components
+  STATUSLINE_COMPONENTS.forEach(comp => {
+    if (meta.features.statusline.components[comp] === undefined) {
+      meta.features.statusline.components[comp] = true;
+    }
+  });
+
+  // Enable specified components
+  enableComponents.forEach(comp => {
+    if (STATUSLINE_COMPONENTS.includes(comp)) {
+      meta.features.statusline.components[comp] = true;
+      success(`Statusline component enabled: ${comp}`);
+    } else {
+      warn(`Unknown component: ${comp} (available: ${STATUSLINE_COMPONENTS.join(', ')})`);
+    }
+  });
+
+  // Disable specified components
+  disableComponents.forEach(comp => {
+    if (STATUSLINE_COMPONENTS.includes(comp)) {
+      meta.features.statusline.components[comp] = false;
+      success(`Statusline component disabled: ${comp}`);
+    } else {
+      warn(`Unknown component: ${comp} (available: ${STATUSLINE_COMPONENTS.join(', ')})`);
+    }
+  });
+
+  meta.updated = new Date().toISOString();
+  writeJSON(metaPath, meta);
+
+  return true;
+}
+
+function listStatuslineComponents() {
+  const metaPath = 'docs/00-meta/agileflow-metadata.json';
+
+  header('📊 Statusline Components');
+
+  if (!fs.existsSync(metaPath)) {
+    log('  No configuration found (defaults: all enabled)', c.dim);
+    STATUSLINE_COMPONENTS.forEach(comp => {
+      log(`  ✅ ${comp}: enabled (default)`, c.green);
+    });
+    return;
+  }
+
+  const meta = readJSON(metaPath);
+  const components = meta?.features?.statusline?.components || {};
+
+  STATUSLINE_COMPONENTS.forEach(comp => {
+    const enabled = components[comp] !== false; // default true
+    const icon = enabled ? '✅' : '❌';
+    const color = enabled ? c.green : c.dim;
+    log(`  ${icon} ${comp}: ${enabled ? 'enabled' : 'disabled'}`, color);
+  });
+
+  log('\nTo toggle: --show=<component> or --hide=<component>', c.dim);
+  log(`Components: ${STATUSLINE_COMPONENTS.join(', ')}`, c.dim);
+}
+
+// ============================================================================
 // PROFILES
 // ============================================================================
 
@@ -683,8 +769,8 @@ ${c.cyan}Usage:${c.reset}
 
 ${c.cyan}Profiles:${c.reset}
   --profile=full      All features (hooks, archival, statusline)
-  --profile=basic     SessionStart + PreCompact hooks only
-  --profile=minimal   Just SessionStart hook
+  --profile=basic     SessionStart + PreCompact + archival
+  --profile=minimal   SessionStart + archival only
   --profile=none      Disable all AgileFlow features
 
 ${c.cyan}Feature Control:${c.reset}
@@ -692,6 +778,13 @@ ${c.cyan}Feature Control:${c.reset}
   --disable=<list>    Disable features (comma-separated)
 
   Features: sessionstart, precompact, stop, archival, statusline
+
+${c.cyan}Statusline Components:${c.reset}
+  --show=<list>       Show statusline components (comma-separated)
+  --hide=<list>       Hide statusline components (comma-separated)
+  --components        List statusline component status
+
+  Components: agileflow, model, story, epic, wip, context, cost, git
 
 ${c.cyan}Settings:${c.reset}
   --archival-days=N   Set archival threshold (default: 7)
@@ -710,6 +803,15 @@ ${c.cyan}Examples:${c.reset}
 
   # Disable a feature
   node scripts/agileflow-configure.js --disable=statusline
+
+  # Show only agileflow branding and context in statusline
+  node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+
+  # Re-enable git branch in statusline
+  node scripts/agileflow-configure.js --show=git
+
+  # List component status
+  node scripts/agileflow-configure.js --components
 
   # Fix format issues
   node scripts/agileflow-configure.js --migrate
@@ -730,23 +832,42 @@ function main() {
   let profile = null;
   let enable = [];
   let disable = [];
+  let show = [];
+  let hide = [];
   let archivalDays = 7;
   let migrate = false;
   let detect = false;
+  let components = false;
   let help = false;
 
   args.forEach(arg => {
     if (arg.startsWith('--profile=')) profile = arg.split('=')[1];
     else if (arg.startsWith('--enable=')) enable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
     else if (arg.startsWith('--disable=')) disable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--show=')) show = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--hide=')) hide = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
     else if (arg.startsWith('--archival-days=')) archivalDays = parseInt(arg.split('=')[1]) || 7;
     else if (arg === '--migrate') migrate = true;
     else if (arg === '--detect' || arg === '--validate') detect = true;
+    else if (arg === '--components') components = true;
     else if (arg === '--help' || arg === '-h') help = true;
   });
 
   if (help) {
     printHelp();
+    return;
+  }
+
+  // Components list mode
+  if (components && show.length === 0 && hide.length === 0) {
+    listStatuslineComponents();
+    return;
+  }
+
+  // Component toggle mode
+  if (show.length > 0 || hide.length > 0) {
+    setStatuslineComponents(show, hide);
+    listStatuslineComponents();
     return;
   }
 

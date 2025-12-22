@@ -68,6 +68,14 @@ Sprint Planner that creates data-driven sprint commitments based on historical v
 
 Intelligent sprint planning with capacity-based story selection, dependency validation, and velocity forecasting.
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js sprint
+```
+
+This gathers git status, stories/epics, session state, and registers for PreCompact.
+
 ## Prompt
 
 ROLE: Sprint Planner

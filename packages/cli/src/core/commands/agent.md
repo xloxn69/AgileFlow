@@ -7,21 +7,10 @@ argument-hint: AGENT_ID=<id> ROLE=<role> [TOOLS=<list>] [SCOPE=<dirs>]
 
 Onboard a new agent with profile and system prompt.
 
-## STEP 0: Activate Command
+## STEP 0: Gather Context
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'agent', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ agent command activated');
-}
-"
+node scripts/obtain-context.js agent
 ```
 
 <!-- COMPACT_SUMMARY_START -->

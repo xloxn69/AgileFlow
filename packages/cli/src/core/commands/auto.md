@@ -6,21 +6,10 @@ description: Auto-generate stories from PRDs, mockups, or specs
 
 Automatically generate user stories from product artifacts like PRDs, mockups, or API docs.
 
-## STEP 0: Activate Command
+## STEP 0: Gather Context
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'auto', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ auto command activated');
-}
-"
+node scripts/obtain-context.js auto
 ```
 
 <!-- COMPACT_SUMMARY_START -->

@@ -7,21 +7,10 @@ argument-hint: STORY=<US-ID> NEW_OWNER=<id> [NEW_STATUS=<status>] [NOTE=<text>]
 
 Assign or reassign a story to an owner with status update.
 
-## STEP 0: Activate Command
+## STEP 0: Gather Context
 
 ```bash
-node -e "
-const fs = require('fs');
-const path = 'docs/09-agents/session-state.json';
-if (fs.existsSync(path)) {
-  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
-  const cmd = { name: 'assign', activated_at: new Date().toISOString(), state: {} };
-  state.active_commands = state.active_commands || [];
-  if (!state.active_commands.some(c => c.name === cmd.name)) state.active_commands.push(cmd);
-  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
-  console.log('✅ assign command activated');
-}
-"
+node scripts/obtain-context.js assign
 ```
 
 <!-- COMPACT_SUMMARY_START -->

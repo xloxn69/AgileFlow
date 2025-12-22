@@ -103,22 +103,12 @@ When a request spans multiple domains, babysit can either:
 
 ## When to Use Babysit
 
-```mermaid
-flowchart TD
-  accTitle: When to Use Babysit
-  accDescr: Decision tree for when babysit is appropriate
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/babysit-mentor-system-8.dark.svg">
+  <img alt="When to Use Babysit" src="images/babysit-mentor-system-8.light.svg">
+</picture>
 
-  start{What do you need?}
-
-  start -->|End-to-end feature| babysit[Use /babysit]
-  start -->|Single domain task| agent[Use specific agent]
-  start -->|Quick question| direct[Ask directly]
-  start -->|Complex analysis| multi[Use /multi-expert]
-
-  babysit --> examples1["Add user authentication"<br/>"Implement payment system"<br/>"Build notification feature"]
-
-  agent --> examples2["Fix database query"<br/>"Add API endpoint"<br/>"Style a component"]
-```
+> Decision tree: End-to-end features → babysit, Single domain → specific agent, Quick question → ask directly, Complex analysis → multi-expert.
 
 **Use babysit for:**
 - Features that span multiple domains
