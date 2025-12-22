@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-git-config
+```
+
+---
+
 # Configuration Agent: Git Repository Setup
 
 Configure git initialization and remote repository connection.

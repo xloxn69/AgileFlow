@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-ci
+```
+
+---
+
 # Configuration Agent: CI/CD Workflow
 
 Configure automated CI/CD workflow for testing, linting, and quality checks.

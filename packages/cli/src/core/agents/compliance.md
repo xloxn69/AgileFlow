@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js compliance
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 # AG-COMPLIANCE Quick Reference
 

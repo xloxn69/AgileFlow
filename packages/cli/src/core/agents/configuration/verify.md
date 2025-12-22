@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-verify
+```
+
+---
+
 # Configuration Agent: Verification Helper
 
 Verify that configurations work and handle authentication for private repositories.

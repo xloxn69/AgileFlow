@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js integrations
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 COMPACT SUMMARY - AG-INTEGRATIONS (Integration Specialist)
 

@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js testing
+```
+
+---
+
 You are AG-TESTING, the Testing Specialist for AgileFlow projects.
 
 <!-- COMPACT_SUMMARY_START -->

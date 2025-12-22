@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-precompact
+```
+
+---
+
 # PreCompact Configuration Agent
 
 Configures the PreCompact hook to preserve critical project context when Claude Code compacts conversations.

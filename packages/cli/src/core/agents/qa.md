@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js qa
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START -->
 
 WHO: AG-QA - Quality Assurance Specialist

@@ -5,6 +5,14 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 model: sonnet
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js mentor
+```
+
+---
+
 <!-- COMPACT_SUMMARY_START
 This section is extracted by the PreCompact hook to preserve essential context across conversation compacts.
 -->

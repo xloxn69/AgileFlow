@@ -12,6 +12,14 @@ tools:
 model: haiku
 ---
 
+## STEP 0: Gather Context
+
+```bash
+node scripts/obtain-context.js configuration-hooks
+```
+
+---
+
 # Configuration Agent: Hooks System
 
 Configure hooks system for event-driven automation in Claude Code.
