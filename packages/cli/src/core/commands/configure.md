@@ -27,24 +27,23 @@ Interactive orchestrator that guides users through advanced AgileFlow configurat
 2. **Interactive Menu**: Use AskUserQuestion tool with `multiSelect: true` to let user select features
 3. **Spawn Agents**: Launch configuration agents based on selections:
    - Independent (parallel): Git Config, Attribution, CI/CD
-   - Dependent (sequential): Hooks → (Archival + Status Line + PreCompact)
+   - Dependent (sequential): Hooks → (Archival + Status Line)
+   - Note: PreCompact is part of Hooks (user selects which hooks to enable)
 4. **Results Summary**: Display ✅/❌/⏭️ for each feature with agent-specific next steps
 
 ### Available Configuration Agents
 
 - **git-config**: Initialize git repo and add remote
 - **attribution**: Configure CLAUDE.md AI attribution policy
-- **hooks**: Deploy .claude/settings.json with SessionStart welcome hook
+- **hooks**: Deploy hooks system (SessionStart welcome, PreCompact context preservation, activity logging)
 - **archival**: Auto-archive completed stories (threshold-based)
 - **ci**: Set up GitHub Actions/GitLab CI/CircleCI workflows
 - **status-line**: Custom Claude Code status bar (story/WIP/completion)
-- **precompact**: Preserve context during conversation compacts
 
 ### Agent Dependencies
 
 - Auto-Archival → Hooks System (requires .claude/settings.json)
 - Status Line → Hooks System (requires .claude/settings.json)
-- PreCompact → Hooks System (requires .claude/settings.json)
 - Git Config, Attribution, CI/CD → Independent (no dependencies)
 
 ### Key Files
@@ -52,9 +51,10 @@ Interactive orchestrator that guides users through advanced AgileFlow configurat
 - `.claude/settings.json` - Hooks configuration (created by hooks agent)
 - `CLAUDE.md` - Attribution policy (created by attribution agent)
 - `docs/00-meta/agileflow-metadata.json` - Git and archival config
+- `scripts/agileflow-welcome.js` - SessionStart welcome script (hooks agent)
+- `scripts/precompact-context.sh` - PreCompact context preservation (hooks agent)
 - `scripts/archive-completed-stories.sh` - Archival script
 - `scripts/agileflow-statusline.sh` - Status line script
-- `scripts/precompact-context.sh` - PreCompact hook script
 - `.github/workflows/ci.yml` - GitHub Actions workflow (CI agent)
 
 <!-- COMPACT_SUMMARY_END -->
@@ -181,13 +181,16 @@ else
   STATUSLINE_CONFIGURED=false
 fi
 
-# Check PreCompact hook
+# Check PreCompact hook (part of hooks system)
 if [ -f scripts/precompact-context.sh ] && grep -q "PreCompact" .claude/settings.json 2>/dev/null; then
-  echo "✅ PreCompact hook configured"
-  PRECOMPACT_CONFIGURED=true
+  PRECOMPACT_VERSION=$(jq -r '.features.precompact.configured_version // "unknown"' docs/00-meta/agileflow-metadata.json 2>/dev/null)
+  if [ "$PRECOMPACT_VERSION" = "unknown" ] || [ "$PRECOMPACT_VERSION" = "null" ]; then
+    echo "   └─ PreCompact: ⚠️ configured (version unknown)"
+  else
+    echo "   └─ PreCompact: ✅ v$PRECOMPACT_VERSION"
+  fi
 else
-  echo "❌ PreCompact hook not configured"
-  PRECOMPACT_CONFIGURED=false
+  echo "   └─ PreCompact: ❌ not enabled"
 fi
 
 echo "===================================="
@@ -227,11 +230,8 @@ The AskUserQuestion tool allows you to prompt the user for input. It requires XM
   "options": [
     {"label": "Git Repository", "description": "Initialize git and add remote"},
     {"label": "Attribution Settings", "description": "Configure CLAUDE.md attribution policy"},
-    {"label": "Hooks System", "description": "Set up event-driven automation"},
-    {"label": "Auto-Archival", "description": "Manage status.json file size"},
-    {"label": "CI/CD", "description": "Set up automated testing"},
-    {"label": "Status Line", "description": "Custom status bar with story/WIP/context info"},
-    {"label": "PreCompact Hook", "description": "Preserve project context during conversation compacts"}
+    {"label": "Hooks System", "description": "Event-driven automation (SessionStart, PreCompact, logging)"},
+    {"label": "Auto-Archival", "description": "Manage status.json file size"}
   ]
 }]</parameter>
 </invoke>
@@ -247,15 +247,14 @@ The AskUserQuestion tool allows you to prompt the user for input. It requires XM
   "options": [
     {"label": "Git Repository", "description": "Initialize git and add remote"},
     {"label": "Attribution Settings", "description": "Configure CLAUDE.md attribution policy"},
-    {"label": "Hooks System", "description": "Set up event-driven automation"},
-    {"label": "Auto-Archival", "description": "Manage status.json file size"},
-    {"label": "CI/CD", "description": "Set up automated testing"},
-    {"label": "Status Line", "description": "Custom status bar with story/WIP/context info"},
-    {"label": "PreCompact Hook", "description": "Preserve project context during conversation compacts"}
+    {"label": "Hooks System", "description": "Event-driven automation (SessionStart, PreCompact, logging)"},
+    {"label": "Auto-Archival", "description": "Manage status.json file size"}
   ]
 }]</parameter>
 </invoke>
 ```
+
+**Note**: The Hooks System option includes sub-selection for which hooks to enable (SessionStart welcome, PreCompact context preservation, activity logging).
 
 **User Response**: User automatically gets an "Other" option for custom text input. You can use this for custom values.
 
@@ -269,11 +268,10 @@ Which features would you like to configure?
 Available options:
 1. Git Repository (initialize and add remote)
 2. Attribution Settings (CLAUDE.md git attribution policy)
-3. Hooks System (event-driven automation)
+3. Hooks System (event-driven automation - includes SessionStart, PreCompact, logging)
 4. Auto-Archival (status.json size management)
 5. CI/CD (automated testing and quality checks)
 6. Status Line (custom status bar with story/WIP/context info)
-7. PreCompact Hook (preserve context during conversation compacts)
 
 You can select multiple options. Features already configured are marked with ✅.
 
@@ -281,10 +279,10 @@ Current status:
 - Git Repository: [✅ Configured / ❌ Not configured]
 - Attribution: [✅ Configured / ⚠️ Needs setup]
 - Hooks System: [✅ Configured / ❌ Not configured]
+  └─ PreCompact: [✅ Enabled / ❌ Not enabled]
 - Auto-Archival: [✅ Configured / ❌ Not configured]
 - CI/CD: [✅ Configured / ❌ Not configured]
 - Status Line: [✅ Configured / ❌ Not configured]
-- PreCompact Hook: [✅ Configured / ❌ Not configured]
 
 Select features to configure:
 ```
@@ -357,16 +355,6 @@ Task({
 })
 ```
 
-#### PreCompact Agent
-
-```javascript
-Task({
-  subagent_type: "AgileFlow:agents:configuration:precompact",
-  description: "Configure PreCompact hook",
-  prompt: "Set up the PreCompact hook to preserve project context during conversation compacts. Create scripts/precompact-context.sh, add PreCompact hook to .claude/settings.json, and document in CLAUDE.md."
-})
-```
-
 ### Parallel Execution
 
 **CRITICAL**: Spawn multiple agents in a **single message** for parallel execution:
@@ -388,15 +376,15 @@ Task({ subagent_type: "AgileFlow:agents:configuration:hooks", ... })
 Some agents have dependencies:
 - **Auto-Archival** depends on **Hooks System** (needs .claude/settings.json to exist)
 - **Status Line** depends on **Hooks System** (needs .claude/settings.json to exist)
-- **PreCompact** depends on **Hooks System** (needs .claude/settings.json to exist)
 - **Git Config**, **Attribution**, and **CI/CD** are independent (can run in parallel)
+
+**Note**: PreCompact is now part of the Hooks System agent - users select which hooks to enable during hooks configuration.
 
 **Execution Strategy**:
 1. If user selects Git + Attribution + CI: Run in parallel (no dependencies)
 2. If user selects Hooks + Archival: Run hooks FIRST, then archival (dependency)
 3. If user selects Hooks + Status Line: Run hooks FIRST, then status line (dependency)
-4. If user selects Hooks + PreCompact: Run hooks FIRST, then precompact (dependency)
-5. If user selects all 7: Run Git + Attribution + CI in parallel, wait, then run Hooks, wait, then run Archival + Status Line + PreCompact in parallel
+4. If user selects all 6: Run Git + Attribution + CI in parallel, wait, then run Hooks, wait, then run Archival + Status Line in parallel
 
 ## Agent Result Handling
 
@@ -409,10 +397,11 @@ Results:
 - Git Repository: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - Attribution Settings: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - Hooks System: [✅ Configured / ❌ Failed / ⏭️ Skipped]
+  └─ SessionStart: [✅ Enabled / ⏭️ Skipped]
+  └─ PreCompact: [✅ Enabled / ⏭️ Skipped]
 - Auto-Archival: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - CI/CD: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 - Status Line: [✅ Configured / ❌ Failed / ⏭️ Skipped]
-- PreCompact Hook: [✅ Configured / ❌ Failed / ⏭️ Skipped]
 
 Next steps:
 [Agent-specific next steps from results]
@@ -449,8 +438,12 @@ If an agent fails:
 
 ### 3. Hooks System (hooks agent)
 - Create `.claude/` and `scripts/` directories
+- **Ask user which hooks to enable** (SessionStart, PreCompact, UserPromptSubmit)
+- Deploy selected hook scripts:
+  - `scripts/agileflow-welcome.js` - SessionStart welcome display
+  - `scripts/precompact-context.sh` - PreCompact context preservation
 - Deploy `scripts/get-env.js` helper
-- Create `.claude/settings.json` with SessionStart welcome hook
+- Create `.claude/settings.json` with selected hooks
 - Update `.gitignore` with .claude user-specific files
 - Create `.claude/settings.local.example.json` template
 - Document in CLAUDE.md
@@ -479,13 +472,6 @@ If an agent fails:
 - Document in CLAUDE.md
 - **CRITICAL**: Remind user to restart Claude Code
 
-### 7. PreCompact Hook (precompact agent)
-- Create `scripts/precompact-context.sh` script
-- Add `PreCompact` hook to `.claude/settings.json`
-- Script outputs: version, branch, active story, key conventions
-- Document in CLAUDE.md
-- Hook runs automatically before conversation compacts
-
 ## Example Workflow
 
 ```
@@ -496,13 +482,13 @@ If an agent fails:
    ⚠️ Git remote not configured
    ⚠️ CLAUDE.md not found
    ❌ Hooks system not configured
+      └─ PreCompact: ❌ not enabled
    ❌ Auto-archival not configured
    ❌ CI/CD not configured
    ❌ Status line not configured
-   ❌ PreCompact hook not configured
 
 3. Orchestrator presents menu using AskUserQuestion:
-   "Select features to configure: [Git Repository, Attribution Settings, Hooks System, Auto-Archival, CI/CD, Status Line, PreCompact Hook]"
+   "Select features to configure: [Git Repository, Attribution Settings, Hooks System, Auto-Archival, CI/CD, Status Line]"
 
 4. User selects: ["Attribution Settings", "Hooks System", "CI/CD"]
 
@@ -513,12 +499,15 @@ If an agent fails:
    - AgileFlow:agents:configuration:ci
    - AgileFlow:agents:configuration:hooks
 
-6. Agents execute (user waits and answers prompts)
+6. Hooks agent asks user which hooks to enable:
+   User selects: [SessionStart, PreCompact]
 
-7. Orchestrator displays results:
+7. Agents complete, orchestrator displays results:
    ✅ Attribution Settings configured (disabled AI attribution)
    ✅ CI/CD configured (GitHub Actions with tests + lint)
    ✅ Hooks System configured
+      └─ SessionStart: ✅ Enabled
+      └─ PreCompact: ✅ Enabled
    🔴 REMINDER: Restart Claude Code for hooks to take effect!
 ```
 

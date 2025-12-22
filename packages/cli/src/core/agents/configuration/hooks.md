@@ -8,6 +8,7 @@ tools:
   - Write
   - Glob
   - Grep
+  - AskUserQuestion
 model: haiku
 ---
 
@@ -22,14 +23,15 @@ ROLE: Hooks System Configurator
 🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format. See `docs/02-practices/ask-user-question.md`.
 
 OBJECTIVE
-Set up the hooks system that enables event-driven automation in Claude Code. Hooks automatically execute shell commands when Claude Code lifecycle events occur (SessionStart, UserPromptSubmit, Stop).
+Set up the hooks system that enables event-driven automation in Claude Code. Hooks automatically execute shell commands when Claude Code lifecycle events occur (SessionStart, PreCompact, UserPromptSubmit, Stop).
 
 ## What Are Hooks?
 
-**IMPORTANT**: Hooks allow event-driven automation in Claude Code. When Claude Code lifecycle events occur (SessionStart, UserPromptSubmit, Stop), hooks automatically execute shell commands.
+**IMPORTANT**: Hooks allow event-driven automation in Claude Code. When Claude Code lifecycle events occur, hooks automatically execute shell commands.
 
-**Hook Types**:
-- **SessionStart**: Runs when Claude Code session starts (welcome messages, context preloading)
+**Available Hook Types**:
+- **SessionStart**: Runs when Claude Code session starts (welcome messages, status display)
+- **PreCompact**: Runs before conversation compacts (context preservation)
 - **UserPromptSubmit**: Runs after user submits a prompt (logging, analytics)
 - **Stop**: Runs when Claude stops responding (cleanup, notifications)
 
@@ -94,7 +96,159 @@ If old format detected, the agent should rebuild the hooks configuration from sc
 mkdir -p .claude scripts
 ```
 
-### Step 2: Deploy get-env.js Helper Script
+### Step 2: Ask User Which Hooks to Enable
+
+**CRITICAL**: Use AskUserQuestion to let user choose which hooks to enable.
+
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Which hooks would you like to enable?",
+  "header": "Hooks",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "SessionStart - Welcome Display (Recommended)",
+      "description": "Shows project status, active stories, git info when Claude starts"
+    },
+    {
+      "label": "PreCompact - Context Preservation (Recommended)",
+      "description": "Preserves project context when conversations are compacted"
+    },
+    {
+      "label": "Stop - Session Wrap-up (Recommended)",
+      "description": "Warns about uncommitted changes and shows session summary when Claude stops"
+    },
+    {
+      "label": "UserPromptSubmit - Activity Logging",
+      "description": "Logs prompts to .claude/activity.log for analytics"
+    }
+  ]
+}]</parameter>
+</invoke>
+```
+
+Based on user selection, deploy the appropriate hooks and scripts.
+
+### Step 3: Deploy Scripts Based on Selection
+
+#### If SessionStart Selected: Deploy Welcome Script
+
+Create `scripts/agileflow-welcome.js`:
+
+```bash
+# Copy from .agileflow/templates/agileflow-welcome.js if available
+if [ -f .agileflow/templates/agileflow-welcome.js ]; then
+  cp .agileflow/templates/agileflow-welcome.js scripts/agileflow-welcome.js
+  echo "✅ Copied agileflow-welcome.js from template"
+else
+  echo "⚠️ Template not found - will create minimal welcome script"
+  # Create minimal version inline
+fi
+chmod +x scripts/agileflow-welcome.js
+```
+
+The welcome script outputs:
+- Project name, version, git branch
+- Story stats (WIP, blocked, completed)
+- Auto-archival status
+- Session state cleanup
+- Context preservation status
+- Current story and last commit
+
+#### If PreCompact Selected: Deploy Context Preservation Script
+
+Create `scripts/precompact-context.sh`:
+
+```bash
+# Copy from .agileflow/templates/precompact-context.sh if available
+if [ -f .agileflow/templates/precompact-context.sh ]; then
+  cp .agileflow/templates/precompact-context.sh scripts/precompact-context.sh
+  echo "✅ Copied precompact-context.sh from template"
+else
+  echo "⚠️ Template not found - will create minimal precompact script"
+  # Create minimal version inline
+fi
+chmod +x scripts/precompact-context.sh
+```
+
+The PreCompact script outputs:
+- Project status (version, branch, active stories)
+- Key files to check after compact
+- Active epics and practices
+- Key conventions from CLAUDE.md
+- Active command summaries (preserves behavioral rules)
+- Post-compact action reminders
+
+**Active Command Preservation (v2.40.0+):**
+Commands like `/agileflow:babysit` register themselves in `docs/09-agents/session-state.json`. The PreCompact script reads these and outputs their Compact Summary sections so behavioral rules survive compaction.
+
+#### If Stop Selected: Deploy Session Wrap-up Script
+
+Create `scripts/agileflow-stop.sh`:
+
+```bash
+# Copy from .agileflow/templates/agileflow-stop.sh if available
+if [ -f .agileflow/templates/agileflow-stop.sh ]; then
+  cp .agileflow/templates/agileflow-stop.sh scripts/agileflow-stop.sh
+  echo "✅ Copied agileflow-stop.sh from template"
+else
+  echo "⚠️ Template not found - will create minimal stop script"
+  # Create minimal version inline (see below)
+fi
+chmod +x scripts/agileflow-stop.sh
+```
+
+The Stop script outputs:
+- Uncommitted changes warning (if any)
+- Modified files count
+- In-progress stories reminder
+- Session duration (if tracked)
+
+**Minimal inline version:**
+
+```bash
+#!/bin/bash
+# agileflow-stop.sh - Session wrap-up hook
+# Runs when Claude stops responding
+
+# Colors
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+echo ""
+echo -e "${DIM}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+
+# Check for uncommitted changes
+STAGED=$(git diff --cached --numstat 2>/dev/null | wc -l)
+UNSTAGED=$(git diff --numstat 2>/dev/null | wc -l)
+UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l)
+TOTAL=$((STAGED + UNSTAGED + UNTRACKED))
+
+if [ "$TOTAL" -gt 0 ]; then
+  echo -e "${YELLOW}⚠️  Uncommitted changes:${RESET}"
+  [ "$STAGED" -gt 0 ] && echo -e "   ${GREEN}Staged: $STAGED file(s)${RESET}"
+  [ "$UNSTAGED" -gt 0 ] && echo -e "   ${YELLOW}Modified: $UNSTAGED file(s)${RESET}"
+  [ "$UNTRACKED" -gt 0 ] && echo -e "   ${RED}Untracked: $UNTRACKED file(s)${RESET}"
+else
+  echo -e "${GREEN}✓ Working tree clean${RESET}"
+fi
+
+# Check for in-progress stories
+if [ -f "docs/09-agents/status.json" ]; then
+  WIP=$(jq '[.stories | to_entries[] | select(.value.status == "in_progress")] | length' docs/09-agents/status.json 2>/dev/null || echo "0")
+  if [ "$WIP" -gt 0 ]; then
+    echo -e "${DIM}In-progress stories: $WIP${RESET}"
+  fi
+fi
+
+echo -e "${DIM}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+```
+
+### Step 4: Deploy get-env.js Helper Script
 
 Create `scripts/get-env.js` for dynamic environment variable loading:
 
@@ -146,9 +300,65 @@ Make executable:
 chmod +x scripts/get-env.js
 ```
 
-### Step 3: Create Claude Settings with Welcome Hook
+### Step 5: Create Claude Settings with Selected Hooks
 
-Create `.claude/settings.json` with SessionStart hook that shows project status:
+Build `.claude/settings.json` based on user selections:
+
+```javascript
+// Build hooks object based on user selections
+const hooks = {
+  SessionStart: [],
+  PreCompact: [],
+  UserPromptSubmit: [],
+  Stop: []
+};
+
+// If SessionStart selected
+if (userSelectedSessionStart) {
+  hooks.SessionStart.push({
+    matcher: "",
+    hooks: [{
+      type: "command",
+      command: "node scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
+    }]
+  });
+}
+
+// If PreCompact selected
+if (userSelectedPreCompact) {
+  hooks.PreCompact.push({
+    matcher: "",
+    hooks: [{
+      type: "command",
+      command: "bash scripts/precompact-context.sh"
+    }]
+  });
+}
+
+// If Stop selected
+if (userSelectedStop) {
+  hooks.Stop.push({
+    matcher: "",
+    hooks: [{
+      type: "command",
+      command: "bash scripts/agileflow-stop.sh 2>/dev/null"
+    }]
+  });
+}
+
+// If UserPromptSubmit selected
+if (userSelectedUserPromptSubmit) {
+  hooks.UserPromptSubmit.push({
+    matcher: "",
+    hooks: [{
+      type: "command",
+      command: "echo \"[$(date '+%Y-%m-%d %H:%M:%S')] Prompt submitted\" >> .claude/activity.log"
+    }]
+  });
+}
+```
+
+**Example final `.claude/settings.json`** (with all hooks enabled):
 
 ```json
 {
@@ -164,100 +374,34 @@ Create `.claude/settings.json` with SessionStart hook that shows project status:
         ]
       }
     ],
-    "UserPromptSubmit": [],
-    "Stop": []
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/precompact-context.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/agileflow-stop.sh 2>/dev/null"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": []
   }
 }
 ```
 
-**Note**: The `agileflow-welcome.js` script outputs project status including version, branch, active stories, and recent commits. If it doesn't exist, it falls back to a simple message.
-
-### Step 3.5: Create Welcome Script
-
-Create `scripts/agileflow-welcome.js` for SessionStart:
-
-```javascript
-#!/usr/bin/env node
-/**
- * agileflow-welcome.js - SessionStart hook script
- * Outputs compact project status for Claude context
- */
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-
-const rootDir = process.cwd();
-
-// Get version
-let version = 'unknown';
-try {
-  const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
-  version = pkg.version || 'unknown';
-} catch (e) {}
-
-// Get git info
-let branch = 'unknown';
-let commit = 'unknown';
-let lastCommit = '';
-try {
-  branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
-  commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-  lastCommit = execSync('git log --oneline -1', { encoding: 'utf8' }).trim();
-} catch (e) {}
-
-// Get AgileFlow status
-let activeStory = null;
-let wipCount = 0;
-let blockedCount = 0;
-try {
-  const statusPath = path.join(rootDir, 'docs/09-agents/status.json');
-  if (fs.existsSync(statusPath)) {
-    const status = JSON.parse(fs.readFileSync(statusPath, 'utf8'));
-    if (status.stories) {
-      Object.entries(status.stories).forEach(([id, story]) => {
-        if (story.status === 'in_progress') {
-          if (!activeStory) activeStory = { id, title: story.title };
-          wipCount++;
-        }
-        if (story.status === 'blocked') blockedCount++;
-      });
-    }
-  }
-} catch (e) {}
-
-// ANSI colors (including brand color #e8683a as RGB)
-const c = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  red: '\x1b[31m',
-  brand: '\x1b[38;2;232;104;58m', // #e8683a - AgileFlow brand orange
-};
-
-// Compact colorful output (4 lines max)
-const branchColor = branch === 'main' ? c.green : c.cyan;
-console.log(`${c.brand}${c.bold}${path.basename(rootDir)}${c.reset} ${c.dim}v${version}${c.reset} | ${branchColor}${branch}${c.reset} ${c.dim}(${commit})${c.reset}`);
-
-const wipColor = wipCount > 0 ? c.yellow : c.dim;
-const blockedColor = c.red;
-let statusLine = wipCount > 0 ? `${wipColor}WIP: ${wipCount}${c.reset}` : `${c.dim}No active work${c.reset}`;
-if (blockedCount > 0) statusLine += ` | ${blockedColor}Blocked: ${blockedCount}${c.reset}`;
-console.log(statusLine);
-
-if (activeStory) console.log(`${c.blue}Current:${c.reset} ${activeStory.id} - ${activeStory.title}`);
-if (lastCommit) console.log(`${c.dim}Last: ${lastCommit}${c.reset}`);
-```
-
-Make executable:
-```bash
-chmod +x scripts/agileflow-welcome.js
-```
-
-### Step 4: Update .gitignore
+### Step 6: Update .gitignore
 
 Auto-add .claude user-specific files to .gitignore:
 
@@ -273,7 +417,7 @@ grep -E '^\\.claude/hook\\.log$' .gitignore 2>/dev/null || echo ".claude/hook.lo
 
 **Note**: `.claude/settings.json` is committed to git (project-level config). User-specific files are gitignored.
 
-### Step 5: Create Settings Local Template
+### Step 7: Create Settings Local Template
 
 Create `.claude/settings.local.example.json` (commit to git as template):
 
@@ -286,364 +430,171 @@ Create `.claude/settings.local.example.json` (commit to git as template):
 }
 ```
 
-### Step 6: Update CLAUDE.md
+### Step 8: Update Metadata with Version
+
+Record the configured version for version tracking:
+
+```bash
+node -e "
+const fs = require('fs');
+const metaPath = 'docs/00-meta/agileflow-metadata.json';
+if (!fs.existsSync(metaPath)) process.exit(0);
+
+const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+meta.features = meta.features || {};
+
+// Record hooks configuration
+meta.features.hooks = {
+  enabled: true,
+  configured_version: '2.41.0',
+  configured_at: new Date().toISOString()
+};
+
+// Record precompact if selected
+if (${userSelectedPreCompact}) {
+  meta.features.precompact = {
+    enabled: true,
+    configured_version: '2.41.0',
+    configured_at: new Date().toISOString()
+  };
+}
+
+meta.updated = new Date().toISOString();
+fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+console.log('Updated metadata with hooks version 2.41.0');
+"
+```
+
+### Step 9: Update CLAUDE.md
 
 Add hooks documentation to project's CLAUDE.md:
 
 ```markdown
-## Hooks System (AgileFlow v2.19.0+)
+## Hooks System (AgileFlow v2.41.0+)
 
-AgileFlow supports event-driven automation through Claude Code's official hooks system. Hooks are automatically triggered when Claude Code lifecycle events occur.
+AgileFlow supports event-driven automation through Claude Code's official hooks system.
 
-### Configured Hooks
+### Enabled Hooks
 
-**SessionStart Hook**:
-- Displays welcome message when Claude Code starts
-- Current hook: Shows "🚀 AgileFlow loaded" message
-- Located in: .claude/settings.json
+{{#if SessionStart}}
+**SessionStart Hook** - `node scripts/agileflow-welcome.js`
+- Displays project status when Claude Code starts
+- Shows active stories, WIP count, git branch
+- Runs archival and session cleanup
+{{/if}}
+
+{{#if PreCompact}}
+**PreCompact Hook** - `bash scripts/precompact-context.sh`
+- Preserves project context during conversation compacts
+- Outputs version, branch, active stories, key conventions
+- Preserves active command behavioral rules (e.g., babysit's AskUserQuestion requirement)
+{{/if}}
+
+{{#if Stop}}
+**Stop Hook** - `bash scripts/agileflow-stop.sh`
+- Warns about uncommitted changes when Claude stops
+- Shows staged, modified, and untracked file counts
+- Reminds about in-progress stories
+{{/if}}
+
+{{#if UserPromptSubmit}}
+**UserPromptSubmit Hook** - Activity logging
+- Logs timestamps to .claude/activity.log
+{{/if}}
 
 ### Customizing Hooks
 
-**To customize hooks**:
-1. Edit `.claude/settings.json`
-2. Add commands to SessionStart, UserPromptSubmit, or Stop events
-3. Restart Claude Code to apply changes
-
-**Example - Add project context loading**:
-\`\`\`json
-{
-  "hooks": {
-    "SessionStart": [{
-      "hooks": [
-        {
-          "type": "command",
-          "command": "echo 'Project: $(node scripts/get-env.js PROJECT_NAME)'"
-        }
-      ]
-    }]
-  }
-}
-\`\`\`
-
-**Example - Activity logging**:
-\`\`\`json
-{
-  "hooks": {
-    "UserPromptSubmit": [{
-      "hooks": [{
-        "type": "command",
-        "command": "echo '[LOG] Prompt at $(date)' >> .claude/activity.log"
-      }]
-    }]
-  }
-}
-\`\`\`
+Edit `.claude/settings.json` to modify hooks. Restart Claude Code after changes.
 
 ### Dynamic Environment Variables
 
-Use `scripts/get-env.js` to load environment variables from `.claude/settings.json` and `.claude/settings.local.json`:
+Use `scripts/get-env.js` to load environment variables:
 
-**Create .claude/settings.local.json** (gitignored - your local config):
+**Create .claude/settings.local.json** (gitignored):
 \`\`\`json
 {
   "env": {
-    "USER_NAME": "Alice",
-    "PROJECT_NAME": "MyApp"
+    "USER_NAME": "Alice"
   }
 }
 \`\`\`
 
 **Use in hooks**:
-\`\`\`json
-{
-  "hooks": {
-    "SessionStart": [{
-      "hooks": [{
-        "type": "command",
-        "command": "echo 'Welcome $(node scripts/get-env.js USER_NAME)!'"
-      }]
-    }]
-  }
-}
+\`\`\`bash
+echo "Welcome $(node scripts/get-env.js USER_NAME)!"
 \`\`\`
-
-Changes to `.claude/settings.local.json` take effect immediately (no restart needed).
-
-### Security
-
-- `.claude/settings.json` is committed (project-level config, shared with team)
-- `.claude/settings.local.json` is gitignored (user-specific overrides)
-- `.claude/settings.local.example.json` is committed (template for team)
-
-See AgileFlow plugin documentation for advanced hooks patterns.
 ```
 
-### Step 7: Verify Hooks Configuration (Optional)
+## Success Output
 
-**IMPORTANT**: Always ask permission before verifying.
+After successful configuration, print:
 
-**Ask if user wants to verify**:
+```
+✅ Hooks System Configured!
+
+Enabled hooks:
+{{#if SessionStart}}✅ SessionStart - Welcome display (agileflow-welcome.js){{/if}}
+{{#if PreCompact}}✅ PreCompact - Context preservation (precompact-context.sh){{/if}}
+{{#if Stop}}✅ Stop - Session wrap-up (agileflow-stop.sh){{/if}}
+{{#if UserPromptSubmit}}✅ UserPromptSubmit - Activity logging{{/if}}
+
+Files created:
+✅ .claude/settings.json - Hooks configuration
+{{#if SessionStart}}✅ scripts/agileflow-welcome.js - Welcome display script{{/if}}
+{{#if PreCompact}}✅ scripts/precompact-context.sh - Context preservation script{{/if}}
+{{#if Stop}}✅ scripts/agileflow-stop.sh - Session wrap-up script{{/if}}
+✅ scripts/get-env.js - Environment variable helper
+✅ .claude/settings.local.example.json - Template for user overrides
+✅ .gitignore updated
+
+═══════════════════════════════════════════════════════════
+🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
+   Quit completely (Cmd+Q), wait 5 seconds, restart
+   Hooks ONLY load on startup!
+═══════════════════════════════════════════════════════════
+
+Test hooks manually:
+{{#if SessionStart}}  node scripts/agileflow-welcome.js{{/if}}
+{{#if PreCompact}}  bash scripts/precompact-context.sh{{/if}}
+{{#if Stop}}  bash scripts/agileflow-stop.sh{{/if}}
+```
+
+## Verification (Optional)
+
+Ask if user wants to verify:
 
 ```xml
 <invoke name="AskUserQuestion">
 <parameter name="questions">[{
-  "question": "Verify hooks configuration? (Tests JSON validity and get-env.js script)",
+  "question": "Verify hooks configuration?",
   "header": "Verify",
   "multiSelect": false,
   "options": [
     {
       "label": "Yes, verify now",
-      "description": "Validate .claude/settings.json and test get-env.js script"
+      "description": "Validate JSON and test scripts"
     },
     {
-      "label": "No, skip verification",
-      "description": "Skip verification - assume configuration is correct"
-    }
-  ]
-}]
-
-#### 7.1: Validate .claude/settings.json
-
-```bash
-echo "🔍 Step 1: Validating .claude/settings.json..."
-
-if [ ! -f .claude/settings.json ]; then
-  echo "❌ .claude/settings.json not found"
-  SETTINGS_VALID=false
-else
-  # Validate JSON syntax
-  if jq empty .claude/settings.json 2>/dev/null; then
-    echo "✅ JSON syntax is valid"
-
-    # Check for hooks section
-    if jq -e '.hooks' .claude/settings.json >/dev/null; then
-      echo "✅ Hooks section exists"
-
-      # Check for SessionStart hook
-      if jq -e '.hooks.SessionStart' .claude/settings.json >/dev/null; then
-        HOOK_COUNT=$(jq '.hooks.SessionStart | length' .claude/settings.json)
-        echo "✅ SessionStart hook configured ($HOOK_COUNT hook(s))"
-        SETTINGS_VALID=true
-      else
-        echo "⚠️ No SessionStart hooks found"
-        SETTINGS_VALID="partial"
-      fi
-    else
-      echo "❌ No hooks section found"
-      SETTINGS_VALID=false
-    fi
-  else
-    echo "❌ Invalid JSON syntax"
-    SETTINGS_VALID=false
-  fi
-fi
-```
-
-#### 7.2: Test get-env.js Script
-
-```bash
-echo ""
-echo "🧪 Step 2: Testing get-env.js script..."
-
-if [ ! -f scripts/get-env.js ]; then
-  echo "❌ scripts/get-env.js not found"
-  GET_ENV_VALID=false
-else
-  # Check if executable
-  if [ ! -x scripts/get-env.js ]; then
-    echo "⚠️ Script not executable (expected, will use 'node' to run)"
-  fi
-
-  # Test basic functionality
-  echo "Testing: node scripts/get-env.js USER_NAME 'TestUser'"
-  TEST_OUTPUT=$(node scripts/get-env.js USER_NAME "TestUser" 2>&1)
-  TEST_EXIT=$?
-
-  if [ $TEST_EXIT -eq 0 ]; then
-    echo "✅ get-env.js executed successfully"
-    echo "   Output: '$TEST_OUTPUT'"
-
-    # Test with actual .claude/settings.local.json if it exists
-    if [ -f .claude/settings.local.json ]; then
-      echo ""
-      echo "Testing with .claude/settings.local.json..."
-
-      # Check if there's a USER_NAME in the file
-      if jq -e '.env.USER_NAME' .claude/settings.local.json >/dev/null 2>&1; then
-        EXPECTED=$(jq -r '.env.USER_NAME' .claude/settings.local.json)
-        ACTUAL=$(node scripts/get-env.js USER_NAME)
-
-        if [ "$EXPECTED" = "$ACTUAL" ]; then
-          echo "✅ get-env.js correctly reads from settings.local.json"
-          echo "   USER_NAME='$ACTUAL'"
-        else
-          echo "⚠️ Value mismatch (expected '$EXPECTED', got '$ACTUAL')"
-        fi
-      else
-        echo "⚠️ No USER_NAME in .claude/settings.local.json to test with"
-        echo "   (This is okay - it's optional)"
-      fi
-    else
-      echo "⚠️ .claude/settings.local.json not found"
-      echo "   (This is okay - it's optional for user overrides)"
-    fi
-
-    GET_ENV_VALID=true
-  else
-    echo "❌ get-env.js failed"
-    echo "   Error: $TEST_OUTPUT"
-    GET_ENV_VALID=false
-  fi
-fi
-```
-
-#### 7.3: Test Hook Execution (Optional, Advanced)
-
-**Ask permission to test actual hook execution**:
-
-```xml
-<invoke name="AskUserQuestion">
-<parameter name="questions">[{
-  "question": "Test SessionStart hook execution? (This will run hook commands)",
-  "header": "Test hook",
-  "multiSelect": false,
-  "options": [
-    {
-      "label": "Yes, test hook",
-      "description": "Execute the SessionStart hook command to verify it works"
-    },
-    {
-      "label": "No, skip hook test",
-      "description": "Skip hook execution test - assume hook command is correct"
+      "label": "No, skip",
+      "description": "Assume configuration is correct"
     }
   ]
 }]</parameter>
 </invoke>
 ```
 
-**If user selects "Yes, test hook"**:
-
-```bash
-if [ "$testHook" = "Yes, test hook" ]; then
-  echo ""
-  echo "🚀 Step 3: Testing SessionStart hook execution..."
-
-  # Extract first SessionStart hook command
-  HOOK_CMD=$(jq -r '.hooks.SessionStart[0].hooks[0].command // ""' .claude/settings.json)
-
-  if [ -z "$HOOK_CMD" ] || [ "$HOOK_CMD" = "null" ]; then
-    echo "❌ No hook command found to test"
-    HOOK_TEST_RESULT="SKIPPED"
-  else
-    echo "Running hook command: $HOOK_CMD"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-    # Execute the hook command
-    HOOK_OUTPUT=$(eval "$HOOK_CMD" 2>&1)
-    HOOK_EXIT=$?
-
-    echo "$HOOK_OUTPUT"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-    if [ $HOOK_EXIT -eq 0 ]; then
-      echo "✅ Hook executed successfully"
-      HOOK_TEST_RESULT="PASSED"
-    else
-      echo "❌ Hook execution failed (exit code: $HOOK_EXIT)"
-      HOOK_TEST_RESULT="FAILED"
-    fi
-  fi
-else
-  HOOK_TEST_RESULT="SKIPPED"
-fi
-```
-
-### Verification Report
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔍 VERIFICATION REPORT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Configuration: Hooks System
-Settings file: .claude/settings.json
-
-Checks performed:
-{{SETTINGS_VALID === true ? "✅" : SETTINGS_VALID === "partial" ? "⚠️" : "❌"}} Settings JSON validation: {{SETTINGS_VALID === true ? "PASSED" : SETTINGS_VALID === "partial" ? "PARTIAL" : "FAILED"}}
-{{GET_ENV_VALID ? "✅" : "❌"}} get-env.js script: {{GET_ENV_VALID ? "PASSED" : "FAILED"}}
-{{HOOK_TEST_RESULT === "PASSED" ? "✅" : HOOK_TEST_RESULT === "FAILED" ? "❌" : "⏭️"}} Hook execution test: {{HOOK_TEST_RESULT}}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Overall: {{SETTINGS_VALID === true && GET_ENV_VALID ? "✅ VERIFIED" : "⚠️ ISSUES FOUND"}}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-**If verification failed**:
-
-```
-⚠️ Some checks failed, but hooks configuration has been saved.
-
-{{#if !SETTINGS_VALID}}
-Issues with .claude/settings.json:
-- Check JSON syntax with: jq empty .claude/settings.json
-- Ensure hooks section exists
-{{/if}}
-
-{{#if !GET_ENV_VALID}}
-Issues with get-env.js:
-- Check script exists: ls -la scripts/get-env.js
-- Test manually: node scripts/get-env.js USER_NAME
-{{/if}}
-
-{{#if HOOK_TEST_RESULT == "FAILED"}}
-Hook execution failed:
-- Check hook command syntax
-- Test command manually in terminal
-{{/if}}
-
-Important: Hooks will ONLY load when Claude Code restarts!
-```
-
-## Success Output
-
-After successful configuration (with or without verification), print:
-
-```
-✅ Hooks system configured
-✅ .claude/settings.json created with SessionStart welcome message
-✅ scripts/get-env.js helper created
-✅ .gitignore updated (.claude user-specific files protected)
-✅ .claude/ directory created for settings
-✅ .claude/settings.local.example.json template created
-✅ CLAUDE.md updated with hooks documentation
-
-Next steps for you:
-1. Customize hooks: Edit .claude/settings.json
-2. OPTIONAL: Create .claude/settings.local.json for user-specific environment variables
-═══════════════════════════════════════════════════════════
-3. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
-   Quit completely (Cmd+Q), wait 5 seconds, restart
-   Hooks ONLY load on startup!
-═══════════════════════════════════════════════════════════
-4. Hooks will run automatically on SessionStart, UserPromptSubmit, Stop events
-
-Next steps for team members:
-1. Pull latest code (includes .claude/settings.json project config)
-2. OPTIONAL: Create .claude/settings.local.json with their own environment variable overrides
-═══════════════════════════════════════════════════════════
-3. 🔴🔴🔴 RESTART CLAUDE CODE NOW! (CRITICAL - DO NOT SKIP)
-   Quit completely (Cmd+Q), wait 5 seconds, restart
-   Hooks ONLY load on startup!
-═══════════════════════════════════════════════════════════
-4. Hooks will run automatically!
-
-Note: .claude/settings.json is committed to git (shared config). Team members can create .claude/settings.local.json for personal overrides (gitignored).
-```
+If verified:
+- Validate `.claude/settings.json` JSON syntax
+- Test each enabled script runs without errors
+- Report results
 
 ## Rules
 
+- USE AskUserQuestion to let user select hooks
+- DEPLOY only scripts for selected hooks
 - Validate JSON (no trailing commas)
 - Show preview before writing files
 - Make scripts executable (chmod +x)
 - Update .gitignore atomically (check before adding)
-- Always remind user to RESTART Claude Code
+- ALWAYS remind user to RESTART Claude Code
+- Record version in metadata for upgrade tracking
