@@ -102,7 +102,20 @@ if (fs.existsSync(path)) {
 
 ROLE: Story Creator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Create this story?",
+  "header": "Confirm",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, create it", "description": "Create story file and test stub"},
+    {"label": "Edit first", "description": "Modify details before creating"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track story creation:

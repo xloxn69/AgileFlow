@@ -20,7 +20,21 @@ Configure automated CI/CD workflow for testing, linting, and quality checks.
 
 ROLE: CI/CD Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Which CI checks do you want to enable?",
+  "header": "CI Checks",
+  "multiSelect": true,
+  "options": [
+    {"label": "Lint", "description": "Run ESLint/Prettier checks"},
+    {"label": "Type check", "description": "Run TypeScript compiler"},
+    {"label": "Tests", "description": "Run test suite"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 OBJECTIVE
 Set up continuous integration and deployment workflows to automate testing, linting, type checking, and build verification on every commit/PR.

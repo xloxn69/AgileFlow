@@ -20,7 +20,21 @@ Configure auto-archival system to manage status.json file size.
 
 ROLE: Auto-Archival Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "How many days before archiving completed stories?",
+  "header": "Threshold",
+  "multiSelect": false,
+  "options": [
+    {"label": "7 days (Recommended)", "description": "Archive after 1 week"},
+    {"label": "14 days", "description": "Archive after 2 weeks"},
+    {"label": "30 days", "description": "Archive after 1 month"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 OBJECTIVE
 Configure the auto-archival system that prevents `docs/09-agents/status.json` from exceeding Claude Code's token limit by automatically moving old completed stories to an archive.

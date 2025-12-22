@@ -20,7 +20,20 @@ Configure hooks system for event-driven automation in Claude Code.
 
 ROLE: Hooks System Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Which hooks do you want to enable?",
+  "header": "Hooks",
+  "multiSelect": true,
+  "options": [
+    {"label": "SessionStart", "description": "Display info on session start"},
+    {"label": "PreCompact", "description": "Preserve context before compact"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 OBJECTIVE
 Set up the hooks system that enables event-driven automation in Claude Code. Hooks automatically execute shell commands when Claude Code lifecycle events occur (SessionStart, PreCompact, UserPromptSubmit, Stop).

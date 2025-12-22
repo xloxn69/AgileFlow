@@ -178,9 +178,6 @@ Found 8 files:
   • ci.md – CI/CD pipeline configuration, testing gates
   • security.md – Security practices, input validation, authentication
   • releasing.md – Release procedures, versioning, changelog
-  • diagrams.md – Mermaid diagram generation with light/dark themes
-  • async-agent-spawning.md – Launch, monitor, and retrieve background agents
-  • ask-user-question.md – Using the AskUserQuestion tool effectively
 
 Proposed Changes to ## Contents Section:
 ─────────────────────────────────────────
@@ -189,9 +186,6 @@ Proposed Changes to ## Contents Section:
 - **ci.md** – CI/CD pipeline configuration, testing gates
 - **security.md** – Security practices, input validation, authentication
 - **releasing.md** – Release procedures, versioning, changelog
-- **diagrams.md** – Mermaid diagram generation with light/dark themes
-- **async-agent-spawning.md** – Launch, monitor, and retrieve background agents
-- **ask-user-question.md** – Using the AskUserQuestion tool effectively
 
 Update README.md with these changes? (YES/NO)
 ```
