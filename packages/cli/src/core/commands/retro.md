@@ -6,7 +6,99 @@ model: haiku
 
 # retro
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'retro', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Retro command activated');
+}
+"
+```
+
+---
+
 Automated retrospective generator that analyzes patterns and surfaces insights from AgileFlow data.
+
+<!-- COMPACT_SUMMARY_START -->
+
+## Compact Summary
+
+**Command Purpose**: Automated retrospective generator that analyzes AgileFlow project data to surface insights, patterns, and actionable improvements using the Start/Stop/Continue format.
+
+**Role**: Retrospective Facilitator
+
+**Critical Behavioral Rules**:
+- ALWAYS create TodoWrite task list at the start (9 steps: load data, analyze wins, analyze improvements, detect patterns, generate actions, create celebration section, generate report, save file, update index)
+- Focus on TEAM-LEVEL patterns, never individual blame
+- Balance positive insights (Continue) with improvements (Start/Stop)
+- Use DATA to drive insights - no subjective opinions without evidence
+- Prioritize action items by impact (HIGH/MEDIUM/LOW)
+- ALWAYS celebrate wins, even small ones
+- End with forward-looking predictions for next sprint
+- Save automatically to docs/08-project/retrospectives/ unless SAVE=false
+
+**Key Data Sources**:
+1. docs/09-agents/bus/log.jsonl - Event patterns, status transitions, blocking events
+2. docs/09-agents/status.json - Current state snapshot, WIP levels, owner distribution
+3. docs/06-stories/**/US-*.md - Story completion, estimates vs actuals, AC rates
+4. Velocity data - Points completed, throughput trends from bus analysis
+
+**Workflow Steps**:
+1. Load and analyze data sources (bus logs, status, stories, velocity)
+2. Identify "What Went Well" patterns (high velocity, fast cycle times, epic completions, good estimation, balanced workload)
+3. Identify "What Needs Improvement" patterns (velocity drops, long cycles, high WIP, frequent blocking, poor estimation, bottlenecks)
+4. Detect advanced patterns (recurring blockers, day-of-week trends, handoff patterns, story size correlations)
+5. Generate prioritized action items (HIGH: immediate problems, MEDIUM: process improvements, LOW: long-term)
+6. Create celebration moments section (epic completions, velocity milestones, zero bugs, fast deliveries)
+7. Generate comprehensive ASCII report with sprint summary, insights, actions, team contributions, predictions
+8. Save to docs/08-project/retrospectives/retro-YYYYMMDD.md
+9. Update retrospectives/README.md index
+
+**Output Format Requirements**:
+- DEFAULT: ASCII box format with Unicode characters (╔═╗║╚╝)
+- Sections: Sprint Summary → What Went Well → What Needs Improvement → Action Items → Team Contributions → Predictions
+- Use icons: ✅ (Continue), ⚠️ (Improvement), 🛑 (Stop), ▶️ (Start), 🎯 (Actions), 📊 (Summary), 🔮 (Predictions), 🎉 (Celebrate)
+- Action items as checkboxes [ ] for tracking
+- Include velocity trends, cycle times, completion rates, blocking events
+- Show team contributions as horizontal bar charts
+- End with "Next Steps" recommendations
+
+**Pattern Analysis Examples**:
+- CONTINUE: Velocity increased, fast cycle times (<2d), zero blocked stories, epic completions, good estimation (<20% variance), balanced workload
+- START/STOP: Velocity drops, long cycle times (>5d), high WIP, frequent blocking, long review times, poor estimation (>50% variance), agent bottlenecks, stale stories (>10d in-progress)
+
+**Optional Inputs**:
+- TIMEFRAME: sprint|2weeks|30d|90d (default: 2weeks)
+- EPIC: <EP_ID> (retrospective for specific epic only)
+- FORMAT: ascii|markdown|html (default: ascii)
+- SAVE: true|false (default: true)
+
+**Integration Points**:
+- After /agileflow:metrics to contextualize data
+- Before sprint planning to apply learnings
+- With /agileflow:velocity to use trends
+- In /agileflow:babysit to suggest at sprint boundaries
+
+**Success Criteria**:
+- Comprehensive data analysis from all 4 sources
+- Balanced Continue/Start/Stop sections (not all negative)
+- Specific, actionable items (not vague suggestions)
+- Celebration section highlights wins
+- Predictions based on current velocity and epic progress
+- File saved to retrospectives/ directory with date stamp
+- Index updated with latest retrospective entry
+
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

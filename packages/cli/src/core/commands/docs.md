@@ -7,6 +7,99 @@ argument-hint: [BRANCH=<name>] [BASE=<branch>] [AUTO_CREATE=yes|no]
 
 Synchronize documentation with codebase changes.
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'docs', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Docs command activated');
+}
+"
+```
+
+---
+
+<!-- COMPACT_SUMMARY_START -->
+## Compact Summary
+
+**Purpose**: Automatically detect code changes and synchronize documentation to prevent drift.
+
+**Core Workflow**:
+1. Activate command using STEP 0 registration script
+2. Compare branch against base using git diff
+3. Categorize changes (API, UI, services, config, database)
+4. Map code changes to expected documentation locations
+5. Analyze gaps (missing docs, outdated docs, deprecated references)
+6. Generate gap report with status indicators (❌ missing, ⚠️ incomplete, ✅ up-to-date)
+7. Preview suggested documentation updates
+8. Get explicit user approval before making changes
+
+**Critical Rules**:
+- NEVER delete documentation without explicit user approval
+- ALWAYS use diff-first, YES/NO pattern for all modifications
+- PRESERVE custom content - don't overwrite manually written sections
+- USE managed section markers: `<!-- MANAGED:section-id --> ... <!-- /MANAGED -->`
+- LINK docs to source files for traceability
+- INFER documentation from TypeScript types, JSDoc, OpenAPI decorators, test files
+
+**Expected Documentation Mapping**:
+- API endpoints → `docs/04-architecture/api.md` or OpenAPI spec
+- UI components → `docs/04-architecture/components.md` or Storybook
+- Services/utilities → `docs/04-architecture/services.md`
+- Configuration → `docs/02-practices/configuration.md`
+- Database migrations → `docs/04-architecture/database.md`
+
+**Smart Inference Sources**:
+- TypeScript types and interfaces
+- JSDoc comments and annotations
+- OpenAPI/Swagger decorators
+- Function signatures and parameters
+- Test files as usage examples
+
+**Auto-Create Mode** (AUTO_CREATE=yes):
+- Creates all missing documentation automatically
+- Marks sections with "TODO: Add details" for manual review
+- Commits with message: "docs: sync with codebase changes"
+
+**Integration Features**:
+- Create tracking story for significant doc gaps
+- Log to agent bus: `{"type":"docs-sync","missing":N,"outdated":N}`
+- Suggest PR checklist item: "- [ ] Documentation updated"
+- Recommend CI integration for automated checks
+
+**Gap Report Format**:
+```markdown
+# Documentation Sync Report
+**Branch**: <name> | **Base**: <branch> | **Generated**: <timestamp>
+
+## Missing Documentation
+### API Endpoints (N)
+- ❌ POST /endpoint (src/path/file.ts)
+
+## Outdated Documentation
+- 📄 Deprecated references to removed code
+
+## Up-to-Date
+- ✅ Correctly documented components
+```
+
+**Output Deliverables**:
+- Markdown gap report with categorized findings
+- List of recommended actions with previews
+- Optional: Pull request with documentation updates (if approved)
+<!-- COMPACT_SUMMARY_END -->
+
+---
+
 ## Prompt
 
 ROLE: Documentation Synchronizer

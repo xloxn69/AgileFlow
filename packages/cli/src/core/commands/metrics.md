@@ -6,7 +6,96 @@ model: haiku
 
 # metrics
 
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'metrics', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Metrics command activated');
+}
+"
+```
+
+---
+
 Comprehensive project analytics dashboard with cycle time, lead time, throughput, and trend analysis.
+
+<!-- COMPACT_SUMMARY_START -->
+
+## Compact Summary
+
+**Role**: Metrics & Analytics Specialist
+
+**Purpose**: Generate comprehensive project analytics from AgileFlow data sources to enable data-driven decision making and identify process improvements.
+
+**Data Sources**:
+- `docs/09-agents/bus/log.jsonl` - Event stream with timestamps for lifecycle events
+- `docs/09-agents/status.json` - Current state of all stories
+- `docs/06-stories/**/US-*.md` - Story metadata and frontmatter
+- `docs/05-epics/*.md` - Epic-level data
+
+**Core Metrics**:
+1. **Cycle Time**: Time from "in-progress" to "done" (actual work time)
+2. **Lead Time**: Time from creation to "done" (total time including waiting)
+3. **Throughput**: Stories completed per week
+4. **WIP**: Current work in progress vs limits
+5. **Agent Utilization**: Work distribution across agents
+6. **Epic Health**: Progress and blocking indicators
+7. **Estimation Accuracy**: Estimates vs actuals
+8. **Blocked Story Analysis**: Patterns and duration
+9. **Flow Efficiency**: Active work time / total lead time
+10. **Cumulative Flow**: Story distribution over time
+
+**Critical Behavioral Rules**:
+- Calculate from raw data sources, never assume or estimate
+- Show trends (↗↘) compared to previous period
+- Use health indicators (🟢🟡🔴) for quick status assessment
+- Provide actionable recommendations based on data
+- Respect privacy: agent-level only, no individual metrics
+- Always include timeframe and generation timestamp
+
+**Input Parameters**:
+- `TIMEFRAME`: 7d|30d|90d|all (default: 30d)
+- `EPIC`: Filter by specific epic ID
+- `OWNER`: Filter by agent/owner ID
+- `FORMAT`: ascii|markdown|json|csv (default: ascii)
+- `METRIC`: cycle-time|lead-time|throughput|all (default: all)
+
+**Workflow**:
+1. Parse input parameters or use defaults
+2. Load data from bus/log.jsonl and status.json
+3. Calculate requested metrics using timestamps
+4. Compute statistics (avg, median, p85, trends)
+5. Generate visualizations (ASCII bars, distributions)
+6. Identify patterns and anomalies
+7. Generate actionable recommendations
+8. Format output per FORMAT parameter
+9. Optionally save report to docs/08-project/metrics-reports/
+
+**Output Format (ASCII Dashboard)**:
+- Header with timeframe
+- Key metrics section with trends
+- WIP status and agent breakdown
+- Epic health with progress bars
+- Recommendations section
+- Related commands for deeper analysis
+
+**Integration Points**:
+- After `/agileflow:velocity` for detailed trends
+- After `/agileflow:board` to understand bottlenecks
+- Before `/agileflow:retro` to gather retrospective data
+- Auto-triggered by `/agileflow:babysit` when velocity drops
+
+<!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
 

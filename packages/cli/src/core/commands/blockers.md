@@ -6,6 +6,91 @@ model: haiku
 
 # blockers
 
+## STEP 0: Activation (Run First, Silently)
+
+```bash
+# Activate compact summary mode
+node /home/coder/AgileFlow/scripts/activate-compact-summary.js blockers
+```
+
+This script:
+- Sets `COMPACT_SUMMARY=true` environment variable for this command
+- Enables summarized output (hides detailed prompt, shows only summary section)
+- User can override with `COMPACT_SUMMARY=false` to see full details
+
+<!-- BEGIN_COMPACT_SUMMARY -->
+## Compact Summary
+
+**Purpose**: Track and resolve all blockers across AgileFlow with actionable suggestions and cross-agent coordination.
+
+**Key Features**:
+- Extract blockers from status.json (direct, dependency, capacity, stale)
+- Categorize by type (Technical, Coordination, Clarification, External, Capacity, Research)
+- Provide resolution suggestions with ADR/research links
+- Highlight v2.7.0 AG-API ↔ AG-UI cross-agent coordination
+- Show estimated unblock times based on in-progress dependencies
+- Display recently resolved blockers (optional)
+
+**Arguments** (all optional):
+- `AGENT=<id>` - Filter by specific agent (e.g., AG-UI, AG-API)
+- `SHOW_RESOLVED=true` - Include recently resolved blockers (last 7 days)
+- `DETAILED=true` - Show extended details (dependencies, research links, ADRs)
+
+**Data Sources**:
+1. `status.json` - Current story statuses and blockers
+2. `bus/log.jsonl` - Recent unblock/blocked messages
+3. Story files (`US-*.md`) - Detailed story information
+4. ADRs (`adr-*.md`) - Architecture decisions for context
+5. Research notes (`10-research/*.md`) - Background research
+6. Epic files - Epic context for blocked stories
+
+**Blocker Types Detected**:
+1. **Direct Blockers** - Stories with status="blocked"
+2. **Dependency Blockers** - Stories waiting on incomplete dependencies
+3. **WIP Capacity Blockers** - Agents at WIP limit (2 in-progress stories)
+4. **Stale Blockers** - Blocked >14 days (critical priority)
+
+**Output Sections**:
+- **Summary Stats** - Count by type, critical count, cross-agent coordination
+- **Critical Blockers** - Stale blockers (>14 days) needing immediate attention
+- **Active Blockers** - Grouped by category with resolution suggestions
+- **AG-API Unblocking Status** - v2.7.0 coordination tracking
+- **Capacity Analysis** - Agents at WIP limit with waiting stories
+- **Recently Resolved** - Last 7 days of unblock activity (if requested)
+- **Prioritized Actions** - Ranked next steps with suggested commands
+
+**Resolution Suggestions Include**:
+- Estimated completion time for blocking dependencies
+- Interim workarounds (mock data, feature flags)
+- Linked ADRs and research for context
+- Specific questions for clarification blockers
+- Escalation paths for external blockers
+- Redistribution options for capacity blockers
+
+**Example Usage**:
+```bash
+# All blockers
+/agileflow:blockers
+
+# AG-UI blockers only
+/agileflow:blockers AGENT=AG-UI
+
+# Include resolved blockers
+/agileflow:blockers SHOW_RESOLVED=true
+
+# Full detailed output
+/agileflow:blockers DETAILED=true
+```
+
+**Related Commands**:
+- `/agileflow:status` - Update blocker status
+- `/story-new` - Create unblocking stories
+- `/handoff` - Reassign capacity-blocked stories
+- `/adr-new` - Document architectural decisions
+- `/agileflow:board` - Visualize current state
+- `/agileflow:validate-system` - Check for inconsistencies
+<!-- END_COMPACT_SUMMARY -->
+
 Comprehensive blocker tracking, resolution suggestions, and cross-agent coordination (leverages v2.7.0 AG-API unblocking capabilities).
 
 ## Prompt
