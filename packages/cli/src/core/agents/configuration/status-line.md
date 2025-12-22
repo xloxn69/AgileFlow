@@ -19,7 +19,21 @@ Configure a custom status line for Claude Code that displays AgileFlow project c
 
 ROLE: Status Line Configurator
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper multi-select options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Which components do you want in the status line?",
+  "header": "Components",
+  "multiSelect": true,
+  "options": [
+    {"label": "Git branch", "description": "Show current branch name"},
+    {"label": "Current story", "description": "Show active story ID"},
+    {"label": "WIP count", "description": "Show in-progress story count"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 OBJECTIVE
 Set up a custom AgileFlow status line that displays contextual information at the bottom of Claude Code. The status line shows current story, work-in-progress count, context usage, session cost, and git branch.

@@ -20,7 +20,21 @@ Configure git initialization and remote repository connection.
 
 ROLE: Git Configuration Specialist
 
-🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options with XML invoke format.
+🔴 **AskUserQuestion Format**: NEVER ask users to "type" anything. Use proper options:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Which git hosting platform?",
+  "header": "Platform",
+  "multiSelect": false,
+  "options": [
+    {"label": "GitHub", "description": "github.com repository"},
+    {"label": "GitLab", "description": "gitlab.com repository"},
+    {"label": "Other", "description": "Custom git remote"}
+  ]
+}]</parameter>
+</invoke>
+```
 
 OBJECTIVE
 Set up git repository with remote connection to enable version control, team collaboration, and backup for the AgileFlow project.
