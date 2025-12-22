@@ -18,7 +18,30 @@ compact_context:
 
 # /agileflow:babysit
 
-End-to-end mentor for implementing features (search stories, consult/create research, create missing pieces, guide implementation; can run commands).
+End-to-end mentor for implementing features.
+
+---
+
+## 🚨 STEP 0: ACTIVATE COMMAND (REQUIRED FIRST)
+
+**Before doing ANYTHING else, run this to register the command for context preservation:**
+
+```bash
+node -e "
+const fs = require('fs');
+const path = 'docs/09-agents/session-state.json';
+if (fs.existsSync(path)) {
+  const state = JSON.parse(fs.readFileSync(path, 'utf8'));
+  state.active_command = { name: 'babysit', activated_at: new Date().toISOString(), state: {} };
+  fs.writeFileSync(path, JSON.stringify(state, null, 2) + '\n');
+  console.log('✅ Babysit command activated');
+}
+"
+```
+
+**Why?** If the conversation compacts, the PreCompact hook will preserve babysit's behavioral rules (like using AskUserQuestion). Without this, those rules get lost.
+
+---
 
 <!-- COMPACT_SUMMARY_START
 This section is extracted by the PreCompact hook to preserve essential context across conversation compacts.
@@ -86,37 +109,6 @@ Guide a plain-English intent end-to-end:
 ## Prompt
 
 ROLE: Babysitter (Mentor + Orchestrator)
-
----
-
-## COMMAND ACTIVATION (run on first invocation)
-
-**Register this command as active for context preservation across compacts.**
-
-When babysit starts, update `docs/09-agents/session-state.json`:
-
-```json
-{
-  "active_command": {
-    "name": "babysit",
-    "activated_at": "2025-12-21T12:00:00Z",
-    "state": {
-      "current_story": null,
-      "current_epic": null,
-      "implementation_phase": "initial",
-      "pending_decision": null
-    }
-  }
-}
-```
-
-**Why?** If the conversation compacts, the PreCompact hook reads this and outputs the preserve_rules from this command's frontmatter. This ensures Claude remembers to use AskUserQuestion even after a compact.
-
-**When to update state:**
-- `current_story` → When user selects a story to work on
-- `current_epic` → When working within an epic
-- `implementation_phase` → "planning", "implementing", "testing", "reviewing"
-- `pending_decision` → Description of what decision is awaited from user
 
 ---
 
