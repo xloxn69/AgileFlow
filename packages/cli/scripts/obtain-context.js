@@ -85,106 +85,158 @@ function safeExec(cmd) {
 // ============================================
 
 function generateSummary() {
-  let summary = '';
-  const title = commandName ? `AgileFlow Context [${commandName}]` : 'AgileFlow Context';
+  // Table formatting helpers
+  const COL1 = 22;  // Left column width
+  const COL2 = 36;  // Right column width
 
-  summary += `\n${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n`;
-  summary += `${C.magenta}${C.bold}   📋 CONTEXT SUMMARY (for quick reference)${C.reset}\n`;
-  summary += `${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n\n`;
-
-  summary += `${C.cyan}${C.bold}${title}${C.reset}\n`;
-  summary += `${C.dim}Generated: ${new Date().toISOString()}${C.reset}\n\n`;
-
-  // Git Status
-  const branch = safeExec('git branch --show-current') || 'unknown';
-  const status = safeExec('git status --short') || '';
-  const statusLines = status.split('\n').filter(Boolean);
-  const lastCommit = safeExec('git log -1 --format="%h %s"') || 'no commits';
-
-  summary += `${C.cyan}Git:${C.reset} ${C.green}${branch}${C.reset} | ${C.dim}${lastCommit}${C.reset}`;
-  if (statusLines.length > 0) {
-    summary += ` | ${C.yellow}${statusLines.length} uncommitted${C.reset}`;
-  } else {
-    summary += ` | ${C.green}clean${C.reset}`;
+  function pad(str, len) {
+    // Strip ANSI codes for length calculation
+    const plainStr = str.replace(/\x1b\[[0-9;]*m/g, '');
+    const padding = Math.max(0, len - plainStr.length);
+    return str + ' '.repeat(padding);
   }
-  summary += '\n';
 
-  // Status.json summary
+  function truncate(str, len) {
+    const plainStr = str.replace(/\x1b\[[0-9;]*m/g, '');
+    if (plainStr.length <= len) return str;
+    // Find where to cut (accounting for ANSI codes)
+    let plainCount = 0;
+    let cutIndex = 0;
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] === '\x1b') {
+        // Skip ANSI sequence
+        while (i < str.length && str[i] !== 'm') i++;
+        continue;
+      }
+      plainCount++;
+      if (plainCount >= len - 2) {
+        cutIndex = i + 1;
+        break;
+      }
+    }
+    return str.substring(0, cutIndex) + '..';
+  }
+
+  function row(left, right) {
+    return `${C.dim}│${C.reset} ${pad(left, COL1)}${C.dim}│${C.reset} ${pad(truncate(right, COL2 - 1), COL2)}${C.dim}│${C.reset}\n`;
+  }
+
+  function headerRow(content) {
+    return `${C.dim}│${C.reset} ${pad(content, COL1 + COL2 + 3)}${C.dim}│${C.reset}\n`;
+  }
+
+  const topBorder =    `${C.dim}╭${'─'.repeat(COL1 + 2)}┬${'─'.repeat(COL2 + 2)}╮${C.reset}\n`;
+  const midBorder =    `${C.dim}├${'─'.repeat(COL1 + 2)}┼${'─'.repeat(COL2 + 2)}┤${C.reset}\n`;
+  const bottomBorder = `${C.dim}╰${'─'.repeat(COL1 + 2)}┴${'─'.repeat(COL2 + 2)}╯${C.reset}\n`;
+
+  let summary = '\n';
+
+  // Gather data
+  const branch = safeExec('git branch --show-current') || 'unknown';
+  const lastCommitShort = safeExec('git log -1 --format="%h"') || '?';
+  const lastCommitMsg = safeExec('git log -1 --format="%s"') || 'no commits';
+  const statusLines = (safeExec('git status --short') || '').split('\n').filter(Boolean);
   const statusJson = safeReadJSON('docs/09-agents/status.json');
-  if (statusJson) {
-    const epics = statusJson.epics || {};
-    const stories = statusJson.stories || {};
-    const epicCount = Object.keys(epics).length;
-    const storyCount = Object.keys(stories).length;
+  const sessionState = safeReadJSON('docs/09-agents/session-state.json');
+  const researchFiles = safeLs('docs/10-research').filter(f => f.endsWith('.md') && f !== 'README.md').sort().reverse();
+  const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
 
-    const byStatus = {};
-    Object.entries(stories).forEach(([id, story]) => {
+  // Count stories by status
+  let byStatus = {};
+  let readyStories = [];
+  if (statusJson && statusJson.stories) {
+    Object.entries(statusJson.stories).forEach(([id, story]) => {
       const s = story.status || 'unknown';
       byStatus[s] = (byStatus[s] || 0) + 1;
+      if (s === 'ready') readyStories.push(id);
     });
-
-    summary += `${C.cyan}Stories:${C.reset} ${epicCount} epics, ${storyCount} stories`;
-    const statusParts = [];
-    if (byStatus['in-progress']) statusParts.push(`${C.yellow}${byStatus['in-progress']} in-progress${C.reset}`);
-    if (byStatus['ready']) statusParts.push(`${C.green}${byStatus['ready']} ready${C.reset}`);
-    if (byStatus['blocked']) statusParts.push(`${C.red}${byStatus['blocked']} blocked${C.reset}`);
-    if (byStatus['done']) statusParts.push(`${C.dim}${byStatus['done']} done${C.reset}`);
-    if (statusParts.length > 0) summary += ` (${statusParts.join(', ')})`;
-    summary += '\n';
-
-    // Ready stories
-    const readyStories = Object.entries(stories).filter(([_, s]) => s.status === 'ready');
-    if (readyStories.length > 0) {
-      summary += `${C.green}⭐ Ready:${C.reset} `;
-      summary += readyStories.map(([id, s]) => `${id}`).join(', ');
-      summary += '\n';
-    }
   }
 
-  // Session state
-  const sessionState = safeReadJSON('docs/09-agents/session-state.json');
+  // Session info
+  let sessionDuration = null;
+  let currentStory = null;
   if (sessionState && sessionState.current_session && sessionState.current_session.started_at) {
     const started = new Date(sessionState.current_session.started_at);
-    const duration = Math.round((Date.now() - started.getTime()) / 60000);
-    summary += `${C.cyan}Session:${C.reset} ${C.green}${duration} min${C.reset}`;
-    if (sessionState.current_session.current_story) {
-      summary += ` | Working on: ${C.yellow}${sessionState.current_session.current_story}${C.reset}`;
-    }
-    summary += '\n';
+    sessionDuration = Math.round((Date.now() - started.getTime()) / 60000);
+    currentStory = sessionState.current_session.current_story;
   }
 
-  // Key files existence
-  const keyFiles = [
-    { path: 'CLAUDE.md', label: 'CLAUDE.md' },
-    { path: 'README.md', label: 'README.md' },
-    { path: 'docs/04-architecture/README.md', label: 'arch/' },
-    { path: 'docs/02-practices/README.md', label: 'practices/' },
-  ];
+  // Build table
+  summary += topBorder;
 
-  summary += `${C.cyan}Key Files:${C.reset} `;
-  summary += keyFiles.map(f => {
+  // Header row with title
+  const title = commandName ? `📋 Context [${commandName}]` : '📋 Context Summary';
+  const branchInfo = `${C.green}${branch}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
+  summary += headerRow(`${C.magenta}${C.bold}${title}${C.reset}  ${branchInfo}`);
+
+  summary += midBorder;
+
+  // Story counts
+  summary += row(`${C.dim}In Progress${C.reset}`, byStatus['in-progress'] ? `${C.yellow}${byStatus['in-progress']}${C.reset}` : `${C.dim}0${C.reset}`);
+  summary += row(`${C.dim}Blocked${C.reset}`, byStatus['blocked'] ? `${C.red}${byStatus['blocked']}${C.reset}` : `${C.dim}0${C.reset}`);
+  summary += row(`${C.dim}Ready${C.reset}`, byStatus['ready'] ? `${C.green}${byStatus['ready']}${C.reset}` : `${C.dim}0${C.reset}`);
+  summary += row(`${C.dim}Completed${C.reset}`, byStatus['done'] ? `${C.dim}${byStatus['done']}${C.reset}` : `${C.dim}0${C.reset}`);
+
+  summary += midBorder;
+
+  // Git status
+  const uncommittedStatus = statusLines.length > 0
+    ? `${C.yellow}${statusLines.length} uncommitted${C.reset}`
+    : `${C.green}clean${C.reset}`;
+  summary += row(`${C.dim}Git status${C.reset}`, uncommittedStatus);
+
+  // Session
+  const sessionText = sessionDuration !== null
+    ? `${C.green}${sessionDuration} min${C.reset}`
+    : `${C.dim}no active session${C.reset}`;
+  summary += row(`${C.dim}Session${C.reset}`, sessionText);
+
+  // Current story
+  const storyText = currentStory
+    ? `${C.yellow}${currentStory}${C.reset}`
+    : `${C.dim}none${C.reset}`;
+  summary += row(`${C.dim}Working on${C.reset}`, storyText);
+
+  // Ready stories (if any)
+  if (readyStories.length > 0) {
+    summary += row(`${C.green}⭐ Ready${C.reset}`, readyStories.slice(0, 3).join(', '));
+  }
+
+  summary += midBorder;
+
+  // Key files
+  const keyFileChecks = [
+    { path: 'CLAUDE.md', label: 'CLAUDE' },
+    { path: 'README.md', label: 'README' },
+    { path: 'docs/04-architecture/README.md', label: 'arch' },
+    { path: 'docs/02-practices/README.md', label: 'practices' },
+  ];
+  const keyFileStatus = keyFileChecks.map(f => {
     const exists = fs.existsSync(f.path);
     return exists ? `${C.green}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
   }).join(' ');
-  summary += '\n';
+  summary += row(`${C.dim}Key files${C.reset}`, keyFileStatus);
 
-  // Research notes
-  const researchDir = 'docs/10-research';
-  const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
-  if (researchFiles.length > 0) {
-    researchFiles.sort().reverse();
-    summary += `${C.cyan}Research:${C.reset} ${researchFiles.length} notes, latest: ${C.dim}${researchFiles[0]}${C.reset}\n`;
-  }
+  // Research
+  const researchText = researchFiles.length > 0
+    ? `${researchFiles.length} notes`
+    : `${C.dim}none${C.reset}`;
+  summary += row(`${C.dim}Research${C.reset}`, researchText);
 
-  // Epic files
-  const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
-  if (epicFiles.length > 0) {
-    summary += `${C.cyan}Epics:${C.reset} ${epicFiles.map(f => C.dim + f.replace('.md', '') + C.reset).join(', ')}\n`;
-  }
+  // Epics
+  const epicText = epicFiles.length > 0
+    ? `${epicFiles.length} epics`
+    : `${C.dim}none${C.reset}`;
+  summary += row(`${C.dim}Epics${C.reset}`, epicText);
 
-  summary += `\n${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n`;
-  summary += `${C.dim}Full context continues below (Claude sees all)...${C.reset}\n`;
-  summary += `${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n\n`;
+  summary += midBorder;
+
+  // Last commit
+  summary += row(`${C.dim}Last commit${C.reset}`, `${C.dim}${lastCommitShort} ${truncate(lastCommitMsg, 28)}${C.reset}`);
+
+  summary += bottomBorder;
+
+  summary += `${C.dim}Full context continues below (Claude sees all)...${C.reset}\n\n`;
 
   return summary;
 }
