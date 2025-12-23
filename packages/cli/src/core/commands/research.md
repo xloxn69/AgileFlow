@@ -21,7 +21,7 @@ node scripts/obtain-context.js research
 **PURPOSE**: Immediately load full context before executing any logic.
 
 **ACTIONS**:
-1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/research.md` (this file) in its entirety
+1. Read this command file (`.agileflow/commands/research.md`) in its entirety
 2. Absorb all instructions, rules, and examples
 3. Proceed to execution phase with complete context
 

@@ -155,10 +155,10 @@ EXECUTION
 Run the validation script:
 ```bash
 # All domains
-bash .agileflow/scripts/validate-expertise.sh
+bash scripts/validate-expertise.sh
 
 # Specific domain
-bash .agileflow/scripts/validate-expertise.sh database
+bash scripts/validate-expertise.sh database
 ```
 
 Or manually check using Read tool on expertise files in:

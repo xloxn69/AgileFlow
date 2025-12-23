@@ -4,14 +4,6 @@ description: System health diagnostics
 
 # diagnose
 
-<!-- STEP 0: ACTIVATION -->
-<function_calls>
-<invoke name="Bash">
-<parameter name="command">node /home/coder/AgileFlow/scripts/activate-command.js diagnose</parameter>
-<parameter name="description">Activate diagnose command and show compact summary</parameter>
-</invoke>
-</function_calls>
-
 Run comprehensive AgileFlow system health checks to identify potential issues before they cause failures.
 
 ## Prompt
@@ -250,9 +242,9 @@ else
   echo "⚠️  Found $JSON_ERRORS issue(s) that need attention."
   echo ""
   echo "Next steps:"
-  echo "1. Fix JSON validation errors using: bash scripts/validate-json.sh <file>"
+  echo "1. Fix JSON validation errors using: jq empty <file> to check, then repair manually"
   echo "2. Add missing files to .gitignore if needed"
-  echo "3. Run archival if status.json is too large: bash scripts/archive-completed-stories.sh 7"
+  echo "3. Run archival if status.json is too large: bash scripts/archive-completed-stories.sh"
   echo "4. Re-run diagnostics after fixes: /agileflow:diagnose"
   exit 1
 fi

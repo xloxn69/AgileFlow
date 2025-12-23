@@ -24,7 +24,7 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 **PURPOSE**: Immediately load full context before executing any logic.
 
 **ACTIONS**:
-1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/status.md` (this file) in its entirety
+1. Read this command file (`.agileflow/commands/status.md`) in its entirety
 2. Absorb all instructions, rules, and examples
 3. Proceed to execution phase with complete context
 
@@ -48,7 +48,7 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - **Backup**: Restore from docs/09-agents/status.json.backup if validation fails
 - **Output**: Diff-first, then YES/NO confirmation
 - **Critical**: User text automatically escaped by jq
-- **Related**: docs/09-agents/status.json, bus/log.jsonl, scripts/validate-json.sh
+- **Related**: docs/09-agents/status.json, bus/log.jsonl
 <!-- COMPACT_SUMMARY_END -->
 
 ---
@@ -69,7 +69,7 @@ ACTIONS
    # Validate status.json after modification
    if ! jq empty docs/09-agents/status.json 2>/dev/null; then
      echo "❌ ERROR: status.json is now invalid JSON after update!"
-     echo "Run: bash scripts/validate-json.sh docs/09-agents/status.json"
+     echo "Fix: Use jq to validate and repair the JSON structure"
      exit 1
    fi
    ```

@@ -82,7 +82,7 @@ ACTIONS
    # Validate status.json after modification
    if ! jq empty docs/09-agents/status.json 2>/dev/null; then
      echo "❌ ERROR: status.json is now invalid JSON!"
-     echo "Run: bash scripts/validate-json.sh docs/09-agents/status.json"
+     echo "Fix: Use jq to validate and repair the JSON structure"
      exit 1
    fi
    ```

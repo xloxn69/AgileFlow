@@ -21,7 +21,7 @@ node scripts/obtain-context.js help
 **PURPOSE**: Immediately load full context before executing any logic.
 
 **ACTIONS**:
-1. Read `/home/coder/AgileFlow/packages/cli/src/core/commands/help.md` (this file) in its entirety
+1. Read this command file (`.agileflow/commands/help.md`) in its entirety
 2. Absorb all instructions, rules, and examples
 3. Proceed to execution phase with complete context
 
