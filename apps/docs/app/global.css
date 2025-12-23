@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  --primary: 24 75% 57%;
-  --primary-foreground: 24 10% 98%;
-  --accent: 24 75% 57%;
-  --accent-foreground: 24 10% 98%;
-  --ring: 24 75% 57%;
+  --fd-primary: 24 75% 57%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-accent: 24 75% 95%;
+  --fd-accent-foreground: 24 75% 30%;
+  --fd-ring: 24 75% 57%;
 }
 
 .dark {
-  --primary: 24 75% 60%;
-  --primary-foreground: 24 20% 10%;
-  --accent: 24 75% 60%;
-  --accent-foreground: 24 20% 10%;
-  --ring: 24 75% 60%;
+  --fd-primary: 24 75% 60%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-accent: 24 50% 20%;
+  --fd-accent-foreground: 24 75% 80%;
+  --fd-ring: 24 75% 60%;
 }
