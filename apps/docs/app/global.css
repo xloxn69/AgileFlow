@@ -184,15 +184,6 @@ p {
   letter-spacing: 0.05em;
 }
 
-/* Code blocks and inline code - Sans-serif like file trees */
-code, pre, kbd, samp,
-.prose code,
-.prose pre,
-[class*="codeblock"],
-[class*="code-block"] {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.875em;
-}
 
 /* Prose content styling */
 .prose {
