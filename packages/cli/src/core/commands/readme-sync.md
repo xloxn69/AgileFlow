@@ -78,7 +78,7 @@ Task(
     4. Build new '## Contents' section
     5. Show diff and ask for confirmation
     6. Update if approved",
-  subagent_type: "AgileFlow:readme-updater"
+  subagent_type: "agileflow:readme-updater"
 )
 ```
 

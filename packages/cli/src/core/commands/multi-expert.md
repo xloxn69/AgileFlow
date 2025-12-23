@@ -79,16 +79,16 @@ Analyze the user's question/task to identify relevant domains.
 
 | Domain | Keywords | Expert |
 |--------|----------|--------|
-| Database | schema, table, query, migration, SQL, model | AgileFlow:database |
-| API | endpoint, REST, GraphQL, route, controller, backend | AgileFlow:api |
-| UI | component, frontend, button, form, style, CSS | AgileFlow:ui |
-| Testing | test, spec, coverage, mock, assertion | AgileFlow:testing |
-| Security | auth, JWT, OAuth, vulnerability, XSS, CSRF | AgileFlow:security |
-| Performance | optimize, cache, latency, profiling, slow | AgileFlow:performance |
-| CI/CD | workflow, pipeline, build, deploy, GitHub Actions | AgileFlow:ci |
-| DevOps | infrastructure, Docker, Kubernetes, env | AgileFlow:devops |
-| Accessibility | ARIA, a11y, screen reader, WCAG | AgileFlow:accessibility |
-| Architecture | design, pattern, structure, decision | AgileFlow:adr-writer |
+| Database | schema, table, query, migration, SQL, model | agileflow:database |
+| API | endpoint, REST, GraphQL, route, controller, backend | agileflow:api |
+| UI | component, frontend, button, form, style, CSS | agileflow:ui |
+| Testing | test, spec, coverage, mock, assertion | agileflow:testing |
+| Security | auth, JWT, OAuth, vulnerability, XSS, CSRF | agileflow:security |
+| Performance | optimize, cache, latency, profiling, slow | agileflow:performance |
+| CI/CD | workflow, pipeline, build, deploy, GitHub Actions | agileflow:ci |
+| DevOps | infrastructure, Docker, Kubernetes, env | agileflow:devops |
+| Accessibility | ARIA, a11y, screen reader, WCAG | agileflow:accessibility |
+| Architecture | design, pattern, structure, decision | agileflow:adr-writer |
 
 **Selection Rules**:
 - Select 3-5 experts maximum (balance coverage vs. overhead)
@@ -116,21 +116,21 @@ Analyze this from your {domain1} perspective:
 4. Confidence level (High/Medium/Low) and why?
 
 Be specific with file paths and code references.",
-  subagent_type: "AgileFlow:{domain1}",
+  subagent_type: "agileflow:{domain1}",
   run_in_background: true
 )
 
 Task(
   description: "[Domain 2] analysis",
   prompt: "...",
-  subagent_type: "AgileFlow:{domain2}",
+  subagent_type: "agileflow:{domain2}",
   run_in_background: true
 )
 
 Task(
   description: "[Domain 3] analysis",
   prompt: "...",
-  subagent_type: "AgileFlow:{domain3}",
+  subagent_type: "agileflow:{domain3}",
   run_in_background: true
 )
 ```
@@ -220,10 +220,10 @@ Analyze all expert responses and synthesize:
 
 **Step 2 - Deploy Experts**:
 ```
-Task(subagent_type: "AgileFlow:security", prompt: "Analyze auth security...", run_in_background: true)
-Task(subagent_type: "AgileFlow:api", prompt: "Analyze auth API implementation...", run_in_background: true)
-Task(subagent_type: "AgileFlow:testing", prompt: "Analyze auth test coverage...", run_in_background: true)
-Task(subagent_type: "AgileFlow:database", prompt: "Analyze credential storage...", run_in_background: true)
+Task(subagent_type: "agileflow:security", prompt: "Analyze auth security...", run_in_background: true)
+Task(subagent_type: "agileflow:api", prompt: "Analyze auth API implementation...", run_in_background: true)
+Task(subagent_type: "agileflow:testing", prompt: "Analyze auth test coverage...", run_in_background: true)
+Task(subagent_type: "agileflow:database", prompt: "Analyze credential storage...", run_in_background: true)
 ```
 
 **Step 3 - Collect & Synthesize**:

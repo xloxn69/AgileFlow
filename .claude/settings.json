@@ -4,8 +4,7 @@
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(node scripts/get-env.js:*)",
-      "Bash(bash scripts/archive-completed-stories.sh:*)",
+      "Bash(node scripts/agileflow-welcome.js:*)",
       "Bash(bash scripts/agileflow-statusline.sh:*)"
     ],
     "deny": [],
@@ -23,16 +22,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/get-env.js"
-          }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
+            "command": "node scripts/agileflow-welcome.js"
+          },
           {
             "type": "command",
-            "command": "bash scripts/archive-completed-stories.sh"
+            "command": "bash scripts/archive-completed-stories.sh --quiet"
           }
         ]
       }
@@ -44,6 +38,17 @@
           {
             "type": "command",
             "command": "bash scripts/precompact-context.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/agileflow-stop.sh"
           }
         ]
       }

@@ -436,7 +436,7 @@ AGENT SPAWNING - FOR COMPLEX TASKS
 Task(
   description: "Brief 3-5 word description",
   prompt: "Detailed task for the agent",
-  subagent_type: "AgileFlow:<agent-name>"
+  subagent_type: "agileflow:<agent-name>"
 )
 ```
 
@@ -449,14 +449,14 @@ Use `run_in_background: true` when tasks can run in parallel:
 Task(
   description: "Create API endpoint",
   prompt: "Implement /api/users endpoint with CRUD operations",
-  subagent_type: "AgileFlow:api",
+  subagent_type: "agileflow:api",
   run_in_background: true
 )
 
 Task(
   description: "Create user form component",
   prompt: "Build UserForm component with validation",
-  subagent_type: "AgileFlow:ui",
+  subagent_type: "agileflow:ui",
   run_in_background: true
 )
 
@@ -475,8 +475,8 @@ Task(
 User: "Add user profile feature with API and UI"
 
 Babysit thinking:
-- This has API work → spawn AgileFlow:api
-- This has UI work → spawn AgileFlow:ui
+- This has API work → spawn agileflow:api
+- This has UI work → spawn agileflow:ui
 - These are independent → run in parallel!
 
 Babysit action:
@@ -492,17 +492,17 @@ Babysit action:
 
 | Complex Task Type | Agent to Spawn | Async? |
 |-------------------|----------------|--------|
-| Multi-file UI feature | `AgileFlow:ui` | Yes if API also needed |
-| New API endpoints | `AgileFlow:api` | Yes if UI also needed |
-| Schema design/migrations | `AgileFlow:database` | Usually yes |
-| Test suite creation | `AgileFlow:testing` | Yes alongside impl |
-| CI/CD setup | `AgileFlow:ci` | Yes |
-| Security audit/impl | `AgileFlow:security` | Yes |
-| Performance optimization | `AgileFlow:performance` | Yes |
-| Large documentation | `AgileFlow:documentation` | Yes |
-| Technical research | `AgileFlow:research` | Yes |
-| Epic/story breakdown | `AgileFlow:epic-planner` | No (need result) |
-| Architecture decisions | `AgileFlow:adr-writer` | Yes |
+| Multi-file UI feature | `agileflow:ui` | Yes if API also needed |
+| New API endpoints | `agileflow:api` | Yes if UI also needed |
+| Schema design/migrations | `agileflow:database` | Usually yes |
+| Test suite creation | `agileflow:testing` | Yes alongside impl |
+| CI/CD setup | `agileflow:ci` | Yes |
+| Security audit/impl | `agileflow:security` | Yes |
+| Performance optimization | `agileflow:performance` | Yes |
+| Large documentation | `agileflow:documentation` | Yes |
+| Technical research | `agileflow:research` | Yes |
+| Epic/story breakdown | `agileflow:epic-planner` | No (need result) |
+| Architecture decisions | `agileflow:adr-writer` | Yes |
 
 **PARALLEL PATTERNS** (for complex multi-domain tasks):
 - `api` + `ui` → Full-stack feature in parallel
@@ -537,29 +537,29 @@ When analyzing the user's request, identify keywords and spawn the matching expe
 
 | Keywords Detected | Expert to Spawn | Reason |
 |-------------------|-----------------|--------|
-| database, schema, migration, SQL, query, table, model | `AgileFlow:database` | Database schema/query work |
-| API, endpoint, REST, GraphQL, route, controller | `AgileFlow:api` | Backend API work |
-| component, UI, frontend, button, form, style, CSS | `AgileFlow:ui` | Frontend/UI work |
-| test, spec, coverage, mock, fixture, assertion | `AgileFlow:testing` | Test implementation |
-| CI, workflow, GitHub Actions, pipeline, build | `AgileFlow:ci` | CI/CD configuration |
-| deploy, infrastructure, Docker, Kubernetes, env | `AgileFlow:devops` | DevOps/deployment |
-| security, auth, JWT, OAuth, vulnerability, XSS | `AgileFlow:security` | Security implementation |
-| performance, optimize, cache, latency, profiling | `AgileFlow:performance` | Performance optimization |
-| accessibility, ARIA, a11y, screen reader, WCAG | `AgileFlow:accessibility` | Accessibility work |
-| docs, README, documentation, JSDoc, comment | `AgileFlow:documentation` | Documentation work |
-| refactor, cleanup, technical debt, code smell | `AgileFlow:refactor` | Code refactoring |
-| mobile, React Native, Flutter, iOS, Android | `AgileFlow:mobile` | Mobile development |
-| webhook, integration, third-party, API client | `AgileFlow:integrations` | Third-party integrations |
-| analytics, tracking, metrics, event, dashboard | `AgileFlow:analytics` | Analytics implementation |
-| logging, monitoring, alerting, observability | `AgileFlow:monitoring` | Monitoring/observability |
-| compliance, GDPR, HIPAA, audit, privacy | `AgileFlow:compliance` | Compliance work |
-| data migration, ETL, transform, import, export | `AgileFlow:datamigration` | Data migration |
-| design system, tokens, theme, Figma, mockup | `AgileFlow:design` | Design system work |
-| product, requirements, user story, AC, acceptance | `AgileFlow:product` | Product/requirements |
-| QA, quality, regression, test plan, release | `AgileFlow:qa` | QA/quality assurance |
-| ADR, architecture decision, trade-off | `AgileFlow:adr-writer` | Architecture decisions |
-| research, investigate, best practices, docs | `AgileFlow:research` | Technical research |
-| epic, story, breakdown, planning, estimate | `AgileFlow:epic-planner` | Epic/story planning |
+| database, schema, migration, SQL, query, table, model | `agileflow:database` | Database schema/query work |
+| API, endpoint, REST, GraphQL, route, controller | `agileflow:api` | Backend API work |
+| component, UI, frontend, button, form, style, CSS | `agileflow:ui` | Frontend/UI work |
+| test, spec, coverage, mock, fixture, assertion | `agileflow:testing` | Test implementation |
+| CI, workflow, GitHub Actions, pipeline, build | `agileflow:ci` | CI/CD configuration |
+| deploy, infrastructure, Docker, Kubernetes, env | `agileflow:devops` | DevOps/deployment |
+| security, auth, JWT, OAuth, vulnerability, XSS | `agileflow:security` | Security implementation |
+| performance, optimize, cache, latency, profiling | `agileflow:performance` | Performance optimization |
+| accessibility, ARIA, a11y, screen reader, WCAG | `agileflow:accessibility` | Accessibility work |
+| docs, README, documentation, JSDoc, comment | `agileflow:documentation` | Documentation work |
+| refactor, cleanup, technical debt, code smell | `agileflow:refactor` | Code refactoring |
+| mobile, React Native, Flutter, iOS, Android | `agileflow:mobile` | Mobile development |
+| webhook, integration, third-party, API client | `agileflow:integrations` | Third-party integrations |
+| analytics, tracking, metrics, event, dashboard | `agileflow:analytics` | Analytics implementation |
+| logging, monitoring, alerting, observability | `agileflow:monitoring` | Monitoring/observability |
+| compliance, GDPR, HIPAA, audit, privacy | `agileflow:compliance` | Compliance work |
+| data migration, ETL, transform, import, export | `agileflow:datamigration` | Data migration |
+| design system, tokens, theme, Figma, mockup | `agileflow:design` | Design system work |
+| product, requirements, user story, AC, acceptance | `agileflow:product` | Product/requirements |
+| QA, quality, regression, test plan, release | `agileflow:qa` | QA/quality assurance |
+| ADR, architecture decision, trade-off | `agileflow:adr-writer` | Architecture decisions |
+| research, investigate, best practices, docs | `agileflow:research` | Technical research |
+| epic, story, breakdown, planning, estimate | `agileflow:epic-planner` | Epic/story planning |
 
 **AUTO-SPAWN WORKFLOW**:
 
@@ -582,7 +582,7 @@ Babysit Response:
 Task(
   description: "Add sessions table",
   prompt: "FIRST: Read your expertise file at packages/cli/src/core/experts/database/expertise.yaml to understand current schema patterns. Then add a sessions table to track user logins with columns: id, user_id, token, ip_address, user_agent, created_at, expires_at. Follow existing schema conventions.",
-  subagent_type: "AgileFlow:database"
+  subagent_type: "agileflow:database"
 )
 ```
 

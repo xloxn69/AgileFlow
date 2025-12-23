@@ -101,7 +101,7 @@ class ClaudeCodeSetup extends BaseIdeSetup {
       true // Inject dynamic content for top-level commands
     );
 
-    // Also install agents (they're in a separate directory in agileflowDir)
+    // Also install agents as slash commands (.claude/commands/agileflow/agents/)
     const agentsSource = path.join(agileflowDir, 'agents');
     const agentsTargetDir = path.join(agileflowCommandsDir, 'agents');
     const agentResult = await this.installCommandsRecursive(
@@ -110,6 +110,17 @@ class ClaudeCodeSetup extends BaseIdeSetup {
       agileflowDir,
       false // No dynamic content for agents
     );
+
+    // ALSO install agents as spawnable subagents (.claude/agents/agileflow/)
+    // This allows Task tool to spawn them with subagent_type: "agileflow:ui"
+    const spawnableAgentsDir = path.join(claudeDir, 'agents', 'agileflow');
+    await this.installCommandsRecursive(
+      agentsSource,
+      spawnableAgentsDir,
+      agileflowDir,
+      false
+    );
+    console.log(chalk.dim(`    - Spawnable agents: .claude/agents/agileflow/`));
 
     const totalCommands = commandResult.commands + agentResult.commands;
     const totalSubdirs = commandResult.subdirs + (agentResult.commands > 0 ? 1 : 0) + agentResult.subdirs;
