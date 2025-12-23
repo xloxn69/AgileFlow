@@ -12,7 +12,6 @@ const config: Config = {
   ],
   presets: [
     createPreset({
-      cssPrefix: 'fuma-',
       addGlobalColors: false,
     }),
   ],
