@@ -3,18 +3,23 @@
  * obtain-context.js
  *
  * Gathers all project context in a single execution for any AgileFlow command or agent.
- * Optionally registers the command/agent for PreCompact context preservation.
- * Outputs structured summary to reduce tool calls and startup time.
+ *
+ * SMART OUTPUT STRATEGY:
+ * - Calculates summary character count dynamically
+ * - Shows (30K - summary_chars) of full content first
+ * - Then shows the summary (so user sees it at their display cutoff)
+ * - Then shows rest of full content (for Claude)
  *
  * Usage:
  *   node scripts/obtain-context.js              # Just gather context
  *   node scripts/obtain-context.js babysit      # Gather + register 'babysit'
- *   node scripts/obtain-context.js mentor       # Gather + register 'mentor'
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+
+const DISPLAY_LIMIT = 30000; // Claude Code's Bash tool display limit
 
 // Optional: Register command for PreCompact context preservation
 const commandName = process.argv[2];
@@ -75,235 +80,307 @@ function safeExec(cmd) {
   }
 }
 
-function section(title) {
-  console.log(`\n${C.cyan}${C.bold}═══ ${title} ═══${C.reset}`);
-}
-
-function subsection(title) {
-  console.log(`${C.dim}───${C.reset} ${title}`);
-}
-
 // ============================================
-// MAIN CONTEXT GATHERING
+// GENERATE SUMMARY (calculated first for positioning)
 // ============================================
 
-const title = commandName ? `AgileFlow Context [${commandName}]` : 'AgileFlow Context';
-console.log(`${C.magenta}${C.bold}${title}${C.reset}`);
-console.log(`${C.dim}Generated: ${new Date().toISOString()}${C.reset}`);
+function generateSummary() {
+  let summary = '';
+  const title = commandName ? `AgileFlow Context [${commandName}]` : 'AgileFlow Context';
 
-// 1. GIT STATUS
-section('Git Status');
-const branch = safeExec('git branch --show-current') || 'unknown';
-const status = safeExec('git status --short') || '';
-const statusLines = status.split('\n').filter(Boolean);
-const lastCommit = safeExec('git log -1 --format="%h %s"') || 'no commits';
+  summary += `\n${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n`;
+  summary += `${C.magenta}${C.bold}   📋 CONTEXT SUMMARY (for quick reference)${C.reset}\n`;
+  summary += `${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n\n`;
 
-console.log(`Branch: ${C.green}${branch}${C.reset}`);
-console.log(`Last commit: ${C.dim}${lastCommit}${C.reset}`);
-if (statusLines.length > 0) {
-  console.log(`Uncommitted: ${C.yellow}${statusLines.length} file(s)${C.reset}`);
-  statusLines.slice(0, 10).forEach(line => console.log(`  ${C.dim}${line}${C.reset}`));
-  if (statusLines.length > 10) console.log(`  ${C.dim}... and ${statusLines.length - 10} more${C.reset}`);
-} else {
-  console.log(`Uncommitted: ${C.green}clean${C.reset}`);
-}
+  summary += `${C.cyan}${C.bold}${title}${C.reset}\n`;
+  summary += `${C.dim}Generated: ${new Date().toISOString()}${C.reset}\n\n`;
 
-// 2. STATUS.JSON - Full Content (this is crucial context)
-section('Status.json (Full Content)');
-const statusJsonPath = 'docs/09-agents/status.json';
-const statusJsonRaw = safeRead(statusJsonPath);
-const statusJson = safeReadJSON(statusJsonPath);
+  // Git Status
+  const branch = safeExec('git branch --show-current') || 'unknown';
+  const status = safeExec('git status --short') || '';
+  const statusLines = status.split('\n').filter(Boolean);
+  const lastCommit = safeExec('git log -1 --format="%h %s"') || 'no commits';
 
-if (statusJson) {
-  // Show the full JSON content - it's usually not that big and super valuable
-  console.log(`${C.dim}${'─'.repeat(50)}${C.reset}`);
-  console.log(JSON.stringify(statusJson, null, 2).split('\n').map(l => `  ${l}`).join('\n'));
-  console.log(`${C.dim}${'─'.repeat(50)}${C.reset}`);
-
-  // Also provide a quick summary for at-a-glance view
-  subsection('Quick Summary');
-  const epics = statusJson.epics || {};
-  const stories = statusJson.stories || {};
-  const epicCount = Object.keys(epics).length;
-  const storyCount = Object.keys(stories).length;
-
-  // Count by status
-  const byStatus = {};
-  Object.entries(stories).forEach(([id, story]) => {
-    const s = story.status || 'unknown';
-    byStatus[s] = (byStatus[s] || 0) + 1;
-  });
-
-  console.log(`  Epics: ${epicCount}, Stories: ${storyCount}`);
-  Object.entries(byStatus).forEach(([status, count]) => {
-    const color = status === 'in-progress' ? C.yellow :
-                  status === 'ready' ? C.green :
-                  status === 'blocked' ? C.red :
-                  status === 'done' ? C.dim : C.reset;
-    console.log(`    ${color}${status}${C.reset}: ${count}`);
-  });
-
-  // Highlight READY stories (actionable)
-  const readyStories = Object.entries(stories).filter(([_, s]) => s.status === 'ready');
-  if (readyStories.length > 0) {
-    console.log(`\n  ${C.green}⭐ Ready to Implement:${C.reset}`);
-    readyStories.forEach(([id, story]) => {
-      console.log(`    ${id}: ${story.title}`);
-    });
+  summary += `${C.cyan}Git:${C.reset} ${C.green}${branch}${C.reset} | ${C.dim}${lastCommit}${C.reset}`;
+  if (statusLines.length > 0) {
+    summary += ` | ${C.yellow}${statusLines.length} uncommitted${C.reset}`;
+  } else {
+    summary += ` | ${C.green}clean${C.reset}`;
   }
-} else {
-  console.log(`${C.dim}No status.json found${C.reset}`);
+  summary += '\n';
+
+  // Status.json summary
+  const statusJson = safeReadJSON('docs/09-agents/status.json');
+  if (statusJson) {
+    const epics = statusJson.epics || {};
+    const stories = statusJson.stories || {};
+    const epicCount = Object.keys(epics).length;
+    const storyCount = Object.keys(stories).length;
+
+    const byStatus = {};
+    Object.entries(stories).forEach(([id, story]) => {
+      const s = story.status || 'unknown';
+      byStatus[s] = (byStatus[s] || 0) + 1;
+    });
+
+    summary += `${C.cyan}Stories:${C.reset} ${epicCount} epics, ${storyCount} stories`;
+    const statusParts = [];
+    if (byStatus['in-progress']) statusParts.push(`${C.yellow}${byStatus['in-progress']} in-progress${C.reset}`);
+    if (byStatus['ready']) statusParts.push(`${C.green}${byStatus['ready']} ready${C.reset}`);
+    if (byStatus['blocked']) statusParts.push(`${C.red}${byStatus['blocked']} blocked${C.reset}`);
+    if (byStatus['done']) statusParts.push(`${C.dim}${byStatus['done']} done${C.reset}`);
+    if (statusParts.length > 0) summary += ` (${statusParts.join(', ')})`;
+    summary += '\n';
+
+    // Ready stories
+    const readyStories = Object.entries(stories).filter(([_, s]) => s.status === 'ready');
+    if (readyStories.length > 0) {
+      summary += `${C.green}⭐ Ready:${C.reset} `;
+      summary += readyStories.map(([id, s]) => `${id}`).join(', ');
+      summary += '\n';
+    }
+  }
+
+  // Session state
+  const sessionState = safeReadJSON('docs/09-agents/session-state.json');
+  if (sessionState && sessionState.current_session && sessionState.current_session.started_at) {
+    const started = new Date(sessionState.current_session.started_at);
+    const duration = Math.round((Date.now() - started.getTime()) / 60000);
+    summary += `${C.cyan}Session:${C.reset} ${C.green}${duration} min${C.reset}`;
+    if (sessionState.current_session.current_story) {
+      summary += ` | Working on: ${C.yellow}${sessionState.current_session.current_story}${C.reset}`;
+    }
+    summary += '\n';
+  }
+
+  // Key files existence
+  const keyFiles = [
+    { path: 'CLAUDE.md', label: 'CLAUDE.md' },
+    { path: 'README.md', label: 'README.md' },
+    { path: 'docs/04-architecture/README.md', label: 'arch/' },
+    { path: 'docs/02-practices/README.md', label: 'practices/' },
+  ];
+
+  summary += `${C.cyan}Key Files:${C.reset} `;
+  summary += keyFiles.map(f => {
+    const exists = fs.existsSync(f.path);
+    return exists ? `${C.green}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
+  }).join(' ');
+  summary += '\n';
+
+  // Research notes
+  const researchDir = 'docs/10-research';
+  const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
+  if (researchFiles.length > 0) {
+    researchFiles.sort().reverse();
+    summary += `${C.cyan}Research:${C.reset} ${researchFiles.length} notes, latest: ${C.dim}${researchFiles[0]}${C.reset}\n`;
+  }
+
+  // Epic files
+  const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
+  if (epicFiles.length > 0) {
+    summary += `${C.cyan}Epics:${C.reset} ${epicFiles.map(f => C.dim + f.replace('.md', '') + C.reset).join(', ')}\n`;
+  }
+
+  summary += `\n${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n`;
+  summary += `${C.dim}Full context continues below (Claude sees all)...${C.reset}\n`;
+  summary += `${C.magenta}${C.bold}${'═'.repeat(60)}${C.reset}\n\n`;
+
+  return summary;
 }
 
-// 3. SESSION STATE
-section('Session State');
-const sessionState = safeReadJSON('docs/09-agents/session-state.json');
-if (sessionState) {
-  const current = sessionState.current_session;
-  if (current && current.started_at) {
-    const started = new Date(current.started_at);
-    const duration = Math.round((Date.now() - started.getTime()) / 60000);
-    console.log(`Active session: ${C.green}${duration} min${C.reset}`);
-    if (current.current_story) {
-      console.log(`Working on: ${C.yellow}${current.current_story}${C.reset}`);
+// ============================================
+// GENERATE FULL CONTENT
+// ============================================
+
+function generateFullContent() {
+  let content = '';
+
+  const title = commandName ? `AgileFlow Context [${commandName}]` : 'AgileFlow Context';
+  content += `${C.magenta}${C.bold}${title}${C.reset}\n`;
+  content += `${C.dim}Generated: ${new Date().toISOString()}${C.reset}\n`;
+
+  // 1. GIT STATUS
+  content += `\n${C.cyan}${C.bold}═══ Git Status ═══${C.reset}\n`;
+  const branch = safeExec('git branch --show-current') || 'unknown';
+  const status = safeExec('git status --short') || '';
+  const statusLines = status.split('\n').filter(Boolean);
+  const lastCommit = safeExec('git log -1 --format="%h %s"') || 'no commits';
+
+  content += `Branch: ${C.green}${branch}${C.reset}\n`;
+  content += `Last commit: ${C.dim}${lastCommit}${C.reset}\n`;
+  if (statusLines.length > 0) {
+    content += `Uncommitted: ${C.yellow}${statusLines.length} file(s)${C.reset}\n`;
+    statusLines.slice(0, 10).forEach(line => content += `  ${C.dim}${line}${C.reset}\n`);
+    if (statusLines.length > 10) content += `  ${C.dim}... and ${statusLines.length - 10} more${C.reset}\n`;
+  } else {
+    content += `Uncommitted: ${C.green}clean${C.reset}\n`;
+  }
+
+  // 2. STATUS.JSON - Full Content
+  content += `\n${C.cyan}${C.bold}═══ Status.json (Full Content) ═══${C.reset}\n`;
+  const statusJsonPath = 'docs/09-agents/status.json';
+  const statusJson = safeReadJSON(statusJsonPath);
+
+  if (statusJson) {
+    content += `${C.dim}${'─'.repeat(50)}${C.reset}\n`;
+    content += JSON.stringify(statusJson, null, 2).split('\n').map(l => `  ${l}`).join('\n') + '\n';
+    content += `${C.dim}${'─'.repeat(50)}${C.reset}\n`;
+  } else {
+    content += `${C.dim}No status.json found${C.reset}\n`;
+  }
+
+  // 3. SESSION STATE
+  content += `\n${C.cyan}${C.bold}═══ Session State ═══${C.reset}\n`;
+  const sessionState = safeReadJSON('docs/09-agents/session-state.json');
+  if (sessionState) {
+    const current = sessionState.current_session;
+    if (current && current.started_at) {
+      const started = new Date(current.started_at);
+      const duration = Math.round((Date.now() - started.getTime()) / 60000);
+      content += `Active session: ${C.green}${duration} min${C.reset}\n`;
+      if (current.current_story) {
+        content += `Working on: ${C.yellow}${current.current_story}${C.reset}\n`;
+      }
+    } else {
+      content += `${C.dim}No active session${C.reset}\n`;
+    }
+    if (sessionState.active_command) {
+      content += `Active command: ${C.cyan}${sessionState.active_command.name}${C.reset}\n`;
     }
   } else {
-    console.log(`${C.dim}No active session${C.reset}`);
+    content += `${C.dim}No session-state.json found${C.reset}\n`;
   }
 
-  const last = sessionState.last_session;
-  if (last && last.ended_at) {
-    console.log(`Last session: ${C.dim}${last.ended_at} (${last.duration_minutes || '?'} min)${C.reset}`);
-    if (last.summary) console.log(`  Summary: ${C.dim}${last.summary}${C.reset}`);
-  }
-
-  // Active command (for context preservation)
-  if (sessionState.active_command) {
-    console.log(`Active command: ${C.cyan}${sessionState.active_command.name}${C.reset}`);
-  }
-} else {
-  console.log(`${C.dim}No session-state.json found${C.reset}`);
-}
-
-// 4. DOCS STRUCTURE
-section('Documentation');
-const docsDir = 'docs';
-const docFolders = safeLs(docsDir).filter(f => {
-  try {
-    return fs.statSync(path.join(docsDir, f)).isDirectory();
-  } catch {
-    return false;
-  }
-});
-
-if (docFolders.length > 0) {
-  docFolders.forEach(folder => {
-    const folderPath = path.join(docsDir, folder);
-    const files = safeLs(folderPath);
-    const mdFiles = files.filter(f => f.endsWith('.md'));
-    const jsonFiles = files.filter(f => f.endsWith('.json') || f.endsWith('.jsonl'));
-
-    let info = [];
-    if (mdFiles.length > 0) info.push(`${mdFiles.length} md`);
-    if (jsonFiles.length > 0) info.push(`${jsonFiles.length} json`);
-
-    console.log(`  ${C.dim}${folder}/${C.reset} ${info.length > 0 ? `(${info.join(', ')})` : ''}`);
-  });
-}
-
-// 5. RESEARCH NOTES - Read full content of most recent
-section('Research Notes');
-const researchDir = 'docs/10-research';
-const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
-if (researchFiles.length > 0) {
-  // Sort by date (filename starts with YYYYMMDD) - newest first
-  researchFiles.sort().reverse();
-
-  // List all research files
-  subsection('Available Research Notes');
-  researchFiles.forEach(file => {
-    console.log(`  ${C.dim}${file}${C.reset}`);
+  // 4. DOCS STRUCTURE
+  content += `\n${C.cyan}${C.bold}═══ Documentation ═══${C.reset}\n`;
+  const docsDir = 'docs';
+  const docFolders = safeLs(docsDir).filter(f => {
+    try { return fs.statSync(path.join(docsDir, f)).isDirectory(); } catch { return false; }
   });
 
-  // Read the most recent research note in FULL (no truncation)
-  const mostRecentFile = researchFiles[0];
-  const mostRecentPath = path.join(researchDir, mostRecentFile);
-  const mostRecentContent = safeRead(mostRecentPath);
-
-  if (mostRecentContent) {
-    console.log(`\n${C.green}📄 Most Recent: ${mostRecentFile}${C.reset}`);
-    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
-    // Full content - no truncation
-    console.log(mostRecentContent);
-    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
-  }
-} else {
-  console.log(`${C.dim}No research notes${C.reset}`);
-}
-
-// 6. BUS MESSAGES (last 5)
-section('Recent Agent Messages');
-const busPath = 'docs/09-agents/bus/log.jsonl';
-const busContent = safeRead(busPath);
-if (busContent) {
-  const lines = busContent.trim().split('\n').filter(Boolean);
-  const recent = lines.slice(-5);
-  if (recent.length > 0) {
-    recent.forEach(line => {
-      try {
-        const msg = JSON.parse(line);
-        const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '?';
-        console.log(`  ${C.dim}[${time}]${C.reset} ${msg.from || '?'}: ${msg.type || msg.message || '?'}`);
-      } catch {
-        console.log(`  ${C.dim}${line.substring(0, 80)}...${C.reset}`);
-      }
+  if (docFolders.length > 0) {
+    docFolders.forEach(folder => {
+      const folderPath = path.join(docsDir, folder);
+      const files = safeLs(folderPath);
+      const mdFiles = files.filter(f => f.endsWith('.md'));
+      const jsonFiles = files.filter(f => f.endsWith('.json') || f.endsWith('.jsonl'));
+      let info = [];
+      if (mdFiles.length > 0) info.push(`${mdFiles.length} md`);
+      if (jsonFiles.length > 0) info.push(`${jsonFiles.length} json`);
+      content += `  ${C.dim}${folder}/${C.reset} ${info.length > 0 ? `(${info.join(', ')})` : ''}\n`;
     });
-  } else {
-    console.log(`${C.dim}No messages${C.reset}`);
   }
-} else {
-  console.log(`${C.dim}No bus log found${C.reset}`);
-}
 
-// 7. KEY FILES - Read FULL content (no truncation - full context is valuable)
-section('Key Context Files');
+  // 5. RESEARCH NOTES - List + Full content of most recent
+  content += `\n${C.cyan}${C.bold}═══ Research Notes ═══${C.reset}\n`;
+  const researchDir = 'docs/10-research';
+  const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
+  if (researchFiles.length > 0) {
+    researchFiles.sort().reverse();
+    content += `${C.dim}───${C.reset} Available Research Notes\n`;
+    researchFiles.forEach(file => content += `  ${C.dim}${file}${C.reset}\n`);
 
-const keyFilesToRead = [
-  { path: 'CLAUDE.md', label: 'CLAUDE.md (Project Instructions)' },
-  { path: 'README.md', label: 'README.md (Project Overview)' },
-  { path: 'docs/04-architecture/README.md', label: 'Architecture Index' },
-  { path: 'docs/02-practices/README.md', label: 'Practices Index' },
-  { path: 'docs/08-project/roadmap.md', label: 'Roadmap' },
-];
+    const mostRecentFile = researchFiles[0];
+    const mostRecentPath = path.join(researchDir, mostRecentFile);
+    const mostRecentContent = safeRead(mostRecentPath);
 
-keyFilesToRead.forEach(({ path: filePath, label }) => {
-  const content = safeRead(filePath);
-  if (content) {
-    console.log(`\n${C.green}✓ ${label}${C.reset} ${C.dim}(${filePath})${C.reset}`);
-    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
-    // Full content - no truncation
-    console.log(content);
-    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
+    if (mostRecentContent) {
+      content += `\n${C.green}📄 Most Recent: ${mostRecentFile}${C.reset}\n`;
+      content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
+      content += mostRecentContent + '\n';
+      content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
+    }
   } else {
-    console.log(`${C.dim}○ ${label} (not found)${C.reset}`);
+    content += `${C.dim}No research notes${C.reset}\n`;
   }
-});
 
-// Also show Claude settings existence
-const settingsExists = fs.existsSync('.claude/settings.json');
-console.log(`\n  ${settingsExists ? `${C.green}✓${C.reset}` : `${C.dim}○${C.reset}`} .claude/settings.json`);
+  // 6. BUS MESSAGES
+  content += `\n${C.cyan}${C.bold}═══ Recent Agent Messages ═══${C.reset}\n`;
+  const busPath = 'docs/09-agents/bus/log.jsonl';
+  const busContent = safeRead(busPath);
+  if (busContent) {
+    const lines = busContent.trim().split('\n').filter(Boolean);
+    const recent = lines.slice(-5);
+    if (recent.length > 0) {
+      recent.forEach(line => {
+        try {
+          const msg = JSON.parse(line);
+          const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '?';
+          content += `  ${C.dim}[${time}]${C.reset} ${msg.from || '?'}: ${msg.type || msg.message || '?'}\n`;
+        } catch {
+          content += `  ${C.dim}${line.substring(0, 80)}...${C.reset}\n`;
+        }
+      });
+    } else {
+      content += `${C.dim}No messages${C.reset}\n`;
+    }
+  } else {
+    content += `${C.dim}No bus log found${C.reset}\n`;
+  }
 
-// 8. EPICS FOLDER
-section('Epic Files');
-const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
-if (epicFiles.length > 0) {
-  epicFiles.forEach(file => {
-    console.log(`  ${C.dim}${file}${C.reset}`);
+  // 7. KEY FILES - Full content
+  content += `\n${C.cyan}${C.bold}═══ Key Context Files (Full Content) ═══${C.reset}\n`;
+
+  const keyFilesToRead = [
+    { path: 'CLAUDE.md', label: 'CLAUDE.md (Project Instructions)' },
+    { path: 'README.md', label: 'README.md (Project Overview)' },
+    { path: 'docs/04-architecture/README.md', label: 'Architecture Index' },
+    { path: 'docs/02-practices/README.md', label: 'Practices Index' },
+    { path: 'docs/08-project/roadmap.md', label: 'Roadmap' },
+  ];
+
+  keyFilesToRead.forEach(({ path: filePath, label }) => {
+    const fileContent = safeRead(filePath);
+    if (fileContent) {
+      content += `\n${C.green}✓ ${label}${C.reset} ${C.dim}(${filePath})${C.reset}\n`;
+      content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
+      content += fileContent + '\n';
+      content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
+    } else {
+      content += `${C.dim}○ ${label} (not found)${C.reset}\n`;
+    }
   });
-} else {
-  console.log(`${C.dim}No epic files${C.reset}`);
+
+  const settingsExists = fs.existsSync('.claude/settings.json');
+  content += `\n  ${settingsExists ? `${C.green}✓${C.reset}` : `${C.dim}○${C.reset}`} .claude/settings.json\n`;
+
+  // 8. EPICS FOLDER
+  content += `\n${C.cyan}${C.bold}═══ Epic Files ═══${C.reset}\n`;
+  const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
+  if (epicFiles.length > 0) {
+    epicFiles.forEach(file => content += `  ${C.dim}${file}${C.reset}\n`);
+  } else {
+    content += `${C.dim}No epic files${C.reset}\n`;
+  }
+
+  // FOOTER
+  content += `\n${C.dim}─────────────────────────────────────────${C.reset}\n`;
+  content += `${C.dim}Context gathered in single execution. Claude has full context.${C.reset}\n`;
+
+  return content;
 }
 
-// FOOTER
-console.log(`\n${C.dim}─────────────────────────────────────────${C.reset}`);
-console.log(`${C.dim}Context gathered in single execution. Ready for task selection.${C.reset}\n`);
+// ============================================
+// MAIN: Output with smart summary positioning
+// ============================================
+
+const summary = generateSummary();
+const fullContent = generateFullContent();
+
+const summaryLength = summary.length;
+const cutoffPoint = DISPLAY_LIMIT - summaryLength;
+
+if (fullContent.length <= cutoffPoint) {
+  // Full content fits before summary - just output everything
+  console.log(fullContent);
+  console.log(summary);
+} else {
+  // Split: content before cutoff + summary + content after cutoff
+  const contentBefore = fullContent.substring(0, cutoffPoint);
+  const contentAfter = fullContent.substring(cutoffPoint);
+
+  console.log(contentBefore);
+  console.log(summary);
+  console.log(contentAfter);
+}
