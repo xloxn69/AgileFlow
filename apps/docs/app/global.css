@@ -138,8 +138,8 @@
 
 /* Headings - Serif font like Claude Code docs */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
-  font-weight: 400;
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif !important;
+  font-weight: 400 !important;
 }
 
 h1 {
