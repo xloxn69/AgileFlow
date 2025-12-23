@@ -1,6 +1,6 @@
 {
   "name": "agileflow",
-  "version": "2.43.0",
+  "version": "2.44.0",
   "description": "AI-driven agile development system for Claude Code, Cursor, Windsurf, and more",
   "keywords": [
     "agile",
@@ -31,6 +31,7 @@
   "files": [
     "tools/",
     "src/",
+    "scripts/",
     "LICENSE",
     "README.md"
   ],
