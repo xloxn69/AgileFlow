@@ -16,9 +16,8 @@ export default function Layout({ children }: { children: ReactNode}) {
             enableSystem: true,
           }}
         >
-          <div className="bg-background text-foreground">
-            <Banner />
-            <DocsLayout
+          <Banner />
+          <DocsLayout
             tree={source.pageTree}
             {...baseOptions()}
             sidebar={{
@@ -29,7 +28,6 @@ export default function Layout({ children }: { children: ReactNode}) {
           >
             {children}
           </DocsLayout>
-          </div>
         </RootProvider>
       </body>
     </html>
