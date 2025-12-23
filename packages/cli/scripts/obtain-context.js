@@ -46,6 +46,11 @@ const C = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   magenta: '\x1b[35m',
+  blue: '\x1b[34m',
+  brightCyan: '\x1b[96m',
+  brightYellow: '\x1b[93m',
+  brightGreen: '\x1b[92m',
+  brand: '\x1b[38;2;232;104;58m', // AgileFlow brand orange
 };
 
 function safeRead(filePath) {
@@ -140,7 +145,8 @@ function generateSummary() {
   }
 
   const divider = () => `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
-  const topBorder = `${C.dim}${box.tl}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(R + 2)}${box.tr}${C.reset}\n`;
+  const headerTopBorder = `${C.dim}${box.tl}${box.h.repeat(W + 2)}${box.tr}${C.reset}\n`;
+  const headerDivider = `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
   const bottomBorder = `${C.dim}${box.bl}${box.h.repeat(L + 2)}${box.bT}${box.h.repeat(R + 2)}${box.br}${C.reset}\n`;
 
   // Gather data
@@ -175,41 +181,41 @@ function generateSummary() {
 
   // Build table
   let summary = '\n';
-  summary += topBorder;
+  summary += headerTopBorder;
 
-  // Header row with title
-  const title = commandName ? `📋 Context [${commandName}]` : '📋 Context Summary';
+  // Header row (full width, no column divider)
+  const title = commandName ? `Context [${commandName}]` : 'Context Summary';
   const branchColor = branch === 'main' ? C.green : branch.startsWith('fix') ? C.red : C.cyan;
-  const maxBranchLen = R - 12; // Leave room for commit hash
+  const maxBranchLen = 20;
   const branchDisplay = branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
-  const header = `${C.magenta}${C.bold}${title}${C.reset}  ${branchColor}${branchDisplay}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
-  summary += `${C.dim}${box.v}${C.reset} ${pad(header, W - 1)} ${C.dim}${box.v}${C.reset}\n`;
+  const header = `${C.brand}${C.bold}${title}${C.reset}  ${branchColor}${branchDisplay}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
+  summary += `${C.dim}${box.v}${C.reset} ${pad(header, W)} ${C.dim}${box.v}${C.reset}\n`;
 
-  summary += divider();
+  summary += headerDivider;
 
-  // Story counts
-  summary += row('In Progress', byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0', C.dim, byStatus['in-progress'] ? C.yellow : C.dim);
-  summary += row('Blocked', byStatus['blocked'] ? `${byStatus['blocked']}` : '0', C.dim, byStatus['blocked'] ? C.red : C.dim);
-  summary += row('Ready', byStatus['ready'] ? `${byStatus['ready']}` : '0', C.dim, byStatus['ready'] ? C.green : C.dim);
-  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', C.dim, byStatus['done'] ? C.dim : C.dim);
+  // Story counts with colorful labels
+  summary += row('In Progress', byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0', C.yellow, byStatus['in-progress'] ? C.brightYellow : C.dim);
+  summary += row('Blocked', byStatus['blocked'] ? `${byStatus['blocked']}` : '0', C.red, byStatus['blocked'] ? C.red : C.dim);
+  summary += row('Ready', byStatus['ready'] ? `${byStatus['ready']}` : '0', C.cyan, byStatus['ready'] ? C.brightCyan : C.dim);
+  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', C.green, byStatus['done'] ? C.green : C.dim);
 
   summary += divider();
 
   // Git status
-  const uncommittedStatus = statusLines.length > 0 ? `${statusLines.length} uncommitted` : 'clean';
-  summary += row('Git status', uncommittedStatus, C.dim, statusLines.length > 0 ? C.yellow : C.green);
+  const uncommittedStatus = statusLines.length > 0 ? `${statusLines.length} uncommitted` : '✓ clean';
+  summary += row('Git', uncommittedStatus, C.blue, statusLines.length > 0 ? C.yellow : C.green);
 
   // Session
-  const sessionText = sessionDuration !== null ? `${sessionDuration} min` : 'no active session';
-  summary += row('Session', sessionText, C.dim, sessionDuration !== null ? C.green : C.dim);
+  const sessionText = sessionDuration !== null ? `${sessionDuration} min active` : 'no session';
+  summary += row('Session', sessionText, C.blue, sessionDuration !== null ? C.brightGreen : C.dim);
 
   // Current story
   const storyText = currentStory ? currentStory : 'none';
-  summary += row('Working on', storyText, C.dim, currentStory ? C.yellow : C.dim);
+  summary += row('Working on', storyText, C.blue, currentStory ? C.brightYellow : C.dim);
 
   // Ready stories (if any)
   if (readyStories.length > 0) {
-    summary += row('⭐ Ready', readyStories.slice(0, 3).join(', '), C.green, '');
+    summary += row('⭐ Up Next', readyStories.slice(0, 3).join(', '), C.brightCyan, C.cyan);
   }
 
   summary += divider();
@@ -223,22 +229,22 @@ function generateSummary() {
   ];
   const keyFileStatus = keyFileChecks.map(f => {
     const exists = fs.existsSync(f.path);
-    return exists ? `${C.green}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
+    return exists ? `${C.brightGreen}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
   }).join(' ');
-  summary += row('Key files', keyFileStatus, C.dim, '');
+  summary += row('Key files', keyFileStatus, C.magenta, '');
 
   // Research
   const researchText = researchFiles.length > 0 ? `${researchFiles.length} notes` : 'none';
-  summary += row('Research', researchText, C.dim, researchFiles.length > 0 ? '' : C.dim);
+  summary += row('Research', researchText, C.magenta, researchFiles.length > 0 ? C.cyan : C.dim);
 
   // Epics
   const epicText = epicFiles.length > 0 ? `${epicFiles.length} epics` : 'none';
-  summary += row('Epics', epicText, C.dim, epicFiles.length > 0 ? '' : C.dim);
+  summary += row('Epics', epicText, C.magenta, epicFiles.length > 0 ? C.cyan : C.dim);
 
   summary += divider();
 
   // Last commit
-  summary += row('Last commit', `${lastCommitShort} ${lastCommitMsg}`, C.dim, C.dim);
+  summary += row('Last commit', `${C.yellow}${lastCommitShort}${C.reset} ${lastCommitMsg}`, C.dim, '');
 
   summary += bottomBorder;
 
