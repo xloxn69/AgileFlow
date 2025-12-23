@@ -33,7 +33,8 @@ logs/
 
 # Internal Development (not for users)
 CLAUDE.md
-scripts/
+/scripts/
+!packages/cli/scripts/
 
 # Playwright MCP (local dev tool)
 .playwright-mcp/

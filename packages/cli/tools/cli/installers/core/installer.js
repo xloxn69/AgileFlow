@@ -51,6 +51,22 @@ class Installer {
   }
 
   /**
+   * Clean up existing content directories before installing.
+   * Removes agents/, commands/, skills/, templates/ but preserves _cfg/ and config.yaml.
+   * @param {string} agileflowDir - AgileFlow installation directory
+   */
+  async cleanup(agileflowDir) {
+    const dirsToRemove = ['agents', 'commands', 'skills', 'templates'];
+
+    for (const dir of dirsToRemove) {
+      const dirPath = path.join(agileflowDir, dir);
+      if (await fs.pathExists(dirPath)) {
+        await fs.remove(dirPath);
+      }
+    }
+  }
+
+  /**
    * Install AgileFlow to a project
    * @param {Object} config - Installation configuration
    * @param {Object} options - Installation options
@@ -91,10 +107,13 @@ class Installer {
         backupPath = await this.createBackup(agileflowDir, cfgDir, timestamp);
       }
 
-      const fileIndex = existingFileIndex || { schema: 1, files: {} };
-      if (!fileIndex.files || typeof fileIndex.files !== 'object') {
-        fileIndex.files = {};
-      }
+      // Clean up existing content directories to remove stale files
+      // This happens AFTER backup so we can restore if needed
+      spinner.text = 'Cleaning up old content...';
+      await this.cleanup(agileflowDir);
+
+      // Reset file index since we removed all content - start fresh
+      const fileIndex = { schema: 1, files: {} };
 
       const fileOps = {
         created: 0,
@@ -131,6 +150,10 @@ class Installer {
           timestamp,
         });
       }
+
+      // Copy essential scripts to user's scripts/ directory
+      spinner.text = 'Installing scripts...';
+      await this.installScripts(directory, { force: effectiveForce });
 
       // Create config.yaml
       spinner.text = 'Creating configuration...';
@@ -573,6 +596,76 @@ class Installer {
     }
 
     return counts;
+  }
+
+  /**
+   * Install all scripts from packages/cli/scripts/ to user's project scripts/ directory
+   * Copies everything automatically - no manual list to maintain
+   * @param {string} directory - Project directory
+   * @param {Object} options - Installation options
+   * @param {boolean} options.force - Overwrite existing scripts
+   */
+  async installScripts(directory, options = {}) {
+    const { force = false } = options;
+    const scriptsSourceDir = path.join(this.packageRoot, 'scripts');
+    const scriptsDestDir = path.join(directory, 'scripts');
+
+    // Skip if source scripts directory doesn't exist
+    if (!(await fs.pathExists(scriptsSourceDir))) {
+      return;
+    }
+
+    // Ensure destination scripts directory exists
+    await fs.ensureDir(scriptsDestDir);
+
+    // Copy all scripts recursively
+    await this.copyScriptsRecursive(scriptsSourceDir, scriptsDestDir, force);
+  }
+
+  /**
+   * Recursively copy scripts from source to destination
+   * @param {string} srcDir - Source directory
+   * @param {string} destDir - Destination directory
+   * @param {boolean} force - Overwrite existing files
+   */
+  async copyScriptsRecursive(srcDir, destDir, force) {
+    const entries = await fs.readdir(srcDir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const srcPath = path.join(srcDir, entry.name);
+      const destPath = path.join(destDir, entry.name);
+
+      if (entry.isDirectory()) {
+        // Recursively copy subdirectories
+        await fs.ensureDir(destPath);
+        await this.copyScriptsRecursive(srcPath, destPath, force);
+      } else {
+        // Copy file
+        const destExists = await fs.pathExists(destPath);
+
+        // If destination exists and not forcing, check if identical
+        if (destExists && !force) {
+          const srcContent = await fs.readFile(srcPath);
+          const destContent = await fs.readFile(destPath);
+          if (srcContent.equals(destContent)) {
+            continue; // Identical, skip
+          }
+          // Different content but not forcing, skip to preserve user changes
+          continue;
+        }
+
+        // Copy the file
+        await fs.copy(srcPath, destPath);
+
+        // Make executable on Unix for shell scripts and JS files
+        if (process.platform !== 'win32') {
+          const ext = path.extname(entry.name).toLowerCase();
+          if (['.sh', '.js'].includes(ext)) {
+            await fs.chmod(destPath, 0o755);
+          }
+        }
+      }
+    }
   }
 
   /**
