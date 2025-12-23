@@ -185,6 +185,11 @@ p {
 }
 
 
+/* Code blocks - JetBrains Mono like Claude Code docs */
+code, pre, kbd, samp {
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
 /* Prose content styling */
 .prose {
   line-height: 1.65;
