@@ -13,31 +13,33 @@ import { Toaster } from "@/registry/bases/radix/ui/sonner"
 
 import "@/styles/globals.css"
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://agileflow.dev"
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
+  metadataBase: new URL(APP_URL),
   description: siteConfig.description,
-  keywords: ["Next.js", "React", "Tailwind CSS", "Components", "shadcn"],
+  keywords: ["Next.js", "React", "Tailwind CSS", "Components", "AgileFlow"],
   authors: [
     {
-      name: "shadcn",
-      url: "https://shadcn.com",
+      name: "AgileFlow",
+      url: "https://agileflow.dev",
     },
   ],
-  creator: "shadcn",
+  creator: "AgileFlow",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: process.env.NEXT_PUBLIC_APP_URL!,
+    url: APP_URL,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`,
+        url: `${APP_URL}/opengraph-image.png`,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -48,8 +50,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [`${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`],
-    creator: "@shadcn",
+    images: [`${APP_URL}/opengraph-image.png`],
+    creator: "@agileflow",
   },
   icons: {
     icon: "/favicon.ico",
