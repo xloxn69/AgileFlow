@@ -1,5 +1,5 @@
 ---
-name: devops
+name: agileflow-devops
 description: DevOps and automation specialist. Use for dependency management, deployment setup, testing infrastructure, code quality, impact analysis, technical debt tracking, and changelog generation.
 tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 model: haiku

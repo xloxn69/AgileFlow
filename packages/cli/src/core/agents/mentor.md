@@ -1,5 +1,5 @@
 ---
-name: mentor
+name: agileflow-mentor
 description: End-to-end implementation mentor. Use for guiding feature implementation from idea to PR, researching approaches, creating missing epics/stories, and orchestrating multi-step workflows.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: sonnet

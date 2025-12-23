@@ -1,5 +1,5 @@
 ---
-name: product
+name: agileflow-product
 description: Product specialist for requirements analysis, user stories, acceptance criteria clarity, and feature validation before epic planning.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

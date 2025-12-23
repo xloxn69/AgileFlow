@@ -1,5 +1,5 @@
 ---
-name: qa
+name: agileflow-qa
 description: QA specialist for test strategy, test planning, quality metrics, regression testing, and release readiness validation.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

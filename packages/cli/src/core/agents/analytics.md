@@ -1,5 +1,5 @@
 ---
-name: analytics
+name: agileflow-analytics
 description: Analytics specialist for event tracking, data analysis, metrics dashboards, user behavior analysis, and data-driven insights.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

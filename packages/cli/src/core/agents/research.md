@@ -1,5 +1,5 @@
 ---
-name: research
+name: agileflow-research
 description: Research specialist. Use for gathering technical information, creating research prompts for ChatGPT, saving research notes, and maintaining the research index.
 tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch
 model: haiku

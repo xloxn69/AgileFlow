@@ -1,5 +1,5 @@
 ---
-name: design
+name: agileflow-design
 description: Design specialist for UI/UX design systems, visual design, design patterns, design documentation, and design-driven development.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

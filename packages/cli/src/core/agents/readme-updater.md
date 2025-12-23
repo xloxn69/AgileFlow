@@ -1,5 +1,5 @@
 ---
-name: readme-updater
+name: agileflow-readme-updater
 description: README specialist for auditing and updating all documentation files across project folders.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

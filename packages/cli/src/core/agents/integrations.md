@@ -1,5 +1,5 @@
 ---
-name: integrations
+name: agileflow-integrations
 description: Integration specialist for third-party APIs, webhooks, payment processors, external services, and API connectivity.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

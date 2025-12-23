@@ -242,14 +242,14 @@ For features needing extra user input, spawn specialized agents:
 ```javascript
 // CI/CD - needs provider and commands
 Task({
-  subagent_type: "agileflow:configuration:ci",
+  subagent_type: "agileflow-configuration:ci",
   description: "Configure CI/CD",
   prompt: "Set up CI/CD workflow. Ask for provider (GitHub Actions, GitLab CI, CircleCI) and commands."
 })
 
 // Git config - needs remote URL
 Task({
-  subagent_type: "agileflow:configuration:git-config",
+  subagent_type: "agileflow-configuration:git-config",
   description: "Configure git",
   prompt: "Set up git remote. Ask for URL."
 })

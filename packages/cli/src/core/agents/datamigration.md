@@ -1,5 +1,5 @@
 ---
-name: datamigration
+name: agileflow-datamigration
 description: Data migration specialist for zero-downtime migrations, data validation, rollback strategies, and large-scale data movements.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

@@ -1,5 +1,5 @@
 ---
-name: testing
+name: agileflow-testing
 description: Testing specialist for test strategy, test patterns, coverage optimization, and comprehensive test suite design (different from CI infrastructure).
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

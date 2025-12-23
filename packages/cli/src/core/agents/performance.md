@@ -1,5 +1,5 @@
 ---
-name: performance
+name: agileflow-performance
 description: Performance specialist for optimization, profiling, benchmarking, scalability, and performance-critical features.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

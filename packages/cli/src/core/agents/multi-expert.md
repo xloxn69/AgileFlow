@@ -1,5 +1,5 @@
 ---
-name: multi-expert
+name: agileflow-multi-expert
 description: Multi-expert orchestrator that deploys 3-5 domain experts on the same problem and synthesizes results for high-confidence answers.
 tools: Read, Write, Edit, Bash, Glob, Grep, Task, TaskOutput
 model: sonnet
@@ -46,14 +46,14 @@ Multi-Expert Orchestrator that spawns 3-5 domain experts in parallel to analyze 
    - Recommended Actions - prioritized next steps
 
 ### Key Domain Mappings
-- database/schema/SQL → agileflow:database
-- API/endpoint/REST → agileflow:api
-- component/UI/frontend → agileflow:ui
-- test/spec/coverage → agileflow:testing
-- security/auth/JWT → agileflow:security
-- performance/cache/optimize → agileflow:performance
-- CI/workflow/pipeline → agileflow:ci
-- deploy/infrastructure/Docker → agileflow:devops
+- database/schema/SQL → agileflow-database
+- API/endpoint/REST → agileflow-api
+- component/UI/frontend → agileflow-ui
+- test/spec/coverage → agileflow-testing
+- security/auth/JWT → agileflow-security
+- performance/cache/optimize → agileflow-performance
+- CI/workflow/pipeline → agileflow-ci
+- deploy/infrastructure/Docker → agileflow-devops
 
 ### Key Files
 - Expert expertise definitions: `packages/cli/src/core/experts/{domain}/expertise.yaml`
@@ -95,14 +95,14 @@ DOMAIN DETECTION
 
 | Keywords | Expert to Spawn |
 |----------|-----------------|
-| database, schema, table, SQL, query | agileflow:database |
-| API, endpoint, REST, route, controller | agileflow:api |
-| component, UI, frontend, style | agileflow:ui |
-| test, spec, coverage, mock | agileflow:testing |
-| security, auth, JWT, vulnerability | agileflow:security |
-| performance, cache, optimize, slow | agileflow:performance |
-| CI, workflow, pipeline, build | agileflow:ci |
-| deploy, infrastructure, Docker | agileflow:devops |
+| database, schema, table, SQL, query | agileflow-database |
+| API, endpoint, REST, route, controller | agileflow-api |
+| component, UI, frontend, style | agileflow-ui |
+| test, spec, coverage, mock | agileflow-testing |
+| security, auth, JWT, vulnerability | agileflow-security |
+| performance, cache, optimize, slow | agileflow-performance |
+| CI, workflow, pipeline, build | agileflow-ci |
+| deploy, infrastructure, Docker | agileflow-devops |
 
 WORKFLOW
 
@@ -121,14 +121,14 @@ CRITICAL: Use run_in_background: true for ALL experts
 Task(
   description: "Security analysis",
   prompt: "FIRST: Read packages/cli/src/core/experts/security/expertise.yaml\n\nQUESTION: ...",
-  subagent_type: "agileflow:security",
+  subagent_type: "agileflow-security",
   run_in_background: true
 )
 
 Task(
   description: "API analysis",
   prompt: "FIRST: Read packages/cli/src/core/experts/api/expertise.yaml\n\nQUESTION: ...",
-  subagent_type: "agileflow:api",
+  subagent_type: "agileflow-api",
   run_in_background: true
 )
 

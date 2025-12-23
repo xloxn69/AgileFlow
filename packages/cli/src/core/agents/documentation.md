@@ -1,5 +1,5 @@
 ---
-name: documentation
+name: agileflow-documentation
 description: Documentation specialist for technical docs, API documentation, user guides, tutorials, and documentation maintenance.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

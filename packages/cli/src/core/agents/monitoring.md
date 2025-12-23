@@ -1,5 +1,5 @@
 ---
-name: monitoring
+name: agileflow-monitoring
 description: Monitoring specialist for observability, logging strategies, alerting rules, metrics dashboards, and production visibility.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

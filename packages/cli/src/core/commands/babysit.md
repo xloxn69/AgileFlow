@@ -3,7 +3,7 @@ description: Interactive mentor for end-to-end feature implementation
 compact_context:
   priority: critical
   preserve_rules:
-    - "ACTIVE COMMAND: /agileflow:babysit - Interactive mentor mode"
+    - "ACTIVE COMMAND: /agileflow-babysit - Interactive mentor mode"
     - "MUST use AskUserQuestion tool for ALL user decisions (task selection, approach choices, next steps)"
     - "MUST track progress with TodoWrite tool throughout the session"
     - "MUST end EVERY response with AskUserQuestion presenting next step options"
@@ -16,7 +16,7 @@ compact_context:
     - pending_decision
 ---
 
-# /agileflow:babysit
+# /agileflow-babysit
 
 End-to-end mentor for implementing features.
 
@@ -165,7 +165,7 @@ GOAL
   3) Analyze architecture and plan small steps; assess implementation approach; propose file changes; write code & tests safely.
   4) Update docs/09-agents/status.json and bus/log.jsonl (valid JSON).
   5) Prepare PR description and next actions.
-  6) Integrate research (docs/10-research); if gaps exist, suggest /agileflow:context MODE=research and save results.
+  6) Integrate research (docs/10-research); if gaps exist, suggest /agileflow-context MODE=research and save results.
   7) Ensure minimal CI exists; offer to create/update .github/workflows/ci.yml or fix it if failing.
 
 🔴 ⚠️ MANDATORY CONTEXT LOADING ON FIRST RUN ⚠️ 🔴
@@ -296,11 +296,11 @@ After loading context, analyze status.json, roadmap, and README TODOs to generat
     },
     {
       "label": "Research: JWT best practices",
-      "description": "📚 Prep work for Auth epic | Save time debugging later | /agileflow:context MODE=research"
+      "description": "📚 Prep work for Auth epic | Save time debugging later | /agileflow-context MODE=research"
     },
     {
       "label": "Create new epic/story",
-      "description": "💡 Start something new | Use /agileflow:epic or /agileflow:story"
+      "description": "💡 Start something new | Use /agileflow-epic or /agileflow-story"
     },
     {
       "label": "Other",
@@ -319,11 +319,11 @@ After loading context, analyze status.json, roadmap, and README TODOs to generat
 - **Limit to 5-6 options** - More than 6 creates decision paralysis
 - **"Other" is always last** - Custom input option
 
-**If research is missing/outdated**: Include research option with tip about /agileflow:context MODE=research
+**If research is missing/outdated**: Include research option with tip about /agileflow-context MODE=research
 
 RESEARCH INTEGRATION
 
-**💡 TIP: `/agileflow:context MODE=research` CAN HELP AVOID DEBUGGING HEADACHES**
+**💡 TIP: `/agileflow-context MODE=research` CAN HELP AVOID DEBUGGING HEADACHES**
 
 Consider using MODE=research when implementing new features - it can help you avoid common pitfalls, security issues, and save time debugging by learning from best practices upfront.
 
@@ -343,7 +343,7 @@ Consider using MODE=research when implementing new features - it can help you av
 
 **INTEGRATION WITH EXISTING RESEARCH**:
 - If a relevant note exists in docs/10-research: summarize 5–8 bullets + path; apply caveats to the plan.
-- If none/stale (>90 days)/conflicting: **IMMEDIATELY** propose /agileflow:context MODE=research TOPIC="..."; after the user pastes results, offer to save:
+- If none/stale (>90 days)/conflicting: **IMMEDIATELY** propose /agileflow-context MODE=research TOPIC="..."; after the user pastes results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources) and update docs/10-research/README.md.
 
 DEFINITION OF READY
@@ -352,7 +352,7 @@ DEFINITION OF READY
 - ✓ Test stub at docs/07-testing/test-cases/<US_ID>.md
 - ✓ Dependencies resolved and documented
 - ✓ Previous Story Insights included (if applicable to epic)
-- ✓ Story validated via `/agileflow:story-validate` (all checks passing)
+- ✓ Story validated via `/agileflow-story-validate` (all checks passing)
 
 ARCHITECTURE CONTEXT GUIDANCE
 
@@ -436,7 +436,7 @@ AGENT SPAWNING - FOR COMPLEX TASKS
 Task(
   description: "Brief 3-5 word description",
   prompt: "Detailed task for the agent",
-  subagent_type: "agileflow:<agent-name>"
+  subagent_type: "agileflow-<agent-name>"
 )
 ```
 
@@ -449,14 +449,14 @@ Use `run_in_background: true` when tasks can run in parallel:
 Task(
   description: "Create API endpoint",
   prompt: "Implement /api/users endpoint with CRUD operations",
-  subagent_type: "agileflow:api",
+  subagent_type: "agileflow-api",
   run_in_background: true
 )
 
 Task(
   description: "Create user form component",
   prompt: "Build UserForm component with validation",
-  subagent_type: "agileflow:ui",
+  subagent_type: "agileflow-ui",
   run_in_background: true
 )
 
@@ -475,8 +475,8 @@ Task(
 User: "Add user profile feature with API and UI"
 
 Babysit thinking:
-- This has API work → spawn agileflow:api
-- This has UI work → spawn agileflow:ui
+- This has API work → spawn agileflow-api
+- This has UI work → spawn agileflow-ui
 - These are independent → run in parallel!
 
 Babysit action:
@@ -492,17 +492,17 @@ Babysit action:
 
 | Complex Task Type | Agent to Spawn | Async? |
 |-------------------|----------------|--------|
-| Multi-file UI feature | `agileflow:ui` | Yes if API also needed |
-| New API endpoints | `agileflow:api` | Yes if UI also needed |
-| Schema design/migrations | `agileflow:database` | Usually yes |
-| Test suite creation | `agileflow:testing` | Yes alongside impl |
-| CI/CD setup | `agileflow:ci` | Yes |
-| Security audit/impl | `agileflow:security` | Yes |
-| Performance optimization | `agileflow:performance` | Yes |
-| Large documentation | `agileflow:documentation` | Yes |
-| Technical research | `agileflow:research` | Yes |
-| Epic/story breakdown | `agileflow:epic-planner` | No (need result) |
-| Architecture decisions | `agileflow:adr-writer` | Yes |
+| Multi-file UI feature | `agileflow-ui` | Yes if API also needed |
+| New API endpoints | `agileflow-api` | Yes if UI also needed |
+| Schema design/migrations | `agileflow-database` | Usually yes |
+| Test suite creation | `agileflow-testing` | Yes alongside impl |
+| CI/CD setup | `agileflow-ci` | Yes |
+| Security audit/impl | `agileflow-security` | Yes |
+| Performance optimization | `agileflow-performance` | Yes |
+| Large documentation | `agileflow-documentation` | Yes |
+| Technical research | `agileflow-research` | Yes |
+| Epic/story breakdown | `agileflow-epic-planner` | No (need result) |
+| Architecture decisions | `agileflow-adr-writer` | Yes |
 
 **PARALLEL PATTERNS** (for complex multi-domain tasks):
 - `api` + `ui` → Full-stack feature in parallel
@@ -537,29 +537,29 @@ When analyzing the user's request, identify keywords and spawn the matching expe
 
 | Keywords Detected | Expert to Spawn | Reason |
 |-------------------|-----------------|--------|
-| database, schema, migration, SQL, query, table, model | `agileflow:database` | Database schema/query work |
-| API, endpoint, REST, GraphQL, route, controller | `agileflow:api` | Backend API work |
-| component, UI, frontend, button, form, style, CSS | `agileflow:ui` | Frontend/UI work |
-| test, spec, coverage, mock, fixture, assertion | `agileflow:testing` | Test implementation |
-| CI, workflow, GitHub Actions, pipeline, build | `agileflow:ci` | CI/CD configuration |
-| deploy, infrastructure, Docker, Kubernetes, env | `agileflow:devops` | DevOps/deployment |
-| security, auth, JWT, OAuth, vulnerability, XSS | `agileflow:security` | Security implementation |
-| performance, optimize, cache, latency, profiling | `agileflow:performance` | Performance optimization |
-| accessibility, ARIA, a11y, screen reader, WCAG | `agileflow:accessibility` | Accessibility work |
-| docs, README, documentation, JSDoc, comment | `agileflow:documentation` | Documentation work |
-| refactor, cleanup, technical debt, code smell | `agileflow:refactor` | Code refactoring |
-| mobile, React Native, Flutter, iOS, Android | `agileflow:mobile` | Mobile development |
-| webhook, integration, third-party, API client | `agileflow:integrations` | Third-party integrations |
-| analytics, tracking, metrics, event, dashboard | `agileflow:analytics` | Analytics implementation |
-| logging, monitoring, alerting, observability | `agileflow:monitoring` | Monitoring/observability |
-| compliance, GDPR, HIPAA, audit, privacy | `agileflow:compliance` | Compliance work |
-| data migration, ETL, transform, import, export | `agileflow:datamigration` | Data migration |
-| design system, tokens, theme, Figma, mockup | `agileflow:design` | Design system work |
-| product, requirements, user story, AC, acceptance | `agileflow:product` | Product/requirements |
-| QA, quality, regression, test plan, release | `agileflow:qa` | QA/quality assurance |
-| ADR, architecture decision, trade-off | `agileflow:adr-writer` | Architecture decisions |
-| research, investigate, best practices, docs | `agileflow:research` | Technical research |
-| epic, story, breakdown, planning, estimate | `agileflow:epic-planner` | Epic/story planning |
+| database, schema, migration, SQL, query, table, model | `agileflow-database` | Database schema/query work |
+| API, endpoint, REST, GraphQL, route, controller | `agileflow-api` | Backend API work |
+| component, UI, frontend, button, form, style, CSS | `agileflow-ui` | Frontend/UI work |
+| test, spec, coverage, mock, fixture, assertion | `agileflow-testing` | Test implementation |
+| CI, workflow, GitHub Actions, pipeline, build | `agileflow-ci` | CI/CD configuration |
+| deploy, infrastructure, Docker, Kubernetes, env | `agileflow-devops` | DevOps/deployment |
+| security, auth, JWT, OAuth, vulnerability, XSS | `agileflow-security` | Security implementation |
+| performance, optimize, cache, latency, profiling | `agileflow-performance` | Performance optimization |
+| accessibility, ARIA, a11y, screen reader, WCAG | `agileflow-accessibility` | Accessibility work |
+| docs, README, documentation, JSDoc, comment | `agileflow-documentation` | Documentation work |
+| refactor, cleanup, technical debt, code smell | `agileflow-refactor` | Code refactoring |
+| mobile, React Native, Flutter, iOS, Android | `agileflow-mobile` | Mobile development |
+| webhook, integration, third-party, API client | `agileflow-integrations` | Third-party integrations |
+| analytics, tracking, metrics, event, dashboard | `agileflow-analytics` | Analytics implementation |
+| logging, monitoring, alerting, observability | `agileflow-monitoring` | Monitoring/observability |
+| compliance, GDPR, HIPAA, audit, privacy | `agileflow-compliance` | Compliance work |
+| data migration, ETL, transform, import, export | `agileflow-datamigration` | Data migration |
+| design system, tokens, theme, Figma, mockup | `agileflow-design` | Design system work |
+| product, requirements, user story, AC, acceptance | `agileflow-product` | Product/requirements |
+| QA, quality, regression, test plan, release | `agileflow-qa` | QA/quality assurance |
+| ADR, architecture decision, trade-off | `agileflow-adr-writer` | Architecture decisions |
+| research, investigate, best practices, docs | `agileflow-research` | Technical research |
+| epic, story, breakdown, planning, estimate | `agileflow-epic-planner` | Epic/story planning |
 
 **AUTO-SPAWN WORKFLOW**:
 
@@ -582,7 +582,7 @@ Babysit Response:
 Task(
   description: "Add sessions table",
   prompt: "FIRST: Read your expertise file at packages/cli/src/core/experts/database/expertise.yaml to understand current schema patterns. Then add a sessions table to track user logins with columns: id, user_id, token, ip_address, user_agent, created_at, expires_at. Follow existing schema conventions.",
-  subagent_type: "agileflow:database"
+  subagent_type: "agileflow-database"
 )
 ```
 
@@ -615,7 +615,7 @@ Response:
 
 **WHEN TO USE MULTI-EXPERT ORCHESTRATION**:
 
-For complex cross-domain tasks, use `/agileflow:multi-expert` instead of single agent:
+For complex cross-domain tasks, use `/agileflow-multi-expert` instead of single agent:
 
 | Scenario | Use Multi-Expert |
 |----------|------------------|
@@ -634,7 +634,7 @@ For complex cross-domain tasks, use `/agileflow:multi-expert` instead of single 
 
 **How to invoke**:
 ```
-SlashCommand("/agileflow:multi-expert <question>")
+SlashCommand("/agileflow-multi-expert <question>")
 ```
 
 Or spawn directly:
@@ -729,7 +729,7 @@ CI INTEGRATION
 - On request, run tests/build/lint and summarize.
 
 IMPLEMENTATION FLOW
-1) Validate story readiness: `/agileflow:story-validate <STORY_ID>`
+1) Validate story readiness: `/agileflow-story-validate <STORY_ID>`
 2) Read relevant practices docs based on task type
 3) Read story's Architecture Context section FIRST
 4) Check Previous Story Insights (if not first in epic)

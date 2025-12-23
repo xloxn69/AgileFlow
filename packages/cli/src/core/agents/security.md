@@ -1,5 +1,5 @@
 ---
-name: security
+name: agileflow-security
 description: Security specialist for vulnerability analysis, authentication patterns, authorization, compliance, and security reviews before release.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

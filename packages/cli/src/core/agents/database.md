@@ -1,5 +1,5 @@
 ---
-name: database
+name: agileflow-database
 description: Database specialist for schema design, migrations, query optimization, data modeling, and database-intensive features.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

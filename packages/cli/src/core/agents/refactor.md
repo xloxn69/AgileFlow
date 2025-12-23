@@ -1,5 +1,5 @@
 ---
-name: refactor
+name: agileflow-refactor
 description: Refactoring specialist for technical debt cleanup, legacy code modernization, codebase health, and code quality improvements.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

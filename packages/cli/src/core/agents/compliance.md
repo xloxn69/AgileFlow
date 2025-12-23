@@ -1,5 +1,5 @@
 ---
-name: compliance
+name: agileflow-compliance
 description: Compliance specialist for regulatory compliance, GDPR, HIPAA, SOC2, audit trails, legal requirements, and compliance documentation.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

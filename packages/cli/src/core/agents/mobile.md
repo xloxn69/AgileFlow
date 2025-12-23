@@ -1,5 +1,5 @@
 ---
-name: mobile
+name: agileflow-mobile
 description: Mobile specialist for React Native, Flutter, cross-platform mobile development, and mobile-specific features.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku

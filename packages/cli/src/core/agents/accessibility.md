@@ -1,5 +1,5 @@
 ---
-name: accessibility
+name: agileflow-accessibility
 description: Accessibility specialist for WCAG compliance, inclusive design, assistive technology support, and accessibility testing.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
