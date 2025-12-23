@@ -197,7 +197,8 @@ function generateSummary() {
   summary += row('In Progress', byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0', C.yellow, byStatus['in-progress'] ? C.brightYellow : C.dim);
   summary += row('Blocked', byStatus['blocked'] ? `${byStatus['blocked']}` : '0', C.red, byStatus['blocked'] ? C.red : C.dim);
   summary += row('Ready', byStatus['ready'] ? `${byStatus['ready']}` : '0', C.cyan, byStatus['ready'] ? C.brightCyan : C.dim);
-  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', C.brightGreen, byStatus['done'] ? C.brightGreen : C.dim);
+  const completedColor = `${C.bold}${C.green}`;
+  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', completedColor, byStatus['done'] ? completedColor : C.dim);
 
   summary += divider();
 
