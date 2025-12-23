@@ -1,238 +1,405 @@
 ---
-title: Welcome to AgileFlow
-description: AI-driven agile development system for Claude Code, Cursor, Windsurf, and more
+title: Component Showcase
+description: All Fumadocs UI components available in AgileFlow documentation
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { File, Folder, Files } from 'fumadocs-ui/components/files';
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
 
-# Welcome to AgileFlow
+# Component Showcase
 
-AgileFlow is an AI-driven agile development system that brings powerful automation to your workflow with **41 commands**, **26 specialized agents**, and **23 reusable skills**.
+This page showcases all the Fumadocs UI components available for the AgileFlow documentation.
+
+---
+
+## Callouts
+
+Callouts are used to highlight important information.
 
 <Callout>
-  Transform your development workflow with AI-powered agile project management directly in your IDE.
+  This is a default callout. Use it for general information.
 </Callout>
 
-## Why AgileFlow?
+<Callout type="info">
+  This is an info callout. Use it for helpful tips.
+</Callout>
 
-AgileFlow eliminates the context switching between your IDE and project management tools. Everything you need for agile development is at your fingertips:
+<Callout type="warn">
+  This is a warning callout. Use it for important warnings.
+</Callout>
 
-- **Write stories** with AI-generated acceptance criteria
-- **Plan sprints** with velocity tracking and capacity planning
-- **Assign work** to specialized AI agents
-- **Track progress** with visual kanban boards
-- **Document decisions** with Architecture Decision Records
-- **Deploy faster** with automated CI/CD pipelines
+<Callout type="error">
+  This is an error callout. Use it for critical issues.
+</Callout>
 
-## Quick Start
+---
 
-Install AgileFlow with a single command:
+## Cards
 
-```bash
-npx agileflow install
-```
-
-Then create your first story:
-
-```bash
-/agileflow:story
-```
-
-That's it! AgileFlow will guide you through creating a properly formatted user story with acceptance criteria, story points, and test scenarios.
-
-## Key Features
-
-### 41 Powerful Commands
-
-From story creation to deployment, AgileFlow provides commands for every stage of development:
-
-- `/agileflow:story` - Create user stories
-- `/agileflow:sprint` - Plan sprints with velocity tracking
-- `/agileflow:pr` - Generate pull request descriptions
-- `/agileflow:adr` - Document architecture decisions
-- [View all commands →](/commands)
-
-### 26 Specialized Agents
-
-AI agents that handle specific types of work:
-
-- **api** - Backend services and APIs
-- **ui** - Frontend components and styling
-- **testing** - Test strategies and test suites
-- **devops** - CI/CD and deployment
-- [Meet all agents →](/agents)
-
-### 23 Reusable Skills
-
-Pre-built templates and code generators:
-
-- Acceptance criteria generation
-- Type definitions
-- Validation schemas
-- API documentation
-- [Explore all skills →](/skills)
-
-## Supported IDEs
-
-AgileFlow works seamlessly with:
-
-- **Claude Code** - Anthropic's official CLI
-- **Cursor** - AI-first code editor
-- **Windsurf** - Collaborative IDE
-
-## How It Works
-
-```mermaid
-graph LR
-    A[Describe Feature] --> B[Create Story]
-    B --> C[AI Generates Details]
-    C --> D[Assign to Agent]
-    D --> E[Agent Implements]
-    E --> F[Auto-test & Deploy]
-```
-
-1. **Describe** what you want to build in natural language
-2. **AgileFlow creates** structured stories with acceptance criteria
-3. **Specialized agents** implement features following best practices
-4. **Automated testing** and deployment pipelines ensure quality
-5. **Documentation syncs** automatically with code changes
-
-## Getting Started
+Cards are used to display linked content in a grid.
 
 <Cards>
   <Card
     title="Getting Started"
     description="Learn the basics of AgileFlow"
-    href="/getting-started"
+    href="#"
   />
   <Card
     title="Installation Guide"
     description="Set up AgileFlow in your project"
-    href="/installation"
+    href="#"
   />
   <Card
     title="Quick Start Tutorial"
     description="Create your first story in 5 minutes"
-    href="/quick-start"
-  />
-  <Card
-    title="Core Concepts"
-    description="Understand AgileFlow's philosophy"
-    href="/concepts"
+    href="#"
   />
 </Cards>
 
-## Popular Resources
+---
 
-<Cards>
-  <Card
-    title="Commands Reference"
-    description="Explore all 41 commands"
-    href="/commands"
-  />
-  <Card
-    title="Agents Reference"
-    description="Meet the 26 specialized agents"
-    href="/agents"
-  />
-  <Card
-    title="Skills Reference"
-    description="Discover 23 reusable skills"
-    href="/skills"
-  />
-  <Card
-    title="Sprint Planning"
-    description="Master sprint planning with velocity tracking"
-    href="/sprint-planning"
-  />
-</Cards>
+## Steps
 
-## Community & Support
+Steps are used to show a sequence of actions.
 
-- **GitHub**: [github.com/projectquestorg/AgileFlow](https://github.com/projectquestorg/AgileFlow)
-- **Issues**: Report bugs and request features
-- **Discussions**: Ask questions and share ideas
-- **Contributing**: Help improve AgileFlow
+<Steps>
+  <Step>
+    ### Install AgileFlow
 
-<Callout type="info">
-  AgileFlow is open source and actively developed. Contributions are welcome!
-</Callout>
+    Run the installation command:
 
-## What's New
+    ```bash
+    npx agileflow install
+    ```
+  </Step>
+  <Step>
+    ### Create Your First Story
 
-### Latest Features
+    Use the story command:
 
-- **Agent Collaboration**: Multiple agents working together on complex tasks
-- **Velocity Forecasting**: Predict delivery dates based on team velocity
-- **Dependency Visualization**: See story dependencies in graph view
-- **Custom Templates**: Create your own story and ADR templates
+    ```bash
+    /agileflow:story
+    ```
+  </Step>
+  <Step>
+    ### Start Developing
 
-## Example Workflow
+    Assign the story to an agent and start coding!
+  </Step>
+</Steps>
 
-Here's a typical AgileFlow workflow:
+---
 
-```bash
-# 1. Create a feature epic
-/agileflow:epic
-> "Complete user authentication system"
+## Tabs
 
-# 2. Plan the sprint
-/agileflow:sprint
-> Select stories from backlog
-> Review team capacity (25 points)
-> Set sprint goal
+Tabs are used to organize content into different views.
 
-# 3. Implement with agents
-@api implement login endpoint for AF-001
-@ui create login form for AF-001
-@testing add auth tests for AF-001
+<Tabs items={['npm', 'pnpm', 'yarn', 'bun']}>
+  <Tab value="npm">
+    ```bash
+    npx agileflow install
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```bash
+    pnpm dlx agileflow install
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn dlx agileflow install
+    ```
+  </Tab>
+  <Tab value="bun">
+    ```bash
+    bunx agileflow install
+    ```
+  </Tab>
+</Tabs>
 
-# 4. Track progress
-/agileflow:board
-> View kanban board
-> See work in progress
+---
 
-# 5. Create pull request
-/agileflow:pr AF-001
-> Auto-generated PR description
-> Testing instructions included
+## Accordions
 
-# 6. Document decision
-/agileflow:adr
-> "Use JWT for authentication"
+Accordions are used to show/hide content sections.
 
-# 7. Deploy
-/agileflow:deploy
-> Automated deployment to production
+<Accordions>
+  <Accordion title="What is AgileFlow?">
+    AgileFlow is an AI-driven agile development system that brings powerful automation to your workflow with **41 commands**, **26 specialized agents**, and **23 reusable skills**.
+  </Accordion>
+  <Accordion title="How do I install it?">
+    Simply run `npx agileflow install` in your project directory. AgileFlow will set up all the necessary files and configurations.
+  </Accordion>
+  <Accordion title="What IDEs are supported?">
+    AgileFlow works with Claude Code, Cursor, and Windsurf. More IDE integrations are coming soon!
+  </Accordion>
+</Accordions>
+
+---
+
+## File Tree
+
+Display file and folder structures.
+
+<Files>
+  <Folder name=".agileflow" defaultOpen>
+    <File name="config.json" />
+    <Folder name="commands">
+      <File name="story.md" />
+      <File name="sprint.md" />
+      <File name="board.md" />
+    </Folder>
+    <Folder name="agents">
+      <File name="api.md" />
+      <File name="ui.md" />
+      <File name="testing.md" />
+    </Folder>
+  </Folder>
+  <Folder name="docs">
+    <File name="status.json" />
+    <Folder name="epics">
+      <File name="EP-0001.md" />
+    </Folder>
+  </Folder>
+</Files>
+
+---
+
+## Type Table
+
+Display TypeScript types and interfaces.
+
+<TypeTable
+  type={{
+    name: {
+      description: 'The name of the story',
+      type: 'string',
+      default: 'undefined',
+    },
+    status: {
+      description: 'Current status of the story',
+      type: "'todo' | 'in-progress' | 'done'",
+      default: "'todo'",
+    },
+    points: {
+      description: 'Story points estimate',
+      type: 'number',
+      default: '1',
+    },
+    assignee: {
+      description: 'Agent assigned to the story',
+      type: 'string | undefined',
+      default: 'undefined',
+    },
+  }}
+/>
+
+---
+
+## Code Blocks
+
+Syntax highlighted code with copy button.
+
+```typescript title="story.ts"
+interface Story {
+  id: string;
+  title: string;
+  description: string;
+  status: 'todo' | 'in-progress' | 'done';
+  points: number;
+  assignee?: string;
+}
+
+function createStory(title: string): Story {
+  return {
+    id: `US-${Date.now()}`,
+    title,
+    description: '',
+    status: 'todo',
+    points: 1,
+  };
+}
 ```
 
-## Success Stories
+With line highlighting:
+
+```typescript title="highlighted.ts" {3-5}
+function example() {
+  // This line is not highlighted
+  // This line IS highlighted
+  // This line IS highlighted
+  // This line IS highlighted
+  // This line is not highlighted
+}
+```
+
+---
+
+## Tables
+
+Standard markdown tables.
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `/agileflow:story` | Create a new story | `/agileflow:story "Add login"` |
+| `/agileflow:sprint` | Plan a sprint | `/agileflow:sprint` |
+| `/agileflow:board` | View kanban board | `/agileflow:board` |
+| `/agileflow:pr` | Generate PR description | `/agileflow:pr US-001` |
+
+---
+
+## Blockquotes
 
 > "AgileFlow reduced our sprint planning time from 2 hours to 30 minutes. The AI-generated acceptance criteria are spot-on."
 >
 > — Development Team Lead
 
-> "Having everything in the IDE eliminates context switching. We're shipping features 40% faster."
->
-> — Senior Engineer
+---
 
-## Ready to Get Started?
+## Lists
+
+### Unordered List
+
+- Write stories with AI-generated acceptance criteria
+- Plan sprints with velocity tracking
+- Assign work to specialized AI agents
+- Track progress with visual kanban boards
+
+### Ordered List
+
+1. Install AgileFlow
+2. Create your first epic
+3. Break it down into stories
+4. Assign to agents
+5. Ship to production
+
+### Nested List
+
+- Agents
+  - API Agent
+    - Handles backend services
+    - Generates API documentation
+  - UI Agent
+    - Creates components
+    - Manages styling
+  - Testing Agent
+    - Writes test suites
+    - Ensures coverage
+
+---
+
+## Inline Elements
+
+This is **bold text** and this is *italic text*.
+
+This is `inline code` within a sentence.
+
+This is a [link to GitHub](https://github.com/projectquestorg/AgileFlow).
+
+This is ~~strikethrough text~~.
+
+---
+
+## Headings
+
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+
+---
+
+## Horizontal Rules
+
+Content above the rule.
+
+---
+
+Content below the rule.
+
+---
+
+## Mermaid Diagrams
+
+```mermaid
+graph LR
+    A[Create Story] --> B[Assign Agent]
+    B --> C[Implement]
+    C --> D[Test]
+    D --> E[Deploy]
+```
+
+```mermaid
+sequenceDiagram
+    Developer->>AgileFlow: Create Story
+    AgileFlow->>Agent: Assign Work
+    Agent->>Codebase: Implement Feature
+    Agent->>AgileFlow: Mark Complete
+    AgileFlow->>Developer: Notify Done
+```
+
+---
+
+## Image with Zoom
+
+<ImageZoom
+  src="/logo.png"
+  alt="AgileFlow Logo"
+  width={200}
+  height={200}
+/>
+
+---
+
+## Combined Example
+
+Here's an example combining multiple components:
+
+<Callout type="info">
+  Follow these steps to get started with AgileFlow.
+</Callout>
+
+<Steps>
+  <Step>
+    ### Choose Your Package Manager
+
+    <Tabs items={['npm', 'pnpm']}>
+      <Tab value="npm">
+        ```bash
+        npx agileflow install
+        ```
+      </Tab>
+      <Tab value="pnpm">
+        ```bash
+        pnpm dlx agileflow install
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+  <Step>
+    ### Verify Installation
+
+    Check that these files were created:
+
+    <Files>
+      <Folder name=".agileflow" defaultOpen>
+        <File name="config.json" />
+      </Folder>
+      <File name="CLAUDE.md" />
+    </Files>
+  </Step>
+</Steps>
 
 <Cards>
   <Card
-    title="Install Now"
-    description="Set up AgileFlow in your project"
-    href="/installation"
-  />
-  <Card
-    title="Quick Start"
-    description="Create your first story"
-    href="/quick-start"
-  />
-  <Card
-    title="Configuration"
-    description="Customize for your workflow"
-    href="/configuration"
+    title="Next Steps"
+    description="Learn more about AgileFlow features"
+    href="#"
   />
 </Cards>

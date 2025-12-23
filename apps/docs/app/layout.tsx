@@ -1,7 +1,7 @@
 import { source } from '@/lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { RootProvider } from 'fumadocs-ui/provider';
-import { baseOptions } from '@/lib/layout.shared';
+import { baseOptions, Banner } from '@/lib/layout.shared';
 import type { ReactNode } from 'react';
 import './global.css';
 
@@ -16,6 +16,7 @@ export default function Layout({ children }: { children: ReactNode}) {
             enableSystem: true,
           }}
         >
+          <Banner />
           <DocsLayout
             tree={source.pageTree}
             {...baseOptions()}
