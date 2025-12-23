@@ -1,6 +1,6 @@
 ---
 description: Generate context export for web AI tools
-argument-hint: [MODE=full|export|note|research] [NOTE=<text>] [TOPIC=<text>] [DETAILS=<text>]
+argument-hint: [MODE=full|export|note|research|import] [NOTE=<text>] [TOPIC=<text>] [DETAILS=<text>] [CONTENT=<text>] [SOURCE=<url>]
 ---
 
 <!-- COMPACT_SUMMARY_START
@@ -12,11 +12,12 @@ This section is extracted by the PreCompact hook to preserve essential context a
 Web AI Context Manager - Generates/exports/manages project context briefs for web AI tools (ChatGPT, Perplexity, Gemini, Claude web).
 
 ### Critical Behavioral Rules
-- **ALWAYS create TodoWrite list** for MODE=full and MODE=research to track multi-step workflows
+- **ALWAYS create TodoWrite list** for MODE=full, MODE=research, and MODE=import to track multi-step workflows
 - **Diff-first approach**: Show changes and wait for YES/NO confirmation before ANY file writes
 - **Preserve user-written content**: Only update managed sections in docs/context.md
 - **No writes in export mode**: MODE=export outputs text only, never writes files
 - **Research is two-step**: STEP 1 generates prompt, STEP 2 stores results when user returns
+- **Import is one-step**: Process CONTENT immediately and create research file
 - **Link research files**: Always reference research from ADRs/Epics/Stories that use it
 
 ### Core Workflow
@@ -50,6 +51,16 @@ Web AI Context Manager - Generates/exports/manages project context briefs for we
 7. Ask if user wants ADR/Epic/Story created from research
 8. Add research reference to created ADR/Epic/Story
 
+**MODE=import**
+1. Create todo list tracking: validate inputs, process content, extract key points, extract code, generate actions, suggest stories, format research file, save, update index
+2. Validate TOPIC and CONTENT are provided
+3. Process raw content (transcript, article, etc.) by: summarizing key points, extracting code snippets, generating action items, suggesting user stories
+4. Format into structured research file with all extracted sections
+5. Save to docs/10-research/YYYYMMDD-topic-slug.md
+6. Update docs/10-research/README.md index
+7. Ask if user wants ADR/Epic/Story created from imported content
+8. Add research reference to created ADR/Epic/Story
+
 ### Key Files
 - docs/context.md - Main context brief (managed sections + user content)
 - docs/10-research/YYYYMMDD-topic-slug.md - Research results storage
@@ -68,9 +79,11 @@ Generate, export, or manage the web AI context brief.
 ROLE: Web AI Context Manager
 
 INPUTS (optional)
-- MODE=full|export|note|research (default: full)
+- MODE=full|export|note|research|import (default: full)
 - NOTE=<text> (required if MODE=note)
-- TOPIC=<text> (required if MODE=research)
+- TOPIC=<text> (required if MODE=research or MODE=import)
+- CONTENT=<text> (required if MODE=import - raw content to process)
+- SOURCE=<url> (optional for MODE=import - original source URL)
 
 ---
 
@@ -249,6 +262,124 @@ When user pastes research results back:
 
 ---
 
+## MODE=import
+Import raw content (transcripts, articles, notes) and convert to structured research file.
+
+### Input
+- TOPIC=<text> (required - name for the research file)
+- CONTENT=<text> (required - raw content to process: transcript, article, notes, etc.)
+- SOURCE=<url> (optional - original source URL for reference)
+
+### Use Cases
+- YouTube video transcripts
+- Conference talk notes
+- Podcast transcripts
+- Blog posts / articles
+- Documentation pages
+- Forum discussions / Stack Overflow threads
+- Meeting notes
+
+### TODO LIST TRACKING
+**CRITICAL**: Immediately create a todo list using TodoWrite tool to track import workflow:
+```
+1. Validate TOPIC and CONTENT are provided
+2. Analyze and summarize key points from content
+3. Extract any code snippets
+4. Generate action items based on content
+5. Create user story suggestions (if applicable)
+6. Format into structured research markdown
+7. Show diff for review
+8. Save to docs/10-research/YYYYMMDD-topic-slug.md
+9. Update docs/10-research/README.md index
+10. Ask about creating ADR/Epic/Story from research
+```
+
+Mark each step complete as you finish it.
+
+### Processing Steps
+
+1. **Validate Inputs**
+   - Verify TOPIC is provided (error if missing)
+   - Verify CONTENT is provided (error if missing)
+   - SOURCE is optional but recommended for attribution
+
+2. **Analyze Content**
+   Extract from the raw content:
+   - **Summary**: 2-3 paragraph TL;DR of the main points
+   - **Key Findings**: Bullet list of important takeaways
+   - **Code Snippets**: Any code blocks, commands, or configuration (preserve exactly)
+   - **Action Items**: Concrete next steps mentioned or implied
+   - **Story Suggestions**: Potential user stories/epics based on content
+
+3. **Format Research File**
+   ```markdown
+   # [Topic Title]
+
+   **Import Date**: YYYY-MM-DD
+   **Topic**: [original topic]
+   **Source**: [URL if provided, or "Direct import"]
+   **Content Type**: [transcript/article/notes/etc.]
+
+   ## Summary
+   [2-3 paragraph executive summary of the content]
+
+   ## Key Findings
+   - [Main point 1 with details]
+   - [Main point 2 with details]
+   - [Main point 3 with details]
+   - ...
+
+   ## Code Snippets
+   [Preserve all code snippets exactly as they appeared]
+   ```language
+   [code here]
+   ```
+
+   ## Action Items
+   - [ ] [Action 1 - concrete next step]
+   - [ ] [Action 2 - concrete next step]
+   - [ ] [Action 3 - concrete next step]
+
+   ## Story Suggestions
+   [If content suggests feature work, list potential stories]
+
+   ### Potential Epic: [Epic Title]
+   - **US-XXXX**: [Story 1 title]
+     - AC: [acceptance criteria bullet]
+   - **US-XXXX**: [Story 2 title]
+     - AC: [acceptance criteria bullet]
+
+   ## Raw Content Reference
+   <details>
+   <summary>Original content (click to expand)</summary>
+
+   [First 500 chars of original content for reference...]
+   </details>
+
+   ## References
+   - Source: [URL or "Direct import"]
+   - Import date: [YYYY-MM-DD]
+   ```
+
+4. **Save and Index**
+   - Save to `docs/10-research/YYYYMMDD-<topic-slug>.md`
+   - Update `docs/10-research/README.md` with new entry
+
+5. **Offer Next Steps**
+   Ask user via AskUserQuestion:
+   - Create an ADR referencing this research?
+   - Create an Epic/Stories based on the story suggestions?
+   - Link this research to an existing Epic/Story?
+
+### Rules
+- Diff-first; YES/NO before writing research file
+- Preserve ALL code snippets exactly as provided
+- Generate actionable items (not vague suggestions)
+- Keep raw content reference collapsed to save space
+- Always update the research index
+
+---
+
 ## Usage Examples
 
 ```bash
@@ -262,9 +393,13 @@ When user pastes research results back:
 # Add a quick note
 /agileflow:context MODE=note NOTE="User reported auth bug in production"
 
-# Build research prompt
+# Build research prompt for web AI
 /agileflow:context MODE=research TOPIC="Implement OAuth 2.0 with Google"
 /agileflow:context MODE=research TOPIC="Add Stripe payments" DETAILS="Launch by end of sprint"
+
+# Import external content (transcripts, articles, notes)
+/agileflow:context MODE=import TOPIC="React Server Components" CONTENT="[paste transcript here]"
+/agileflow:context MODE=import TOPIC="Stripe Webhooks Tutorial" SOURCE="https://youtube.com/..." CONTENT="[paste transcript here]"
 ```
 
 ---
@@ -276,3 +411,4 @@ Depending on MODE:
 - **export**: Text output ready to paste into web AI tool
 - **note**: Appended note to docs/context.md (after YES confirmation)
 - **research**: Research prompt in code block ready to paste into web AI tool
+- **import**: Processed research file saved to docs/10-research/ (after YES confirmation)
