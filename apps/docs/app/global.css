@@ -6,7 +6,6 @@
 
 /* Fumadocs overrides - MUST be unlayered to override fumadocs defaults */
 :root {
-  /* Light mode - override fumadocs variables */
   --fd-background: 0 0% 100%;
   --fd-foreground: 0 0% 9%;
   --fd-card: 0 0% 100%;
@@ -26,28 +25,26 @@
 }
 
 .dark {
-  /* Dark mode - override fumadocs variables */
-  --fd-background: 0 0% 7%;
+  --fd-background: 0 0% 4%;
   --fd-foreground: 0 0% 98%;
-  --fd-card: 0 0% 10%;
+  --fd-card: 0 0% 7%;
   --fd-card-foreground: 0 0% 98%;
-  --fd-popover: 0 0% 10%;
+  --fd-popover: 0 0% 7%;
   --fd-popover-foreground: 0 0% 98%;
   --fd-primary: 24 75% 55%;
   --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 0 0% 15%;
+  --fd-secondary: 0 0% 12%;
   --fd-secondary-foreground: 0 0% 98%;
-  --fd-muted: 0 0% 15%;
+  --fd-muted: 0 0% 12%;
   --fd-muted-foreground: 0 0% 64%;
-  --fd-accent: 24 40% 15%;
+  --fd-accent: 24 40% 12%;
   --fd-accent-foreground: 24 70% 75%;
-  --fd-border: 0 0% 18%;
+  --fd-border: 0 0% 15%;
   --fd-ring: 24 75% 55%;
 }
 
 @layer base {
   :root {
-    /* Shadcn variables for Tailwind integration */
     --background: 0 0% 100%;
     --foreground: 0 0% 9%;
     --card: 0 0% 100%;
@@ -67,28 +64,72 @@
     --border: 0 0% 90%;
     --input: 0 0% 90%;
     --ring: 24 75% 57%;
-    --radius: 0.75rem;
+    --radius: 0.5rem;
+    --chart-1: 24 75% 57%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 25%;
+    --sidebar-primary: 24 75% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 24 30% 96%;
+    --sidebar-accent-foreground: 24 75% 35%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 24 75% 57%;
   }
 
   .dark {
-    --background: 0 0% 7%;
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 10%;
+    --card: 0 0% 7%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 10%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
     --primary: 24 75% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 15%;
+    --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
+    --muted: 0 0% 12%;
     --muted-foreground: 0 0% 64%;
-    --accent: 24 40% 15%;
+    --accent: 24 40% 12%;
     --accent-foreground: 24 70% 75%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
     --ring: 24 75% 55%;
+    --chart-1: 24 75% 55%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 24 75% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 24 40% 12%;
+    --sidebar-accent-foreground: 24 70% 75%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 24 75% 55%;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom scrollbar hiding */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

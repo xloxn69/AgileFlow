@@ -10,13 +10,23 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "fumadocs-core": "^14.3.1",
-    "fumadocs-mdx": "^11.0.2",
-    "fumadocs-ui": "^14.3.1",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "fumadocs-core": "^14.7.7",
+    "fumadocs-mdx": "^11.10.1",
+    "fumadocs-ui": "^14.7.7",
     "lucide-react": "^0.555.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/mdx": "^2.0.13",
