@@ -108,56 +108,47 @@ if (statusLines.length > 0) {
   console.log(`Uncommitted: ${C.green}clean${C.reset}`);
 }
 
-// 2. STATUS.JSON - Stories & Epics
-section('Stories & Epics');
-const statusJson = safeReadJSON('docs/09-agents/status.json');
+// 2. STATUS.JSON - Full Content (this is crucial context)
+section('Status.json (Full Content)');
+const statusJsonPath = 'docs/09-agents/status.json';
+const statusJsonRaw = safeRead(statusJsonPath);
+const statusJson = safeReadJSON(statusJsonPath);
+
 if (statusJson) {
-  // Epics summary
+  // Show the full JSON content - it's usually not that big and super valuable
+  console.log(`${C.dim}${'─'.repeat(50)}${C.reset}`);
+  console.log(JSON.stringify(statusJson, null, 2).split('\n').map(l => `  ${l}`).join('\n'));
+  console.log(`${C.dim}${'─'.repeat(50)}${C.reset}`);
+
+  // Also provide a quick summary for at-a-glance view
+  subsection('Quick Summary');
   const epics = statusJson.epics || {};
-  const epicList = Object.entries(epics);
-  if (epicList.length > 0) {
-    subsection('Epics');
-    epicList.forEach(([id, epic]) => {
-      const statusColor = epic.status === 'complete' ? C.green : epic.status === 'active' ? C.yellow : C.dim;
-      console.log(`  ${id}: ${epic.title} ${statusColor}[${epic.status}]${C.reset}`);
-    });
-  }
-
-  // Stories summary by status
   const stories = statusJson.stories || {};
-  const storyList = Object.entries(stories);
+  const epicCount = Object.keys(epics).length;
+  const storyCount = Object.keys(stories).length;
+
+  // Count by status
   const byStatus = {};
-  storyList.forEach(([id, story]) => {
+  Object.entries(stories).forEach(([id, story]) => {
     const s = story.status || 'unknown';
-    if (!byStatus[s]) byStatus[s] = [];
-    byStatus[s].push({ id, ...story });
+    byStatus[s] = (byStatus[s] || 0) + 1;
   });
 
-  // Priority order for display
-  const statusOrder = ['in-progress', 'ready', 'blocked', 'draft', 'in-review', 'done'];
-
-  subsection('Stories by Status');
-  statusOrder.forEach(status => {
-    if (byStatus[status] && byStatus[status].length > 0) {
-      const color = status === 'in-progress' ? C.yellow :
-                    status === 'ready' ? C.green :
-                    status === 'blocked' ? C.red :
-                    status === 'done' ? C.dim : C.reset;
-      console.log(`  ${color}${status}${C.reset}: ${byStatus[status].length}`);
-      byStatus[status].slice(0, 5).forEach(story => {
-        console.log(`    ${C.dim}${story.id}: ${story.title}${C.reset}`);
-      });
-      if (byStatus[status].length > 5) {
-        console.log(`    ${C.dim}... and ${byStatus[status].length - 5} more${C.reset}`);
-      }
-    }
+  console.log(`  Epics: ${epicCount}, Stories: ${storyCount}`);
+  Object.entries(byStatus).forEach(([status, count]) => {
+    const color = status === 'in-progress' ? C.yellow :
+                  status === 'ready' ? C.green :
+                  status === 'blocked' ? C.red :
+                  status === 'done' ? C.dim : C.reset;
+    console.log(`    ${color}${status}${C.reset}: ${count}`);
   });
 
-  // Show READY stories prominently (these are actionable)
-  if (byStatus['ready'] && byStatus['ready'].length > 0) {
-    subsection(`${C.green}⭐ Ready to Implement${C.reset}`);
-    byStatus['ready'].forEach(story => {
-      console.log(`  ${story.id}: ${story.title} (${story.epic || 'no epic'})`);
+  // Highlight READY stories (actionable)
+  const readyStories = Object.entries(stories).filter(([_, s]) => s.status === 'ready');
+  if (readyStories.length > 0) {
+    console.log(`\n  ${C.green}⭐ Ready to Implement:${C.reset}`);
+    readyStories.forEach(([id, story]) => {
+      console.log(`    ${id}: ${story.title}`);
     });
   }
 } else {
@@ -220,18 +211,31 @@ if (docFolders.length > 0) {
   });
 }
 
-// 5. RESEARCH NOTES
+// 5. RESEARCH NOTES - Read full content of most recent
 section('Research Notes');
 const researchDir = 'docs/10-research';
 const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
 if (researchFiles.length > 0) {
-  // Sort by date (filename starts with YYYYMMDD)
+  // Sort by date (filename starts with YYYYMMDD) - newest first
   researchFiles.sort().reverse();
-  researchFiles.slice(0, 5).forEach(file => {
+
+  // List all research files
+  subsection('Available Research Notes');
+  researchFiles.forEach(file => {
     console.log(`  ${C.dim}${file}${C.reset}`);
   });
-  if (researchFiles.length > 5) {
-    console.log(`  ${C.dim}... and ${researchFiles.length - 5} more${C.reset}`);
+
+  // Read the most recent research note in FULL (no truncation)
+  const mostRecentFile = researchFiles[0];
+  const mostRecentPath = path.join(researchDir, mostRecentFile);
+  const mostRecentContent = safeRead(mostRecentPath);
+
+  if (mostRecentContent) {
+    console.log(`\n${C.green}📄 Most Recent: ${mostRecentFile}${C.reset}`);
+    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
+    // Full content - no truncation
+    console.log(mostRecentContent);
+    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
   }
 } else {
   console.log(`${C.dim}No research notes${C.reset}`);
@@ -261,21 +265,33 @@ if (busContent) {
   console.log(`${C.dim}No bus log found${C.reset}`);
 }
 
-// 7. KEY FILES PRESENCE
-section('Key Files');
-const keyFiles = [
-  { path: 'CLAUDE.md', label: 'CLAUDE.md (project instructions)' },
-  { path: 'README.md', label: 'README.md (project overview)' },
+// 7. KEY FILES - Read FULL content (no truncation - full context is valuable)
+section('Key Context Files');
+
+const keyFilesToRead = [
+  { path: 'CLAUDE.md', label: 'CLAUDE.md (Project Instructions)' },
+  { path: 'README.md', label: 'README.md (Project Overview)' },
+  { path: 'docs/04-architecture/README.md', label: 'Architecture Index' },
+  { path: 'docs/02-practices/README.md', label: 'Practices Index' },
   { path: 'docs/08-project/roadmap.md', label: 'Roadmap' },
-  { path: 'docs/02-practices/README.md', label: 'Practices index' },
-  { path: '.claude/settings.json', label: 'Claude settings' },
 ];
 
-keyFiles.forEach(({ path: filePath, label }) => {
-  const exists = fs.existsSync(filePath);
-  const icon = exists ? `${C.green}✓${C.reset}` : `${C.dim}○${C.reset}`;
-  console.log(`  ${icon} ${label}`);
+keyFilesToRead.forEach(({ path: filePath, label }) => {
+  const content = safeRead(filePath);
+  if (content) {
+    console.log(`\n${C.green}✓ ${label}${C.reset} ${C.dim}(${filePath})${C.reset}`);
+    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
+    // Full content - no truncation
+    console.log(content);
+    console.log(`${C.dim}${'─'.repeat(60)}${C.reset}`);
+  } else {
+    console.log(`${C.dim}○ ${label} (not found)${C.reset}`);
+  }
 });
+
+// Also show Claude settings existence
+const settingsExists = fs.existsSync('.claude/settings.json');
+console.log(`\n  ${settingsExists ? `${C.green}✓${C.reset}` : `${C.dim}○${C.reset}`} .claude/settings.json`);
 
 // 8. EPICS FOLDER
 section('Epic Files');
