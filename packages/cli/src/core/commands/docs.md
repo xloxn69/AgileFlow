@@ -12,7 +12,7 @@ Synchronize documentation with codebase changes.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js docs
+node .agileflow/scripts/obtain-context.js docs
 ```
 
 ---

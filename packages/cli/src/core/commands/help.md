@@ -11,7 +11,7 @@ Display a concise overview of the AgileFlow system.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js help
+node .agileflow/scripts/obtain-context.js help
 ```
 
 ---

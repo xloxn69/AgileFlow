@@ -10,11 +10,11 @@
           },
           {
             "type": "command",
-            "command": "echo '📁 Project: $(node scripts/get-env.js PROJECT_NAME \"Unnamed Project\")'"
+            "command": "echo '📁 Project: $(node .agileflow/scripts/get-env.js PROJECT_NAME \"Unnamed Project\")'"
           },
           {
             "type": "command",
-            "command": "echo '👤 Developer: $(node scripts/get-env.js USER_NAME \"Developer\")'"
+            "command": "echo '👤 Developer: $(node .agileflow/scripts/get-env.js USER_NAME \"Developer\")'"
           },
           {
             "type": "command",

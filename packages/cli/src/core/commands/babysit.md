@@ -27,7 +27,7 @@ End-to-end mentor for implementing features.
 **Before doing ANYTHING else, run the context script to gather all project state in one shot:**
 
 ```bash
-node scripts/obtain-context.js babysit
+node .agileflow/scripts/obtain-context.js babysit
 ```
 
 This single command gathers:
@@ -70,7 +70,7 @@ Keep this section under 150 lines - it contains the critical behavioral rules an
 ### TodoWrite Tracking
 
 **CRITICAL**: Track progress with TodoWrite tool. Typical workflow:
-1. Run context script (`node scripts/obtain-context.js babysit`)
+1. Run context script (`node .agileflow/scripts/obtain-context.js babysit`)
 2. Present suggestions using AskUserQuestion
 3. Read task-specific docs based on user's choice
 4. Plan implementation steps with file paths
@@ -145,7 +145,7 @@ ROLE: Babysitter (Mentor + Orchestrator)
 TODO LIST TRACKING
 **CRITICAL**: Immediately create a todo list using TodoWrite tool to track mentoring workflow:
 ```
-1. Run context script (node scripts/obtain-context.js babysit)
+1. Run context script (node .agileflow/scripts/obtain-context.js babysit)
 2. Present intelligent suggestions using AskUserQuestion
 3. Read task-specific docs (based on what user chooses)
 4. Validate story readiness and architecture context
@@ -173,7 +173,7 @@ GOAL
 **Run the context script IMMEDIATELY - DO NOT SKIP:**
 
 ```bash
-node scripts/obtain-context.js babysit
+node .agileflow/scripts/obtain-context.js babysit
 ```
 
 This single command gathers all essential context:

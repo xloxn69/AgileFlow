@@ -14,7 +14,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-status-line
+node .agileflow/scripts/obtain-context.js configuration-status-line
 ```
 
 ---
@@ -272,7 +272,7 @@ The NEW format uses an object:
 {
   "statusLine": {
     "type": "command",
-    "command": "bash scripts/agileflow-statusline.sh",
+    "command": "bash .agileflow/scripts/agileflow-statusline.sh",
     "padding": 0
   }
 }
@@ -281,7 +281,7 @@ The NEW format uses an object:
 The OLD format (invalid) was just a string:
 ```json
 {
-  "statusLine": "bash scripts/agileflow-statusline.sh"
+  "statusLine": "bash .agileflow/scripts/agileflow-statusline.sh"
 }
 ```
 
@@ -304,7 +304,7 @@ Use `jq` to add/update the statusLine field (this will replace old string format
 cp .claude/settings.json .claude/settings.json.backup 2>/dev/null
 
 # Add statusLine configuration (replaces any old format)
-jq '. + {"statusLine": {"type": "command", "command": "bash scripts/agileflow-statusline.sh", "padding": 0}}' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
+jq '. + {"statusLine": {"type": "command", "command": "bash .agileflow/scripts/agileflow-statusline.sh", "padding": 0}}' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
 ```
 
 ### Step 6: Update .gitignore
@@ -356,7 +356,7 @@ Edit `scripts/agileflow-statusline.sh` to change what's displayed. The script re
 
 If the status line doesn't appear:
 1. Verify script is executable: `chmod +x scripts/agileflow-statusline.sh`
-2. Test manually: `echo '{"model":{"display_name":"Test"}}' | bash scripts/agileflow-statusline.sh`
+2. Test manually: `echo '{"model":{"display_name":"Test"}}' | bash .agileflow/scripts/agileflow-statusline.sh`
 3. Check `.claude/settings.json` has the statusLine configuration
 4. **Restart Claude Code** (quit completely, wait 5 seconds, restart)
 ```
@@ -405,7 +405,7 @@ echo "$SAMPLE_INPUT" | jq .
 echo ""
 echo "Status line output:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "$SAMPLE_INPUT" | bash scripts/agileflow-statusline.sh
+echo "$SAMPLE_INPUT" | bash .agileflow/scripts/agileflow-statusline.sh
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -509,16 +509,16 @@ Components can be toggled individually using the configure script:
 
 ```bash
 # List current component status
-node scripts/agileflow-configure.js --components
+node .agileflow/scripts/agileflow-configure.js --components
 
 # Show specific components
-node scripts/agileflow-configure.js --show=agileflow,context,git
+node .agileflow/scripts/agileflow-configure.js --show=agileflow,context,git
 
 # Hide specific components
-node scripts/agileflow-configure.js --hide=model,cost,wip
+node .agileflow/scripts/agileflow-configure.js --hide=model,cost,wip
 
 # Minimal statusline (just branding and context)
-node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+node .agileflow/scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
 ```
 
 Components are stored in `docs/00-meta/agileflow-metadata.json`:

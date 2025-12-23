@@ -11,7 +11,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js metrics
+node .agileflow/scripts/obtain-context.js metrics
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

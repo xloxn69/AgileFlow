@@ -10,7 +10,7 @@ argument-hint: EPIC=<EP-ID> TITLE=<text> OWNER=<id> GOAL=<text> [STORIES=<list>]
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js epic
+node .agileflow/scripts/obtain-context.js epic
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

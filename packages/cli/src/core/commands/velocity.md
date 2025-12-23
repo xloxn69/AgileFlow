@@ -12,7 +12,7 @@ Track team velocity, calculate trends, and forecast completion dates.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js velocity
+node .agileflow/scripts/obtain-context.js velocity
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

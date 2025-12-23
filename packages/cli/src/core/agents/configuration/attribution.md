@@ -15,7 +15,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-attribution
+node .agileflow/scripts/obtain-context.js configuration-attribution
 ```
 
 ---

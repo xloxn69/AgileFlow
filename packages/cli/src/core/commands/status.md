@@ -12,7 +12,7 @@ Update story status and broadcast to agents via message bus.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js status
+node .agileflow/scripts/obtain-context.js status
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

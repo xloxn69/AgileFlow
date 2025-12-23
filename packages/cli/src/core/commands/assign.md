@@ -10,7 +10,7 @@ Assign or reassign a story to an owner with status update.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js assign
+node .agileflow/scripts/obtain-context.js assign
 ```
 
 <!-- COMPACT_SUMMARY_START -->

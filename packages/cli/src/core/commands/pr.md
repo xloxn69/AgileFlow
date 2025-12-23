@@ -8,7 +8,7 @@ argument-hint: STORY=<US-ID> [TITLE=<text>] [TEST_EVIDENCE=<text>]
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js pr
+node .agileflow/scripts/obtain-context.js pr
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

@@ -8,7 +8,7 @@ model: sonnet
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js epic-planner
+node .agileflow/scripts/obtain-context.js epic-planner
 ```
 
 ---

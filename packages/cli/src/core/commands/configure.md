@@ -11,19 +11,19 @@ Configuration management with **profiles**, **enable/disable**, and **format mig
 
 ### Workflow (MUST FOLLOW)
 
-1. **Run detection**: `node scripts/agileflow-configure.js --detect`
+1. **Run detection**: `node .agileflow/scripts/agileflow-configure.js --detect`
 2. **If ⚠️ INVALID FORMAT shown**: Ask user to fix with `--migrate` BEFORE anything else
 3. **Present options**: Profiles, enable/disable, or check status
 
 ### Quick Commands
 
 ```bash
-node scripts/agileflow-configure.js --detect           # Check status
-node scripts/agileflow-configure.js --migrate          # Fix format issues
-node scripts/agileflow-configure.js --profile=full     # Enable all
-node scripts/agileflow-configure.js --profile=none     # Disable all
-node scripts/agileflow-configure.js --enable=stop      # Enable specific
-node scripts/agileflow-configure.js --disable=archival # Disable specific
+node .agileflow/scripts/agileflow-configure.js --detect           # Check status
+node .agileflow/scripts/agileflow-configure.js --migrate          # Fix format issues
+node .agileflow/scripts/agileflow-configure.js --profile=full     # Enable all
+node .agileflow/scripts/agileflow-configure.js --profile=none     # Disable all
+node .agileflow/scripts/agileflow-configure.js --enable=stop      # Enable specific
+node .agileflow/scripts/agileflow-configure.js --disable=archival # Disable specific
 ```
 
 ### Features
@@ -49,7 +49,7 @@ ROLE: Configuration Manager
 ## STEP 1: Always Run Detection First
 
 ```bash
-node scripts/agileflow-configure.js --detect
+node .agileflow/scripts/agileflow-configure.js --detect
 ```
 
 **CRITICAL**: Check the output for format issues (⚠️ INVALID FORMAT).
@@ -74,7 +74,7 @@ If you see `⚠️ INVALID FORMAT` in the detection output, **immediately ask us
 
 If user says yes:
 ```bash
-node scripts/agileflow-configure.js --migrate
+node .agileflow/scripts/agileflow-configure.js --migrate
 ```
 
 ## STEP 3: Configuration Options
@@ -104,32 +104,32 @@ After fixing issues (or if no issues), present main options:
 
 ```bash
 # Full - all features
-node scripts/agileflow-configure.js --profile=full
+node .agileflow/scripts/agileflow-configure.js --profile=full
 
 # Basic - essential hooks + archival
-node scripts/agileflow-configure.js --profile=basic
+node .agileflow/scripts/agileflow-configure.js --profile=basic
 
 # Minimal - welcome + archival
-node scripts/agileflow-configure.js --profile=minimal
+node .agileflow/scripts/agileflow-configure.js --profile=minimal
 
 # None - disable all AgileFlow features
-node scripts/agileflow-configure.js --profile=none
+node .agileflow/scripts/agileflow-configure.js --profile=none
 ```
 
 **Option B: Enable/disable specific features**
 
 ```bash
 # Enable features
-node scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
+node .agileflow/scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
 
 # Disable features
-node scripts/agileflow-configure.js --disable=statusline
+node .agileflow/scripts/agileflow-configure.js --disable=statusline
 
 # Both at once
-node scripts/agileflow-configure.js --enable=stop --disable=archival
+node .agileflow/scripts/agileflow-configure.js --enable=stop --disable=archival
 
 # With custom archival days
-node scripts/agileflow-configure.js --enable=archival --archival-days=14
+node .agileflow/scripts/agileflow-configure.js --enable=archival --archival-days=14
 ```
 
 ## Profile Details
@@ -198,19 +198,19 @@ The script handles these migrations automatically:
 **Hook string format:**
 ```json
 // OLD (invalid)
-"PreCompact": "./scripts/precompact-context.sh"
+"PreCompact": "./.agileflow/scripts/precompact-context.sh"
 
 // NEW (valid)
-"PreCompact": [{"matcher": "", "hooks": [{"type": "command", "command": "bash ./scripts/precompact-context.sh"}]}]
+"PreCompact": [{"matcher": "", "hooks": [{"type": "command", "command": "bash ./.agileflow/scripts/precompact-context.sh"}]}]
 ```
 
 **StatusLine missing type:**
 ```json
 // OLD (invalid)
-"statusLine": {"command": "./scripts/statusline.sh", "refreshInterval": 5000}
+"statusLine": {"command": "./.agileflow/scripts/statusline.sh", "refreshInterval": 5000}
 
 // NEW (valid)
-"statusLine": {"type": "command", "command": "./scripts/statusline.sh", "padding": 0}
+"statusLine": {"type": "command", "command": "./.agileflow/scripts/statusline.sh", "padding": 0}
 ```
 
 ## Metadata Tracking

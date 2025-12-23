@@ -15,7 +15,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-verify
+node .agileflow/scripts/obtain-context.js configuration-verify
 ```
 
 ---
@@ -423,7 +423,7 @@ test_get_env() {
   fi
 
   # Test basic functionality
-  TEST_VALUE=$(node scripts/get-env.js USER_NAME "TestUser")
+  TEST_VALUE=$(node .agileflow/scripts/get-env.js USER_NAME "TestUser")
 
   if [ $? -eq 0 ]; then
     echo "✅ get-env.js works (returned: $TEST_VALUE)"

@@ -145,7 +145,7 @@ learnings:
     context: "AgileFlow monitoring patterns"
     learning: |
       Session hooks run on SessionStart via .claude/settings.json hooks configuration.
-      The default SessionStart hook executes 'node scripts/get-env.js' to display
+      The default SessionStart hook executes 'node .agileflow/scripts/get-env.js' to display
       project info, git status, and system details at session start. This provides
       immediate context about the development environment.
 

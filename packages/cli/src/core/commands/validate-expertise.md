@@ -13,7 +13,7 @@ Validate agent expertise files to ensure they haven't drifted from the codebase.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js validate-expertise
+node .agileflow/scripts/obtain-context.js validate-expertise
 ```
 
 ---
@@ -155,10 +155,10 @@ EXECUTION
 Run the validation script:
 ```bash
 # All domains
-bash scripts/validate-expertise.sh
+bash .agileflow/scripts/validate-expertise.sh
 
 # Specific domain
-bash scripts/validate-expertise.sh database
+bash .agileflow/scripts/validate-expertise.sh database
 ```
 
 Or manually check using Read tool on expertise files in:

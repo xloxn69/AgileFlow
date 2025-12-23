@@ -12,7 +12,7 @@ Create a new user story with acceptance criteria and test stubs.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js story
+node .agileflow/scripts/obtain-context.js story
 ```
 
 ---

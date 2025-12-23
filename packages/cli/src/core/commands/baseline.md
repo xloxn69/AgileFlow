@@ -10,7 +10,7 @@ Create a verified checkpoint representing a known-good state of the project.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js baseline
+node .agileflow/scripts/obtain-context.js baseline
 ```
 
 <!-- COMPACT_SUMMARY_START -->

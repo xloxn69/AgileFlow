@@ -13,7 +13,7 @@ Visualize and analyze story/epic dependency graphs with critical path analysis a
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js deps
+node .agileflow/scripts/obtain-context.js deps
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

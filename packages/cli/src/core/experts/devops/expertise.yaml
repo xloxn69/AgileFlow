@@ -13,7 +13,7 @@ files:
         - "Commit and push to main"
         - "Create and push git tag v*.*.*"
         - "Create GitHub release with gh CLI"
-      usage: "./scripts/release.sh 2.32.0 'Feature Name'"
+      usage: "./.agileflow/scripts/release.sh 2.32.0 'Feature Name'"
 
   scripts:
     - path: scripts/agileflow-statusline.sh
@@ -63,7 +63,7 @@ relationships:
 patterns:
   - name: Automated Release
     description: "Use release.sh for all releases - never manual"
-    command: "./scripts/release.sh <version> 'Title'"
+    command: "./.agileflow/scripts/release.sh <version> 'Title'"
 
   - name: Version Sync
     description: "Version in 2 files: packages/cli/package.json and package.json"

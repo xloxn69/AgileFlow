@@ -202,8 +202,8 @@ When user runs `/agileflow:compress`:
 - After major epic completion (many stories with verbose records)
 
 **Combine with archival**:
-1. First run archival to move old completed stories: `/agileflow:compress` → runs `bash scripts/archive-completed-stories.sh`
-2. If still too large, run compression: `/agileflow:compress` → runs `bash scripts/compress-status.sh`
+1. First run archival to move old completed stories: `/agileflow:compress` → runs `bash .agileflow/scripts/archive-completed-stories.sh`
+2. If still too large, run compression: `/agileflow:compress` → runs `bash .agileflow/scripts/compress-status.sh`
 3. Result: status.json under 25000 tokens
 
 ## Safety
@@ -224,7 +224,7 @@ When user runs `/agileflow:compress`:
 ## Implementation
 
 ```bash
-bash scripts/compress-status.sh
+bash .agileflow/scripts/compress-status.sh
 ```
 
 ## Related Commands
@@ -321,7 +321,7 @@ fi
 
 **Step 2: Run compression**
 ```bash
-bash scripts/compress-status.sh
+bash .agileflow/scripts/compress-status.sh
 ```
 
 **Step 3: Verify and advise**
@@ -346,14 +346,14 @@ if [ ! -f scripts/compress-status.sh ]; then
 fi
 
 # Run compression
-bash scripts/compress-status.sh
+bash .agileflow/scripts/compress-status.sh
 ```
 
 **If compression isn't enough**:
 ```bash
 # Combine with aggressive archival
-bash scripts/archive-completed-stories.sh 3  # Archive stories >3 days old
-bash scripts/compress-status.sh              # Then compress remaining
+bash .agileflow/scripts/archive-completed-stories.sh 3  # Archive stories >3 days old
+bash .agileflow/scripts/compress-status.sh              # Then compress remaining
 ```
 
 **Always**:

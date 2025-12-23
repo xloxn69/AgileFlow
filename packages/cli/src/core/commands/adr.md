@@ -10,7 +10,7 @@ Create a new Architecture Decision Record.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js adr
+node .agileflow/scripts/obtain-context.js adr
 ```
 
 <!-- COMPACT_SUMMARY_START -->

@@ -9,7 +9,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js blockers
+node .agileflow/scripts/obtain-context.js blockers
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

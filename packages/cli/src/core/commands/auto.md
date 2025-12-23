@@ -9,7 +9,7 @@ Automatically generate user stories from product artifacts like PRDs, mockups, o
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js auto
+node .agileflow/scripts/obtain-context.js auto
 ```
 
 <!-- COMPACT_SUMMARY_START -->

@@ -12,7 +12,7 @@ Synchronize a folder's README.md with its current contents.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js readme-sync
+node .agileflow/scripts/obtain-context.js readme-sync
 ```
 
 ---

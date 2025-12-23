@@ -11,7 +11,7 @@ Automatically set up testing infrastructure for projects without existing tests.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js tests
+node .agileflow/scripts/obtain-context.js tests
 ```
 
 ---

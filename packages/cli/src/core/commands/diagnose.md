@@ -212,7 +212,7 @@ if [ -f docs/09-agents/status.json ]; then
   if [ $STATUS_SIZE -gt 102400 ]; then
     echo "  ⚠️  WARNING: status.json exceeds 100KB"
     echo "     Recommendation: Run archival to reduce file size"
-    echo "     Command: bash scripts/archive-completed-stories.sh 7"
+    echo "     Command: bash .agileflow/scripts/archive-completed-stories.sh 7"
   elif [ $STATUS_SIZE -gt 51200 ]; then
     echo "  ℹ️  status.json is getting large (>50KB)"
     echo "     Consider running archival soon"
@@ -244,7 +244,7 @@ else
   echo "Next steps:"
   echo "1. Fix JSON validation errors using: jq empty <file> to check, then repair manually"
   echo "2. Add missing files to .gitignore if needed"
-  echo "3. Run archival if status.json is too large: bash scripts/archive-completed-stories.sh"
+  echo "3. Run archival if status.json is too large: bash .agileflow/scripts/archive-completed-stories.sh"
   echo "4. Re-run diagnostics after fixes: /agileflow:diagnose"
   exit 1
 fi

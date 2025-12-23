@@ -11,7 +11,7 @@ Initialize or save research notes to the research folder.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js research
+node .agileflow/scripts/obtain-context.js research
 ```
 
 ---

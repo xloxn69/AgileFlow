@@ -10,7 +10,7 @@ Onboard a new agent with profile and system prompt.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js agent
+node .agileflow/scripts/obtain-context.js agent
 ```
 
 <!-- COMPACT_SUMMARY_START -->

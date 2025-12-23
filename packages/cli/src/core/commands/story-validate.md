@@ -12,7 +12,7 @@ Validate a specific story for completeness, architecture context, and readiness 
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js story-validate
+node .agileflow/scripts/obtain-context.js story-validate
 ```
 
 ---

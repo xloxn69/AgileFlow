@@ -11,7 +11,7 @@
  *   - RECONFIGURE: Change settings (archival days, etc.)
  *
  * Usage:
- *   node scripts/agileflow-configure.js [options]
+ *   node .agileflow/scripts/agileflow-configure.js [options]
  *
  * Options:
  *   --profile=full|basic|minimal|none   Apply a preset
@@ -476,7 +476,7 @@ CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
       if (!hasArchival) {
         settings.hooks.SessionStart[0].hooks.push({
           type: 'command',
-          command: 'bash scripts/archive-completed-stories.sh --quiet'
+          command: 'bash .agileflow/scripts/archive-completed-stories.sh --quiet'
         });
       }
     }
@@ -504,7 +504,7 @@ echo "[$MODEL] AgileFlow"
 
     settings.statusLine = {
       type: 'command',
-      command: 'bash scripts/agileflow-statusline.sh',
+      command: 'bash .agileflow/scripts/agileflow-statusline.sh',
       padding: 0
     };
     success('Status line enabled');
@@ -765,7 +765,7 @@ function printHelp() {
 ${c.bold}AgileFlow Configure${c.reset} - Manage AgileFlow features
 
 ${c.cyan}Usage:${c.reset}
-  node scripts/agileflow-configure.js [options]
+  node .agileflow/scripts/agileflow-configure.js [options]
 
 ${c.cyan}Profiles:${c.reset}
   --profile=full      All features (hooks, archival, statusline)
@@ -796,28 +796,28 @@ ${c.cyan}Maintenance:${c.reset}
 
 ${c.cyan}Examples:${c.reset}
   # Quick setup with all features
-  node scripts/agileflow-configure.js --profile=full
+  node .agileflow/scripts/agileflow-configure.js --profile=full
 
   # Enable specific features
-  node scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
+  node .agileflow/scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
 
   # Disable a feature
-  node scripts/agileflow-configure.js --disable=statusline
+  node .agileflow/scripts/agileflow-configure.js --disable=statusline
 
   # Show only agileflow branding and context in statusline
-  node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+  node .agileflow/scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
 
   # Re-enable git branch in statusline
-  node scripts/agileflow-configure.js --show=git
+  node .agileflow/scripts/agileflow-configure.js --show=git
 
   # List component status
-  node scripts/agileflow-configure.js --components
+  node .agileflow/scripts/agileflow-configure.js --components
 
   # Fix format issues
-  node scripts/agileflow-configure.js --migrate
+  node .agileflow/scripts/agileflow-configure.js --migrate
 
   # Check current status
-  node scripts/agileflow-configure.js --detect
+  node .agileflow/scripts/agileflow-configure.js --detect
 `);
 }
 

@@ -71,7 +71,7 @@ Intelligent sprint planning with capacity-based story selection, dependency vali
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js sprint
+node .agileflow/scripts/obtain-context.js sprint
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

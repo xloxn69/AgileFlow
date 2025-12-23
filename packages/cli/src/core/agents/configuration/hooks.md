@@ -15,7 +15,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-hooks
+node .agileflow/scripts/obtain-context.js configuration-hooks
 ```
 
 ---
@@ -277,7 +277,7 @@ Create `scripts/get-env.js` for dynamic environment variable loading:
 #!/usr/bin/env node
 /**
  * get-env.js - Dynamic environment variable helper for hooks
- * Usage: node scripts/get-env.js VARIABLE_NAME [default_value]
+ * Usage: node .agileflow/scripts/get-env.js VARIABLE_NAME [default_value]
  */
 const fs = require('fs');
 const path = require('path');
@@ -286,7 +286,7 @@ const varName = process.argv[2];
 const defaultValue = process.argv[3] || '';
 
 if (!varName) {
-  console.error('Usage: node scripts/get-env.js VARIABLE_NAME [default_value]');
+  console.error('Usage: node .agileflow/scripts/get-env.js VARIABLE_NAME [default_value]');
   process.exit(1);
 }
 
@@ -340,7 +340,7 @@ if (userSelectedSessionStart) {
     matcher: "",
     hooks: [{
       type: "command",
-      command: "node scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
+      command: "node .agileflow/scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
     }]
   });
 }
@@ -351,7 +351,7 @@ if (userSelectedPreCompact) {
     matcher: "",
     hooks: [{
       type: "command",
-      command: "bash scripts/precompact-context.sh"
+      command: "bash .agileflow/scripts/precompact-context.sh"
     }]
   });
 }
@@ -362,7 +362,7 @@ if (userSelectedStop) {
     matcher: "",
     hooks: [{
       type: "command",
-      command: "bash scripts/agileflow-stop.sh 2>/dev/null"
+      command: "bash .agileflow/scripts/agileflow-stop.sh 2>/dev/null"
     }]
   });
 }
@@ -390,7 +390,7 @@ if (userSelectedUserPromptSubmit) {
         "hooks": [
           {
             "type": "command",
-            "command": "node scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
+            "command": "node .agileflow/scripts/agileflow-welcome.js 2>/dev/null || echo 'AgileFlow loaded'"
           }
         ]
       }
@@ -401,7 +401,7 @@ if (userSelectedUserPromptSubmit) {
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/precompact-context.sh"
+            "command": "bash .agileflow/scripts/precompact-context.sh"
           }
         ]
       }
@@ -412,7 +412,7 @@ if (userSelectedUserPromptSubmit) {
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/agileflow-stop.sh 2>/dev/null"
+            "command": "bash .agileflow/scripts/agileflow-stop.sh 2>/dev/null"
           }
         ]
       }
@@ -498,21 +498,21 @@ AgileFlow supports event-driven automation through Claude Code's official hooks 
 ### Enabled Hooks
 
 {{#if SessionStart}}
-**SessionStart Hook** - `node scripts/agileflow-welcome.js`
+**SessionStart Hook** - `node .agileflow/scripts/agileflow-welcome.js`
 - Displays project status when Claude Code starts
 - Shows active stories, WIP count, git branch
 - Runs archival and session cleanup
 {{/if}}
 
 {{#if PreCompact}}
-**PreCompact Hook** - `bash scripts/precompact-context.sh`
+**PreCompact Hook** - `bash .agileflow/scripts/precompact-context.sh`
 - Preserves project context during conversation compacts
 - Outputs version, branch, active stories, key conventions
 - Preserves active command behavioral rules (e.g., babysit's AskUserQuestion requirement)
 {{/if}}
 
 {{#if Stop}}
-**Stop Hook** - `bash scripts/agileflow-stop.sh`
+**Stop Hook** - `bash .agileflow/scripts/agileflow-stop.sh`
 - Warns about uncommitted changes when Claude stops
 - Shows staged, modified, and untracked file counts
 - Reminds about in-progress stories
@@ -542,7 +542,7 @@ Use `scripts/get-env.js` to load environment variables:
 
 **Use in hooks**:
 \`\`\`bash
-echo "Welcome $(node scripts/get-env.js USER_NAME)!"
+echo "Welcome $(node .agileflow/scripts/get-env.js USER_NAME)!"
 \`\`\`
 ```
 
@@ -575,9 +575,9 @@ Files created:
 ═══════════════════════════════════════════════════════════
 
 Test hooks manually:
-{{#if SessionStart}}  node scripts/agileflow-welcome.js{{/if}}
-{{#if PreCompact}}  bash scripts/precompact-context.sh{{/if}}
-{{#if Stop}}  bash scripts/agileflow-stop.sh{{/if}}
+{{#if SessionStart}}  node .agileflow/scripts/agileflow-welcome.js{{/if}}
+{{#if PreCompact}}  bash .agileflow/scripts/precompact-context.sh{{/if}}
+{{#if Stop}}  bash .agileflow/scripts/agileflow-stop.sh{{/if}}
 ```
 
 ## Verification (Optional)

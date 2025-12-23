@@ -15,7 +15,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-archival
+node .agileflow/scripts/obtain-context.js configuration-archival
 ```
 
 ---
@@ -151,7 +151,7 @@ if ! grep -q "archive-completed-stories.sh" .claude/settings.json 2>/dev/null; t
     "matcher": "",
     "hooks": [{
       "type": "command",
-      "command": "bash scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
+      "command": "bash .agileflow/scripts/archive-completed-stories.sh > /dev/null 2>&1 &"
     }]
   }]' .claude/settings.json > .claude/settings.json.tmp && mv .claude/settings.json.tmp .claude/settings.json
 
@@ -233,7 +233,7 @@ AgileFlow automatically manages \`docs/09-agents/status.json\` file size by arch
 
 **Auto-Archival Hook** (runs on SessionStart):
 - Checks \`docs/09-agents/status.json\` size
-- If large enough, runs: \`bash scripts/archive-completed-stories.sh <DAYS>\`
+- If large enough, runs: \`bash .agileflow/scripts/archive-completed-stories.sh <DAYS>\`
 - Moves completed stories older than threshold to status-archive.json
 - Updates status.json with only active + recent stories
 - Runs silently in background (no interruption)
@@ -253,7 +253,7 @@ AgileFlow automatically manages \`docs/09-agents/status.json\` file size by arch
 ### Troubleshooting
 
 **If agents fail with "file too large"**:
-1. Run manual archival: \`bash scripts/archive-completed-stories.sh 7\`
+1. Run manual archival: \`bash .agileflow/scripts/archive-completed-stories.sh 7\`
 2. Reduce threshold in \`docs/00-meta/agileflow-metadata.json\` (e.g., 3 days instead of 30)
 3. Verify auto-archival hook is in \`.claude/settings.json\`
 
@@ -291,8 +291,8 @@ How it works:
 - Full history preserved in docs/09-agents/status-archive.json
 
 Manual archival and compression:
-- Archival: bash scripts/archive-completed-stories.sh (reads from metadata)
-- Archival with custom threshold: bash scripts/archive-completed-stories.sh 7
+- Archival: bash .agileflow/scripts/archive-completed-stories.sh (reads from metadata)
+- Archival with custom threshold: bash .agileflow/scripts/archive-completed-stories.sh 7
 - Compression: /agileflow:compress (strips verbose fields if archival isn't enough)
 - View status: ls -lh docs/09-agents/status*.json
 

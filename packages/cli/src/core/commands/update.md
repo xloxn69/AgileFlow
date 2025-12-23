@@ -11,7 +11,7 @@ Generate stakeholder communication updates from project status.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js update
+node .agileflow/scripts/obtain-context.js update
 ```
 
 ---

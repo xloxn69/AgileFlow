@@ -8,7 +8,7 @@ model: sonnet
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js mentor
+node .agileflow/scripts/obtain-context.js mentor
 ```
 
 ---

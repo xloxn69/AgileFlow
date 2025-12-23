@@ -11,7 +11,7 @@ Manage project package dependencies (npm, pip, cargo, etc.) with dashboard, upda
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js packages
+node .agileflow/scripts/obtain-context.js packages
 ```
 
 ---

@@ -12,7 +12,7 @@ Execute project tests and update test status for stories.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js verify
+node .agileflow/scripts/obtain-context.js verify
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

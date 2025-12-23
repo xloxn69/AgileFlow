@@ -10,7 +10,7 @@ Generate a visual kanban board from current story statuses.
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js board
+node .agileflow/scripts/obtain-context.js board
 ```
 
 This gathers git status, stories/epics, session state, and registers for PreCompact.

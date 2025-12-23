@@ -599,7 +599,7 @@ class Installer {
   }
 
   /**
-   * Install all scripts from packages/cli/scripts/ to user's project scripts/ directory
+   * Install all scripts from packages/cli/scripts/ to .agileflow/scripts/
    * Copies everything automatically - no manual list to maintain
    * @param {string} directory - Project directory
    * @param {Object} options - Installation options
@@ -608,7 +608,7 @@ class Installer {
   async installScripts(directory, options = {}) {
     const { force = false } = options;
     const scriptsSourceDir = path.join(this.packageRoot, 'scripts');
-    const scriptsDestDir = path.join(directory, 'scripts');
+    const scriptsDestDir = path.join(directory, '.agileflow', 'scripts');
 
     // Skip if source scripts directory doesn't exist
     if (!(await fs.pathExists(scriptsSourceDir))) {

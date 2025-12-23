@@ -152,7 +152,7 @@ function runArchival(rootDir) {
     if (toArchiveCount > 0) {
       // Run archival
       try {
-        execSync('bash scripts/archive-completed-stories.sh', {
+        execSync('bash .agileflow/scripts/archive-completed-stories.sh', {
           cwd: rootDir,
           encoding: 'utf8',
           stdio: 'pipe'

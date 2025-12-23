@@ -15,7 +15,7 @@ model: haiku
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js configuration-precompact
+node .agileflow/scripts/obtain-context.js configuration-precompact
 ```
 
 ---
@@ -178,7 +178,7 @@ Read current `.claude/settings.json` and add PreCompact hook:
         "hooks": [
           {
             "type": "command",
-            "command": "bash scripts/precompact-context.sh"
+            "command": "bash .agileflow/scripts/precompact-context.sh"
           }
         ]
       }
@@ -220,7 +220,7 @@ console.log('Updated metadata with precompact version 2.40.0');
 ### Step 6: Test the Hook
 
 ```bash
-bash scripts/precompact-context.sh
+bash .agileflow/scripts/precompact-context.sh
 ```
 
 Should output project context. Verify it shows:
@@ -284,7 +284,7 @@ What happens now:
 - Your conventions and current work survive summarization
 
 Test it now:
-  bash scripts/precompact-context.sh
+  bash .agileflow/scripts/precompact-context.sh
 
 To trigger a compact manually:
   /compact "Additional focus areas to preserve"

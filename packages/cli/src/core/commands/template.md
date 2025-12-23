@@ -11,7 +11,7 @@ Create and manage custom templates for stories, epics, ADRs, and other documents
 ## STEP 0: Gather Context
 
 ```bash
-node scripts/obtain-context.js template
+node .agileflow/scripts/obtain-context.js template
 ```
 
 ---
