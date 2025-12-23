@@ -101,7 +101,7 @@ This document describes how slash commands and agents work together in AgileFlow
   <img alt="Diagram 9" src="images/command-agent-flow-9.light.svg">
 </picture>
 
-> Session commands: resume, baseline, verify, session-init - manage session state, checkpoints, and test verification.
+> Session commands: session:init, session:resume, baseline, verify - manage session state, checkpoints, and test verification.
 
 ---
 
