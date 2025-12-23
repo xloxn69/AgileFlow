@@ -173,15 +173,15 @@ p {
   line-height: 1.65;
 }
 
-/* Category labels / Eyebrow text - Uppercase small caps style */
-.fd-sidebar-item-text,
-[class*="category"],
-[class*="eyebrow"] {
+/* Category eyebrow label - Claude Code docs style */
+.category-eyebrow {
   font-family: var(--font-sans), system-ui, sans-serif;
   text-transform: uppercase;
   font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: hsl(var(--fd-muted-foreground));
+  margin-bottom: 0.5rem;
 }
 
 
