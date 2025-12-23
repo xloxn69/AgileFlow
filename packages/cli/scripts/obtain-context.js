@@ -85,51 +85,63 @@ function safeExec(cmd) {
 // ============================================
 
 function generateSummary() {
-  // Table formatting helpers
-  const COL1 = 22;  // Left column width
-  const COL2 = 36;  // Right column width
+  // Box drawing characters
+  const box = {
+    tl: '╭', tr: '╮', bl: '╰', br: '╯',
+    h: '─', v: '│',
+    lT: '├', rT: '┤', tT: '┬', bT: '┴',
+    cross: '┼',
+  };
 
+  const W = 58; // Total inner width (matches welcome script)
+  const L = 20; // Left column width
+  const R = W - L - 3; // Right column width (35 chars)
+
+  // Pad string to length, accounting for ANSI codes
   function pad(str, len) {
-    // Strip ANSI codes for length calculation
-    const plainStr = str.replace(/\x1b\[[0-9;]*m/g, '');
-    const padding = Math.max(0, len - plainStr.length);
-    return str + ' '.repeat(padding);
+    const stripped = str.replace(/\x1b\[[0-9;]*m/g, '');
+    const diff = len - stripped.length;
+    if (diff <= 0) return str;
+    return str + ' '.repeat(diff);
   }
 
-  function truncate(str, len) {
-    const plainStr = str.replace(/\x1b\[[0-9;]*m/g, '');
-    if (plainStr.length <= len) return str;
-    // Find where to cut (accounting for ANSI codes)
-    let plainCount = 0;
+  // Truncate string to max length, respecting ANSI codes
+  function truncate(str, maxLen, suffix = '..') {
+    const stripped = str.replace(/\x1b\[[0-9;]*m/g, '');
+    if (stripped.length <= maxLen) return str;
+
+    const targetLen = maxLen - suffix.length;
+    let visibleCount = 0;
     let cutIndex = 0;
+    let inEscape = false;
+
     for (let i = 0; i < str.length; i++) {
       if (str[i] === '\x1b') {
-        // Skip ANSI sequence
-        while (i < str.length && str[i] !== 'm') i++;
-        continue;
-      }
-      plainCount++;
-      if (plainCount >= len - 2) {
-        cutIndex = i + 1;
-        break;
+        inEscape = true;
+      } else if (inEscape && str[i] === 'm') {
+        inEscape = false;
+      } else if (!inEscape) {
+        visibleCount++;
+        if (visibleCount >= targetLen) {
+          cutIndex = i + 1;
+          break;
+        }
       }
     }
-    return str.substring(0, cutIndex) + '..';
+    return str.substring(0, cutIndex) + suffix;
   }
 
-  function row(left, right) {
-    return `${C.dim}│${C.reset} ${pad(left, COL1)}${C.dim}│${C.reset} ${pad(truncate(right, COL2 - 1), COL2)}${C.dim}│${C.reset}\n`;
+  // Create a row with auto-truncation
+  function row(left, right, leftColor = '', rightColor = '') {
+    const leftStr = `${leftColor}${left}${leftColor ? C.reset : ''}`;
+    const rightTrunc = truncate(right, R);
+    const rightStr = `${rightColor}${rightTrunc}${rightColor ? C.reset : ''}`;
+    return `${C.dim}${box.v}${C.reset} ${pad(leftStr, L)} ${C.dim}${box.v}${C.reset} ${pad(rightStr, R)} ${C.dim}${box.v}${C.reset}\n`;
   }
 
-  function headerRow(content) {
-    return `${C.dim}│${C.reset} ${pad(content, COL1 + COL2 + 3)}${C.dim}│${C.reset}\n`;
-  }
-
-  const topBorder =    `${C.dim}╭${'─'.repeat(COL1 + 2)}┬${'─'.repeat(COL2 + 2)}╮${C.reset}\n`;
-  const midBorder =    `${C.dim}├${'─'.repeat(COL1 + 2)}┼${'─'.repeat(COL2 + 2)}┤${C.reset}\n`;
-  const bottomBorder = `${C.dim}╰${'─'.repeat(COL1 + 2)}┴${'─'.repeat(COL2 + 2)}╯${C.reset}\n`;
-
-  let summary = '\n';
+  const divider = () => `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
+  const topBorder = `${C.dim}${box.tl}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(R + 2)}${box.tr}${C.reset}\n`;
+  const bottomBorder = `${C.dim}${box.bl}${box.h.repeat(L + 2)}${box.bT}${box.h.repeat(R + 2)}${box.br}${C.reset}\n`;
 
   // Gather data
   const branch = safeExec('git branch --show-current') || 'unknown';
@@ -162,47 +174,45 @@ function generateSummary() {
   }
 
   // Build table
+  let summary = '\n';
   summary += topBorder;
 
   // Header row with title
   const title = commandName ? `📋 Context [${commandName}]` : '📋 Context Summary';
-  const branchInfo = `${C.green}${branch}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
-  summary += headerRow(`${C.magenta}${C.bold}${title}${C.reset}  ${branchInfo}`);
+  const branchColor = branch === 'main' ? C.green : branch.startsWith('fix') ? C.red : C.cyan;
+  const maxBranchLen = R - 12; // Leave room for commit hash
+  const branchDisplay = branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
+  const header = `${C.magenta}${C.bold}${title}${C.reset}  ${branchColor}${branchDisplay}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
+  summary += `${C.dim}${box.v}${C.reset} ${pad(header, W - 1)} ${C.dim}${box.v}${C.reset}\n`;
 
-  summary += midBorder;
+  summary += divider();
 
   // Story counts
-  summary += row(`${C.dim}In Progress${C.reset}`, byStatus['in-progress'] ? `${C.yellow}${byStatus['in-progress']}${C.reset}` : `${C.dim}0${C.reset}`);
-  summary += row(`${C.dim}Blocked${C.reset}`, byStatus['blocked'] ? `${C.red}${byStatus['blocked']}${C.reset}` : `${C.dim}0${C.reset}`);
-  summary += row(`${C.dim}Ready${C.reset}`, byStatus['ready'] ? `${C.green}${byStatus['ready']}${C.reset}` : `${C.dim}0${C.reset}`);
-  summary += row(`${C.dim}Completed${C.reset}`, byStatus['done'] ? `${C.dim}${byStatus['done']}${C.reset}` : `${C.dim}0${C.reset}`);
+  summary += row('In Progress', byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0', C.dim, byStatus['in-progress'] ? C.yellow : C.dim);
+  summary += row('Blocked', byStatus['blocked'] ? `${byStatus['blocked']}` : '0', C.dim, byStatus['blocked'] ? C.red : C.dim);
+  summary += row('Ready', byStatus['ready'] ? `${byStatus['ready']}` : '0', C.dim, byStatus['ready'] ? C.green : C.dim);
+  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', C.dim, byStatus['done'] ? C.dim : C.dim);
 
-  summary += midBorder;
+  summary += divider();
 
   // Git status
-  const uncommittedStatus = statusLines.length > 0
-    ? `${C.yellow}${statusLines.length} uncommitted${C.reset}`
-    : `${C.green}clean${C.reset}`;
-  summary += row(`${C.dim}Git status${C.reset}`, uncommittedStatus);
+  const uncommittedStatus = statusLines.length > 0 ? `${statusLines.length} uncommitted` : 'clean';
+  summary += row('Git status', uncommittedStatus, C.dim, statusLines.length > 0 ? C.yellow : C.green);
 
   // Session
-  const sessionText = sessionDuration !== null
-    ? `${C.green}${sessionDuration} min${C.reset}`
-    : `${C.dim}no active session${C.reset}`;
-  summary += row(`${C.dim}Session${C.reset}`, sessionText);
+  const sessionText = sessionDuration !== null ? `${sessionDuration} min` : 'no active session';
+  summary += row('Session', sessionText, C.dim, sessionDuration !== null ? C.green : C.dim);
 
   // Current story
-  const storyText = currentStory
-    ? `${C.yellow}${currentStory}${C.reset}`
-    : `${C.dim}none${C.reset}`;
-  summary += row(`${C.dim}Working on${C.reset}`, storyText);
+  const storyText = currentStory ? currentStory : 'none';
+  summary += row('Working on', storyText, C.dim, currentStory ? C.yellow : C.dim);
 
   // Ready stories (if any)
   if (readyStories.length > 0) {
-    summary += row(`${C.green}⭐ Ready${C.reset}`, readyStories.slice(0, 3).join(', '));
+    summary += row('⭐ Ready', readyStories.slice(0, 3).join(', '), C.green, '');
   }
 
-  summary += midBorder;
+  summary += divider();
 
   // Key files
   const keyFileChecks = [
@@ -215,24 +225,20 @@ function generateSummary() {
     const exists = fs.existsSync(f.path);
     return exists ? `${C.green}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
   }).join(' ');
-  summary += row(`${C.dim}Key files${C.reset}`, keyFileStatus);
+  summary += row('Key files', keyFileStatus, C.dim, '');
 
   // Research
-  const researchText = researchFiles.length > 0
-    ? `${researchFiles.length} notes`
-    : `${C.dim}none${C.reset}`;
-  summary += row(`${C.dim}Research${C.reset}`, researchText);
+  const researchText = researchFiles.length > 0 ? `${researchFiles.length} notes` : 'none';
+  summary += row('Research', researchText, C.dim, researchFiles.length > 0 ? '' : C.dim);
 
   // Epics
-  const epicText = epicFiles.length > 0
-    ? `${epicFiles.length} epics`
-    : `${C.dim}none${C.reset}`;
-  summary += row(`${C.dim}Epics${C.reset}`, epicText);
+  const epicText = epicFiles.length > 0 ? `${epicFiles.length} epics` : 'none';
+  summary += row('Epics', epicText, C.dim, epicFiles.length > 0 ? '' : C.dim);
 
-  summary += midBorder;
+  summary += divider();
 
   // Last commit
-  summary += row(`${C.dim}Last commit${C.reset}`, `${C.dim}${lastCommitShort} ${truncate(lastCommitMsg, 28)}${C.reset}`);
+  summary += row('Last commit', `${lastCommitShort} ${lastCommitMsg}`, C.dim, C.dim);
 
   summary += bottomBorder;
 
