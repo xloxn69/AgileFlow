@@ -133,3 +133,29 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Claude Code docs-style typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+
+h1 {
+  font-size: 1.875rem;
+  line-height: 1.3;
+}
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 1.35;
+}
+
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+/* Keep body text in sans-serif */
+body, p, li, td, th, span, div {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
