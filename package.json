@@ -33,6 +33,6 @@
     "tailwindcss": "3.4.1"
   },
   "dependencies": {
-    "agileflow": "^2.42.0"
+    "agileflow": "^2.51.0"
   }
 }

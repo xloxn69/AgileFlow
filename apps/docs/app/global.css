@@ -4,9 +4,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fumadocs overrides - MUST be unlayered to override fumadocs defaults */
+:root {
+  /* Light mode - override fumadocs variables */
+  --fd-background: 0 0% 100%;
+  --fd-foreground: 0 0% 9%;
+  --fd-card: 0 0% 100%;
+  --fd-card-foreground: 0 0% 9%;
+  --fd-popover: 0 0% 100%;
+  --fd-popover-foreground: 0 0% 9%;
+  --fd-primary: 24 75% 57%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 0 0% 96%;
+  --fd-secondary-foreground: 0 0% 9%;
+  --fd-muted: 0 0% 96%;
+  --fd-muted-foreground: 0 0% 45%;
+  --fd-accent: 24 30% 96%;
+  --fd-accent-foreground: 24 75% 35%;
+  --fd-border: 0 0% 90%;
+  --fd-ring: 24 75% 57%;
+}
+
+.dark {
+  /* Dark mode - override fumadocs variables */
+  --fd-background: 0 0% 7%;
+  --fd-foreground: 0 0% 98%;
+  --fd-card: 0 0% 10%;
+  --fd-card-foreground: 0 0% 98%;
+  --fd-popover: 0 0% 10%;
+  --fd-popover-foreground: 0 0% 98%;
+  --fd-primary: 24 75% 55%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 0 0% 15%;
+  --fd-secondary-foreground: 0 0% 98%;
+  --fd-muted: 0 0% 15%;
+  --fd-muted-foreground: 0 0% 64%;
+  --fd-accent: 24 40% 15%;
+  --fd-accent-foreground: 24 70% 75%;
+  --fd-border: 0 0% 18%;
+  --fd-ring: 24 75% 55%;
+}
+
 @layer base {
   :root {
-    /* Shadcn variables - SINGLE SOURCE OF TRUTH */
+    /* Shadcn variables for Tailwind integration */
     --background: 0 0% 100%;
     --foreground: 0 0% 9%;
     --card: 0 0% 100%;
@@ -27,28 +68,9 @@
     --input: 0 0% 90%;
     --ring: 24 75% 57%;
     --radius: 0.75rem;
-
-    /* Bridge fumadocs to Shadcn variables */
-    --fd-background: var(--background);
-    --fd-foreground: var(--foreground);
-    --fd-card: var(--card);
-    --fd-card-foreground: var(--card-foreground);
-    --fd-popover: var(--popover);
-    --fd-popover-foreground: var(--popover-foreground);
-    --fd-primary: var(--primary);
-    --fd-primary-foreground: var(--primary-foreground);
-    --fd-secondary: var(--secondary);
-    --fd-secondary-foreground: var(--secondary-foreground);
-    --fd-muted: var(--muted);
-    --fd-muted-foreground: var(--muted-foreground);
-    --fd-accent: var(--accent);
-    --fd-accent-foreground: var(--accent-foreground);
-    --fd-border: var(--border);
-    --fd-ring: var(--ring);
   }
 
   .dark {
-    /* Shadcn variables - dark mode */
     --background: 0 0% 7%;
     --foreground: 0 0% 98%;
     --card: 0 0% 10%;
@@ -68,7 +90,5 @@
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 24 75% 55%;
-
-    /* Bridges automatically inherit from above via var() */
   }
 }
