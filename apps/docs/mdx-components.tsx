@@ -33,12 +33,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/registry/new-york-v4/ui/tabs"
-import {
-  Tree,
-  Folder,
-  File,
-  CollapseButton,
-} from "@/registry/new-york-v4/ui/file-tree"
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -367,8 +361,4 @@ export const mdxComponents = {
     />
   ),
   Kbd,
-  Tree,
-  Folder,
-  File,
-  CollapseButton,
 }

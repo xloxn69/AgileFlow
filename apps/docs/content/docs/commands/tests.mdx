@@ -127,25 +127,14 @@ addopts = --cov=src --cov-report=html --cov-report=term
 
 Creates organized test directories:
 
-<Tree>
-  <Folder element="tests" value="tests">
-    <Folder element="unit" value="unit">
-      <File value="example.test.ts">example.test.ts</File>
-    </Folder>
-    <Folder element="integration" value="integration">
-      <File value="api.test.ts">api.test.ts</File>
-    </Folder>
-    <Folder element="e2e" value="e2e">
-      <File value="login.spec.ts">login.spec.ts</File>
-    </Folder>
-    <Folder element="fixtures" value="fixtures">
-      <File value="users.json">users.json</File>
-    </Folder>
-    <Folder element="helpers" value="helpers">
-      <File value="setup.ts">setup.ts</File>
-    </Folder>
-  </Folder>
-</Tree>
+```
+tests/
+├── unit/           # Unit tests (isolated functions/classes)
+├── integration/    # Integration tests (multiple components)
+├── e2e/            # End-to-end tests (full user flows)
+├── fixtures/       # Test data and mocks
+└── helpers/        # Test utilities and helpers
+```
 
 ### Example Tests
 

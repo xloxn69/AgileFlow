@@ -32,44 +32,26 @@ This will:
 
 ### Directory Structure
 
-<Tree>
-  <Folder element="your-project" value="your-project">
-    <Folder element=".agileflow" value=".agileflow">
-      <File value="config.json">config.json</File>
-      <Folder element="agents" value="agents">
-        <File value="ui.md">ui.md</File>
-        <File value="api.md">api.md</File>
-      </Folder>
-      <Folder element="templates" value="templates">
-        <File value="story.md">story.md</File>
-      </Folder>
-    </Folder>
-    <Folder element=".claude" value=".claude">
-      <Folder element="commands" value="commands">
-        <Folder element="agileflow" value="agileflow">
-          <File value="epic.md">epic.md</File>
-          <File value="story.md">story.md</File>
-          <File value="board.md">board.md</File>
-          <File value="status.md">status.md</File>
-        </Folder>
-      </Folder>
-    </Folder>
-    <Folder element="docs" value="docs">
-      <Folder element="00-meta" value="00-meta">
-        <File value="agileflow-metadata.json">agileflow-metadata.json</File>
-      </Folder>
-      <Folder element="05-epics" value="05-epics">
-        <File value="EP-0001.md">EP-0001.md</File>
-      </Folder>
-      <Folder element="06-stories" value="06-stories">
-        <File value="US-0001.md">US-0001.md</File>
-      </Folder>
-      <Folder element="09-agents" value="09-agents">
-        <File value="status.json">status.json</File>
-      </Folder>
-    </Folder>
-  </Folder>
-</Tree>
+```
+your-project/
+├── .agileflow/           # Core configuration
+│   ├── config.json       # AgileFlow settings
+│   ├── agents/           # Agent definitions
+│   └── templates/        # Document templates
+├── .claude/
+│   └── commands/
+│       └── agileflow/    # Slash commands
+│           ├── epic.md
+│           ├── story.md
+│           ├── board.md
+│           └── ... (40+ commands)
+└── docs/                 # Project documentation
+    ├── 00-meta/          # Metadata and config
+    ├── 05-epics/         # Epic definitions
+    ├── 06-stories/       # User stories
+    └── 09-agents/        # Agent communication
+        └── status.json   # Project status
+```
 
 ### Installed Commands
 
