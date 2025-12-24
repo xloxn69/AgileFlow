@@ -2,10 +2,12 @@
  * AgileFlow CLI - Update Command
  *
  * Updates an existing AgileFlow installation.
+ * Includes self-update capability to always use the latest CLI.
  */
 
 const chalk = require('chalk');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const semver = require('semver');
 const { Installer } = require('../installers/core/installer');
 const { IdeManager } = require('../installers/ide/manager');
@@ -22,6 +24,8 @@ module.exports = {
   options: [
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
     ['--force', 'Force reinstall (skip prompts; overwrites local changes)'],
+    ['--no-self-update', 'Skip automatic CLI self-update check'],
+    ['--self-updated', 'Internal flag: indicates CLI was already self-updated'],
   ],
   action: async (options) => {
     try {
@@ -60,8 +64,36 @@ module.exports = {
         console.log(chalk.bold('Latest (npm):'), npmLatestVersion);
       }
 
-      // Check if CLI itself is outdated
-      if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion)) {
+      // Self-update: if CLI is outdated and we haven't already self-updated, re-run with latest
+      const shouldSelfUpdate = options.selfUpdate !== false && !options.selfUpdated;
+      if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion) && shouldSelfUpdate) {
+        console.log();
+        info(`Updating CLI from v${localCliVersion} to v${npmLatestVersion}...`);
+        console.log(chalk.dim('  Fetching latest version from npm...\n'));
+
+        // Build the command with all current options forwarded
+        const args = ['agileflow@latest', 'update', '--self-updated'];
+        if (options.directory) args.push('-d', options.directory);
+        if (options.force) args.push('--force');
+
+        const result = spawnSync('npx', args, {
+          stdio: 'inherit',
+          cwd: process.cwd(),
+          shell: process.platform === 'win32',
+        });
+
+        // Exit with the same code as the spawned process
+        process.exit(result.status ?? 0);
+      }
+
+      // If we self-updated, show confirmation
+      if (options.selfUpdated) {
+        success(`CLI updated to v${localCliVersion}`);
+        console.log();
+      }
+
+      // Check if CLI itself is still outdated (only if self-update was disabled)
+      if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion) && !shouldSelfUpdate) {
         console.log();
         warning('Your CLI is outdated!');
         console.log(chalk.dim(`  To update your installation, run:\n`));
