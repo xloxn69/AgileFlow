@@ -1,0 +1,232 @@
+---
+title: /research
+description: Initialize research note with structured template
+---
+
+# /research
+
+Create and organize research notes with structured analysis to document findings, investigations, and learning from external sources.
+
+## Quick Start
+
+```bash
+/agileflow:research
+```
+
+The command will guide you to create a new research note in `docs/10-research/`.
+
+## How It Works
+
+### What Gets Created
+
+When you create a research note, the command:
+
+1. **Creates the research folder** if it doesn't exist at `docs/10-research/`
+2. **Creates an index** in `docs/10-research/README.md` with a table of all research notes
+3. **Creates research file** at `docs/10-research/<YYYYMMDD>-<slug>.md` (newest first)
+4. **Adds index entry** with Date, Topic, Path, and Summary
+
+### File Format
+
+Research notes are stored with ISO date prefixes:
+
+```
+docs/10-research/
+├── README.md                                          # Index table
+├── 20251224-oauth-implementation-guide.md            # Research note
+├── 20251220-typescript-performance-tuning.md         # Research note
+└── 20251215-stripe-webhook-integration.md            # Research note
+```
+
+## Examples
+
+### Create a New Research Note
+
+```bash
+/agileflow:research
+```
+
+The command guides you through:
+
+1. Creating the research folder structure
+2. Pasting or providing research content
+3. Extracting key findings
+4. Generating a structured markdown file
+5. Adding an entry to the index
+
+### Typical Research Note Structure
+
+```markdown
+# OAuth 2.0 Implementation Guide
+
+**Research Date**: 2025-12-24
+**Topic**: OAuth 2.0 Integration
+**Source**: https://oauth.net/2/
+
+## Summary
+
+OAuth 2.0 is an industry-standard protocol for authorization that enables users to grant applications access to their accounts without sharing passwords. This research covers implementation best practices, flow diagrams, security considerations, and common pitfalls.
+
+## Key Findings
+
+- **Authorization Code Flow** is most common for web applications
+- **PKCE (Proof Key for Code Exchange)** is critical for mobile apps
+- **Refresh tokens** require secure storage and rotation
+- **Scope limitations** essential for least-privilege access
+
+## Implementation Approach
+
+1. Register application with OAuth provider
+2. Redirect users to provider's authorization endpoint
+3. Handle authorization code callback
+4. Exchange code for access token
+5. Use token for API requests
+6. Implement token refresh mechanism
+
+## Code Snippets
+
+```typescript
+// OAuth client initialization
+const oauth = new OAuth2Client({
+  clientId: process.env.OAUTH_CLIENT_ID,
+  clientSecret: process.env.OAUTH_CLIENT_SECRET,
+  redirectUri: 'https://yourapp.com/auth/callback'
+});
+```
+
+## Security Considerations
+
+- Store client secrets in environment variables
+- Use HTTPS for all OAuth flows
+- Implement CSRF protection on callback endpoint
+- Validate state parameter on callback
+- Use short-lived access tokens
+- Implement secure refresh token storage
+
+## Testing Strategy
+
+- Mock OAuth provider responses in unit tests
+- Use real OAuth provider in integration tests
+- Test token refresh and expiration flows
+- Verify error handling for revoked tokens
+
+## Risks & Gotchas
+
+- Token expiration requires proper handling
+- Refresh token rotation can cause logout
+- Scope creep can expose too much user data
+- Third-party provider outages affect auth
+
+## References
+
+- Source 1: OAuth 2.0 Security Best Practices, https://oauth.net/2/
+- Source 2: IETF RFC 6749 - OAuth 2.0 Authorization Framework
+- Source 3: OWASP OAuth 2.0 Threat Model, https://owasp.org/
+```
+
+## Research Index
+
+The `docs/10-research/README.md` maintains a table of all research:
+
+```markdown
+# Research Notes
+
+| Date | Topic | Path | Summary |
+|------|-------|------|---------|
+| 2025-12-24 | OAuth 2.0 Implementation | 20251224-oauth-implementation-guide.md | OAuth 2.0 flows, security, and best practices for web apps |
+| 2025-12-20 | TypeScript Performance | 20251220-typescript-performance-tuning.md | Optimization techniques and build configuration |
+| 2025-12-15 | Stripe Webhooks | 20251215-stripe-webhook-integration.md | Webhook setup, security, and retry strategies |
+```
+
+## When to Use Research Notes
+
+### Before Architecture Decisions
+Research tools and frameworks before recommending them:
+
+```bash
+/agileflow:research
+# Document findings about potential solutions
+# Then create ADR referencing the research
+```
+
+### Feature Investigation
+Deep-dive into how to implement complex features:
+
+```bash
+# Research authentication approach
+# Research payment integration
+# Research real-time synchronization
+```
+
+### Technology Evaluation
+Compare options and document findings:
+
+```bash
+# Compare database options (PostgreSQL vs. MongoDB)
+# Compare UI frameworks (React vs. Vue vs. Svelte)
+# Compare hosting platforms (Vercel vs. AWS vs. Heroku)
+```
+
+### Learning & Training
+Document learnings from courses, tutorials, or documentation:
+
+```bash
+# Summarize conference talk
+# Document tutorial findings
+# Capture best practices from book
+```
+
+## Best Practices
+
+### Research Title Format
+Use descriptive, specific titles:
+
+```
+Good:
+- OAuth 2.0 Implementation for Web Applications
+- PostgreSQL vs MongoDB for Real-time Data
+- Next.js App Router Optimization Techniques
+
+Avoid:
+- Research Notes
+- How to do stuff
+- Random findings
+```
+
+### Include Sources
+Always cite where information came from:
+
+```markdown
+## References
+
+- Source Title: https://example.com/
+- Another Source: https://docs.example.com/guide
+- IETF RFC 1234: https://tools.ietf.org/
+```
+
+### Key Findings
+Extract 3-5 most important takeaways:
+
+```markdown
+## Key Findings
+
+- **Finding 1**: Brief description with context
+- **Finding 2**: Why this matters to the project
+- **Finding 3**: Trade-offs or considerations
+```
+
+### Link to Work
+Reference research from ADRs, Epics, and Stories:
+
+```markdown
+# ADR-0042: Use PostgreSQL for persistence
+
+**Research**: See [Database Comparison](../10-research/20251220-database-comparison.md)
+```
+
+## Related Commands
+
+- [`/context MODE=research`](/commands/context) - Generate research prompt for web AI tools
+- [`/context MODE=import`](/commands/context) - Import and organize external content
+- [`/adr`](/commands/adr) - Create architecture decisions based on research
+- [`/epic-new`](/commands/epic-new) - Create epics from research findings

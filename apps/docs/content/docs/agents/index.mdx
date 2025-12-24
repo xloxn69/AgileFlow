@@ -1,0 +1,163 @@
+---
+title: Agents
+description: 25+ specialized AI agents for every aspect of software development. Each agent is an expert in their domain, ready to help with specific tasks.
+---
+
+# Agents
+
+AgileFlow includes **25+ specialized agents**, each an expert in their domain. Agents can be spawned by the `/babysit` mentor or invoked directly using the Task tool.
+
+## How Agents Work
+
+1. **Expertise-First**: Each agent loads their expertise file to understand your codebase patterns
+2. **Context-Aware**: Agents read project docs, status.json, and recent changes
+3. **Collaborative**: Agents communicate via the message bus and update story status
+4. **Self-Improving**: Agents update their expertise after completing work
+
+## Agent Categories
+
+### Core Development
+
+The primary agents for building features:
+
+| Agent | Description |
+|-------|-------------|
+| [`mentor`](/agents/mentor) | End-to-end implementation guidance from idea to PR |
+| [`epic-planner`](/agents/epic-planner) | Break down features into epics and stories |
+| [`database`](/agents/database) | Schema design, migrations, query optimization |
+| [`api`](/agents/api) | Backend services, business logic, data layer |
+| [`ui`](/agents/ui) | Frontend components, styling, accessibility |
+
+### Quality & Testing
+
+Agents focused on code quality:
+
+| Agent | Description |
+|-------|-------------|
+| [`testing`](/agents/testing) | Test strategy, patterns, coverage optimization |
+| [`qa`](/agents/qa) | Test planning, quality metrics, release readiness |
+| [`security`](/agents/security) | Vulnerability analysis, auth patterns, compliance |
+| [`performance`](/agents/performance) | Optimization, profiling, benchmarking |
+| [`accessibility`](/agents/accessibility) | WCAG compliance, assistive technology support |
+
+### Infrastructure
+
+Agents for DevOps and operations:
+
+| Agent | Description |
+|-------|-------------|
+| [`devops`](/agents/devops) | Deployment setup, testing infrastructure, quality checks |
+| [`ci`](/agents/ci) | CI/CD workflows, linting, type checking, coverage |
+| [`monitoring`](/agents/monitoring) | Observability, logging, alerting, dashboards |
+| [`datamigration`](/agents/datamigration) | Zero-downtime migrations, data validation, rollback |
+
+### Documentation & Research
+
+Agents for knowledge management:
+
+| Agent | Description |
+|-------|-------------|
+| [`documentation`](/agents/documentation) | Technical docs, API docs, user guides |
+| [`research`](/agents/research) | Gathering information, research notes, best practices |
+| [`adr-writer`](/agents/adr-writer) | Architecture Decision Records |
+| [`readme-updater`](/agents/readme-updater) | Auditing and updating documentation files |
+
+### Specialized Domains
+
+Agents for specific use cases:
+
+| Agent | Description |
+|-------|-------------|
+| [`mobile`](/agents/mobile) | React Native, Flutter, cross-platform mobile |
+| [`integrations`](/agents/integrations) | Third-party APIs, webhooks, payment processors |
+| [`analytics`](/agents/analytics) | Event tracking, metrics dashboards, data analysis |
+| [`compliance`](/agents/compliance) | GDPR, HIPAA, SOC2, audit trails |
+| [`design`](/agents/design) | UI/UX design systems, visual design, patterns |
+
+### Meta Agents
+
+Agents that coordinate other agents:
+
+| Agent | Description |
+|-------|-------------|
+| [`multi-expert`](/agents/multi-expert) | Deploys 3-5 experts on the same problem for high-confidence answers |
+| [`product`](/agents/product) | Requirements analysis, user stories, acceptance criteria |
+| [`refactor`](/agents/refactor) | Technical debt cleanup, legacy code modernization |
+
+## Spawning Agents
+
+### Via /babysit (Recommended)
+
+The `/babysit` mentor automatically detects which agent is needed:
+
+```bash
+/agileflow:babysit
+# Then describe your task - babysit will spawn the right agent
+```
+
+### Direct Spawning
+
+You can also spawn agents directly using the Task tool:
+
+```
+Task(
+  description: "Design user sessions schema",
+  prompt: "Create a sessions table to track user logins with proper indexes",
+  subagent_type: "agileflow-database"
+)
+```
+
+### Parallel Agents
+
+For full-stack features, spawn multiple agents simultaneously:
+
+```
+# API work
+Task(subagent_type: "agileflow-api", run_in_background: true, ...)
+
+# UI work (runs in parallel)
+Task(subagent_type: "agileflow-ui", run_in_background: true, ...)
+```
+
+## Agent Communication
+
+Agents coordinate through `docs/09-agents/`:
+
+```
+docs/09-agents/
+├── status.json      # Story statuses and assignments
+└── bus/
+    └── log.jsonl    # Agent messages and handoffs
+```
+
+### Status Updates
+
+Agents update `status.json` as they work:
+
+```json
+{
+  "stories": {
+    "US-0042": {
+      "status": "in-progress",
+      "owner": "AG-DATABASE",
+      "summary": "Created sessions table with indexes"
+    }
+  }
+}
+```
+
+### Message Bus
+
+Agents log coordination messages:
+
+```json
+{"timestamp": "2025-12-24T10:00:00Z", "type": "assign", "story": "US-0042", "owner": "AG-DATABASE"}
+{"timestamp": "2025-12-24T11:00:00Z", "type": "handoff", "story": "US-0042", "from": "AG-DATABASE", "to": "AG-API"}
+```
+
+## Best Practices
+
+1. **Let babysit choose**: The mentor knows which agent fits best
+2. **Provide context**: Tell agents about existing patterns in your codebase
+3. **Review updates**: Check status.json changes agents make
+4. **Use multi-expert for uncertainty**: When you need high confidence, deploy multiple experts

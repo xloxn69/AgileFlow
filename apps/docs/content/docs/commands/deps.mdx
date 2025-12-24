@@ -1,0 +1,287 @@
+---
+title: /deps
+description: Visualize dependency graph with critical path detection
+---
+
+# /deps
+
+Visualize and analyze story/epic dependency graphs with critical path detection, circular dependency identification, and actionable recommendations.
+
+## Quick Start
+
+```bash
+/agileflow:deps
+```
+
+## Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `SCOPE` | No | `all` | `story`, `epic`, or `all` - scope of visualization |
+| `EPIC` | No | - | Show dependencies within specific epic (e.g., `EP-0010`) |
+| `STORY` | No | - | Show dependencies for specific story (e.g., `US-0032`) |
+| `FORMAT` | No | `ascii` | Output format: `ascii`, `mermaid`, `graphviz`, or `json` |
+| `ANALYSIS` | No | `all` | Analysis type: `critical-path`, `circular`, `blocking`, or `all` |
+
+## Examples
+
+### View Complete Dependency Graph
+
+```bash
+/agileflow:deps
+```
+
+Shows ASCII graph of all stories and their dependencies with status indicators, critical path, and blocking story analysis.
+
+### Analyze Epic Dependencies
+
+```bash
+/agileflow:deps EPIC=EP-0010
+```
+
+Visualizes dependencies only within the authentication epic, helping understand order of work.
+
+### Check Specific Story Dependencies
+
+```bash
+/agileflow:deps STORY=US-0032
+```
+
+Shows what this story depends on and what stories depend on it, plus impact analysis.
+
+### Export as Mermaid Diagram
+
+```bash
+/agileflow:deps FORMAT=mermaid
+```
+
+Generates Mermaid diagram format suitable for documentation or GitHub.
+
+### Find Critical Path Only
+
+```bash
+/agileflow:deps ANALYSIS=critical-path
+```
+
+Shows only the longest dependency path (bottleneck for project completion).
+
+### Detect Circular Dependencies
+
+```bash
+/agileflow:deps ANALYSIS=circular
+```
+
+Scans for impossible-to-complete cycles and suggests fixes.
+
+## Output Format
+
+### ASCII Graph (Default)
+
+```
+Story Dependency Graph
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Legend:
+  ✅ Done    🟢 Ready    🟡 In Progress    🔵 In Review    ⚪ Blocked
+
+EP-0010: Authentication Epic
+┌────────────────────────────────────────────────────────────┐
+│                                                            │
+│  ✅ US-0030 - Database schema                              │
+│  │                                                         │
+│  ├─▶ ✅ US-0031 - User model                               │
+│  │   │                                                     │
+│  │   ├─▶ 🟡 US-0032 - Login endpoint (in-progress)        │
+│  │   │   │                                                 │
+│  │   │   ├─▶ 🟢 US-0033 - Login UI                         │
+│  │   │   │                                                 │
+│  │   │   └─▶ ⚪ US-0045 - Password reset (blocked)         │
+│  │   │                                                     │
+│  │   └─▶ ✅ US-0034 - JWT middleware                       │
+│  │                                                         │
+│  └─▶ 🔵 US-0035 - User registration (in-review)            │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+
+Critical Path:
+  US-0030 → US-0031 → US-0032 → US-0033  (11 days total)
+
+Blocking Stories:
+  US-0040 blocks: US-0041, US-0042  (⚠️ High impact)
+  US-0032 blocks: US-0033, US-0045  (⚠️ High impact)
+
+Circular Dependencies: None detected ✅
+```
+
+### Mermaid Diagram Format
+
+```mermaid
+graph TD
+    US0030[US-0030: Database schema ✅]
+    US0031[US-0031: User model ✅]
+    US0032[US-0032: Login endpoint 🟡]
+    US0033[US-0033: Login UI 🟢]
+    US0045[US-0045: Password reset ⚪]
+
+    US0030 --> US0031
+    US0031 --> US0032
+    US0032 --> US0033
+    US0032 --> US0045
+
+    classDef done fill:#90EE90
+    classDef ready fill:#D3D3D3
+    classDef inProgress fill:#FFD700
+    classDef blocked fill:#FFCCCB
+
+    class US0030,US0031 done
+    class US0033 ready
+    class US0032 inProgress
+    class US0045 blocked
+```
+
+## Analysis Types
+
+### Critical Path
+**Shows**: The longest dependency chain from start to end
+
+Helps identify:
+- Which stories are bottlenecks
+- Most critical path to project completion
+- Where delays have maximum impact
+- Stories to prioritize for completion
+
+```
+Critical Path: US-0030 → US-0031 → US-0032 → US-0033
+Duration: 8 days
+⚠️ US-0032 is in-progress on critical path
+   → Any delay here delays entire epic
+```
+
+### Circular Dependencies
+**Shows**: Stories that depend on each other in a cycle
+
+Example of circular dependency problem:
+```
+❌ CIRCULAR DETECTED!
+
+Cycle: US-0050 → US-0051 → US-0052 → US-0050
+
+Impact: ⚠️ CRITICAL - These stories cannot be completed
+```
+
+**How to fix**:
+1. Review architectural design
+2. Break dependency by introducing abstraction
+3. Create interface/contract story
+4. Refactor one story to break the cycle
+
+### Blocking Stories
+**Shows**: Stories that block the most other work
+
+Identifies high-impact bottlenecks:
+```
+High Impact Blockers:
+┌────────┬──────────────────┬────────┬──────────────┐
+│ Story  │ Title            │ Status │ Blocks       │
+├────────┼──────────────────┼────────┼──────────────┤
+│ US-0040│ Stripe integ.    │ 🟢 Ready│ 2 stories  │
+│ US-0032│ Login endpoint   │ 🟡 WIP │ 2 stories  │
+└────────┴──────────────────┴────────┴──────────────┘
+
+Action: Start US-0040 immediately (blocks payment epic)
+```
+
+## Story Status Indicators
+
+| Indicator | Meaning | Action |
+|-----------|---------|--------|
+| ✅ Done | Story completed | Doesn't block others anymore |
+| 🟢 Ready | Ready for development | Can be started anytime |
+| 🟡 In Progress | Currently being worked | Monitor for delays |
+| 🔵 In Review | Awaiting approval | May complete soon |
+| ⚪ Blocked | Waiting on dependencies | Can't start until unblocked |
+
+## Common Scenarios
+
+### Scenario: Story is High Priority But Blocked
+
+```
+⚪ US-0045 - Password reset (blocked)
+   Waiting for: US-0032 (Login endpoint, 75% done)
+
+Recommendation:
+  - Check US-0032 progress daily
+  - Consider pairing to accelerate if delayed
+  - US-0045 can start as soon as US-0032 is done
+```
+
+### Scenario: Found a Circular Dependency
+
+```
+❌ Services have circular dependency
+
+Current: Auth → User → Session → Auth (cycle)
+
+Solution:
+  1. Create US-0055: "Auth/User service contract"
+  2. Make all three depend on US-0055 (new foundation)
+  3. Now: Auth/User/Session → US-0055 (no cycle)
+```
+
+### Scenario: Critical Path Story at Risk
+
+```
+US-0032 is on CRITICAL PATH but in-progress
+⚠️ Currently 75% done, but original estimate was 2d
+
+If it slips:
+  - US-0033 blocked (1d delay)
+  - US-0045 blocked (2d delay)
+  - Entire epic completion delayed
+
+Recommendation:
+  - Daily standup on progress
+  - Pair if needed to accelerate
+  - Identify blockers immediately
+```
+
+## Parallel Work Opportunities
+
+Command identifies stories that can be worked in parallel:
+
+```
+Stories That Can Start Now (No Blockers):
+
+EP-0010: Authentication
+  ✅ US-0033 (Login UI)         - AG-UI available
+  ✅ US-0040 (Stripe integ.)    - HIGH PRIORITY
+
+Recommended Assignments:
+  AG-UI:  US-0033 (ready now)
+  AG-API: US-0040 (high impact blocker)
+```
+
+## Integration with Other Commands
+
+- **Before sprint planning**: Run `/deps` to understand risks
+- **During sprint**: Monitor critical path with `/board`
+- **When investigating blockers**: Use `/deps` to see what depends on this story
+- **When adding dependencies**: Re-run to check for new risks
+- **When a story is blocked**: Use `/deps STORY=US-XXXX` to see the chain
+
+## Best Practices
+
+- **Check before each sprint** - Dependencies can change as stories are refined
+- **Prioritize blocking stories** - Start high-impact blockers early
+- **Monitor critical path** - Stories on critical path deserve extra attention
+- **Detect cycles early** - Run `/deps ANALYSIS=circular` regularly
+- **Sequence dependent work** - Start foundational stories first
+- **Document dependencies clearly** - Use story frontmatter to link dependencies
+
+## Related Commands
+
+- [`/sprint`](/commands/sprint) - Sprint planning respects dependencies
+- [`/board`](/commands/board) - View sprint progress and blockers
+- [`/blockers`](/commands/blockers) - Track and resolve blocked stories
+- [`/story-validate`](/commands/story-validate) - Validate dependencies exist
+- [`/metrics`](/commands/metrics) - Correlate cycle time with dependency depth

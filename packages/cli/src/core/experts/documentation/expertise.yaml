@@ -1,6 +1,6 @@
 domain: documentation
-last_updated: 2025-12-21
-version: 1.1
+last_updated: 2025-12-24
+version: 1.2
 
 # AgileFlow-specific documentation structure (learned from actual codebase)
 files:
@@ -132,3 +132,17 @@ learnings:
     context: "Analyzed research pattern"
     insight: "Research notes use YYYYMMDD-slug.md pattern in docs/10-research/"
     source: "docs/10-research/"
+
+  - date: 2025-12-24
+    context: "Generated command documentation (batch 4 - operations)"
+    insight: "Created 6 comprehensive operation command docs (ci, deploy, changelog, packages, tests, compress) following template with quick start, parameters, examples, workflow, output, and related commands sections"
+    created_files:
+      - "apps/docs/content/docs/commands/ci.mdx (155 lines)"
+      - "apps/docs/content/docs/commands/deploy.mdx (324 lines)"
+      - "apps/docs/content/docs/commands/changelog.mdx (329 lines)"
+      - "apps/docs/content/docs/commands/packages.mdx (377 lines)"
+      - "apps/docs/content/docs/commands/tests.mdx (449 lines)"
+      - "apps/docs/content/docs/commands/compress.mdx (375 lines)"
+    total_lines: 2009
+    source: "packages/cli/src/core/commands/*.md"
+    notes: "All files follow consistent documentation template: frontmatter, quick start, purpose, parameters table, examples with explanations, workflow steps, output/files, and related commands"

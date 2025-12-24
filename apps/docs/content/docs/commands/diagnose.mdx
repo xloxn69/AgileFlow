@@ -1,0 +1,151 @@
+---
+title: /diagnose
+description: System health diagnostics
+---
+
+# /diagnose
+
+Run comprehensive AgileFlow system health checks to identify potential issues before they cause failures.
+
+## Quick Start
+
+```bash
+/agileflow:diagnose
+```
+
+This performs a full diagnostic suite with no arguments required.
+
+## Parameters
+
+This command takes no parameters - it automatically runs all diagnostic checks.
+
+## What It Checks
+
+The diagnostic system validates your entire AgileFlow installation:
+
+### 1. JSON File Validation
+- Validates all critical JSON files (status.json, metadata, settings)
+- Checks file format and structure
+- Reports file sizes in KB
+- Warns if status.json exceeds 100KB (recommends archival)
+- Shows story counts in active and archived files
+
+### 2. File Structure Integrity
+- Verifies required directories exist (docs/, .agileflow/, .claude/)
+- Checks for critical files (metadata.json, status.json)
+- Distinguishes between critical and optional files
+
+### 3. Auto-Archival System
+- Checks if archive script exists and is executable
+- Verifies hook configuration in .claude/settings.json
+- Reports archival threshold from metadata
+- Identifies missing or misconfigured components
+
+### 4. Hooks System
+- Validates .claude/settings.json structure
+- Counts SessionStart, UserPromptSubmit, and Stop hooks
+- Reports configuration issues
+- Checks hook executability
+
+### 5. File Size Analysis
+- Monitors status.json size with thresholds
+- Shows active and archived story counts
+- Recommends archival when needed
+- Provides size-based recommendations
+
+## Examples
+
+### Basic Diagnostics
+
+```bash
+/agileflow:diagnose
+```
+
+Runs complete system health check and displays results.
+
+### Output Indicators
+
+The diagnostic uses these status indicators:
+- **✅** (checkmark): Health check passed
+- **❌** (cross): Health check failed
+- **⚠️** (warning): Non-critical issue found
+- **ℹ️** (info): Informational status
+
+## Typical Output
+
+```
+🔍 AgileFlow System Diagnostics
+================================
+
+📋 JSON File Validation
+----------------------
+  ✅ docs/00-meta/agileflow-metadata.json (42KB)
+  ✅ docs/09-agents/status.json (28KB, 12 stories)
+  ℹ️  docs/09-agents/status-archive.json - not found (optional)
+  ✅ .claude/settings.json (5KB)
+
+📦 Auto-Archival System
+----------------------
+  ✅ Archive script exists and is executable
+  ✅ Auto-archival hook configured
+  ✅ Archival threshold: 7 days
+
+🪝 Hooks System
+---------------
+  ✅ .claude/settings.json is valid JSON
+  ℹ️  SessionStart hooks: 2
+  ℹ️  UserPromptSubmit hooks: 1
+  ℹ️  Stop hooks: 1
+
+📏 File Size Analysis
+---------------------
+  status.json: 28KB (12 stories)
+  ✅ status.json size is healthy
+
+📊 Diagnostic Summary
+=====================
+✅ All checks passed! System is healthy.
+```
+
+## Common Issues Detected
+
+| Issue | Indicator | Solution |
+|-------|-----------|----------|
+| Invalid JSON syntax | ❌ | Fix JSON using `jq . <file>` to identify errors |
+| Large status.json (>100KB) | ⚠️ | Run archival to reduce file size |
+| Missing critical files | ❌ | Run `npx agileflow setup` to recreate |
+| Archive script not executable | ⚠️ | Run `chmod +x scripts/archive-completed-stories.sh` |
+| Archival hook not configured | ❌ | Run `/agileflow:configure --enable=archival` |
+| Invalid .claude/settings.json | ❌ | Run `/agileflow:configure --migrate` to fix format |
+
+## When to Run
+
+Run diagnostics:
+- **After setup**: Verify AgileFlow installation completed successfully
+- **Before major operations**: Check system health before large changes
+- **Periodically**: Run monthly/quarterly to maintain system health
+- **After configuration changes**: Verify changes took effect correctly
+- **On startup**: If experiencing issues, start here for troubleshooting
+
+## Exit Codes
+
+- **0**: All checks passed, system is healthy
+- **1**: One or more issues found that need attention
+
+This allows the command to be used in CI/CD pipelines and automated scripts.
+
+## Recommended Actions
+
+If issues are found, follow these steps:
+
+1. **Invalid JSON**: Use `jq . <file>` to identify and fix syntax errors manually
+2. **Large files**: Run archival: `bash scripts/archive-completed-stories.sh`
+3. **Missing files**: Reinstall: `npx agileflow setup`
+4. **Format issues**: Run migration: `/agileflow:configure --migrate`
+5. **Re-run diagnostics**: Verify issues are resolved
+
+## Related Commands
+
+- [`/configure`](/commands/configure) - Configure AgileFlow features
+- [`/validate-expertise`](/commands/validate-expertise) - Validate expertise files
+- [`/compress`](/commands/compress) - Compress status.json and reduce file size

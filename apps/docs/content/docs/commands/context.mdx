@@ -1,0 +1,347 @@
+---
+title: /context
+description: Generate context export for web AI tools
+---
+
+# /context
+
+Generate, export, and manage your project context brief for use in web AI tools like ChatGPT, Perplexity, Gemini, and Claude web.
+
+## Quick Start
+
+```bash
+# Generate/refresh full project context
+/agileflow:context
+
+# Export concise excerpt for pasting into web AI
+/agileflow:context MODE=export
+
+# Add a quick note to context
+/agileflow:context MODE=note NOTE="User reported critical bug"
+
+# Research a topic with AI tools
+/agileflow:context MODE=research TOPIC="Implement OAuth 2.0"
+```
+
+## Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `MODE` | No | full | Operation mode: full, export, note, research, or import |
+| `NOTE` | For note mode | - | Brief note to append (1-5 lines) |
+| `TOPIC` | For research/import | - | Topic or subject for research |
+| `DETAILS` | For research | - | Additional constraints or deadline info |
+| `CONTENT` | For import mode | - | Raw content to process (transcript, article, etc.) |
+| `SOURCE` | For import mode | - | Original source URL |
+
+## Examples
+
+### Generate Full Context
+
+```bash
+/agileflow:context
+```
+
+Creates or updates `docs/context.md` with comprehensive project information:
+
+```markdown
+# Project Context Brief
+
+**Last Updated**: 2025-12-24
+**Project**: AgileFlow - AI-powered project management
+
+## What We're Building
+
+AgileFlow is a comprehensive project management system powered by AI agents. It provides automated task management, documentation synchronization, and intelligent context preservation.
+
+## Current Focus
+
+- Implementing context compacting for long conversations
+- Improving research workflow integration
+- Expanding agent capabilities
+
+## Feature Map
+
+- **Core**: Project setup, status tracking, agent coordination
+- **Documentation**: Automatic sync, README generation, ADR management
+- **Agents**: 26+ specialized agents for different tasks
+- **Research**: Structured research notes and integration
+
+## Tech Stack
+
+- **Language**: TypeScript
+- **Framework**: Next.js 16 (App Router)
+- **UI**: shadcn/ui with Tailwind CSS
+- **Package Manager**: npm with legacy-peer-deps
+- **Deployment**: Vercel
+
+## Key Decisions
+
+- ADR-0001: Use TypeScript for type safety
+- ADR-0002: Adopt shadcn/ui for component library
+- ADR-0003: Next.js for web framework
+
+## Architecture Snapshot
+
+- Monorepo structure with packages/ and apps/
+- CLI package with 41+ commands
+- Website and documentation sites
+- Agent-based command coordination
+
+## Testing & CI
+
+- Unit tests: Jest
+- E2E tests: Playwright
+- CI/CD: GitHub Actions
+- Pre-commit hooks for validation
+
+## Recent Progress
+
+- Completed context compacting feature
+- Improved documentation sync workflow
+- Added 5 new specialized agents
+
+## Risks
+
+- Token limits with large projects
+- Documentation drift during rapid development
+
+## Next Steps
+
+- Implement automated test coverage reporting
+- Add real-time collaboration features
+- Expand agent capabilities for code generation
+```
+
+### Export for Web AI Tools
+
+```bash
+/agileflow:context MODE=export
+```
+
+Outputs a concise excerpt (≤300 lines) ready to paste:
+
+```
+# Project Context Brief
+
+**Last Updated**: 2025-12-24
+**Project**: AgileFlow - AI-powered project management
+
+## What We're Building
+AgileFlow provides automated task management, documentation, and AI agents.
+
+## Current Focus
+- Context compacting for conversations
+- Research workflow integration
+- Agent capability expansion
+
+## Tech Stack
+- TypeScript, Next.js 16, shadcn/ui, Tailwind CSS, Vercel
+
+## Key Decisions
+- ADR-0001: Use TypeScript
+- ADR-0002: Use shadcn/ui
+- ADR-0003: Use Next.js
+
+## Feature Map
+- Core: Setup, tracking, coordination
+- Documentation: Sync, README, ADRs
+- Agents: 26+ specialized agents
+- Research: Structured notes
+
+## Next Steps
+- Automated test coverage
+- Real-time collaboration
+- More agent capabilities
+
+---
+
+Paste this excerpt into your web AI tool (ChatGPT, Perplexity, Gemini, Claude web) to load project context.
+```
+
+### Add a Quick Note
+
+```bash
+/agileflow:context MODE=note NOTE="User reported critical bug with OAuth flow on mobile"
+```
+
+Appends a timestamped note to the "Notes" section of `docs/context.md`:
+
+```markdown
+## Notes
+
+**2025-12-24 10:30:00**: User reported critical bug with OAuth flow on mobile
+**2025-12-23 14:15:00**: Completed initial research on TypeScript 5.4 features
+```
+
+### Research a Topic
+
+```bash
+/agileflow:context MODE=research TOPIC="Implement OAuth 2.0 with Google"
+```
+
+Generates a comprehensive research prompt:
+
+```
+# Research Request: Implement OAuth 2.0 with Google
+
+Based on our project context:
+- Project: AgileFlow
+- Tech Stack: TypeScript, Next.js 16, Node.js 20+
+- Current Focus: Authentication improvements
+
+Please provide:
+
+1. **TL;DR** (2-3 sentences)
+2. **Step-by-step implementation plan** with file paths
+3. **Code snippets** (minimal, runnable examples)
+4. **Configuration** required
+5. **Error handling** strategies
+6. **Security checklist** for OAuth flows
+7. **Test strategy** (unit, integration, e2e)
+8. **ADR draft** (options, decision, consequences)
+9. **Story breakdown** (3-6 stories with AC)
+10. **Rollback plan** if issues occur
+11. **Risks & gotchas** specific to Google OAuth
+12. **PR template** for this feature
+13. **References** (cite official docs/repos with dates)
+
+Once you complete research, paste results back here.
+```
+
+After you paste the results back, the command:
+
+1. Formats findings into structured markdown
+2. Saves to `docs/10-research/YYYYMMDD-oauth-implementation.md`
+3. Updates research index
+4. Offers to create ADR/Epic from research
+
+### Import External Content
+
+```bash
+/agileflow:context MODE=import TOPIC="Next.js App Router Patterns" CONTENT="[paste transcript here]" SOURCE="https://youtube.com/..."
+```
+
+Processes raw content (transcripts, articles, notes):
+
+1. Extracts key points and findings
+2. Identifies code snippets
+3. Suggests action items
+4. Generates story ideas
+5. Saves as structured research file
+
+## Output Modes
+
+### MODE=full (Create/Update Context)
+
+**Input**: Gathers information from:
+- `status.json` - Current work
+- `bus/log.jsonl` - Recent progress
+- `docs/03-decisions/` - Architecture decisions
+- `docs/04-architecture/` - System design
+- `docs/05-epics/` - Feature roadmap
+- GitHub CHANGELOG - Release history
+
+**Output**: Updates `docs/context.md` with managed sections while preserving custom content
+
+### MODE=export (Copy to Web AI)
+
+**Input**: Reads existing `docs/context.md`
+
+**Output**: Concise excerpt (≤300 lines) ready to paste into ChatGPT, Perplexity, Gemini, or Claude web
+
+**Use Case**: Load project context into web AI tool to continue work in a fresh conversation
+
+### MODE=note (Append Timestamped Note)
+
+**Input**: NOTE parameter with 1-5 line note
+
+**Output**: Appends to "Notes" section with ISO timestamp
+
+**Use Case**: Quick capture of important events or discoveries
+
+### MODE=research (Two-Step Research)
+
+**Step 1**: Generates research prompt for web AI
+- No file writes
+- Copy-paste ready prompt
+- Includes project context
+
+**Step 2**: When you return with results
+- Formats findings into structured markdown
+- Saves to `docs/10-research/YYYYMMDD-topic.md`
+- Updates research index
+- Offers to create ADR/Epic
+
+**Use Case**: Deep-dive into complex topics using web AI tools
+
+### MODE=import (One-Step Import)
+
+**Input**: Raw content (transcript, article, notes)
+
+**Output**: Processed research file with:
+- Extracted summary
+- Key findings
+- Code snippets
+- Action items
+- Story suggestions
+
+**Use Case**: Capture and organize learning from external sources
+
+## Best Practices
+
+### Regular Context Updates
+
+Keep context fresh for better AI assistance:
+
+```bash
+# After each major milestone
+/agileflow:context
+
+# Before starting research
+/agileflow:context MODE=export
+# Paste into web AI for context-aware help
+```
+
+### Research Workflow
+
+1. **Generate research prompt**:
+   ```bash
+   /agileflow:context MODE=research TOPIC="Add real-time sync"
+   ```
+
+2. **Paste prompt into web AI** (ChatGPT, Perplexity, etc.)
+
+3. **Get comprehensive research** with implementation details
+
+4. **Paste results back**:
+   ```bash
+   /agileflow:context MODE=import TOPIC="Real-time Sync" CONTENT="[paste results]"
+   ```
+
+5. **Creates research file** and offers to create ADR/Epic
+
+### Capture Important Discoveries
+
+```bash
+/agileflow:context MODE=note NOTE="TypeScript 5.4 improves type inference for generics - consider upgrading"
+```
+
+### Use in Web AI Conversations
+
+Before asking web AI to help with your project:
+
+```bash
+# Export concise context
+/agileflow:context MODE=export
+
+# Copy output and paste as initial message in ChatGPT
+# Then ask your question with full project context
+```
+
+## Related Commands
+
+- [`/adr`](/commands/adr) - Create architecture decisions
+- [`/research`](/commands/research) - Create research notes
+- [`/docs-sync`](/commands/docs-sync) - Synchronize documentation
+- [`/readme-sync`](/commands/readme-sync) - Update README files

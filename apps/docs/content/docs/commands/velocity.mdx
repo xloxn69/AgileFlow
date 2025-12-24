@@ -1,0 +1,389 @@
+---
+title: /velocity
+description: Track velocity and forecast sprint capacity
+---
+
+# /velocity
+
+Calculate team velocity from completed stories, identify trends, and forecast epic and milestone completion dates with confidence levels.
+
+## Quick Start
+
+```bash
+/agileflow:velocity
+```
+
+## Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `PERIOD` | No | sprint | Time period: `week`, `sprint`, `month`, or `all` |
+| `FORECAST` | No | - | Predict completion for epic/milestone (e.g., EP-0010) |
+| `FORMAT` | No | report | Output format: `report`, `chart`, or `json` |
+
+## Examples
+
+### View Current Velocity
+
+```bash
+/agileflow:velocity
+```
+
+Show velocity for the last sprint (2 weeks) with trends.
+
+### Last Week Only
+
+```bash
+/agileflow:velocity PERIOD=week
+```
+
+Focus on the most recent week's velocity.
+
+### Month-Long Trend
+
+```bash
+/agileflow:velocity PERIOD=month
+```
+
+30-day velocity trend to identify seasonal patterns.
+
+### Forecast Epic Completion
+
+```bash
+/agileflow:velocity FORECAST=EP-0010
+```
+
+Predict when the Authentication epic will complete based on current velocity.
+
+### View as Chart
+
+```bash
+/agileflow:velocity FORMAT=chart
+```
+
+ASCII art velocity chart for terminal viewing.
+
+### Export as JSON
+
+```bash
+/agileflow:velocity FORMAT=json
+```
+
+Machine-readable format for integration with other tools.
+
+## Velocity Calculation
+
+Velocity = Total points completed per time period
+
+**Example**:
+- Week 1: 8 story-days completed
+- Week 2: 10 story-days completed
+- Week 3: 7 story-days completed
+- **Average velocity**: (8+10+7)/3 = **8.3 story-days/week**
+
+Points are calculated from story estimate multiplied by completion during the period.
+
+## Velocity Report
+
+The default report format includes multiple sections:
+
+### Current Velocity Section
+
+```
+📊 Current Velocity
+
+Average:       8.3 points/week
+Trend:         ↗️ +15% (improving)
+Last sprint:   10 points
+Best sprint:   12 points (Week of 2025-12-10)
+Worst sprint:  5 points (Week of 2025-11-26)
+```
+
+Shows overall team capacity and improvement trend.
+
+### Historical Velocity Chart
+
+```
+Points/Week
+ 12 │           ●●●
+ 11 │         ●
+ 10 │   ●●  ●
+  9 │  ●  ●
+  8 │ ●            ← Current (8.3 avg)
+  7 │               ●
+  6 │              ●
+  5 │    ●       ●
+  4 │   ●
+  3 │
+    └──────────────────────────────────────
+     W1  W2  W3  W4  W5  W6  W7  W8
+
+Legend:
+  ● Actual velocity
+  ─ Trend line
+  ↗️ Trend: +15% over period
+```
+
+Visual representation of velocity trends.
+
+### Weekly Breakdown
+
+```
+| Week | Points | Stories | Avg Size | Notes |
+|------|--------|---------|----------|-------|
+| 2025-12-24 | 10 | 6 | 1.7d | ↗️ +25% |
+| 2025-12-17 | 8  | 5 | 1.6d | ↗️ +14% |
+| 2025-12-10 | 7  | 4 | 1.8d | ↘️ -30% |
+| 2025-12-03 | 10 | 7 | 1.4d | ↗️ +100% |
+```
+
+Details for each period showing stories completed and size variation.
+
+### Velocity by Owner
+
+```
+| Owner | Points/Week | Stories/Week | Utilization | Trend |
+|-------|-------------|--------------|-------------|-------|
+| AG-API | 4.1 | 2.8 | 85% | ↗️ +20% |
+| AG-UI | 3.2 | 2.1 | 80% | ↗️ +10% |
+| AG-CI | 0.8 | 0.6 | 40% | → Stable |
+| AG-DEVOPS | 0.2 | 0.2 | 10% | 🆕 New |
+```
+
+Shows work distribution and utilization by team member.
+
+## Forecasting
+
+When you specify `FORECAST=<epic>`, the command predicts completion:
+
+### Forecast Example
+
+```
+🎯 Forecast: Epic Completion
+
+EP-0010: User Authentication
+- Stories: 12 total
+- Completed: 8 (66%)
+- Remaining: 4 stories, 6 points
+- At current velocity (8.3 pts/wk): under 1 week
+- Forecast completion: 2025-12-31 (7 days)
+- Confidence: High (85%)
+```
+
+**Confidence levels**:
+- **High (>80%)** - Stable velocity, reliable forecast
+- **Medium (60-80%)** - Some variance, reasonable forecast
+- **Low (under 60%)** - High variance, forecast unreliable
+
+### Forecasting Algorithm
+
+```
+Days to complete = (Remaining points / Velocity) * 7
+Completion date = Today + Days to complete
+Confidence = 100% - (Velocity std dev / Velocity avg) * 100
+```
+
+## Velocity Chart Output
+
+ASCII visualization of velocity over time:
+
+```
+Velocity Trend (8 weeks)
+
+Points/Week
+ 12 ┤           ●●●
+ 11 ┤         ●
+ 10 ┤   ●●  ●
+  9 ┤  ●  ●
+  8 ┤ ●            ← Current (8.3 avg)
+  7 ┤               ●
+  6 ┤              ●
+  5 ┤    ●       ●
+  4 ┤   ●
+  3 ┤
+    └─────────────────────────────────────
+     W1  W2  W3  W4  W5  W6  W7  W8
+
+Trend: ↗️ +15% (improving)
+```
+
+## Velocity by Story Size
+
+Insights into which story sizes work best:
+
+```
+Size    | Count | Avg Days | Success Rate
+--------|-------|----------|-------------
+≤0.5d   |   8   |   0.4d   | 100% ✅
+0.5-1d  |  12   |   0.9d   |  92% ✅
+1-1.5d  |  10   |   1.3d   |  80% ⚠️
+1.5-2d  |   6   |   2.1d   |  67% ⚠️
+>2d     |   3   |   3.5d   |  33% 🔴
+```
+
+Shows that smaller stories complete faster and more reliably.
+
+**Insight**: Stories ≤1d complete fastest. Split stories >1.5d into smaller increments.
+
+## Risk Analysis
+
+The report includes risk assessment:
+
+```
+⚠️ Risk Analysis
+
+### Velocity Risks
+1. **AG-API dependency**: 50% of points from one agent
+   - Mitigation: Cross-train, pair programming
+
+2. **Story size variance**: Some 2d stories slow velocity
+   - Mitigation: Split stories >1.5d
+
+3. **Seasonal slowdown**: Historical dip in Week 5
+   - Mitigation: Add buffer to forecasts
+
+### Schedule Risks
+- EP-0011 blocking release
+- If velocity drops 20% → Release delayed 1 week
+- If AG-API unavailable → 50% velocity loss
+```
+
+Helps identify and mitigate risks to forecasts.
+
+## Capacity Planning
+
+Recommendations for sprint planning:
+
+```
+📅 Capacity Planning
+
+**Current Capacity**: 8.3 points/week (4 agents)
+
+**This Sprint** (2 weeks):
+- Plan: 16-18 points (2x velocity)
+- Buffer: Keep 2-3 ready stories
+- Focus: Complete EP-0010
+
+**Next Sprint**:
+- Plan: 16-20 points
+- Priority: EP-0011 (release blocker)
+- Consider: Add stories for AG-CI (underutilized)
+
+**Long-term**:
+- Maintain 8-10 points/week sustained velocity
+- Reserve 20% for tech debt
+- Keep story sizes ≤1.5d for predictability
+```
+
+Helps plan sprint workload based on actual velocity.
+
+## Export Formats
+
+### Report (Default)
+
+Full markdown velocity report with all sections.
+
+### Chart
+
+ASCII art velocity trend chart only:
+
+```
+Velocity Trend (8 weeks)
+
+Points/Week
+ 12 ┤           ●●●
+ 11 ┤         ●
+...
+```
+
+### JSON
+
+Machine-readable format:
+
+```json
+{
+  "generated": "2025-12-24T14:30:00Z",
+  "period": "8 weeks",
+  "velocity": {
+    "current": 8.3,
+    "trend": "+15%",
+    "last_sprint": 10,
+    "best": 12,
+    "worst": 5,
+    "std_dev": 2.1
+  },
+  "by_owner": {
+    "AG-UI": 3.2,
+    "AG-API": 4.1,
+    "AG-CI": 0.8,
+    "AG-DEVOPS": 0.2
+  },
+  "forecasts": [
+    {
+      "epic": "EP-0010",
+      "remaining_points": 6,
+      "weeks_needed": 0.7,
+      "completion_date": "2025-12-31",
+      "confidence": 85
+    }
+  ]
+}
+```
+
+## Best Practices
+
+1. **Track over 3+ periods** - Need at least 3 weeks for reliable velocity
+2. **Use consistent estimates** - Estimates in same units (days, points)
+3. **Review trends** - Look for improving or declining patterns
+4. **Account for holidays** - Adjust forecasts for time off
+5. **Update weekly** - Track velocity each sprint for trends
+
+## Velocity Goals
+
+Set team targets and track progress:
+
+```
+🎯 Velocity Goals
+
+Current:    8.3 points/week
+Target:     10 points/week (by end of quarter)
+Stretch:    12 points/week
+
+Action Items:
+- [ ] Split 2 large stories (US-0050, US-0051)
+- [ ] Assign 2 more stories to AG-CI
+- [ ] Review blockers (US-0041)
+- [ ] Celebrate hitting 10 pts/wk! 🎉
+```
+
+## Related Commands
+
+- [`/agileflow:metrics`](/commands/metrics) - Detailed metrics and analytics
+- [`/agileflow:board`](/commands/board) - Visual kanban board
+- [`/agileflow:blockers`](/commands/blockers) - Identify velocity blockers
+- [`/agileflow:status`](/commands/status) - Update story status
+
+## Troubleshooting
+
+**Q: Why is my velocity so variable?**
+A: Possible causes:
+- Stories too varied in size (standardize estimates)
+- Frequent interruptions (protect work time)
+- Blockers slowing completion (unblock faster)
+- Team capacity changes (new members, absences)
+
+**Q: How many data points do I need?**
+A: At least 3 time periods for reliability. Less than 5 periods = low confidence forecast.
+
+**Q: Should I include velocity during onboarding?**
+A: No, exclude first sprints. New team members lower velocity temporarily.
+
+**Q: What if velocity is declining?**
+A: Investigate:
+- Increasing blockers?
+- Larger stories?
+- Team absences?
+- Quality issues requiring rework?
+
+**Q: Can I forecast with low confidence?**
+A: Yes, but use wide buffers. P90 estimate (90% confidence) is more conservative than P50 (50% confidence).

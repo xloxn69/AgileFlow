@@ -1,0 +1,346 @@
+---
+title: /metrics
+description: Analytics dashboard with cycle time and throughput
+---
+
+# /metrics
+
+Generate a comprehensive analytics dashboard showing cycle time, lead time, throughput, WIP status, and actionable insights for data-driven decision making.
+
+## Quick Start
+
+```bash
+/agileflow:metrics
+```
+
+## Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `TIMEFRAME` | No | 30d | Time period: `7d`, `30d`, `90d`, or `all` |
+| `EPIC` | No | - | Filter by specific epic (e.g., EP-0010) |
+| `OWNER` | No | - | Filter by agent/owner (e.g., AG-API) |
+| `FORMAT` | No | ascii | Output format: `ascii`, `markdown`, `json`, or `csv` |
+| `METRIC` | No | all | Specific metric: `cycle-time`, `lead-time`, `throughput`, or `all` |
+
+## Examples
+
+### View All Metrics (Last 30 Days)
+
+```bash
+/agileflow:metrics
+```
+
+Display comprehensive metrics dashboard for the last month.
+
+### Last 90 Days
+
+```bash
+/agileflow:metrics TIMEFRAME=90d
+```
+
+Longer view for trend analysis and forecasting.
+
+### Specific Epic Metrics
+
+```bash
+/agileflow:metrics EPIC=EP-0010 TIMEFRAME=30d
+```
+
+Focus on Authentication epic metrics.
+
+### Agent Utilization Only
+
+```bash
+/agileflow:metrics OWNER=AG-API TIMEFRAME=7d
+```
+
+See what AG-API completed this week.
+
+### Export as JSON
+
+```bash
+/agileflow:metrics FORMAT=json
+```
+
+Machine-readable format for integration with other tools.
+
+## Key Metrics
+
+### Cycle Time
+
+Time from "in-progress" to "done" (actual work time).
+
+**Example**:
+- Story started Monday
+- Story completed Friday
+- Cycle time: 4 days
+
+Shows how long work actually takes once started.
+
+### Lead Time
+
+Time from story creation to "done" (total time including waiting).
+
+**Example**:
+- Story created Monday of Week 1
+- Story completed Friday of Week 2
+- Lead time: 10 days
+
+Shows end-to-end time including waiting in ready queue.
+
+### Throughput
+
+Stories completed per week.
+
+**Example**:
+- Week 1: 8 stories
+- Week 2: 10 stories
+- Week 3: 7 stories
+- Average: 8.3 stories/week
+
+Shows team capacity and productivity.
+
+### Work In Progress (WIP)
+
+Current stories in "in-progress" or "in-review" status.
+
+**Example**:
+```
+Current WIP: 4 / 6 stories (67% capacity)
+Status: ✅ Within limits
+
+Breakdown:
+  in-progress: 3 stories
+  in-review: 1 story
+  blocked: 0 stories
+```
+
+### Flow Efficiency
+
+Percentage of time spent actively working vs waiting.
+
+**Example**:
+```
+Average: 41% (3.2d active / 7.8d total)
+
+Interpretation:
+  Stories spend 59% of time waiting
+  Only 41% of time is active work
+```
+
+Higher is better. Target >60%.
+
+### Agent Utilization
+
+Work distribution across team members.
+
+**Example**:
+```
+AG-API: 4.1 points/week (40%)
+AG-UI: 3.2 points/week (32%)
+AG-CI: 0.8 points/week (20%)
+AG-DEVOPS: 0.2 points/week (7%)
+```
+
+Identifies underutilized team members.
+
+## Dashboard Output
+
+Default ASCII dashboard shows all key metrics:
+
+```
+╔════════════════════════════════════════════════════════════╗
+║           AGILEFLOW METRICS DASHBOARD                      ║
+║         Last 30 Days (Dec 24 - Jan 23)                     ║
+╠════════════════════════════════════════════════════════════╣
+║                                                             ║
+║  📊 KEY METRICS                                             ║
+║  Cycle Time:       3.2 days avg  (↓ 8% vs last month)     ║
+║  Lead Time:        7.8 days avg  (↑ 5% vs last month)     ║
+║  Throughput:       8.5 stories/week  (↗ +12%)             ║
+║  Flow Efficiency:  41%  (Target: >60%)                    ║
+║                                                             ║
+║  🎯 WORK IN PROGRESS                                        ║
+║  Current WIP:  4 / 6 stories (67%)  ✅                    ║
+║  Blocked:      2 stories  ⚠️                               ║
+║                                                             ║
+║  AG-API:     2 stories (at limit)                         ║
+║  AG-UI:      1 story                                      ║
+║  AG-CI:      1 story                                      ║
+║  AG-DEVOPS:  0 stories                                    ║
+║                                                             ║
+║  📈 EPIC HEALTH                                             ║
+║  EP-0010  ████████████████████░░  85%  🟢 On track       ║
+║  EP-0011  ████████░░            40%  🟡 2 blocked        ║
+║  EP-0012  ██░░                  10%  🟢 Healthy          ║
+║                                                             ║
+║  ⚡ RECOMMENDATIONS                                        ║
+║  1. Unblock US-0045, US-0048 (blocked >2 days)           ║
+║  2. Reduce review time (currently 2.1 days avg)          ║
+║  3. Assign more stories to AG-DEVOPS (0 active)          ║
+║  4. Improve estimation accuracy (+15% variance)          ║
+║                                                             ║
+╚════════════════════════════════════════════════════════════╝
+```
+
+## Cycle Time Distribution
+
+Visual breakdown of story completion times:
+
+```
+Cycle Time (30 days)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Average:    3.2 days
+Median:     2.5 days
+85th %ile:  5.0 days
+Min:        0.5 days
+Max:        8.0 days
+
+Distribution:
+0-1 days  ████████░░ 8 stories (32%)
+1-3 days  ████████████████░░ 12 stories (48%)
+3-5 days  ████░░ 3 stories (12%)
+5+ days   ██░░ 2 stories (8%)
+```
+
+Shorter cycle times are better. Stories taking >5 days warrant investigation.
+
+## Throughput Chart
+
+Historical story completion rates:
+
+```
+Throughput (Last 8 Weeks)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Week 1  ████████░░ 8 stories
+Week 2  ██████████░░ 10 stories
+Week 3  ██████░░ 6 stories
+Week 4  ████████████░░ 12 stories  ← Peak
+Week 5  ████████░░ 8 stories
+Week 6  ██████░░ 6 stories
+Week 7  ██████████░░ 10 stories
+Week 8  ████████░░ 8 stories
+
+Average: 8.5 stories/week
+Trend:   ↗ +12% vs previous month
+```
+
+Shows productivity trends and sustainable velocity.
+
+## Export Formats
+
+### Markdown
+
+Table format for reports and documentation:
+
+```markdown
+## AgileFlow Metrics (Last 30 Days)
+
+| Metric | Value | Trend | Target |
+|--------|-------|-------|--------|
+| Cycle Time | 3.2d avg | ↓ 8% | <3d |
+| Lead Time | 7.8d avg | ↑ 5% | <7d |
+| Throughput | 8.5/week | ↗ +12% | 10/week |
+| Flow Efficiency | 41% | ↑ 2% | >60% |
+```
+
+### JSON
+
+Machine-readable format:
+
+```json
+{
+  "timeframe": "30d",
+  "generated_at": "2025-12-24T14:30:00Z",
+  "metrics": {
+    "cycle_time": {
+      "avg": 3.2,
+      "median": 2.5,
+      "p85": 5.0,
+      "unit": "days",
+      "change_pct": -8
+    },
+    "throughput": {
+      "avg": 8.5,
+      "unit": "stories/week",
+      "change_pct": 12
+    }
+  }
+}
+```
+
+### CSV
+
+Spreadsheet format for analysis in Excel/Google Sheets:
+
+```csv
+Date,Cycle Time,Lead Time,Throughput,WIP,Blocked
+2025-12-24,3.2,7.8,8.5,4,2
+2025-12-23,3.1,7.5,8.2,5,1
+```
+
+## Insights & Recommendations
+
+The dashboard automatically generates actionable recommendations:
+
+- **Reduce cycle time** - If >5 days, blockers or scope creep
+- **Reduce lead time** - Stories waiting too long in ready queue
+- **Improve flow efficiency** - Stories spending too much time in review
+- **Balance utilization** - Redistribute to underutilized team members
+- **Estimate accuracy** - If variance >20%, estimates are unreliable
+
+## Trends
+
+Each metric shows trend compared to previous period:
+
+- ↗ **Improving** - Getting better
+- → **Stable** - No significant change
+- ↘ **Declining** - Getting worse
+
+Green/yellow/red indicators show health:
+- 🟢 **Green** - On track
+- 🟡 **Yellow** - Caution needed
+- 🔴 **Red** - Critical issue
+
+## Best Practices
+
+1. **Review weekly** - Check metrics at sprint planning
+2. **Track trends** - Compare to previous period for patterns
+3. **Find bottlenecks** - High lead time vs cycle time = waiting time
+4. **Act on data** - Use insights to improve process
+5. **Share with team** - Transparency builds accountability
+
+## Related Commands
+
+- [`/agileflow:velocity`](/commands/velocity) - Velocity trends and forecasting
+- [`/agileflow:board`](/commands/board) - Visual kanban view
+- [`/agileflow:blockers`](/commands/blockers) - Blocker analysis
+- [`/agileflow:retro`](/commands/retro) - Retrospective data gathering
+
+## Troubleshooting
+
+**Q: Why is my cycle time high?**
+A: Could be:
+- Stories too large (break into smaller pieces)
+- Blockers (unblock faster)
+- Code review delays (faster reviews)
+- Rework/bugs (improve testing)
+
+**Q: How do I improve throughput?**
+A: Options:
+- Reduce story size (smaller = faster)
+- Reduce blocker time
+- Better estimation
+- Improve team skills/automation
+
+**Q: Why is flow efficiency low?**
+A: Stories spending time:
+- In ready queue (start work faster)
+- In review (faster code reviews)
+- Blocked (unblock faster)
+
+Improve by reducing wait time, not by working faster.
+
+**Q: Can I export metrics history?**
+A: Yes, save reports from multiple runs and compare. Use `FORMAT=csv` for spreadsheet analysis.
