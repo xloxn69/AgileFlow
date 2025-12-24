@@ -59,73 +59,16 @@ The command guides you through:
 
 ### Typical Research Note Structure
 
-```markdown
-# OAuth 2.0 Implementation Guide
+Research notes follow a consistent template with these sections:
 
-**Research Date**: 2025-12-24
-**Topic**: OAuth 2.0 Integration
-**Source**: https://oauth.net/2/
-
-## Summary
-
-OAuth 2.0 is an industry-standard protocol for authorization that enables users to grant applications access to their accounts without sharing passwords. This research covers implementation best practices, flow diagrams, security considerations, and common pitfalls.
-
-## Key Findings
-
-- **Authorization Code Flow** is most common for web applications
-- **PKCE (Proof Key for Code Exchange)** is critical for mobile apps
-- **Refresh tokens** require secure storage and rotation
-- **Scope limitations** essential for least-privilege access
-
-## Implementation Approach
-
-1. Register application with OAuth provider
-2. Redirect users to provider's authorization endpoint
-3. Handle authorization code callback
-4. Exchange code for access token
-5. Use token for API requests
-6. Implement token refresh mechanism
-
-## Code Snippets
-
-```typescript
-// OAuth client initialization
-const oauth = new OAuth2Client({
-  clientId: process.env.OAUTH_CLIENT_ID,
-  clientSecret: process.env.OAUTH_CLIENT_SECRET,
-  redirectUri: 'https://yourapp.com/auth/callback'
-});
-```
-
-## Security Considerations
-
-- Store client secrets in environment variables
-- Use HTTPS for all OAuth flows
-- Implement CSRF protection on callback endpoint
-- Validate state parameter on callback
-- Use short-lived access tokens
-- Implement secure refresh token storage
-
-## Testing Strategy
-
-- Mock OAuth provider responses in unit tests
-- Use real OAuth provider in integration tests
-- Test token refresh and expiration flows
-- Verify error handling for revoked tokens
-
-## Risks & Gotchas
-
-- Token expiration requires proper handling
-- Refresh token rotation can cause logout
-- Scope creep can expose too much user data
-- Third-party provider outages affect auth
-
-## References
-
-- Source 1: OAuth 2.0 Security Best Practices, https://oauth.net/2/
-- Source 2: IETF RFC 6749 - OAuth 2.0 Authorization Framework
-- Source 3: OWASP OAuth 2.0 Threat Model, https://owasp.org/
-```
+- **Header** - Title, date, topic, and source URL
+- **Summary** - Brief overview of the research
+- **Key Findings** - Bulleted list of important discoveries
+- **Implementation Approach** - Step-by-step guidance
+- **Security Considerations** - Security best practices
+- **Testing Strategy** - How to test the implementation
+- **Risks & Gotchas** - Common pitfalls to avoid
+- **References** - Source links and citations
 
 ## Research Index
 
