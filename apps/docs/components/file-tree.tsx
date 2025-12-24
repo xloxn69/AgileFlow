@@ -10,6 +10,7 @@ interface FolderProps {
   name: string
   children?: React.ReactNode
   defaultOpen?: boolean
+  comment?: string
 }
 
 interface FileProps {
@@ -30,12 +31,15 @@ export function FileTree({ className, children }: FileTreeProps) {
   )
 }
 
-export function Folder({ name, children }: FolderProps) {
+export function Folder({ name, children, comment }: FolderProps) {
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2 py-0.5">
-        <FolderIcon className="h-4 w-4 text-blue-500" />
+        <FolderIcon className="h-4 w-4 text-[#e8683a]" />
         <span className="text-foreground">{name}</span>
+        {comment && (
+          <span className="text-muted-foreground text-xs ml-2"># {comment}</span>
+        )}
       </div>
       {children && (
         <div className="ml-4 flex flex-col gap-0.5 border-l border-muted-foreground/20 pl-3">

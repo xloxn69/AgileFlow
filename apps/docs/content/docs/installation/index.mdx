@@ -39,9 +39,21 @@ This will:
       <Folder name="agents">
         <File name="ui.md" />
         <File name="api.md" />
+        <File name="database.md" />
+        <File name="..." comment="25+ agents" />
+      </Folder>
+      <Folder name="commands">
+        <File name="epic.md" />
+        <File name="story.md" />
+        <File name="board.md" />
+        <File name="..." comment="40+ commands" />
       </Folder>
       <Folder name="templates">
         <File name="story.md" />
+        <File name="epic.md" />
+        <File name="adr.md" />
+        <File name="research.md" />
+        <File name="retrospective.md" />
       </Folder>
     </Folder>
     <Folder name=".claude">
@@ -52,21 +64,26 @@ This will:
           <File name="board.md" />
           <File name="..." comment="40+ commands" />
         </Folder>
+        <Folder name="agents">
+          <File name="ui.md" />
+          <File name="api.md" />
+          <File name="database.md" />
+          <File name="..." comment="25+ agents" />
+        </Folder>
       </Folder>
     </Folder>
     <Folder name="docs">
-      <Folder name="00-meta">
-        <File name="agileflow-metadata.json" />
-      </Folder>
-      <Folder name="05-epics">
-        <File name="EP-0001.md" />
-      </Folder>
-      <Folder name="06-stories">
-        <File name="US-0001.md" />
-      </Folder>
-      <Folder name="09-agents">
-        <File name="status.json" comment="Project status" />
-      </Folder>
+      <Folder name="00-meta" comment="Templates, conventions" />
+      <Folder name="01-brainstorming" comment="Ideas and sketches" />
+      <Folder name="02-practices" comment="Testing, git, CI practices" />
+      <Folder name="03-decisions" comment="ADRs" />
+      <Folder name="04-architecture" comment="Architecture documentation" />
+      <Folder name="05-epics" comment="Epic definitions" />
+      <Folder name="06-stories" comment="User stories" />
+      <Folder name="07-testing" comment="Test cases" />
+      <Folder name="08-project" comment="Roadmap, backlog" />
+      <Folder name="09-agents" comment="Agent status, message bus" />
+      <Folder name="10-research" comment="Research notes" />
     </Folder>
   </Folder>
 </FileTree>
