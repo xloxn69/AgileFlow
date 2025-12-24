@@ -108,24 +108,40 @@ When using `NEW_STATUS`, choose from:
 
 Typical workflow through assignment states:
 
+**1. Story created** (STORY=US-0042, OWNER=unassigned, STATUS=ready)
+
+```bash
+/agileflow:assign STORY=US-0042 NEW_OWNER=AG-UI NEW_STATUS=ready
 ```
-1. Story created (STORY=US-0042, OWNER=unassigned, STATUS=ready)
-   /agileflow:assign STORY=US-0042 NEW_OWNER=AG-UI NEW_STATUS=ready
 
-2. Owner starts work
-   /agileflow:assign STORY=US-0042 NEW_OWNER=AG-UI NEW_STATUS=in-progress
+**2. Owner starts work**
 
-3. Code complete, ready for review
-   /agileflow:status STORY=US-0042 STATUS=in-review PR=https://github.com/...
+```bash
+/agileflow:assign STORY=US-0042 NEW_OWNER=AG-UI NEW_STATUS=in-progress
+```
 
-4. Review complete
-   /agileflow:status STORY=US-0042 STATUS=done
+**3. Code complete, ready for review**
 
-5. If blocked during work:
-   /agileflow:status STORY=US-0042 STATUS=blocked SUMMARY="Blocked on API response format"
+```bash
+/agileflow:status STORY=US-0042 STATUS=in-review PR=https://github.com/...
+```
 
-6. Unblocked, resume work:
-   /agileflow:status STORY=US-0042 STATUS=in-progress SUMMARY="API clarified, resuming development"
+**4. Review complete**
+
+```bash
+/agileflow:status STORY=US-0042 STATUS=done
+```
+
+**5. If blocked during work**
+
+```bash
+/agileflow:status STORY=US-0042 STATUS=blocked SUMMARY="Blocked on API response format"
+```
+
+**6. Unblocked, resume work**
+
+```bash
+/agileflow:status STORY=US-0042 STATUS=in-progress SUMMARY="API clarified, resuming development"
 ```
 
 ## Output

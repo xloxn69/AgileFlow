@@ -268,6 +268,16 @@
     border-left-color: var(--brand) !important;
   }
 
+  /* Dark mode code blocks with brand accent */
+  .dark pre {
+    border-left: 2px solid var(--brand);
+  }
+
+  /* Package manager tabs brand accent */
+  [data-slot="copy-button"] {
+    color: var(--brand);
+  }
+
   /* Claude Code docs style: JetBrains Mono for code */
   code, pre, kbd, samp {
     font-family: var(--font-mono) !important;
