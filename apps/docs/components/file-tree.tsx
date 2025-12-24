@@ -47,7 +47,7 @@ export function Folder({ name, children, comment }: FolderProps) {
         <FolderIcon className="h-4 w-4 flex-shrink-0 text-[#e8683a]" />
         <span className="text-foreground whitespace-nowrap">{name}</span>
         {comment && (
-          <span className="text-muted-foreground text-xs ml-2 whitespace-nowrap"># {comment}</span>
+          <span className="text-muted-foreground/50 text-xs ml-2 whitespace-nowrap"># {comment}</span>
         )}
       </div>
       {children && (
@@ -62,10 +62,10 @@ export function Folder({ name, children, comment }: FolderProps) {
 export function File({ name, comment }: FileProps) {
   return (
     <div className="flex items-center gap-2 py-0.5">
-      <FileIcon className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-      <span className="text-foreground whitespace-nowrap">{name}</span>
+      <FileIcon className="h-4 w-4 flex-shrink-0 text-muted-foreground/60" />
+      <span className="text-muted-foreground whitespace-nowrap">{name}</span>
       {comment && (
-        <span className="text-muted-foreground text-xs ml-2 whitespace-nowrap"># {comment}</span>
+        <span className="text-muted-foreground/50 text-xs ml-2 whitespace-nowrap"># {comment}</span>
       )}
     </div>
   )
@@ -94,7 +94,7 @@ export function MoreFiles({ files, totalRemaining, batchSize = 10 }: MoreFilesPr
         >
           <ChevronRight className="h-4 w-4 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
           <span className="whitespace-nowrap">...</span>
-          <span className="text-xs ml-2 whitespace-nowrap"># {actualRemaining}+ more</span>
+          <span className="text-xs ml-2 whitespace-nowrap text-muted-foreground/50"># {actualRemaining}+ more</span>
         </button>
       )}
     </>
