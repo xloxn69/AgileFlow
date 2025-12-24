@@ -1,18 +1,16 @@
+import Image from "next/image"
 import Link from "next/link"
-import { PlusSignIcon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowRightIcon } from "lucide-react"
 
 import { getColors } from "@/lib/colors"
 import { siteConfig } from "@/lib/config"
 import { source } from "@/lib/source"
 import { CommandMenu } from "@/components/command-menu"
 import { GitHubLink } from "@/components/github-link"
-import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { ModeSwitcher } from "@/components/mode-switcher"
 import { SiteConfig } from "@/components/site-config"
-// import blocks from "@/registry/__blocks__.json"
 import { Button } from "@/registry/new-york-v4/ui/button"
 import { Separator } from "@/registry/new-york-v4/ui/separator"
 
@@ -29,17 +27,16 @@ export function SiteHeader() {
             items={siteConfig.navItems}
             className="flex lg:hidden"
           />
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className="hidden size-8 lg:flex"
-          >
-            <Link href="/">
-              <Icons.logo className="size-5" />
-              <span className="sr-only">{siteConfig.name}</span>
-            </Link>
-          </Button>
+          <Link href="/" className="hidden lg:flex items-center gap-2">
+            <Image
+              src="/banner.png"
+              alt={siteConfig.name}
+              width={120}
+              height={32}
+              className="h-6 w-auto"
+              priority
+            />
+          </Link>
           <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
           <div className="ml-auto flex items-center gap-2 md:flex-1 md:justify-end">
             <div className="hidden w-full flex-1 md:flex md:w-auto md:flex-none">
@@ -64,15 +61,14 @@ export function SiteHeader() {
               size="sm"
               className="hidden h-[31px] rounded-lg sm:flex"
             >
-              <Link href="/create">
-                <HugeiconsIcon icon={PlusSignIcon} />
-                New Project
+              <Link href="/installation">
+                Get Started
+                <ArrowRightIcon className="ml-1 size-3" />
               </Link>
             </Button>
             <Button asChild size="sm" className="h-[31px] rounded-lg sm:hidden">
-              <Link href="/create">
-                <HugeiconsIcon icon={PlusSignIcon} />
-                New
+              <Link href="/installation">
+                Start
               </Link>
             </Button>
           </div>

@@ -16,26 +16,22 @@ import {
 } from "@/registry/new-york-v4/ui/popover"
 
 const TOP_LEVEL_SECTIONS = [
-  { name: "Get Started", href: "/docs" },
+  { name: "Get Started", href: "/installation" },
   {
-    name: "Components",
-    href: "/docs/components",
+    name: "Commands",
+    href: "/commands",
   },
   {
-    name: "Directory",
-    href: "/docs/directory",
+    name: "Agents",
+    href: "/agents",
   },
   {
-    name: "MCP Server",
-    href: "/docs/mcp",
+    name: "Workflows",
+    href: "/workflows",
   },
   {
-    name: "Forms",
-    href: "/docs/forms",
-  },
-  {
-    name: "Changelog",
-    href: "/docs/changelog",
+    name: "Configuration",
+    href: "/configuration",
   },
 ]
 
