@@ -7,7 +7,7 @@
 [![Subagents](https://img.shields.io/badge/subagents-26-orange)](SUBAGENTS.md)
 [![Skills](https://img.shields.io/badge/skills-23-purple)](#skills)
 
-**AI-driven agile development for Claude Code, Cursor, Windsurf, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
+**AI-driven agile development for Claude Code, Cursor, Windsurf, OpenAI Codex CLI, and more.** Combining Scrum, Kanban, ADRs, and docs-as-code principles into one framework-agnostic system.
 
 ## Quick Start
 
@@ -83,6 +83,7 @@ Interactive mentor guides you through epic/story creation, implementation, and P
 | Claude Code | ✅ Supported | `.claude/commands/agileflow/` |
 | Cursor | ✅ Supported | `.cursor/rules/agileflow/` |
 | Windsurf | ✅ Supported | `.windsurf/workflows/agileflow/` |
+| OpenAI Codex CLI | ✅ Supported | `.codex/skills/` + `~/.codex/prompts/` |
 
 ## Why AgileFlow?
 
