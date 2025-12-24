@@ -1,40 +1,117 @@
+"use client"
+
+import Image from "next/image"
+import Link from "next/link"
 import { siteConfig } from "@/lib/config"
+
+const footerLinks = {
+  product: {
+    title: "Product",
+    links: [
+      { label: "Installation", href: "/installation" },
+      { label: "Commands", href: "/commands" },
+      { label: "Agents", href: "/agents" },
+      { label: "Workflows", href: "/workflows" },
+    ],
+  },
+  resources: {
+    title: "Resources",
+    links: [
+      { label: "GitHub", href: siteConfig.links.github, external: true },
+      { label: "npm", href: "https://www.npmjs.com/package/agileflow", external: true },
+      { label: "Changelog", href: `${siteConfig.links.github}/releases`, external: true },
+    ],
+  },
+  community: {
+    title: "Community",
+    links: [
+      { label: "Twitter", href: siteConfig.links.twitter, external: true },
+      { label: "Discussions", href: `${siteConfig.links.github}/discussions`, external: true },
+      { label: "Issues", href: `${siteConfig.links.github}/issues`, external: true },
+    ],
+  },
+}
 
 export function SiteFooter() {
   return (
-    <footer className="group-has-[.section-soft]/body:bg-surface/40 3xl:fixed:bg-transparent group-has-[.docs-nav]/body:pb-20 group-has-[[data-slot=designer]]/body:hidden group-has-[.docs-nav]/body:sm:pb-0 dark:bg-transparent">
+    <footer className="border-t border-border/50 py-12">
       <div className="container-wrapper px-4 xl:px-6">
-        <div className="flex h-(--footer-height) items-center justify-between">
-          <div className="text-muted-foreground w-full px-1 text-center text-xs leading-loose sm:text-sm">
+        <div className="grid gap-8 md:grid-cols-12">
+          {/* Logo and description */}
+          <div className="md:col-span-4">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/banner.png"
+                alt="AgileFlow"
+                width={120}
+                height={28}
+                className="h-7 w-auto"
+              />
+            </Link>
+            <p className="mt-3 max-w-[44ch] text-sm leading-6 text-muted-foreground">
+              Open-source agile scaffolding for AI-driven development. Everything versioned. Nothing hidden.
+            </p>
+          </div>
+
+          {/* Links */}
+          <div className="grid gap-8 sm:grid-cols-3 md:col-span-8">
+            {Object.values(footerLinks).map((section) => (
+              <div key={section.title} className="grid gap-3">
+                <div className="text-xs font-medium tracking-wide text-muted-foreground/70 uppercase">
+                  {section.title}
+                </div>
+                <div className="grid gap-2">
+                  {section.links.map((link) =>
+                    link.external ? (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-12 flex flex-col gap-2 border-t border-border/50 pt-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <div>
             Built by{" "}
-            <a
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              shadcn
-            </a>{" "}
-            at{" "}
-            <a
-              href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              Vercel
-            </a>
-            . The source code is available on{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
-              className="font-medium underline underline-offset-4"
+              className="font-medium hover:text-foreground transition-colors"
+            >
+              the AgileFlow team
+            </a>
+            . Open source on{" "}
+            <a
+              href={siteConfig.links.github}
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium hover:text-foreground transition-colors"
             >
               GitHub
             </a>
             .
           </div>
+          <div className="font-mono text-[#e8683a]">agileflow</div>
         </div>
       </div>
     </footer>

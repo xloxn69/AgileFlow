@@ -1,7 +1,9 @@
+import Link from "next/link"
 import { source } from "@/lib/source"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { DocsSidebar } from "@/components/docs-sidebar"
+import { StickyBanner } from "@/components/sticky-banner"
 import { SidebarProvider } from "@/registry/new-york-v4/ui/sidebar"
 
 export default function DocsLayout({
@@ -14,6 +16,12 @@ export default function DocsLayout({
       data-slot="layout"
       className="bg-background relative z-10 flex min-h-svh flex-col"
     >
+      <StickyBanner>
+        AgileFlow v2.53.0 is here!{" "}
+        <Link href="/installation" className="font-medium underline underline-offset-4 hover:no-underline">
+          Get started
+        </Link>
+      </StickyBanner>
       <SiteHeader />
       <main className="flex flex-1 flex-col">
         <div className="container-wrapper flex flex-1 flex-col px-2">
