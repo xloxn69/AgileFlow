@@ -45,7 +45,7 @@ If any check fails, baseline creation is blocked with clear instructions.
 
 Baselines create git tags with precise timestamps:
 
-```
+```text
 agileflow-baseline-20251222-143000
                     YYYYMMDD-HHMMSS
 ```
@@ -59,7 +59,7 @@ Use these tags to:
 
 All baseline information stored in:
 
-```
+```text
 docs/00-meta/environment.json
   ├─ baseline_commit: "abc123def456"
   └─ baseline_established: "2025-12-06T14:30:00Z"
@@ -84,7 +84,7 @@ docs/06-stories/US-0042.md (frontmatter)
 
 View all baselines created:
 
-```
+```text
 Baselines (most recent first):
 
 1. agileflow-baseline-20251206-143000
@@ -235,7 +235,7 @@ Documentation complete
 
 ### Success Report
 
-```
+```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Baseline Established
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -271,7 +271,7 @@ To push baseline to remote:
 
 ### Failure: Tests Not Passing
 
-```
+```text
 ❌ Cannot Create Baseline - Tests Failing
 
 Command: npm test
@@ -294,7 +294,7 @@ Then fix the tests and try again.
 
 ### Failure: Dirty Git
 
-```
+```text
 ❌ Cannot Create Baseline - Uncommitted Changes
 
 Working tree changes:
@@ -314,7 +314,7 @@ Commit your changes and try again.
 
 ### Failure: Not Initialized
 
-```
+```text
 ⚠️  Session Harness Not Initialized
 
 The baseline command requires session harness configuration.
@@ -403,7 +403,7 @@ git push origin "refs/tags/agileflow-baseline-*"
 
 ## Typical Development Flow
 
-```
+```text
 Start Sprint
   ↓
 Work on stories with /agileflow:babysit
@@ -439,7 +439,7 @@ Next sprint
 ### Use meaningful messages
 
 **Good messages**:
-```
+```text
 "Sprint 12 complete - user auth feature"
 "v1.0 release candidate"
 "Before TensorFlow upgrade"
@@ -447,7 +447,7 @@ Next sprint
 ```
 
 **Bad messages**:
-```
+```text
 "baseline"
 "checkpoint"
 "test"

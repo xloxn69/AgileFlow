@@ -77,7 +77,7 @@ Scans for impossible-to-complete cycles and suggests fixes.
 
 ### ASCII Graph (Default)
 
-```
+```text
 Story Dependency Graph
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -150,7 +150,7 @@ Helps identify:
 - Where delays have maximum impact
 - Stories to prioritize for completion
 
-```
+```text
 Critical Path: US-0030 → US-0031 → US-0032 → US-0033
 Duration: 8 days
 ⚠️ US-0032 is in-progress on critical path
@@ -161,7 +161,7 @@ Duration: 8 days
 **Shows**: Stories that depend on each other in a cycle
 
 Example of circular dependency problem:
-```
+```text
 ❌ CIRCULAR DETECTED!
 
 Cycle: US-0050 → US-0051 → US-0052 → US-0050
@@ -179,7 +179,7 @@ Impact: ⚠️ CRITICAL - These stories cannot be completed
 **Shows**: Stories that block the most other work
 
 Identifies high-impact bottlenecks:
-```
+```text
 High Impact Blockers:
 ┌────────┬──────────────────┬────────┬──────────────┐
 │ Story  │ Title            │ Status │ Blocks       │
@@ -205,7 +205,7 @@ Action: Start US-0040 immediately (blocks payment epic)
 
 ### Scenario: Story is High Priority But Blocked
 
-```
+```text
 ⚪ US-0045 - Password reset (blocked)
    Waiting for: US-0032 (Login endpoint, 75% done)
 
@@ -217,7 +217,7 @@ Recommendation:
 
 ### Scenario: Found a Circular Dependency
 
-```
+```text
 ❌ Services have circular dependency
 
 Current: Auth → User → Session → Auth (cycle)
@@ -230,7 +230,7 @@ Solution:
 
 ### Scenario: Critical Path Story at Risk
 
-```
+```text
 US-0032 is on CRITICAL PATH but in-progress
 ⚠️ Currently 75% done, but original estimate was 2d
 
@@ -249,7 +249,7 @@ Recommendation:
 
 Command identifies stories that can be worked in parallel:
 
-```
+```text
 Stories That Can Start Now (No Blockers):
 
 EP-0010: Authentication

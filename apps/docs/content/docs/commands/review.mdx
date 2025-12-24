@@ -46,7 +46,7 @@ Review examines your code changes across 6 important categories:
 
 Issues are categorized by impact:
 
-```
+```text
 🔴 CRITICAL - Must fix before merge
 🟠 HIGH    - Fix before merge (blocks release)
 🟡 MEDIUM  - Address soon (technical debt)
@@ -57,7 +57,7 @@ Issues are categorized by impact:
 
 Your PR gets a score (0-100) with breakdown by category:
 
-```
+```text
 Code Quality Score: 72/100
 
 Breakdown:
@@ -188,7 +188,7 @@ Compares against a different base branch.
 
 ### Header
 
-```
+```text
 # AI Code Review Report
 
 **Branch**: feature/user-auth
@@ -201,7 +201,7 @@ Compares against a different base branch.
 
 ### Summary
 
-```
+```text
 ## Summary
 
 **Critical**: 2 | **High**: 5 | **Medium**: 12 | **Low**: 8
@@ -212,7 +212,7 @@ Compares against a different base branch.
 
 For each issue:
 
-```
+```text
 ### 1. Hardcoded API Key (SECURITY)
 **File**: src/api/payments/stripe.ts:15
 **Severity**: CRITICAL
@@ -231,7 +231,7 @@ if (!stripeKey) throw new Error("STRIPE_SECRET_KEY not set");
 
 ### Positive Observations
 
-```
+```text
 ## Positive Observations ✅
 
 - ✅ Good use of TypeScript strict mode
@@ -242,7 +242,7 @@ if (!stripeKey) throw new Error("STRIPE_SECRET_KEY not set");
 
 ### Code Quality Breakdown
 
-```
+```text
 ## Code Quality Score: 72/100
 
 **Breakdown**:
@@ -280,7 +280,7 @@ Example:
 
 ### Auto-fix issues
 
-```
+```text
 Review asks: "Fix auto-fixable issues? (YES/NO)"
 
 If YES:
@@ -291,7 +291,7 @@ If YES:
 
 ### Create follow-up stories
 
-```
+```text
 Review asks: "Create stories for follow-up work?"
 
 If YES:
@@ -302,7 +302,7 @@ If YES:
 
 ### Block merge for critical issues
 
-```
+```text
 Review asks: "Block merge for critical/high issues?"
 
 If YES:
@@ -314,12 +314,12 @@ If YES:
 ### Save report
 
 Report automatically saved to:
-```
+```text
 docs/08-project/code-reviews/<YYYYMMDD>-<BRANCH>.md
 ```
 
 Example:
-```
+```text
 docs/08-project/code-reviews/20251016-feature-user-auth.md
 ```
 
@@ -393,7 +393,7 @@ Review checks:
 
 ### Immediate Actions (Block Merge)
 
-```
+```text
 1. Remove hardcoded API key (critical)
 2. Fix SQL injection (critical)
 3. Add error handling to login (high)
@@ -401,7 +401,7 @@ Review checks:
 
 ### Before Merge
 
-```
+```text
 4. Add tests for auth endpoints (high)
 5. Fix N+1 query in posts API (high)
 6. Reduce complexity in validator.ts (medium)
@@ -409,7 +409,7 @@ Review checks:
 
 ### Follow-up (Create Stories)
 
-```
+```text
 7. Standardize naming conventions (medium)
 8. Add ESLint rule for secrets (medium)
 9. Set up automated security scanning (low)

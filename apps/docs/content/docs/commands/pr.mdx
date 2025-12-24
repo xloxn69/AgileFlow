@@ -76,7 +76,7 @@ Include test results and verification directly:
 
 Suggests proper commit messages for squash merges:
 
-```
+```text
 feat(auth): implement user login with JWT tokens
 
 Implements US-0042: User Login API
@@ -255,7 +255,7 @@ Explains what was built and why at a high level.
 
 PR command suggests a commit message following Conventional Commits:
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -266,7 +266,7 @@ PR command suggests a commit message following Conventional Commits:
 ### Examples
 
 **Feature**:
-```
+```text
 feat(auth): implement JWT-based user authentication
 
 Implements user login with email and password, JWT token
@@ -276,7 +276,7 @@ Closes #US-0042
 ```
 
 **Fix**:
-```
+```text
 fix(auth): prevent session fixation vulnerability
 
 Use secure token generation and add CSRF protection
@@ -286,7 +286,7 @@ Closes #US-0043
 ```
 
 **Docs**:
-```
+```text
 docs(api): add authentication API documentation
 
 Documents JWT token generation, validation, and
@@ -354,7 +354,7 @@ Every PR description includes:
 
 Better test evidence = faster review:
 
-```
+```text
 TEST_EVIDENCE="
 - Unit Tests: 45/45 passing
 - Integration Tests: Login flow, session management

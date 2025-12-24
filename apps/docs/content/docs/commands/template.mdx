@@ -39,7 +39,7 @@ Create, manage, and use custom templates for standardizing documentation across 
 
 Shows all built-in and custom templates:
 
-```
+```text
 # Available Templates
 
 ## Built-in Templates (docs/00-meta/templates/)
@@ -67,7 +67,7 @@ Usage: /agileflow:template ACTION=use TYPE=custom NAME=meeting-notes
 
 Provides a template builder interface:
 
-```
+```text
 Creating new template: meeting-notes
 
 Template content:
@@ -244,7 +244,7 @@ Define a sprint retrospective template with metrics:
 
 Prompts for template variables and generates the document:
 
-```
+```text
 Using template: meeting-notes
 
 Fill in template variables:
@@ -315,7 +315,7 @@ Available in all templates:
 
 For story-specific templates:
 
-```
+```text
 {{STORY_ID}} - Story identifier (US-0042)
 {{EPIC_ID}} - Parent epic (EP-0001)
 {{OWNER}} - Story owner/assignee
@@ -328,7 +328,7 @@ For story-specific templates:
 
 For architecture decision records:
 
-```
+```text
 {{NUMBER}} - ADR number (0001, 0042)
 {{STATUS}} - Decision status (proposed, accepted, superseded)
 {{CONTEXT}} - Driving factors
@@ -365,7 +365,7 @@ Create a template when:
 
 Use descriptive, kebab-case names:
 
-```
+```text
 Good:
 - meeting-notes
 - sprint-retrospective
@@ -382,7 +382,7 @@ Avoid:
 
 Use UPPERCASE_WITH_UNDERSCORES:
 
-```
+```text
 Good:
 {{STORY_ID}}, {{OWNER}}, {{DUE_DATE}}
 

@@ -47,7 +47,7 @@ The command will:
 
 These verbose fields are stripped from status.json:
 
-```
+```text
 - description          # Story description and context
 - acceptanceCriteria   # AC bullet points
 - architectureContext  # Architecture details
@@ -64,7 +64,7 @@ These are safely preserved in `docs/06-stories/` markdown files instead.
 
 Only essential tracking metadata remains in status.json:
 
-```
+```text
 - story_id            # Story identifier
 - epic                # Parent epic
 - title               # Story title
@@ -83,7 +83,7 @@ Only essential tracking metadata remains in status.json:
 
 ## Example Output
 
-```
+```text
 🗜️  AgileFlow Status Compression
    Purpose: Strip verbose fields from status.json
    Target: Keep only essential tracking metadata
@@ -151,7 +151,7 @@ This two-step process achieves maximum reduction while maintaining history.
 ### Automatic Backup
 
 Before compression, the command creates a backup:
-```
+```text
 docs/09-agents/status.json.backup
 ```
 
@@ -204,7 +204,7 @@ The backup contains the complete original file.
 
 The command estimates token usage:
 
-```
+```text
 Token estimation formula: tokens ≈ bytes / 4
 
 Before: 384KB × 1024 bytes/KB ÷ 4 = 98,304 tokens

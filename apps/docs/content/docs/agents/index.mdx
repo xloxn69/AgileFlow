@@ -99,7 +99,7 @@ The `/babysit` mentor automatically detects which agent is needed:
 
 You can also spawn agents directly using the Task tool:
 
-```
+```text
 Task(
   description: "Design user sessions schema",
   prompt: "Create a sessions table to track user logins with proper indexes",
@@ -111,7 +111,7 @@ Task(
 
 For full-stack features, spawn multiple agents simultaneously:
 
-```
+```text
 # API work
 Task(subagent_type: "agileflow-api", run_in_background: true, ...)
 

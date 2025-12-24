@@ -89,7 +89,7 @@ The default report format includes multiple sections:
 
 ### Current Velocity Section
 
-```
+```text
 📊 Current Velocity
 
 Average:       8.3 points/week
@@ -103,7 +103,7 @@ Shows overall team capacity and improvement trend.
 
 ### Historical Velocity Chart
 
-```
+```text
 Points/Week
  12 │           ●●●
  11 │         ●
@@ -128,7 +128,7 @@ Visual representation of velocity trends.
 
 ### Weekly Breakdown
 
-```
+```text
 | Week | Points | Stories | Avg Size | Notes |
 |------|--------|---------|----------|-------|
 | 2025-12-24 | 10 | 6 | 1.7d | ↗️ +25% |
@@ -141,7 +141,7 @@ Details for each period showing stories completed and size variation.
 
 ### Velocity by Owner
 
-```
+```text
 | Owner | Points/Week | Stories/Week | Utilization | Trend |
 |-------|-------------|--------------|-------------|-------|
 | AG-API | 4.1 | 2.8 | 85% | ↗️ +20% |
@@ -158,7 +158,7 @@ When you specify `FORECAST=<epic>`, the command predicts completion:
 
 ### Forecast Example
 
-```
+```text
 🎯 Forecast: Epic Completion
 
 EP-0010: User Authentication
@@ -177,7 +177,7 @@ EP-0010: User Authentication
 
 ### Forecasting Algorithm
 
-```
+```text
 Days to complete = (Remaining points / Velocity) * 7
 Completion date = Today + Days to complete
 Confidence = 100% - (Velocity std dev / Velocity avg) * 100
@@ -187,7 +187,7 @@ Confidence = 100% - (Velocity std dev / Velocity avg) * 100
 
 ASCII visualization of velocity over time:
 
-```
+```text
 Velocity Trend (8 weeks)
 
 Points/Week
@@ -211,7 +211,7 @@ Trend: ↗️ +15% (improving)
 
 Insights into which story sizes work best:
 
-```
+```text
 Size    | Count | Avg Days | Success Rate
 --------|-------|----------|-------------
 ≤0.5d   |   8   |   0.4d   | 100% ✅
@@ -229,7 +229,7 @@ Shows that smaller stories complete faster and more reliably.
 
 The report includes risk assessment:
 
-```
+```text
 ⚠️ Risk Analysis
 
 ### Velocity Risks
@@ -254,7 +254,7 @@ Helps identify and mitigate risks to forecasts.
 
 Recommendations for sprint planning:
 
-```
+```text
 📅 Capacity Planning
 
 **Current Capacity**: 8.3 points/week (4 agents)
@@ -287,7 +287,7 @@ Full markdown velocity report with all sections.
 
 ASCII art velocity trend chart only:
 
-```
+```text
 Velocity Trend (8 weeks)
 
 Points/Week
@@ -342,7 +342,7 @@ Machine-readable format:
 
 Set team targets and track progress:
 
-```
+```text
 🎯 Velocity Goals
 
 Current:    8.3 points/week

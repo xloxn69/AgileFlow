@@ -34,7 +34,7 @@ The command will:
 
 Impact automatically builds a dependency graph:
 
-```
+```text
 Your Change: src/api/auth.ts
   ├─ Direct dependents (files that import this)
   │  ├─ src/api/auth/index.ts
@@ -50,7 +50,7 @@ Your Change: src/api/auth.ts
 
 Automatically finds tests that need to run:
 
-```
+```text
 Critical (Always Run):
   ✓ tests/api/auth/login.test.ts
   ✓ tests/integration/auth-flow.test.ts
@@ -67,7 +67,7 @@ Optional (Low Risk):
 
 Identifies function signature changes:
 
-```
+```text
 ⚠️  BREAKING CHANGE DETECTED
 
 File: src/api/auth/login.ts
@@ -89,7 +89,7 @@ Affected callers:
 
 Shows test coverage for changed code:
 
-```
+```text
 Changed Lines:  45-52 (8 lines)
 Test Coverage:  87%
 Uncovered:      Lines 50-51 (2 lines not tested)
@@ -210,7 +210,7 @@ Shows impact analysis but doesn't run tests.
 
 ### Header
 
-```
+```text
 # Impact Analysis Report
 
 **Branch**: feature/user-auth
@@ -224,7 +224,7 @@ Shows impact analysis but doesn't run tests.
 
 For each changed file:
 
-```
+```text
 ### src/api/auth/login.ts (MODIFIED)
 
 **Type**: API endpoint
@@ -291,7 +291,7 @@ Impact detects breaking changes:
 
 ### Function Signature Change
 
-```
+```text
 ⚠️  BREAKING CHANGE
 
 Function: login()
@@ -306,7 +306,7 @@ Callers to update:
 
 ### Removed Export
 
-```
+```text
 ⚠️  BREAKING CHANGE
 
 Removed export: validateSession
@@ -319,7 +319,7 @@ Callers will break:
 
 ### Type Change
 
-```
+```text
 ⚠️  BREAKING CHANGE
 
 Type changed: User interface
@@ -356,7 +356,7 @@ Impact suggests which tests to run:
 
 ### 1. Review Impact Summary
 
-```
+```text
 Changed: 3 files
 Affected: 8 files
 Tests: 5 need to run
@@ -364,7 +364,7 @@ Tests: 5 need to run
 
 ### 2. Run Tests (if RUN_TESTS=yes)
 
-```
+```text
 Running critical tests...
 ✅ tests/api/auth/login.test.ts (12 tests, 345ms)
 ✅ tests/middleware/auth.test.ts (8 tests, 234ms)
@@ -377,7 +377,7 @@ Test Results: 20 passed, 3 failed
 
 If tests fail:
 
-```
+```text
 Tests failed. Options:
 1. Fix code and re-run tests
 2. Create story for regression
@@ -390,7 +390,7 @@ What should we do?
 
 If breaking changes detected:
 
-```
+```text
 ⚠️  Breaking changes found!
 
 These functions changed signature:
@@ -407,7 +407,7 @@ Create stories to update these files?
 
 Impact can visualize dependency trees:
 
-```
+```text
 src/api/auth/login.ts (CHANGED)
 ├── src/api/auth/index.ts (direct)
 │   ├── src/app.ts (indirect)
@@ -495,7 +495,7 @@ Suggest optimized CI that only runs affected tests:
 
 ### Pay attention to indirect impacts
 
-```
+```text
 Direct impact: 3 affected files
 Indirect impact: 8 more affected files
 
@@ -504,7 +504,7 @@ Fixing direct isn't enough - test indirects too
 
 ### Test coverage matters
 
-```
+```text
 87% coverage = 13% of changes untested
 Missing tests = potential bugs from untested paths
 
@@ -513,7 +513,7 @@ Add tests for uncovered lines
 
 ### Breaking changes require coordination
 
-```
+```text
 ⚠️  Function signature changed
 Need to update 5 callers
 Create stories to track the updates
