@@ -10,11 +10,6 @@
     "deny": [],
     "ask": []
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash scripts/agileflow-statusline.sh",
-    "padding": 0
-  },
   "hooks": {
     "SessionStart": [
       {
@@ -53,5 +48,10 @@
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash scripts/agileflow-statusline.sh",
+    "padding": 0
   }
 }

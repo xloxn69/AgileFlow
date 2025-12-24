@@ -1,0 +1,119 @@
+---
+title: Introduction
+description: The AI-powered project management framework for Claude Code. Streamline your development workflow with intelligent agents, automated planning, and seamless team collaboration.
+---
+
+# AgileFlow
+
+AgileFlow is an **AI-powered project management framework** designed specifically for [Claude Code](https://claude.ai/code). It brings structured agile workflows, intelligent agents, and docs-as-code project management directly into your development environment.
+
+## Why AgileFlow?
+
+Traditional project management tools create friction between planning and execution. AgileFlow eliminates this gap by embedding project management directly into your AI-assisted coding workflow.
+
+- **No context switching** - Manage epics, stories, and status without leaving your terminal
+- **AI-native workflows** - Purpose-built for Claude Code's capabilities
+- **Docs-as-code** - All project artifacts live in your repository
+- **Intelligent agents** - Specialized AI agents for different domains
+
+## Key Features
+
+### 40+ Slash Commands
+
+AgileFlow provides a comprehensive command library for every aspect of project management:
+
+| Category | Commands |
+|----------|----------|
+| **Planning** | `/epic`, `/story`, `/sprint`, `/deps` |
+| **Tracking** | `/status`, `/board`, `/blockers`, `/metrics` |
+| **Development** | `/babysit`, `/verify`, `/review`, `/pr` |
+| **Operations** | `/ci`, `/deploy`, `/changelog`, `/packages` |
+| **Research** | `/research`, `/context`, `/multi-expert` |
+
+### 25+ Specialized Agents
+
+Each agent is an expert in their domain, ready to help with specific tasks:
+
+- **mentor** - End-to-end implementation guidance
+- **epic-planner** - Break down features into stories
+- **database** - Schema design and migrations
+- **api** - Backend services and data layer
+- **ui** - Frontend components and styling
+- **security** - Vulnerability analysis and compliance
+- **testing** - Test strategy and coverage
+- **devops** - CI/CD and deployment
+
+### Docs-as-Code Architecture
+
+All project management artifacts are stored as structured files in your repository:
+
+```
+docs/
+├── 05-epics/          # Epic definitions
+├── 06-stories/        # User stories with acceptance criteria
+├── 09-agents/
+│   ├── status.json    # Real-time project status
+│   └── bus/           # Agent communication
+└── 03-decisions/      # Architecture Decision Records
+```
+
+### Visual Kanban Board
+
+View your project status at a glance with the `/board` command:
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                         KANBAN BOARD                          │
+├──────────────┬──────────────┬──────────────┬──────────────────┤
+│   BACKLOG    │  IN PROGRESS │   REVIEW     │    COMPLETED     │
+├──────────────┼──────────────┼──────────────┼──────────────────┤
+│ US-0012      │ US-0015      │ US-0014      │ US-0001 ✓       │
+│ Add auth     │ API layer    │ Unit tests   │ US-0002 ✓       │
+│              │              │              │ US-0003 ✓       │
+└──────────────┴──────────────┴──────────────┴──────────────────┘
+```
+
+## Quick Example
+
+Here's how a typical AgileFlow workflow looks:
+
+```bash
+# 1. Create an epic for a new feature
+/epic EPIC=EP-0001 TITLE="User Authentication" GOAL="Secure user login system"
+
+# 2. Break it down into stories
+/story EPIC=EP-0001 STORY=US-0001 TITLE="Login form" OWNER=AG-UI
+
+# 3. Start working on a story
+/status STORY=US-0001 STATUS=in-progress
+
+# 4. Get AI-guided implementation
+/babysit
+
+# 5. Verify your implementation
+/verify US-0001
+
+# 6. Generate a PR
+/pr STORY=US-0001
+```
+
+## How It Works
+
+1. **Install AgileFlow** - One command adds all capabilities to your project
+2. **Plan with AI** - Use agents to break down features into actionable stories
+3. **Track Progress** - Real-time status updates in `status.json`
+4. **Collaborate** - Agents communicate via the message bus
+5. **Ship** - Automated PR generation and changelog updates
+
+## Philosophy
+
+AgileFlow is built on these principles:
+
+- **Convention over configuration** - Sensible defaults that just work
+- **Transparency** - All data is plain text, version-controlled
+- **Composability** - Use only what you need
+- **AI-first** - Designed for human-AI collaboration
+
+## Next Steps
+
+Ready to get started? Head to the [Installation](/installation) guide to set up AgileFlow in your project in under a minute.
