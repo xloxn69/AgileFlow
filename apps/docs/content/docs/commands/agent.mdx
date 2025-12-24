@@ -109,19 +109,15 @@ You CANNOT modify:
 - CI/CD workflows in `.github/`
 
 ### Testing Requirements
-Before committing:
-```bash
-npm test -- src/components/  # Run component tests
-npm run lint:css              # Check Tailwind usage
-```
+Before committing, run:
+- `npm test -- src/components/` - Run component tests
+- `npm run lint:css` - Check Tailwind usage
 
 ### Commit Message Format
 Use conventional commits with `ui:` prefix:
-```
-feat(ui): add new button component
-fix(ui): correct responsive breakpoint
-style(ui): update component spacing
-```
+- `feat(ui): add new button component`
+- `fix(ui): correct responsive breakpoint`
+- `style(ui): update component spacing`
 
 ### Status Updates
 After completing a story:
