@@ -356,20 +356,41 @@ Rough estimation used in output:
 
 ## FAQ
 
-**Q: Does compression delete story files?**
-A: No. Only status.json is modified. Story markdown in docs/06-stories/ is untouched.
-
-**Q: Can I undo compression?**
-A: Yes. A backup is created automatically. Just restore: `cp docs/09-agents/status.json.backup docs/09-agents/status.json`
-
-**Q: When should I compress?**
-A: When status.json exceeds 25KB, or monthly as maintenance. Combine with archival for best results.
-
-**Q: Does this affect agent performance?**
-A: Yes, dramatically improves it. Smaller status.json = faster reads, more available context for agents.
-
-**Q: What about git history?**
-A: All changes are committed. Previous versions are in git history if needed.
-
-**Q: Can I customize which fields to keep?**
-A: Yes, edit the compression script to keep additional fields if needed for your workflow.
+<Accordion type="multiple">
+  <AccordionItem value="delete">
+    <AccordionTrigger>Does compression delete story files?</AccordionTrigger>
+    <AccordionContent>
+      No. Only status.json is modified. Story markdown in docs/06-stories/ is untouched.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="undo">
+    <AccordionTrigger>Can I undo compression?</AccordionTrigger>
+    <AccordionContent>
+      Yes. A backup is created automatically. Just restore: `cp docs/09-agents/status.json.backup docs/09-agents/status.json`
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="when">
+    <AccordionTrigger>When should I compress?</AccordionTrigger>
+    <AccordionContent>
+      When status.json exceeds 25KB, or monthly as maintenance. Combine with archival for best results.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="performance">
+    <AccordionTrigger>Does this affect agent performance?</AccordionTrigger>
+    <AccordionContent>
+      Yes, dramatically improves it. Smaller status.json = faster reads, more available context for agents.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="git">
+    <AccordionTrigger>What about git history?</AccordionTrigger>
+    <AccordionContent>
+      All changes are committed. Previous versions are in git history if needed.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="customize">
+    <AccordionTrigger>Can I customize which fields to keep?</AccordionTrigger>
+    <AccordionContent>
+      Yes, edit the compression script to keep additional fields if needed for your workflow.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

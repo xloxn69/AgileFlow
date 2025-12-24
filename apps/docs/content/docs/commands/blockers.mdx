@@ -222,24 +222,31 @@ The blocker command highlights:
 - [`/agileflow:context`](/commands/context) - Research blockers deeper
 - [`/story-new`](/commands/story-new) - Create unblocking stories
 
-## Troubleshooting
+## FAQ
 
-**Q: How is a blocker detected?**
-A: Blockers are identified by:
-- Stories with `status: "blocked"` in status.json
-- Stories waiting on incomplete dependencies
-- Agents at WIP limit with ready stories waiting
-- Stories unchanged for >14 days
-
-**Q: How are blocker types determined?**
-A: Types are inferred from:
-- `blocked_by` field text (contains keywords like "API", "approval", "unclear")
-- Bus messages with blocker comments
-- Story dependency chains
-- Epic context
-
-**Q: Can I create a spike story to unblock research?**
-A: Yes, use `/story-new` to create a spike: `/story-new EPIC=EP-0012 TYPE=spike TITLE="Research modern deployment platforms"`
-
-**Q: What's the difference between blocked and WIP limit?**
-A: **Blocked** means can't proceed (external dependency). **WIP limit** means agent is at capacity and should finish current work before starting more.
+<Accordion type="multiple">
+  <AccordionItem value="detected">
+    <AccordionTrigger>How is a blocker detected?</AccordionTrigger>
+    <AccordionContent>
+      Blockers are identified by: stories with `status: "blocked"` in status.json, stories waiting on incomplete dependencies, agents at WIP limit with ready stories waiting, and stories unchanged for more than 14 days.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="types">
+    <AccordionTrigger>How are blocker types determined?</AccordionTrigger>
+    <AccordionContent>
+      Types are inferred from: `blocked_by` field text (contains keywords like "API", "approval", "unclear"), bus messages with blocker comments, story dependency chains, and epic context.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="spike">
+    <AccordionTrigger>Can I create a spike story to unblock research?</AccordionTrigger>
+    <AccordionContent>
+      Yes, use `/story-new` to create a spike: `/story-new EPIC=EP-0012 TYPE=spike TITLE="Research modern deployment platforms"`
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="difference">
+    <AccordionTrigger>What's the difference between blocked and WIP limit?</AccordionTrigger>
+    <AccordionContent>
+      **Blocked** means can't proceed (external dependency). **WIP limit** means agent is at capacity and should finish current work before starting more.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

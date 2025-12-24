@@ -163,16 +163,31 @@ The board automatically suggests actions based on current state:
 - [`/agileflow:metrics`](/commands/metrics) - View detailed metrics and analytics
 - [`/agileflow:velocity`](/commands/velocity) - Track team velocity and forecasts
 
-## Troubleshooting
+## FAQ
 
-**Q: How is WIP limit calculated?**
-A: Default is 2 stories per agent in "in-progress" or "in-review" status. When an agent reaches 2, they should finish stories before starting new ones.
-
-**Q: Can I export the board?**
-A: Yes, use `FORMAT=markdown` or `FORMAT=html` to get exportable formats.
-
-**Q: How often is the board updated?**
-A: The board reads from `docs/09-agents/status.json` which updates whenever you run `/agileflow:status`. Refresh the board to see latest changes.
-
-**Q: What do the estimates mean?**
-A: Estimates show how long the story should take (in days). Use this when assigning work to agents.
+<Accordion type="multiple">
+  <AccordionItem value="wip">
+    <AccordionTrigger>How is WIP limit calculated?</AccordionTrigger>
+    <AccordionContent>
+      Default is 2 stories per agent in "in-progress" or "in-review" status. When an agent reaches 2, they should finish stories before starting new ones.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="export">
+    <AccordionTrigger>Can I export the board?</AccordionTrigger>
+    <AccordionContent>
+      Yes, use `FORMAT=markdown` or `FORMAT=html` to get exportable formats.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="update">
+    <AccordionTrigger>How often is the board updated?</AccordionTrigger>
+    <AccordionContent>
+      The board reads from `docs/09-agents/status.json` which updates whenever you run `/agileflow:status`. Refresh the board to see latest changes.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="estimates">
+    <AccordionTrigger>What do the estimates mean?</AccordionTrigger>
+    <AccordionContent>
+      Estimates show how long the story should take (in days). Use this when assigning work to agents.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

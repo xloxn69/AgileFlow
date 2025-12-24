@@ -363,27 +363,37 @@ Action Items:
 - [`/agileflow:blockers`](/commands/blockers) - Identify velocity blockers
 - [`/agileflow:status`](/commands/status) - Update story status
 
-## Troubleshooting
+## FAQ
 
-**Q: Why is my velocity so variable?**
-A: Possible causes:
-- Stories too varied in size (standardize estimates)
-- Frequent interruptions (protect work time)
-- Blockers slowing completion (unblock faster)
-- Team capacity changes (new members, absences)
-
-**Q: How many data points do I need?**
-A: At least 3 time periods for reliability. Less than 5 periods = low confidence forecast.
-
-**Q: Should I include velocity during onboarding?**
-A: No, exclude first sprints. New team members lower velocity temporarily.
-
-**Q: What if velocity is declining?**
-A: Investigate:
-- Increasing blockers?
-- Larger stories?
-- Team absences?
-- Quality issues requiring rework?
-
-**Q: Can I forecast with low confidence?**
-A: Yes, but use wide buffers. P90 estimate (90% confidence) is more conservative than P50 (50% confidence).
+<Accordion type="multiple">
+  <AccordionItem value="variable">
+    <AccordionTrigger>Why is my velocity so variable?</AccordionTrigger>
+    <AccordionContent>
+      Possible causes: stories too varied in size (standardize estimates), frequent interruptions (protect work time), blockers slowing completion (unblock faster), or team capacity changes (new members, absences).
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="data-points">
+    <AccordionTrigger>How many data points do I need?</AccordionTrigger>
+    <AccordionContent>
+      At least 3 time periods for reliability. Less than 5 periods = low confidence forecast.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="onboarding">
+    <AccordionTrigger>Should I include velocity during onboarding?</AccordionTrigger>
+    <AccordionContent>
+      No, exclude first sprints. New team members lower velocity temporarily.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="declining">
+    <AccordionTrigger>What if velocity is declining?</AccordionTrigger>
+    <AccordionContent>
+      Investigate: increasing blockers, larger stories, team absences, or quality issues requiring rework.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="low-confidence">
+    <AccordionTrigger>Can I forecast with low confidence?</AccordionTrigger>
+    <AccordionContent>
+      Yes, but use wide buffers. P90 estimate (90% confidence) is more conservative than P50 (50% confidence).
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

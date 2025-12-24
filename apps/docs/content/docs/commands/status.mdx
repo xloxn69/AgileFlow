@@ -105,13 +105,25 @@ This command modifies:
 - [`/agileflow:assign`](/commands/assign) - Assign story to owner with status
 - [`/agileflow:metrics`](/commands/metrics) - Track completion metrics
 
-## Troubleshooting
+## FAQ
 
-**Q: Can I change status directly?**
-A: Yes, use the `STATUS` parameter with any valid status value.
-
-**Q: What if I want to assign the story too?**
-A: Use `/agileflow:assign` which handles both assignment and status updates together.
-
-**Q: How do I notify specific agents?**
-A: Use the `TO` parameter: `/agileflow:status STORY=US-0042 STATUS=done TO=AG-REVIEW`
+<Accordion type="multiple">
+  <AccordionItem value="direct">
+    <AccordionTrigger>Can I change status directly?</AccordionTrigger>
+    <AccordionContent>
+      Yes, use the `STATUS` parameter with any valid status value.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="assign">
+    <AccordionTrigger>What if I want to assign the story too?</AccordionTrigger>
+    <AccordionContent>
+      Use `/agileflow:assign` which handles both assignment and status updates together.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="notify">
+    <AccordionTrigger>How do I notify specific agents?</AccordionTrigger>
+    <AccordionContent>
+      Use the `TO` parameter: `/agileflow:status STORY=US-0042 STATUS=done TO=AG-REVIEW`
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

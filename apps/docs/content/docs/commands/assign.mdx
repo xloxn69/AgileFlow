@@ -205,26 +205,43 @@ Resume work after unblock:
 - [`/agileflow:metrics`](/commands/metrics) - See workload distribution
 - [`/story-new`](/commands/story-new) - Create new stories with assignments
 
-## Troubleshooting
+## FAQ
 
-**Q: Can I assign to someone who's already at WIP limit?**
-A: Yes, but it's not recommended. Check `/agileflow:board` to see who has capacity.
-
-**Q: What if I assign wrong owner?**
-A: Simply reassign: `/agileflow:assign STORY=US-0042 NEW_OWNER=AG-API`
-
-**Q: Should I assign immediately upon creation?**
-A: Best practice is yes - assign within the creation command or right after with `/assign`.
-
-**Q: Can I assign to multiple owners?**
-A: No, one story = one owner. For pair programming, assign to primary and note pairing in description.
-
-**Q: What's the difference between assign and status?**
-A:
-- **assign** - Changes owner AND optionally status
-- **status** - Changes status only, owner unchanged
-
-Use **assign** when changing ownership, **status** when just updating progress.
-
-**Q: How do I know what owners are available?**
-A: Use `/agileflow:board` to see current team members and their workload.
+<Accordion type="multiple">
+  <AccordionItem value="wip">
+    <AccordionTrigger>Can I assign to someone who's already at WIP limit?</AccordionTrigger>
+    <AccordionContent>
+      Yes, but it's not recommended. Check `/agileflow:board` to see who has capacity.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="wrong">
+    <AccordionTrigger>What if I assign wrong owner?</AccordionTrigger>
+    <AccordionContent>
+      Simply reassign: `/agileflow:assign STORY=US-0042 NEW_OWNER=AG-API`
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="immediately">
+    <AccordionTrigger>Should I assign immediately upon creation?</AccordionTrigger>
+    <AccordionContent>
+      Best practice is yes - assign within the creation command or right after with `/assign`.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="multiple">
+    <AccordionTrigger>Can I assign to multiple owners?</AccordionTrigger>
+    <AccordionContent>
+      No, one story = one owner. For pair programming, assign to primary and note pairing in description.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="difference">
+    <AccordionTrigger>What's the difference between assign and status?</AccordionTrigger>
+    <AccordionContent>
+      **assign** changes owner AND optionally status. **status** changes status only, owner unchanged. Use **assign** when changing ownership, **status** when just updating progress.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="available">
+    <AccordionTrigger>How do I know what owners are available?</AccordionTrigger>
+    <AccordionContent>
+      Use `/agileflow:board` to see current team members and their workload.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>

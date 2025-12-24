@@ -318,29 +318,31 @@ Green/yellow/red indicators show health:
 - [`/agileflow:blockers`](/commands/blockers) - Blocker analysis
 - [`/agileflow:retro`](/commands/retro) - Retrospective data gathering
 
-## Troubleshooting
+## FAQ
 
-**Q: Why is my cycle time high?**
-A: Could be:
-- Stories too large (break into smaller pieces)
-- Blockers (unblock faster)
-- Code review delays (faster reviews)
-- Rework/bugs (improve testing)
-
-**Q: How do I improve throughput?**
-A: Options:
-- Reduce story size (smaller = faster)
-- Reduce blocker time
-- Better estimation
-- Improve team skills/automation
-
-**Q: Why is flow efficiency low?**
-A: Stories spending time:
-- In ready queue (start work faster)
-- In review (faster code reviews)
-- Blocked (unblock faster)
-
-Improve by reducing wait time, not by working faster.
-
-**Q: Can I export metrics history?**
-A: Yes, save reports from multiple runs and compare. Use `FORMAT=csv` for spreadsheet analysis.
+<Accordion type="multiple">
+  <AccordionItem value="cycle-time">
+    <AccordionTrigger>Why is my cycle time high?</AccordionTrigger>
+    <AccordionContent>
+      Could be: stories too large (break into smaller pieces), blockers (unblock faster), code review delays (faster reviews), or rework/bugs (improve testing).
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="throughput">
+    <AccordionTrigger>How do I improve throughput?</AccordionTrigger>
+    <AccordionContent>
+      Options: reduce story size (smaller = faster), reduce blocker time, better estimation, or improve team skills/automation.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="flow">
+    <AccordionTrigger>Why is flow efficiency low?</AccordionTrigger>
+    <AccordionContent>
+      Stories spending time in ready queue (start work faster), in review (faster code reviews), or blocked (unblock faster). Improve by reducing wait time, not by working faster.
+    </AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="export">
+    <AccordionTrigger>Can I export metrics history?</AccordionTrigger>
+    <AccordionContent>
+      Yes, save reports from multiple runs and compare. Use `FORMAT=csv` for spreadsheet analysis.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
