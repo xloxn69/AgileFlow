@@ -21,8 +21,9 @@
 @theme inline {
   --breakpoint-3xl: 1600px;
   --breakpoint-4xl: 2000px;
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-serif: var(--font-serif), Georgia, "Times New Roman", Times, serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -168,10 +169,23 @@
   }
   html {
     @apply overscroll-y-none scroll-smooth;
+    font-family: var(--font-sans);
   }
   body {
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
+    font-family: var(--font-sans);
+  }
+
+  /* Claude Code docs style: Serif headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif) !important;
+    font-weight: 400 !important;
+  }
+
+  /* Claude Code docs style: JetBrains Mono for code */
+  code, pre, kbd, samp {
+    font-family: var(--font-mono) !important;
   }
 
   [data-slot="layout"] {
