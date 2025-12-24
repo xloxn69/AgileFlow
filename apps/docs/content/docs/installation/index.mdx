@@ -40,20 +40,29 @@ This will:
         <File name="ui.md" />
         <File name="api.md" />
         <File name="database.md" />
-        <File name="..." comment="25+ agents" />
+        <MoreFiles
+          files={["testing.md", "security.md", "devops.md", "ci.md", "performance.md", "documentation.md", "research.md", "mentor.md", "epic-planner.md", "mobile.md", "analytics.md", "monitoring.md", "integrations.md", "compliance.md", "accessibility.md", "design.md", "datamigration.md", "refactor.md", "qa.md", "adr-writer.md", "readme-updater.md", "product.md"]}
+          totalRemaining={22}
+        />
       </Folder>
       <Folder name="commands">
         <File name="epic.md" />
         <File name="story.md" />
         <File name="board.md" />
-        <File name="..." comment="40+ commands" />
+        <MoreFiles
+          files={["status.md", "sprint.md", "deps.md", "blockers.md", "metrics.md", "velocity.md", "babysit.md", "verify.md", "review.md", "pr.md", "impact.md", "ci.md", "deploy.md", "changelog.md", "packages.md", "tests.md", "adr.md", "docs.md", "readme-sync.md", "research.md", "context.md", "assign.md", "handoff.md", "update.md", "retro.md", "feedback.md", "multi-expert.md", "agent.md", "configure.md", "diagnose.md", "validate-expertise.md", "auto.md", "compress.md", "help.md", "baseline.md", "debt.md", "template.md"]}
+          totalRemaining={37}
+        />
       </Folder>
       <Folder name="templates">
         <File name="story.md" />
         <File name="epic.md" />
         <File name="adr.md" />
-        <File name="research.md" />
-        <File name="retrospective.md" />
+        <MoreFiles
+          files={["research.md", "retrospective.md", "sprint-plan.md", "release-notes.md", "test-plan.md"]}
+          totalRemaining={5}
+          batchSize={5}
+        />
       </Folder>
     </Folder>
     <Folder name=".claude">
@@ -62,28 +71,64 @@ This will:
           <File name="epic.md" />
           <File name="story.md" />
           <File name="board.md" />
-          <File name="..." comment="40+ commands" />
+          <MoreFiles
+            files={["status.md", "sprint.md", "deps.md", "blockers.md", "metrics.md", "velocity.md", "babysit.md", "verify.md", "review.md", "pr.md"]}
+            totalRemaining={37}
+          />
         </Folder>
         <Folder name="agents">
           <File name="ui.md" />
           <File name="api.md" />
           <File name="database.md" />
-          <File name="..." comment="25+ agents" />
+          <MoreFiles
+            files={["testing.md", "security.md", "devops.md", "ci.md", "performance.md", "documentation.md", "research.md", "mentor.md", "epic-planner.md", "mobile.md"]}
+            totalRemaining={22}
+          />
         </Folder>
       </Folder>
     </Folder>
     <Folder name="docs">
-      <Folder name="00-meta" comment="Templates, conventions" />
-      <Folder name="01-brainstorming" comment="Ideas and sketches" />
-      <Folder name="02-practices" comment="Testing, git, CI practices" />
-      <Folder name="03-decisions" comment="ADRs" />
-      <Folder name="04-architecture" comment="Architecture documentation" />
-      <Folder name="05-epics" comment="Epic definitions" />
-      <Folder name="06-stories" comment="User stories" />
-      <Folder name="07-testing" comment="Test cases" />
-      <Folder name="08-project" comment="Roadmap, backlog" />
-      <Folder name="09-agents" comment="Agent status, message bus" />
-      <Folder name="10-research" comment="Research notes" />
+      <Folder name="00-meta" comment="Templates, conventions">
+        <File name="agileflow-metadata.json" />
+        <File name="conventions.md" />
+      </Folder>
+      <Folder name="01-brainstorming" comment="Ideas and sketches">
+        <File name="README.md" />
+      </Folder>
+      <Folder name="02-practices" comment="Testing, git, CI practices">
+        <File name="README.md" />
+      </Folder>
+      <Folder name="03-decisions" comment="ADRs">
+        <File name="README.md" />
+        <File name="ADR-0001-template.md" />
+      </Folder>
+      <Folder name="04-architecture" comment="Architecture documentation">
+        <File name="README.md" />
+      </Folder>
+      <Folder name="05-epics" comment="Epic definitions">
+        <File name="README.md" />
+        <File name="EP-0001.md" comment="Example epic" />
+      </Folder>
+      <Folder name="06-stories" comment="User stories">
+        <File name="README.md" />
+        <File name="US-0001.md" comment="Example story" />
+      </Folder>
+      <Folder name="07-testing" comment="Test cases">
+        <File name="README.md" />
+      </Folder>
+      <Folder name="08-project" comment="Roadmap, backlog">
+        <File name="README.md" />
+        <File name="roadmap.md" />
+      </Folder>
+      <Folder name="09-agents" comment="Agent status, message bus">
+        <File name="status.json" />
+        <Folder name="bus">
+          <File name="log.jsonl" />
+        </Folder>
+      </Folder>
+      <Folder name="10-research" comment="Research notes">
+        <File name="README.md" />
+      </Folder>
     </Folder>
   </Folder>
 </FileTree>
