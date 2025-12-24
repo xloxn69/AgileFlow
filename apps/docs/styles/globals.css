@@ -188,15 +188,16 @@
     font-family: var(--font-sans);
   }
 
-  /* Claude Code docs style: Serif headings - lighter color */
+  /* Claude Code docs style: Serif headings */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif) !important;
     font-weight: 400 !important;
-    color: oklch(0.5 0 0) !important;
+    color: oklch(0.25 0 0) !important;
   }
 
+  /* Dark mode: whiter headers */
   .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    color: oklch(0.85 0 0) !important;
+    color: oklch(0.95 0 0) !important;
   }
 
   /* Brand color accents for links */
@@ -237,6 +238,39 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--brand);
+  }
+
+  /* Dark mode: more brand color usage */
+  .dark a:hover {
+    color: var(--brand) !important;
+  }
+
+  .dark nav a[aria-current="page"],
+  .dark nav a[data-active="true"] {
+    color: var(--brand) !important;
+    background-color: oklch(from var(--brand) l c h / 0.15) !important;
+    border-left-color: var(--brand) !important;
+  }
+
+  .dark [data-active="true"],
+  .dark [aria-current="page"] {
+    color: var(--brand) !important;
+  }
+
+  /* Dark mode brand colored borders */
+  .dark .border-primary,
+  .dark [data-slot="sidebar"] [data-active="true"] {
+    border-color: var(--brand) !important;
+  }
+
+  /* Dark mode code blocks with brand accent */
+  .dark pre {
+    border-left: 2px solid var(--brand);
+  }
+
+  /* Dark mode blockquotes */
+  .dark blockquote {
+    border-left-color: var(--brand) !important;
   }
 
   /* Claude Code docs style: JetBrains Mono for code */
