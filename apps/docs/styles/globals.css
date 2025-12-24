@@ -188,15 +188,55 @@
     font-family: var(--font-sans);
   }
 
-  /* Claude Code docs style: Serif headings */
+  /* Claude Code docs style: Serif headings - lighter color */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif) !important;
     font-weight: 400 !important;
-    color: oklch(0.4 0 0) !important;
+    color: oklch(0.5 0 0) !important;
   }
 
   .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    color: oklch(0.92 0 0) !important;
+    color: oklch(0.85 0 0) !important;
+  }
+
+  /* Brand color accents for links */
+  a:hover {
+    color: var(--brand);
+  }
+
+  /* Brand color for strong text in content */
+  .prose strong, article strong {
+    color: var(--brand);
+  }
+
+  /* Brand color accents throughout */
+  [data-active="true"],
+  [aria-current="page"],
+  .active {
+    color: var(--brand) !important;
+    border-color: var(--brand) !important;
+  }
+
+  /* Sidebar active items */
+  nav a[aria-current="page"],
+  nav a[data-active="true"] {
+    color: var(--brand) !important;
+    background-color: oklch(from var(--brand) l c h / 0.1) !important;
+  }
+
+  /* Focus ring with brand color */
+  :focus-visible {
+    outline-color: var(--brand) !important;
+  }
+
+  /* Scrollbar with brand color */
+  ::-webkit-scrollbar-thumb {
+    background-color: oklch(from var(--brand) l c h / 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--brand);
   }
 
   /* Claude Code docs style: JetBrains Mono for code */

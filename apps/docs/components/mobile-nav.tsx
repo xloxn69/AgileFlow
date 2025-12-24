@@ -51,38 +51,34 @@ export function MobileNav({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
+          size="icon"
           className={cn(
-            "extend-touch-target h-8 touch-manipulation items-center justify-start gap-2.5 !p-0 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent",
+            "extend-touch-target size-8 touch-manipulation hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 active:bg-transparent dark:hover:bg-transparent",
             className
           )}
         >
-          <div className="relative flex h-8 w-4 items-center justify-center">
-            <div className="relative size-4">
-              <span
-                className={cn(
-                  "bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100",
-                  open ? "top-[0.4rem] -rotate-45" : "top-1"
-                )}
-              />
-              <span
-                className={cn(
-                  "bg-foreground absolute left-0 block h-0.5 w-4 transition-all duration-100",
-                  open ? "top-[0.4rem] rotate-45" : "top-2.5"
-                )}
-              />
-            </div>
-            <span className="sr-only">Toggle Menu</span>
+          <div className="relative size-5">
+            <span
+              className={cn(
+                "bg-foreground absolute left-0 block h-0.5 w-5 transition-all duration-100",
+                open ? "top-[0.5rem] -rotate-45" : "top-1"
+              )}
+            />
+            <span
+              className={cn(
+                "bg-foreground absolute left-0 block h-0.5 w-5 transition-all duration-100",
+                open ? "top-[0.5rem] rotate-45" : "top-3"
+              )}
+            />
           </div>
-          <span className="flex h-8 items-center text-lg leading-none font-medium">
-            Menu
-          </span>
+          <span className="sr-only">Toggle Menu</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent
         className="bg-background/90 no-scrollbar h-(--radix-popper-available-height) w-(--radix-popper-available-width) overflow-y-auto rounded-none border-none p-0 shadow-none backdrop-blur duration-100"
-        align="start"
+        align="end"
         side="bottom"
-        alignOffset={-16}
+        alignOffset={16}
         sideOffset={14}
       >
         <div className="flex flex-col gap-12 overflow-auto px-6 py-6">
