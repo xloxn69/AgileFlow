@@ -181,6 +181,11 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif) !important;
     font-weight: 400 !important;
+    color: oklch(0.4 0 0) !important;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: oklch(0.92 0 0) !important;
   }
 
   /* Claude Code docs style: JetBrains Mono for code */
