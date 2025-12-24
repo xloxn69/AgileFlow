@@ -263,11 +263,6 @@
     border-color: var(--brand) !important;
   }
 
-  /* Dark mode code blocks with brand accent */
-  .dark pre {
-    border-left: 2px solid var(--brand);
-  }
-
   /* Dark mode blockquotes */
   .dark blockquote {
     border-left-color: var(--brand) !important;
