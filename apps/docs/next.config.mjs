@@ -28,6 +28,11 @@ const nextConfig = {
   redirects() {
     return [
       {
+        source: "/",
+        destination: "/docs",
+        permanent: false,
+      },
+      {
         source: "/components",
         destination: "/docs/components",
         permanent: true,
