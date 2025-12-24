@@ -229,39 +229,38 @@ Use descriptive IDs that clearly indicate role:
 ### Defining Scope
 
 Make boundaries crystal clear:
-```
-✅ Specific paths:
-  - src/components/
-  - src/api/routes/
-  - .github/workflows/
 
-❌ Vague boundaries:
-  - "frontend stuff"
-  - "backend things"
-```
+**Good** - Specific paths:
+- `src/components/`
+- `src/api/routes/`
+- `.github/workflows/`
+
+**Bad** - Vague boundaries:
+- "frontend stuff"
+- "backend things"
 
 ### Testing Requirements
 
 Include specific test commands:
-```
-✅ Clear:
-  - Run `npm test -- src/components/`
-  - Check coverage with `npm run coverage`
-  - Lint with `npm run lint:tsx`
 
-❌ Vague:
-  - "Write tests"
-  - "Make sure it works"
-```
+**Good** - Clear commands:
+- Run `npm test -- src/components/`
+- Check coverage with `npm run coverage`
+- Lint with `npm run lint:tsx`
+
+**Bad** - Vague instructions:
+- "Write tests"
+- "Make sure it works"
 
 ### Story Tag Mapping
 
 Assign stories based on tags:
-```
-AG-UI gets stories tagged: frontend, ui, ux, design
-AG-API gets stories tagged: backend, api, database
-AG-CI gets stories tagged: ci, devops, automation
-```
+
+| Agent | Story Tags |
+|-------|------------|
+| AG-UI | frontend, ui, ux, design |
+| AG-API | backend, api, database |
+| AG-CI | ci, devops, automation |
 
 ## Workflow
 
