@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { source } from "@/lib/source"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
@@ -17,10 +16,15 @@ export default function DocsLayout({
       className="bg-background relative z-10 flex min-h-svh flex-col"
     >
       <StickyBanner>
-        AgileFlow v2.53.0 is here!{" "}
-        <Link href="/installation" className="font-medium underline underline-offset-4 hover:no-underline">
-          Get started
-        </Link>
+        If you like AgileFlow, give it a star on{" "}
+        <a
+          href="https://github.com/projectquestorg/AgileFlow"
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium underline underline-offset-4 hover:no-underline"
+        >
+          GitHub
+        </a>
       </StickyBanner>
       <SiteHeader />
       <main className="flex flex-1 flex-col">
