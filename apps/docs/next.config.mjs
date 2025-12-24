@@ -28,38 +28,23 @@ const nextConfig = {
   redirects() {
     return [
       {
-        source: "/",
-        destination: "/docs",
-        permanent: false,
-      },
-      {
-        source: "/components",
-        destination: "/docs/components",
+        source: "/docs",
+        destination: "/",
         permanent: true,
       },
       {
-        source: "/docs/primitives/:path*",
-        destination: "/docs/components/:path*",
+        source: "/docs/:path*",
+        destination: "/:path*",
         permanent: true,
       },
       {
-        source: "/figma",
-        destination: "/docs/figma",
+        source: "/primitives/:path*",
+        destination: "/components/:path*",
         permanent: true,
       },
       {
         source: "/sidebar",
-        destination: "/docs/components/sidebar",
-        permanent: true,
-      },
-      {
-        source: "/react-19",
-        destination: "/docs/react-19",
-        permanent: true,
-      },
-      {
-        source: "/charts",
-        destination: "/charts/area",
+        destination: "/components/sidebar",
         permanent: true,
       },
       {
@@ -67,27 +52,12 @@ const nextConfig = {
         destination: "/view/:name",
         permanent: true,
       },
-      {
-        source: "/docs/:path*.mdx",
-        destination: "/docs/:path*.md",
-        permanent: true,
-      },
-      {
-        source: "/mcp",
-        destination: "/docs/mcp",
-        permanent: false,
-      },
-      {
-        source: "/directory",
-        destination: "/docs/directory",
-        permanent: false,
-      },
     ]
   },
   rewrites() {
     return [
       {
-        source: "/docs/:path*.md",
+        source: "/:path*.md",
         destination: "/llm/:path*",
       },
     ]
