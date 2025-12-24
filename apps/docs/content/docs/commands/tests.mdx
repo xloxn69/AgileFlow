@@ -127,14 +127,15 @@ addopts = --cov=src --cov-report=html --cov-report=term
 
 Creates organized test directories:
 
-```
-tests/
-├── unit/           # Unit tests (isolated functions/classes)
-├── integration/    # Integration tests (multiple components)
-├── e2e/            # End-to-end tests (full user flows)
-├── fixtures/       # Test data and mocks
-└── helpers/        # Test utilities and helpers
-```
+<FileTree>
+  <Folder name="tests">
+    <Folder name="unit" />
+    <Folder name="integration" />
+    <Folder name="e2e" />
+    <Folder name="fixtures" />
+    <Folder name="helpers" />
+  </Folder>
+</FileTree>
 
 ### Example Tests
 

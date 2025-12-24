@@ -32,26 +32,44 @@ This will:
 
 ### Directory Structure
 
-```
-your-project/
-├── .agileflow/           # Core configuration
-│   ├── config.json       # AgileFlow settings
-│   ├── agents/           # Agent definitions
-│   └── templates/        # Document templates
-├── .claude/
-│   └── commands/
-│       └── agileflow/    # Slash commands
-│           ├── epic.md
-│           ├── story.md
-│           ├── board.md
-│           └── ... (40+ commands)
-└── docs/                 # Project documentation
-    ├── 00-meta/          # Metadata and config
-    ├── 05-epics/         # Epic definitions
-    ├── 06-stories/       # User stories
-    └── 09-agents/        # Agent communication
-        └── status.json   # Project status
-```
+<FileTree>
+  <Folder name="your-project">
+    <Folder name=".agileflow">
+      <File name="config.json" comment="AgileFlow settings" />
+      <Folder name="agents">
+        <File name="ui.md" />
+        <File name="api.md" />
+      </Folder>
+      <Folder name="templates">
+        <File name="story.md" />
+      </Folder>
+    </Folder>
+    <Folder name=".claude">
+      <Folder name="commands">
+        <Folder name="agileflow">
+          <File name="epic.md" />
+          <File name="story.md" />
+          <File name="board.md" />
+          <File name="..." comment="40+ commands" />
+        </Folder>
+      </Folder>
+    </Folder>
+    <Folder name="docs">
+      <Folder name="00-meta">
+        <File name="agileflow-metadata.json" />
+      </Folder>
+      <Folder name="05-epics">
+        <File name="EP-0001.md" />
+      </Folder>
+      <Folder name="06-stories">
+        <File name="US-0001.md" />
+      </Folder>
+      <Folder name="09-agents">
+        <File name="status.json" comment="Project status" />
+      </Folder>
+    </Folder>
+  </Folder>
+</FileTree>
 
 ### Installed Commands
 

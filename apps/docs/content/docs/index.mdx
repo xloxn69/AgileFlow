@@ -47,15 +47,25 @@ Each agent is an expert in their domain, ready to help with specific tasks:
 
 All project management artifacts are stored as structured files in your repository:
 
-```
-docs/
-├── 05-epics/          # Epic definitions
-├── 06-stories/        # User stories with acceptance criteria
-├── 09-agents/
-│   ├── status.json    # Real-time project status
-│   └── bus/           # Agent communication
-└── 03-decisions/      # Architecture Decision Records
-```
+<FileTree>
+  <Folder name="docs">
+    <Folder name="05-epics">
+      <File name="EP-0001.md" comment="Epic definitions" />
+    </Folder>
+    <Folder name="06-stories">
+      <File name="US-0001.md" comment="User stories" />
+    </Folder>
+    <Folder name="09-agents">
+      <File name="status.json" comment="Real-time project status" />
+      <Folder name="bus">
+        <File name="log.jsonl" comment="Agent communication" />
+      </Folder>
+    </Folder>
+    <Folder name="03-decisions">
+      <File name="ADR-0001.md" comment="Architecture Decision Records" />
+    </Folder>
+  </Folder>
+</FileTree>
 
 ### Visual Kanban Board
 

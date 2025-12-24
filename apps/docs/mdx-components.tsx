@@ -4,6 +4,7 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 import { Callout } from "@/components/callout"
+import { FileTree, Folder, File } from "@/components/file-tree"
 import { CodeBlockCommand } from "@/components/code-block-command"
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
 import { CodeTabs } from "@/components/code-tabs"
@@ -361,4 +362,7 @@ export const mdxComponents = {
     />
   ),
   Kbd,
+  FileTree,
+  Folder,
+  File,
 }

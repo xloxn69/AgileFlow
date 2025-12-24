@@ -123,12 +123,16 @@ Task(subagent_type: "agileflow-ui", run_in_background: true, ...)
 
 Agents coordinate through `docs/09-agents/`:
 
-```
-docs/09-agents/
-├── status.json      # Story statuses and assignments
-└── bus/
-    └── log.jsonl    # Agent messages and handoffs
-```
+<FileTree>
+  <Folder name="docs">
+    <Folder name="09-agents">
+      <File name="status.json" comment="Story statuses and assignments" />
+      <Folder name="bus">
+        <File name="log.jsonl" comment="Agent messages and handoffs" />
+      </Folder>
+    </Folder>
+  </Folder>
+</FileTree>
 
 ### Status Updates
 
