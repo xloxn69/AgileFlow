@@ -10,23 +10,32 @@ AgileFlow is distributed as an npm package that installs directly into your proj
 ## Prerequisites
 
 - **Node.js** 18.0 or higher
-- **Claude Code** (Anthropic's CLI for Claude)
+- **Claude Code**, **Cursor**, or **Windsurf**
 - A Git repository for your project
 
 ## Quick Install
 
-Run this single command in your project root:
+### Global (Recommended)
 
 ```bash
+npm install -g agileflow
+agileflow setup
+```
+
+### Project-Level
+
+```bash
+npm install agileflow
 npx agileflow setup
 ```
 
-This will:
+## After Setup
 
-1. Create `.agileflow/` directory with core configuration
-2. Add `.claude/commands/agileflow/` with 40+ slash commands
-3. Set up `docs/` structure for project management
-4. Configure hooks for automation
+```bash
+/agileflow:help              # View all commands
+/agileflow:babysit           # Interactive mentor for implementation
+/agileflow:configure         # Configure hooks, status line, etc.
+```
 
 ## What Gets Installed
 
@@ -162,20 +171,23 @@ You should see the AgileFlow help menu with all available commands.
 
 AgileFlow works with multiple AI-powered IDEs:
 
-### Claude Code (Recommended)
+| IDE | Status | Config Location |
+|-----|--------|-----------------|
+| Claude Code | Supported | `.claude/commands/agileflow/` |
+| Cursor | Supported | `.cursor/rules/agileflow/` |
+| Windsurf | Supported | `.windsurf/workflows/agileflow/` |
 
-Native support - commands work out of the box after installation.
-
-### Cursor
-
-```bash
-npx agileflow setup --ide cursor
-```
-
-### Windsurf
+### IDE-Specific Setup
 
 ```bash
-npx agileflow setup --ide windsurf
+# Claude Code (default)
+agileflow setup
+
+# Cursor
+agileflow setup --ide cursor
+
+# Windsurf
+agileflow setup --ide windsurf
 ```
 
 ## Configuration
