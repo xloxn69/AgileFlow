@@ -56,6 +56,26 @@ Automatically set up deployment pipeline for the project.
 - Mobile (Expo) → EAS
 - Serverless → AWS Lambda, Vercel Functions
 
+**Tools Used**:
+- TodoWrite: Track 8-step deployment setup workflow
+
+**TodoWrite Example**:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">
+1. Detect project type (static, full-stack, mobile, containers, serverless)
+2. Recommend platform based on project type
+3. Generate deployment configuration files
+4. Create CI/CD workflow file
+5. Create .env.example and secrets management docs
+6. Show configuration preview
+7. Create files after YES/NO confirmation
+8. Display next steps (add secrets, connect repo, test deploy)
+</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 **Workflow**:
 1. Detect project type from package.json, Dockerfile, etc.
 2. Recommend deployment platform

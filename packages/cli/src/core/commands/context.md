@@ -20,50 +20,53 @@ Web AI Context Manager - Generates/exports/manages project context briefs for we
 - **Import is one-step**: Process CONTENT immediately and create research file
 - **Link research files**: Always reference research from ADRs/Epics/Stories that use it
 
+### Tool Usage Examples
+
+**TodoWrite** (for all modes requiring multi-step tracking):
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Read existing docs/context.md
+2. Gather sources (status.json, bus/log.jsonl, epics)
+3. Extract key information
+4. Generate managed sections
+5. Show diff for review
+6. Apply changes after YES</parameter>
+<parameter name="status">in-progress</parameter>
+<parameter name="activeForm">1</parameter>
+</invoke>
+```
+
+**Edit** (when writing context or research files):
+```xml
+<invoke name="Edit">
+<parameter name="file_path">/full/path/to/docs/context.md</parameter>
+<parameter name="old_string"><!-- MANAGED_SECTION -->\n[old content]\n<!-- END_MANAGED --></parameter>
+<parameter name="new_string"><!-- MANAGED_SECTION -->\n[new content]\n<!-- END_MANAGED --></parameter>
+</invoke>
+```
+
+**AskUserQuestion** (when needing confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Apply these changes?", "header": "Diff Preview", "multiSelect": false, "options": [{"label": "Yes, update", "description": "Write changes"}, {"label": "No, abort", "description": "Cancel"}]}]</parameter>
+</invoke>
+```
+
 ### Core Workflow
 
-**MODE=full (default)**
-1. Create todo list tracking: read existing, gather sources, extract info, generate sections, preserve user content, show diff, apply after YES
-2. Read docs/context.md (if exists)
-3. Gather sources: status.json, bus/log.jsonl, epics, stories, ADRs, practices, architecture, roadmap, research, manifests, CI, CHANGELOG
-4. Generate comprehensive context with: what we're building, current focus, feature map, tech/tooling, decisions, architecture, testing, recent progress, risks, next steps
-5. Show diff, wait for YES confirmation
-6. Update only managed sections
+**MODE=full**: Create todo list → Read docs/context.md → Gather sources → Generate sections → Show diff → Apply after YES
 
-**MODE=export**
-1. Read docs/context.md
-2. Output concise excerpt (≤300 lines): last updated, what we're building, current focus, tech/tooling, key decisions, feature map, next steps
-3. End with "Paste this excerpt into your web AI tool..."
-4. NO file writes
+**MODE=export**: Read docs/context.md → Output ≤300 line excerpt → No file writes
 
-**MODE=note**
-1. Append timestamped note under "Notes" section
-2. Create section if missing
-3. Show diff, wait for YES confirmation
+**MODE=note**: Create todo list → Append timestamped note → Show diff → Apply after YES
 
-**MODE=research**
-1. Create todo list tracking: generate prompt, wait for results, format research, save to docs/10-research/, update index, ask about ADR/Epic/Story, link research
-2. STEP 1: Generate single code block prompt for web AI requesting TL;DR, step-by-step plan, code snippets, config, tests, security checklist, ADR draft, story breakdown, rollback plan, risks, PR template, sourcing rules
-3. Tell user to paste prompt into ChatGPT/Perplexity and return with results
-4. STEP 2: When user returns with results, format into structured markdown with sections: Summary, Key Findings, Implementation, Code Snippets, Security, Testing, Risks, ADR Recommendation, Story Breakdown, References
-5. Save to docs/10-research/YYYYMMDD-topic-slug.md
-6. Update docs/10-research/README.md index
-7. Ask if user wants ADR/Epic/Story created from research
-8. Add research reference to created ADR/Epic/Story
+**MODE=research**: Create todo list → STEP 1: Generate prompt → STEP 2: Format & save to docs/10-research/
 
-**MODE=import**
-1. Create todo list tracking: validate inputs, process content, extract key points, extract code, generate actions, suggest stories, format research file, save, update index
-2. Validate TOPIC and CONTENT are provided
-3. Process raw content (transcript, article, etc.) by: summarizing key points, extracting code snippets, generating action items, suggesting user stories
-4. Format into structured research file with all extracted sections
-5. Save to docs/10-research/YYYYMMDD-topic-slug.md
-6. Update docs/10-research/README.md index
-7. Ask if user wants ADR/Epic/Story created from imported content
-8. Add research reference to created ADR/Epic/Story
+**MODE=import**: Create todo list → Validate inputs → Process content → Save to docs/10-research/
 
 ### Key Files
-- docs/context.md - Main context brief (managed sections + user content)
-- docs/10-research/YYYYMMDD-topic-slug.md - Research results storage
+- docs/context.md - Main context brief
+- docs/10-research/YYYYMMDD-topic-slug.md - Research storage
 - docs/10-research/README.md - Research index
 - status.json - Current work tracking
 - bus/log.jsonl - Recent progress messages

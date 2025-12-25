@@ -16,63 +16,54 @@ Track and visualize technical debt across the codebase.
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
-**Purpose**: Identify, categorize, and prioritize technical debt for refactoring
+**Command**: `tech-debt` - Identify, categorize, and prioritize technical debt for refactoring
 
 **Quick Usage**:
 ```
 /agileflow:tech-debt SCAN=quick OUTPUT=report THRESHOLD=medium
 ```
 
-**What It Does**:
-1. Scans codebase for debt indicators (TODO, complexity, duplication)
-2. Searches stories tagged with `tech-debt: true`
-3. Analyzes ADRs for deprecated decisions
-4. Reviews git history for high-churn files
-5. Categorizes debt by type (Architecture, Code Quality, Testing, etc.)
-6. Scores each item by Severity × Scope × Pain
-7. Generates prioritized debt report
-8. Optionally creates stories for critical debt
-
-**Required Inputs**:
-- None (all optional with smart defaults)
+**What It Does**: Scan codebase → Categorize debt → Score by Severity/Scope/Pain → Generate report → Optional stories
 
 **Optional Inputs**:
-- `SCAN=full|quick` - Scan depth (default: quick)
-- `OUTPUT=report|stories|both` - Output type (default: report)
-- `THRESHOLD=high|medium|low` - Minimum severity (default: medium)
+- `SCAN=full|quick` (default: quick)
+- `OUTPUT=report|stories|both` (default: report)
+- `THRESHOLD=high|medium|low` (default: medium)
 
-**Output Files**:
-- Debt report: `docs/08-project/tech-debt-<YYYYMMDD>.md`
-- Optional: Stories for top debt items
-- Optional: Dashboard at `docs/08-project/debt-dashboard.md`
+### Tool Usage Examples
 
-**Debt Categories**:
-- Architecture: Wrong abstractions, tight coupling
-- Code Quality: Duplication, complexity, style issues
-- Documentation: Missing, outdated, incomplete
-- Testing: Low coverage, flaky tests, missing E2E
-- Security: Outdated deps, exposed secrets, weak auth
-- Performance: N+1 queries, memory leaks, slow ops
-- Dependencies: Outdated packages, unmaintained libs
-
-**Scoring Formula**:
-```
-Score = (Severity × Scope × Pain) / 10
-- Severity: 1-10 (impact level)
-- Scope: 1-10 (files affected)
-- Pain: 1-10 (developer frustration)
+**Bash** (to scan codebase for TODOs, complexity, etc.):
+```xml
+<invoke name="Bash">
+<parameter name="command">grep -r "TODO\|FIXME\|HACK" src/ --include="*.ts" --include="*.js" | head -20</parameter>
+<parameter name="description">Find TODO comments in codebase</parameter>
+</invoke>
 ```
 
-**Workflow**:
-1. Scan for debt indicators across codebase
-2. Categorize and score each item
-3. Generate prioritized report
-4. Ask: "Generate stories for critical debt? (YES/NO)"
-5. Ask: "Save report to docs/08-project/? (YES/NO)"
-6. Suggest adding debt review to roadmap
+**Glob** (to find high-churn files):
+```xml
+<invoke name="Glob">
+<parameter name="pattern">src/**/*.{ts,js}</parameter>
+</invoke>
+```
 
-**Example Report Section**:
-```markdown
+**Read** (to analyze git history and ADRs):
+```xml
+<invoke name="Read">
+<parameter name="file_path">/full/path/to/docs/03-decisions/adr-0015-deprecated.md</parameter>
+</invoke>
+```
+
+**Write** (to save debt report):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/08-project/tech-debt-20251222.md</parameter>
+<parameter name="content"># Technical Debt Report
+
+**Generated**: 2025-12-22
+**Total Debt Items**: 42
+**Critical**: 3 | **High**: 12 | **Medium**: 18 | **Low**: 9
+
 ## Critical Debt (Score >80)
 
 ### 1. Auth service tightly coupled to database
@@ -85,8 +76,48 @@ Score = (Severity × Scope × Pain) / 10
 **Type**: Testing | **Score**: 85
 **Impact**: High regression risk, blocking production
 **Files**: src/api/payments/*.ts (12 files, 0% coverage)
-**Estimate**: 2-3 days
+**Estimate**: 2-3 days</parameter>
+</invoke>
 ```
+
+**Write** (to create debt stories):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/06-stories/EP-XXXX/US-XXXX-refactor-auth.md</parameter>
+<parameter name="content">---
+story_id: US-XXXX
+type: tech-debt
+debt_score: 87
+estimate: 3d
+---
+
+# US-XXXX: Refactor auth service to separate concerns
+
+## Current State (Before)
+Auth service tightly coupled to database layer...
+
+## Desired State (After)
+Clear separation: AuthService, AuthRepository, AuthController...</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (for approval):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Generate stories for critical debt?", "header": "Action", "multiSelect": false, "options": [{"label": "Yes, create stories", "description": "Generate stories for top 5 critical items"}, {"label": "No, report only", "description": "Save report without creating stories"}]}]</parameter>
+</invoke>
+```
+
+**Debt Categories**:
+- Architecture: Wrong abstractions, tight coupling
+- Code Quality: Duplication, complexity, style issues
+- Documentation: Missing, outdated, incomplete
+- Testing: Low coverage, flaky tests, missing E2E
+- Security: Outdated deps, exposed secrets, weak auth
+- Performance: N+1 queries, memory leaks, slow ops
+- Dependencies: Outdated packages, unmaintained libs
+
+**Output Files**: `docs/08-project/tech-debt-<YYYYMMDD>.md` | Optional stories | Optional dashboard
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

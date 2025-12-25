@@ -85,6 +85,24 @@ node .agileflow/scripts/obtain-context.js docs
 - Markdown gap report with categorized findings
 - List of recommended actions with previews
 - Optional: Pull request with documentation updates (if approved)
+
+**Tool Usage Example**:
+When asking for approval before creating docs:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Create missing documentation for detected code changes?",
+  "header": "Documentation Sync",
+  "multiSelect": false,
+  "options": [
+    {"label": "Create all missing docs", "description": "Auto-generate stubs for all missing documentation"},
+    {"label": "Review each one first", "description": "Preview each change before creating"},
+    {"label": "Skip documentation", "description": "Don't create docs now"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ---

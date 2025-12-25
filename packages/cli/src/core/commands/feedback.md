@@ -19,7 +19,7 @@ Collect feedback from agents and humans for continuous process improvement.
 **Purpose**: Collect feedback on stories, agents, and processes for continuous improvement
 
 **Quick Usage**:
-```
+```bash
 /agileflow:agent-feedback SCOPE=story STORY=US-0042
 /agileflow:agent-feedback SCOPE=epic EPIC=EP-0010
 /agileflow:agent-feedback SCOPE=sprint
@@ -27,30 +27,31 @@ Collect feedback from agents and humans for continuous process improvement.
 
 **What It Does**:
 1. Prompts for feedback at trigger points (story done, epic complete, sprint end)
-2. Collects structured feedback (ratings, comments, blockers)
-3. Saves feedback to `docs/08-project/feedback/`
+2. Collects structured feedback (ratings 1-5, comments, blockers)
+3. Saves feedback to `docs/08-project/feedback/` (markdown format)
 4. Analyzes patterns and generates insights
 5. Suggests improvement stories for recurring issues
 6. Tracks metrics over time (clarity, estimates, blockers)
 
 **Required Inputs**:
-- `SCOPE=story|epic|sprint` - Feedback scope (default: story)
+- `SCOPE`: story|epic|sprint (default: story)
 
 **Optional Inputs**:
-- `STORY=<US-ID>` - Story ID (required if SCOPE=story)
-- `EPIC=<EP-ID>` - Epic ID (required if SCOPE=epic)
-- `ANONYMOUS=yes|no` - Anonymous feedback (default: no)
+- `STORY`: <US-ID> (required if SCOPE=story)
+- `EPIC`: <EP-ID> (required if SCOPE=epic)
+- `ANONYMOUS`: yes|no (default: no)
 
-**Output Files**:
-- Feedback notes: `docs/08-project/feedback/<YYYYMMDD>-<ID>.md`
-- Summary log: `docs/08-project/retrospectives.md`
-- Optional: Improvement stories for issues
+**Data Sources** (parsing required):
+1. Story frontmatter files (US-*.md) - YAML extraction for dates, estimates
+2. status.json - Story metadata (JSON parsing)
+3. bus/log.jsonl - Activity logs for pattern detection (JSON line parsing)
+4. Feedback files (markdown parsing for metrics extraction)
 
-**Feedback Types**:
-1. **Story Completion**: Clarity, smoothness, estimate accuracy (1-5 scale)
-2. **Agent Performance**: Completion rate, test coverage, reliability
-3. **Epic Retrospective**: Success metrics, wins, challenges, learnings
-4. **Sprint Retrospective**: Continue/Stop/Start, experiments, blockers
+**Feedback Collection**:
+- **Story Completion**: AC clarity, dependencies resolved, estimate accuracy, smoothness (1-5 scale)
+- **Agent Performance**: Completion rate, test coverage, reliability metrics
+- **Epic Retrospective**: Success metrics, wins, challenges, learnings
+- **Sprint Retrospective**: Continue/Stop/Start, experiments, blockers
 
 **Metrics Tracked**:
 - Avg story clarity score (target: >4.0)
@@ -63,10 +64,21 @@ Collect feedback from agents and humans for continuous process improvement.
 1. Auto-prompt at trigger (story→done, epic complete, sprint end)
 2. Present feedback form with pre-filled context
 3. Ask: "Provide feedback now? (YES/NO/LATER)"
-4. Collect ratings and comments
-5. Save to feedback files
-6. Analyze patterns across feedback
+4. Collect ratings (1-5 scale) and free-form comments
+5. Save to docs/08-project/feedback/<YYYYMMDD>-<ID>.md
+6. Analyze patterns across feedback (pattern matching for recurring themes)
 7. Suggest improvement stories for recurring issues
+
+**Analysis** (pattern detection):
+- Scan all feedback for patterns: "unclear AC" → improve template
+- Calculate metrics: avg clarity score, estimate variance, blocker frequency
+- Track trends over time (metrics comparison)
+- Generate actionable recommendations
+
+**Output Files**:
+- Feedback notes: `docs/08-project/feedback/<YYYYMMDD>-<ID>.md`
+- Summary log: `docs/08-project/retrospectives.md`
+- Optional: Auto-generated improvement stories for issues
 
 **Example Story Feedback**:
 ```markdown

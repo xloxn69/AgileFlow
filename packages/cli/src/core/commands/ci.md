@@ -52,6 +52,23 @@ Bootstrap minimal CI workflow and CODEOWNERS.
 /docs/03-decisions/ @owners
 ```
 
+**Tools Used**:
+- TodoWrite: Track 5-step setup workflow
+
+**TodoWrite Example**:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">
+1. Parse input (OWNERS)
+2. Create .github/workflows/ci.yml with lint/typecheck/test jobs
+3. Create CODEOWNERS file with owner mappings
+4. Show preview and wait for YES/NO confirmation
+5. Print notes for enabling required checks
+</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 **Workflow**:
 1. Parse OWNERS input
 2. Generate CI workflow with generic job placeholders

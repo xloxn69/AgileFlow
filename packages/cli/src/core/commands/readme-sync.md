@@ -36,18 +36,51 @@ node .agileflow/scripts/obtain-context.js readme-sync
 - **Purpose**: Synchronize folder README.md with current contents
 - **Arguments**: FOLDER=<path> | FOLDER=all
 - **Agent Spawning**: Spawns `readme-updater` agent for actual work
-- **Key Actions**:
-  1. List all files and subdirectories in FOLDER
-  2. Read current README.md (if exists)
-  3. Extract descriptions from each file (first heading or sentence)
-  4. Build new "## Contents" section with bullet list
-  5. Show diff and ask for confirmation via AskUserQuestion
-  6. Update if approved using Edit tool
+- **Key Actions**: List files → Extract descriptions → Build Contents section → Show diff → Update if approved
 - **FOLDER=all**: Sync all docs/*/ subdirectories in parallel
-- **AskUserQuestion**: Use XML format with multiSelect for decisions
+
+### Tool Usage Examples
+
+**Task** (to spawn readme-updater agent):
+```xml
+<invoke name="Task">
+<parameter name="description">Sync README for docs/02-practices</parameter>
+<parameter name="prompt">Audit and synchronize README.md for: docs/02-practices
+1. List all files and subdirectories
+2. Read current README.md (if exists)
+3. Extract descriptions from each file
+4. Build new '## Contents' section
+5. Show diff and ask for confirmation
+6. Update if approved</parameter>
+<parameter name="subagent_type">agileflow-readme-updater</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (when folder is missing):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Which folder should I sync?", "header": "Folder", "multiSelect": false, "options": [{"label": "docs/02-practices (Recommended)", "description": "Sync practices documentation folder"}, {"label": "docs/04-architecture", "description": "Sync architecture documentation"}, {"label": "all", "description": "Sync all docs/ subfolders"}]}]</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (for confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Apply these changes to README.md?", "header": "Update", "multiSelect": false, "options": [{"label": "Yes, update README (Recommended)", "description": "Write the proposed ## Contents section"}, {"label": "No, abort", "description": "Cancel without making changes"}]}]</parameter>
+</invoke>
+```
+
+**Edit** (to update README contents):
+```xml
+<invoke name="Edit">
+<parameter name="file_path">/full/path/to/docs/02-practices/README.md</parameter>
+<parameter name="old_string">## Contents\n\n[old file list]</parameter>
+<parameter name="new_string">## Contents\n\n- **file.md** – Description\n- **folder/** – Description</parameter>
+</invoke>
+```
+
 - **Output**: Updates only "## Contents" section, preserves all other sections
 - **Use Cases**: After adding files, before releases, documentation cleanup, reorganizing folders
-- **Related**: Async agent spawning patterns, AskUserQuestion format
 <!-- COMPACT_SUMMARY_END -->
 
 ---

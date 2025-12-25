@@ -30,63 +30,48 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - Display recently resolved blockers (optional)
 
 **Arguments** (all optional):
-- `AGENT=<id>` - Filter by specific agent (e.g., AG-UI, AG-API)
-- `SHOW_RESOLVED=true` - Include recently resolved blockers (last 7 days)
-- `DETAILED=true` - Show extended details (dependencies, research links, ADRs)
+- `AGENT`: <id> (filter by specific agent: AG-UI, AG-API, etc.)
+- `SHOW_RESOLVED`: true (include recently resolved blockers, last 7 days)
+- `DETAILED`: true (show extended details: dependencies, research links, ADRs)
 
-**Data Sources**:
-1. `status.json` - Current story statuses and blockers
-2. `bus/log.jsonl` - Recent unblock/blocked messages
-3. Story files (`US-*.md`) - Detailed story information
-4. ADRs (`adr-*.md`) - Architecture decisions for context
-5. Research notes (`10-research/*.md`) - Background research
-6. Epic files - Epic context for blocked stories
+**Data Sources** (parsing required):
+1. `status.json` - Current story statuses and blockers (JSON parsing)
+2. `bus/log.jsonl` - Recent unblock/blocked messages (JSON parsing + timestamp filtering)
+3. Story files (`US-*.md`) - Detailed story information (YAML frontmatter parsing)
+4. ADRs (`adr-*.md`) - Architecture decisions (keyword matching)
+5. Research notes (`10-research/*.md`) - Background research (keyword matching)
 
 **Blocker Types Detected**:
-1. **Direct Blockers** - Stories with status="blocked"
-2. **Dependency Blockers** - Stories waiting on incomplete dependencies
-3. **WIP Capacity Blockers** - Agents at WIP limit (2 in-progress stories)
-4. **Stale Blockers** - Blocked >14 days (critical priority)
+1. **Direct** - Stories with status="blocked" (extract from status.json)
+2. **Dependency** - Stories waiting on incomplete dependencies (parse frontmatter deps_on)
+3. **WIP Capacity** - Agents at WIP limit (count in-progress stories per agent)
+4. **Stale** - Blocked >14 days (timestamp comparison)
 
-**Output Sections**:
-- **Summary Stats** - Count by type, critical count, cross-agent coordination
-- **Critical Blockers** - Stale blockers (>14 days) needing immediate attention
-- **Active Blockers** - Grouped by category with resolution suggestions
-- **AG-API Unblocking Status** - v2.7.0 coordination tracking
-- **Capacity Analysis** - Agents at WIP limit with waiting stories
-- **Recently Resolved** - Last 7 days of unblock activity (if requested)
-- **Prioritized Actions** - Ranked next steps with suggested commands
-
-**Resolution Suggestions Include**:
-- Estimated completion time for blocking dependencies
-- Interim workarounds (mock data, feature flags)
-- Linked ADRs and research for context
-- Specific questions for clarification blockers
-- Escalation paths for external blockers
-- Redistribution options for capacity blockers
+**Workflow**:
+1. Extract all blockers from status.json → Parse bus/log.jsonl for recent activity
+2. Categorize by type (Technical/Coordination/Clarification/External/Capacity/Research)
+3. For each blocker: Match to ADRs/research via keyword search
+4. Generate resolution suggestions (estimated unblock time, workarounds, escalation)
+5. If SHOW_RESOLVED=true: Extract unblock messages from last 7 days
+6. Prioritize actions and display dashboard
 
 **Example Usage**:
 ```bash
-# All blockers
 /agileflow:blockers
-
-# AG-UI blockers only
 /agileflow:blockers AGENT=AG-UI
-
-# Include resolved blockers
-/agileflow:blockers SHOW_RESOLVED=true
-
-# Full detailed output
-/agileflow:blockers DETAILED=true
+/agileflow:blockers SHOW_RESOLVED=true DETAILED=true
 ```
 
-**Related Commands**:
-- `/agileflow:status` - Update blocker status
-- `/story-new` - Create unblocking stories
-- `/handoff` - Reassign capacity-blocked stories
-- `/adr-new` - Document architectural decisions
-- `/agileflow:board` - Visualize current state
-- `/agileflow:validate-system` - Check for inconsistencies
+**Output Sections**:
+- Summary Stats (count by type, critical count)
+- Critical Blockers (stale >14 days)
+- Active Blockers (grouped by category with solutions)
+- AG-API Unblocking Status (v2.7.0 coordination)
+- Capacity Analysis (agents at WIP limit)
+- Recently Resolved (last 7 days if requested)
+- Prioritized Actions (ranked next steps)
+
+**Integration**: With `/status`, `/story-new`, `/handoff`, `/adr-new`, `/board`, `/validate-system`
 <!-- COMPACT_SUMMARY_END -->
 
 Comprehensive blocker tracking, resolution suggestions, and cross-agent coordination (leverages v2.7.0 AG-API unblocking capabilities).

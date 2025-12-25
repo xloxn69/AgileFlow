@@ -78,6 +78,26 @@ Automatically generate changelog from PR titles, commits, and tags.
 - Crash when user is null (#124)
 - Memory leak in WebSocket handler (#139)
 ```
+
+**Tool Usage Example**:
+When commits need manual categorization:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "How should this commit be categorized?",
+  "header": "Categorize Commit",
+  "multiSelect": false,
+  "options": [
+    {"label": "Added", "description": "New feature or capability (feat:)"},
+    {"label": "Changed", "description": "Modification or enhancement (refactor:, perf:)"},
+    {"label": "Fixed", "description": "Bug fix (fix:)"},
+    {"label": "Security", "description": "Security fix (security:)"},
+    {"label": "Skip", "description": "Don't include in changelog"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

@@ -21,41 +21,36 @@ AI Code Reviewer that analyzes git diffs for quality, security, performance, and
 - **Provide specific fixes** - Include code snippets, not just descriptions
 
 ### Core Workflow
-1. Get git diff: `git diff <BASE>...<BRANCH>`
+1. Get git diff: `git diff <BASE>...<BRANCH>` (shell command)
 2. Analyze changes across 6 categories: Code Quality, Security, Performance, Best Practices, Testing, Documentation
 3. Generate structured report with issue count by severity (CRITICAL/HIGH/MEDIUM/LOW)
 4. Calculate code quality score (0-100) with breakdown by category
-5. Ask user about actions: auto-fix issues, create follow-up stories, block merge
+5. Optionally ask user to auto-fix issues, create follow-up stories, block merge
 6. Save report to `docs/08-project/code-reviews/<YYYYMMDD>-<BRANCH>.md`
 
-### Key Files
-- **Input**: Git diff between BASE and BRANCH
-- **Custom rules**: `.agileflow/review-rules.md`, `docs/02-practices/code-standards.md`
+### Key Files & Parsing
+- **Input**: Git diff between BASE and BRANCH (parse changed files and hunks)
+- **Custom rules**: `.agileflow/review-rules.md`, `docs/02-practices/code-standards.md` (YAML/markdown parsing)
 - **Output**: `docs/08-project/code-reviews/<YYYYMMDD>-<BRANCH>.md`
 
 ### Optional Arguments
-- `BRANCH=<name>` - Branch to review (default: current)
-- `BASE=<branch>` - Base branch for comparison (default: main/master)
-- `FOCUS=all|security|performance|style|tests` - Review scope (default: all)
-- `SEVERITY=critical|high|medium|low|all` - Filter by severity (default: all)
+- `BRANCH`: <name> (branch to review, default: current)
+- `BASE`: <branch> (base branch for comparison, default: main/master)
+- `FOCUS`: all|security|performance|style|tests (review scope, default: all)
+- `SEVERITY`: critical|high|medium|low|all (filter by severity, default: all)
 
-### Security Checks
-- SQL injection, XSS vulnerabilities
-- Hardcoded secrets/credentials
-- Insecure dependencies, unsafe deserialization
-- Missing input validation, authentication/authorization issues
+### Analysis Techniques
+- **Static Analysis**: AST parsing for complexity, duplication detection
+- **Pattern Matching**: Security regex patterns (hardcoded keys, SQL injection, XSS)
+- **Code Metrics**: Cyclomatic complexity (threshold: 10), function length (<50 lines), file length (<500 lines)
+- **Test Coverage**: Parse coverage reports (coverage/lcov.info) to map changed lines to tests
 
-### Performance Checks
-- N+1 query problems
-- Inefficient algorithms (O(n²) vs O(n))
-- Missing database indexes
-- Memory leaks, large bundle sizes
-
-### Quality Metrics
-- Cyclomatic complexity (threshold: 10)
-- Function length (target: <50 lines)
-- File length (target: <500 lines)
-- Test coverage (aim: >80%)
+### Example Usage**:
+```bash
+/agileflow:ai-code-review
+/agileflow:ai-code-review BRANCH=feature/auth BASE=main
+/agileflow:ai-code-review FOCUS=security SEVERITY=critical
+```
 
 <!-- COMPACT_SUMMARY_END -->
 

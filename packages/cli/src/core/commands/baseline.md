@@ -85,6 +85,26 @@ git checkout agileflow-baseline-20251222-143000
 - Use descriptive messages for future reference
 - Compare current state to baseline with `/agileflow:verify`
 
+**Tools Used**:
+- TodoWrite: Track 8-step baseline creation workflow
+
+**TodoWrite Example**:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">
+1. Run pre-flight checks (session harness, tests, git status, story tests)
+2. Show baseline summary (what will be included)
+3. Get baseline message (from user or use default)
+4. Create git tag with timestamp
+5. Update docs/00-meta/environment.json (baseline_commit)
+6. Update docs/09-agents/session-state.json (baseline history)
+7. Update story frontmatter (verified_at_baseline)
+8. Display final report
+</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

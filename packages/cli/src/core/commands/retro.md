@@ -24,70 +24,62 @@ Automated retrospective generator that analyzes patterns and surfaces insights f
 
 ## Compact Summary
 
-**Command Purpose**: Automated retrospective generator that analyzes AgileFlow project data to surface insights, patterns, and actionable improvements using the Start/Stop/Continue format.
+**Command Purpose**: Automated retrospective generator analyzing AgileFlow data to surface insights, patterns, and actionable improvements using Start/Stop/Continue format.
 
 **Role**: Retrospective Facilitator
 
 **Critical Behavioral Rules**:
-- ALWAYS create TodoWrite task list at the start (9 steps: load data, analyze wins, analyze improvements, detect patterns, generate actions, create celebration section, generate report, save file, update index)
+- ALWAYS create TodoWrite task list at start (9 steps)
 - Focus on TEAM-LEVEL patterns, never individual blame
-- Balance positive insights (Continue) with improvements (Start/Stop)
-- Use DATA to drive insights - no subjective opinions without evidence
+- Balance positive (Continue) with improvements (Start/Stop)
+- Use DATA to drive insights (no subjective opinions without evidence)
 - Prioritize action items by impact (HIGH/MEDIUM/LOW)
 - ALWAYS celebrate wins, even small ones
-- End with forward-looking predictions for next sprint
 - Save automatically to docs/08-project/retrospectives/ unless SAVE=false
 
 **Key Data Sources**:
 1. docs/09-agents/bus/log.jsonl - Event patterns, status transitions, blocking events
-2. docs/09-agents/status.json - Current state snapshot, WIP levels, owner distribution
+2. docs/09-agents/status.json - Current state, WIP levels, owner distribution
 3. docs/06-stories/**/US-*.md - Story completion, estimates vs actuals, AC rates
-4. Velocity data - Points completed, throughput trends from bus analysis
+4. Velocity data - Points completed, throughput trends
+
+**TodoWrite Task List** (create at start):
+```
+TodoWrite tool usage:
+- content: "1. Load data sources\n2. Analyze what went well\n3. Analyze improvements\n4. Detect patterns\n5. Generate action items\n6. Create celebration section\n7. Generate report\n8. Save file\n9. Update index"
+- status: "in-progress"
+- activeForm: true
+```
 
 **Workflow Steps**:
-1. Load and analyze data sources (bus logs, status, stories, velocity)
-2. Identify "What Went Well" patterns (high velocity, fast cycle times, epic completions, good estimation, balanced workload)
-3. Identify "What Needs Improvement" patterns (velocity drops, long cycles, high WIP, frequent blocking, poor estimation, bottlenecks)
-4. Detect advanced patterns (recurring blockers, day-of-week trends, handoff patterns, story size correlations)
-5. Generate prioritized action items (HIGH: immediate problems, MEDIUM: process improvements, LOW: long-term)
-6. Create celebration moments section (epic completions, velocity milestones, zero bugs, fast deliveries)
-7. Generate comprehensive ASCII report with sprint summary, insights, actions, team contributions, predictions
-8. Save to docs/08-project/retrospectives/retro-YYYYMMDD.md
-9. Update retrospectives/README.md index
+1. Create TodoWrite task list → Load and analyze data sources
+2. Identify "What Went Well" patterns (velocity, cycles, completions, estimation, workload)
+3. Identify "What Needs Improvement" patterns (velocity drops, cycles, WIP, blocking, bottlenecks)
+4. Detect advanced patterns (recurring blockers, handoffs, story size correlations)
+5. Generate prioritized action items (HIGH/MEDIUM/LOW) → Create celebration section
+6. Generate ASCII report → Save to retrospectives/ → Update index
 
-**Output Format Requirements**:
-- DEFAULT: ASCII box format with Unicode characters (╔═╗║╚╝)
-- Sections: Sprint Summary → What Went Well → What Needs Improvement → Action Items → Team Contributions → Predictions
-- Use icons: ✅ (Continue), ⚠️ (Improvement), 🛑 (Stop), ▶️ (Start), 🎯 (Actions), 📊 (Summary), 🔮 (Predictions), 🎉 (Celebrate)
-- Action items as checkboxes [ ] for tracking
-- Include velocity trends, cycle times, completion rates, blocking events
-- Show team contributions as horizontal bar charts
-- End with "Next Steps" recommendations
+**Inputs** (optional):
+- `TIMEFRAME`: sprint|2weeks|30d|90d (default: 2weeks)
+- `EPIC`: <EP_ID> (epic-specific retrospective)
+- `FORMAT`: ascii|markdown|html (default: ascii)
+- `SAVE`: true|false (default: true)
 
-**Pattern Analysis Examples**:
-- CONTINUE: Velocity increased, fast cycle times (<2d), zero blocked stories, epic completions, good estimation (<20% variance), balanced workload
-- START/STOP: Velocity drops, long cycle times (>5d), high WIP, frequent blocking, long review times, poor estimation (>50% variance), agent bottlenecks, stale stories (>10d in-progress)
+**Output Format**:
+- ASCII box with Unicode (╔═╗║╚╝)
+- Sections: Summary → What Went Well → What Needs Improvement → Actions → Team Contributions → Predictions
+- Icons: ✅ ⚠️ 🛑 ▶️ 🎯 📊 🔮 🎉
 
-**Optional Inputs**:
-- TIMEFRAME: sprint|2weeks|30d|90d (default: 2weeks)
-- EPIC: <EP_ID> (retrospective for specific epic only)
-- FORMAT: ascii|markdown|html (default: ascii)
-- SAVE: true|false (default: true)
+**Example Usage**:
+```bash
+/agileflow:retro
+/agileflow:retro TIMEFRAME=30d
+/agileflow:retro EPIC=EP-0010 FORMAT=markdown
+```
 
-**Integration Points**:
-- After /agileflow:metrics to contextualize data
-- Before sprint planning to apply learnings
-- With /agileflow:velocity to use trends
-- In /agileflow:babysit to suggest at sprint boundaries
+**Success Criteria**: Comprehensive data analysis, balanced Continue/Start/Stop, specific actionable items, celebration section, predictions, file saved with date stamp
 
-**Success Criteria**:
-- Comprehensive data analysis from all 4 sources
-- Balanced Continue/Start/Stop sections (not all negative)
-- Specific, actionable items (not vague suggestions)
-- Celebration section highlights wins
-- Predictions based on current velocity and epic progress
-- File saved to retrospectives/ directory with date stamp
-- Index updated with latest retrospective entry
+**Integration**: After `/metrics`, before sprint planning, with `/velocity`, in `/babysit`
 
 <!-- COMPACT_SUMMARY_END -->
 

@@ -67,9 +67,38 @@ Keep this section under 150 lines - it contains the critical behavioral rules an
 
 🔴 **Format**: NEVER ask users to "type" anything. Use proper AskUserQuestion options.
 
+**AskUserQuestion Example:**
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "What would you like to do next?",
+  "header": "Next step",
+  "multiSelect": false,
+  "options": [
+    {"label": "Option A (Recommended)", "description": "Why this is recommended"},
+    {"label": "Option B", "description": "Alternative approach"},
+    {"label": "Pause", "description": "Stop here for now"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 ### TodoWrite Tracking
 
-**CRITICAL**: Track progress with TodoWrite tool. Typical workflow:
+**CRITICAL**: Track progress with TodoWrite tool.
+
+**TodoWrite Example:**
+```xml
+<invoke name="TodoWrite">
+<parameter name="todos">[
+  {"content": "Run context script", "status": "completed", "activeForm": "Running context script"},
+  {"content": "Present task options", "status": "in_progress", "activeForm": "Presenting task options"},
+  {"content": "Implement feature", "status": "pending", "activeForm": "Implementing feature"}
+]</parameter>
+</invoke>
+```
+
+**Typical workflow:**
 1. Run context script (`node .agileflow/scripts/obtain-context.js babysit`)
 2. Present suggestions using AskUserQuestion
 3. Read task-specific docs based on user's choice

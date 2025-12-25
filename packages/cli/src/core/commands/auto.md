@@ -15,68 +15,82 @@ node .agileflow/scripts/obtain-context.js auto
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
-**Command**: `auto-story`
-**Purpose**: Auto-generate user stories from PRDs, mockups, API specs, or design docs
+**Command**: `auto-story` - Auto-generate user stories from PRDs, mockups, API specs, or design docs
 
 **Quick Usage**:
 ```
 /agileflow:auto-story SOURCE=docs/requirements/auth-prd.md EPIC=EP-0010 OWNER=AG-API AUTO_CREATE=no
 ```
 
-**What It Does**:
-1. Reads source file/URL and identifies document type
-2. Extracts features, requirements, and user flows
-3. Groups related requirements into logical stories
-4. Generates stories with Given/When/Then acceptance criteria
-5. Shows preview with estimates and suggested owners
-6. Creates epic (if needed), story files, and test stubs
-7. Updates status.json and bus/log.jsonl
+**What It Does**: Read source → Identify type → Extract requirements → Group into stories → Preview → Create files → Update status
 
-**Supported Source Types**:
-- **PRDs** (.md, .docx, .pdf) → Parses features, success criteria, personas
-- **UI Mockups** (Figma URL, .png with OCR) → Extracts screens, interactions, forms
-- **API Docs** (OpenAPI/Swagger JSON) → Generates stories per endpoint
-- **User Flows** (Mermaid .mmd, PlantUML) → Extracts journey steps and decision points
+**Supported Sources**: PRDs (.md/.pdf) | UI Mockups (Figma/PNG) | API Docs (OpenAPI/Swagger) | User Flows (Mermaid)
+
+### Tool Usage Examples
+
+**TodoWrite** (to track auto-generation):
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Read source file/URL
+2. Identify document type (PRD, API spec, mockup, etc.)
+3. Extract features and requirements
+4. Group related requirements
+5. Generate stories with Given/When/Then AC
+6. Show preview with estimates and owners
+7. Create epic (if needed)
+8. Create story files
+9. Create test stubs
+10. Update status.json and bus/log.jsonl</parameter>
+<parameter name="status">in-progress</parameter>
+<parameter name="activeForm">1</parameter>
+</invoke>
+```
+
+**Read** (to parse source documents):
+```xml
+<invoke name="Read">
+<parameter name="file_path">/full/path/to/docs/requirements/auth-prd.md</parameter>
+</invoke>
+```
+
+**Write** (to create story files):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/06-stories/EP-0010/US-0050-registration.md</parameter>
+<parameter name="content">---
+story_id: US-0050
+epic: EP-0010
+title: User registration with email verification
+owner: AG-API
+status: ready
+estimate: 1.5d
+---
+
+# US-0050: User registration with email verification
+
+## Description
+As a new user, I want to register with my email...
+
+## Acceptance Criteria
+- **Given** I am on the registration page
+  **When** I enter valid email and password
+  **Then** my account is created...</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (for confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Create these stories?", "header": "Preview", "multiSelect": false, "options": [{"label": "Yes, create stories", "description": "Generate epic, story files, and test stubs"}, {"label": "No, cancel", "description": "Cancel without creating"}]}]</parameter>
+</invoke>
+```
 
 **Story Generation Rules (INVEST)**:
-- **Independent**: No dependencies on other stories
-- **Negotiable**: Details can be adjusted
-- **Valuable**: Delivers user-facing value
-- **Estimable**: Sized 0.5-2 days
-- **Small**: Completable in 1 sprint
-- **Testable**: Clear acceptance criteria
-
-**Estimates**:
-- 0.5d: Simple CRUD, basic UI component
-- 1d: Standard feature with validation and tests
-- 1.5d: Complex logic or integration
-- 2d: Significant refactor or architecture change
-- >2d: Break into smaller stories
-
-**Example PRD → Stories**:
-```markdown
-PRD: "User Authentication Feature"
-→ Epic: EP-0010 "User Authentication"
-  → US-0050: Registration with email verification (1.5d, AG-API)
-  → US-0051: Login with session management (1d, AG-API)
-  → US-0052: Password reset flow (1d, AG-API)
-  → US-0053: OAuth login (Google) (1.5d, AG-API)
-  → US-0054: Rate limiting (0.5d, AG-CI)
-```
-
-**Output Preview**:
-```
-Story Generation Preview
-Source: docs/requirements/auth-prd.md
-Epic: EP-0010 (User Authentication)
-Stories to Create: 5
-Total Estimate: 6 days
-
-Create these stories? (YES/NO)
-```
+- Independent | Negotiable | Valuable | Estimable | Small | Testable
+- Estimates: 0.5d (simple), 1d (standard), 1.5d (complex), 2d (refactor), >2d (split)
 
 **Best Practices**:
-- Always preview before creating (AUTO_CREATE=no by default)
+- Always preview before creating (AUTO_CREATE=no default)
 - Review AI-generated stories for accuracy
 - Add technical context manually if needed
 - Validate estimates based on team velocity

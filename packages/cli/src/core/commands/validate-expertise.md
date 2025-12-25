@@ -23,7 +23,7 @@ node .agileflow/scripts/obtain-context.js validate-expertise
 
 **Purpose**: Expertise Validator - Validate agent expertise files to detect drift, staleness, and structural issues
 
-**Role**: Expertise Validator responsible for checking expertise.yaml files against codebase and best practices
+**Role**: Validate expertise.yaml files against codebase and best practices (read-only validation)
 
 **Critical Rules**:
 - MUST run validation checks on all expertise files (or specific domain if provided)
@@ -34,63 +34,49 @@ node .agileflow/scripts/obtain-context.js validate-expertise
 - Non-destructive (read-only validation)
 - Report issues but don't auto-fix
 - Prioritize drift detection (most critical)
-- Keep output concise and actionable
 
 **Inputs** (optional):
-- DOMAIN=<domain-name> (validate specific domain, e.g., "database")
+- `DOMAIN`: <domain-name> (validate specific domain, e.g., "database")
 - If no domain specified, validate all experts
 
 **Validation Checks**:
 1. **File Path Drift** - Check that all file paths referenced in expertise files still exist
+   - Grep for file paths: `grep -oE '(src|packages|lib)/[a-zA-Z0-9/_.-]+' expertise.yaml`
+   - Verify each path exists: `[ -f <path> ]`
 2. **Stale Learnings** - Flag expertise files not updated in 30+ days
+   - Extract `last_updated:` field from expertise.yaml
+   - Compare to current date
 3. **File Size Check** - Warn if expertise file exceeds 200 lines
-4. **Required Sections** - Verify expertise.yaml has required structure:
-   - domain: Domain identifier
-   - mental_models: At least one mental model
-   - learnings: Learning history (can be empty initially)
-   - key_files: Important files for this domain
-   - patterns: Common patterns and anti-patterns
+   - Count lines: `wc -l < expertise.yaml`
+4. **Required Sections** - Verify expertise.yaml has required YAML structure:
+   - domain, mental_models, learnings, key_files, patterns
 
 **Expertise File Location**: .agileflow/experts/<domain>/expertise.yaml
 
+**Workflow**:
+1. Parse DOMAIN input (or default to all)
+2. For each domain: Read expertise.yaml → Run all 4 validation checks
+3. Collect results (PASS/FAIL/WARN)
+4. Generate summary report → Suggest remediation actions
+
+**Example Usage**:
+```bash
+/agileflow:validate-expertise
+/agileflow:validate-expertise DOMAIN=database
+```
+
 **Output Format**:
 ```
-======================================
 EXPERTISE VALIDATION REPORT
-======================================
-
+============================
 Validating: database
   [PASS] File exists: expertise.yaml
   [PASS] Required sections present
   [WARN] 2 stale learnings (>30 days)
   [FAIL] DRIFT: src/old/database.ts not found
 
---------------------------------------
-SUMMARY
---------------------------------------
-Total domains: 25
-Passed: 23
-Warnings: 1
-Failures: 1
-
-RECOMMENDED ACTIONS:
-1. Update database expertise - remove reference to src/old/database.ts
-2. Review stale learnings in database domain
+SUMMARY: Total: 25 | Passed: 23 | Warnings: 1 | Failures: 1
 ```
-
-**Workflow**:
-1. Parse DOMAIN input (or default to all)
-2. For each domain:
-   - Read expertise.yaml
-   - Run all 4 validation checks
-   - Collect results
-3. Generate summary report
-4. Suggest remediation actions
-
-**Integration**:
-- Run automatically on session start (optional hook)
-- Run before major releases
-- Run after large refactors
 
 **Success Criteria**:
 - All expertise files validated
@@ -98,6 +84,8 @@ RECOMMENDED ACTIONS:
 - Stale learnings flagged
 - Actionable recommendations provided
 - Report generated and displayed
+
+**Integration**: Session start hook, before major releases, after large refactors
 
 <!-- COMPACT_SUMMARY_END -->
 

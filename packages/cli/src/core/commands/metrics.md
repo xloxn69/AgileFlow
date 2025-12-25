@@ -34,24 +34,13 @@ Comprehensive project analytics dashboard with cycle time, lead time, throughput
 - `docs/06-stories/**/US-*.md` - Story metadata and frontmatter
 - `docs/05-epics/*.md` - Epic-level data
 
-**Core Metrics**:
-1. **Cycle Time**: Time from "in-progress" to "done" (actual work time)
-2. **Lead Time**: Time from creation to "done" (total time including waiting)
-3. **Throughput**: Stories completed per week
-4. **WIP**: Current work in progress vs limits
-5. **Agent Utilization**: Work distribution across agents
-6. **Epic Health**: Progress and blocking indicators
-7. **Estimation Accuracy**: Estimates vs actuals
-8. **Blocked Story Analysis**: Patterns and duration
-9. **Flow Efficiency**: Active work time / total lead time
-10. **Cumulative Flow**: Story distribution over time
+**Core Metrics**: Cycle Time, Lead Time, Throughput, WIP, Agent Utilization, Epic Health, Estimation Accuracy, Blocked Story Analysis, Flow Efficiency, Cumulative Flow
 
 **Critical Behavioral Rules**:
 - Calculate from raw data sources, never assume or estimate
 - Show trends (↗↘) compared to previous period
 - Use health indicators (🟢🟡🔴) for quick status assessment
 - Provide actionable recommendations based on data
-- Respect privacy: agent-level only, no individual metrics
 - Always include timeframe and generation timestamp
 
 **Input Parameters**:
@@ -62,29 +51,22 @@ Comprehensive project analytics dashboard with cycle time, lead time, throughput
 - `METRIC`: cycle-time|lead-time|throughput|all (default: all)
 
 **Workflow**:
-1. Parse input parameters or use defaults
-2. Load data from bus/log.jsonl and status.json
-3. Calculate requested metrics using timestamps
-4. Compute statistics (avg, median, p85, trends)
-5. Generate visualizations (ASCII bars, distributions)
-6. Identify patterns and anomalies
-7. Generate actionable recommendations
-8. Format output per FORMAT parameter
-9. Optionally save report to docs/08-project/metrics-reports/
+1. Parse input parameters → Load data from bus/log.jsonl and status.json
+2. Calculate metrics using timestamps → Compute statistics (avg, median, p85, trends)
+3. Generate visualizations (ASCII bars, distributions)
+4. Identify patterns and anomalies → Generate actionable recommendations
+5. Format output per FORMAT parameter → Optionally save to docs/08-project/metrics-reports/
 
-**Output Format (ASCII Dashboard)**:
-- Header with timeframe
-- Key metrics section with trends
-- WIP status and agent breakdown
-- Epic health with progress bars
-- Recommendations section
-- Related commands for deeper analysis
+**Example Usage**:
+```bash
+/agileflow:metrics
+/agileflow:metrics TIMEFRAME=90d EPIC=EP-0010
+/agileflow:metrics METRIC=cycle-time FORMAT=json
+```
 
-**Integration Points**:
-- After `/agileflow:velocity` for detailed trends
-- After `/agileflow:board` to understand bottlenecks
-- Before `/agileflow:retro` to gather retrospective data
-- Auto-triggered by `/agileflow:babysit` when velocity drops
+**Output**: ASCII dashboard with key metrics, WIP status, epic health, and recommendations
+
+**Integration**: After `/velocity` for trends, before `/retro` for retrospective data, auto-triggered by `/babysit`
 
 <!-- COMPACT_SUMMARY_END -->
 

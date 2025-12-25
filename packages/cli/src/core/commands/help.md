@@ -34,15 +34,24 @@ node .agileflow/scripts/obtain-context.js help
 - **Command**: /agileflow:help
 - **Purpose**: Display AgileFlow system overview
 - **No Arguments**: Shows system overview automatically
-- **Output**: Markdown overview (no file writes)
-- **Key Actions**:
-  1. Print folder map (docs/*)
-  2. Explain Epics, Stories, ADRs, status.json, bus/log.jsonl
-  3. Show daily workflow
-  4. List all available commands with examples
+- **Output**: Markdown overview (no file writes, display only)
+- **Key Actions**: Print folder map → Explain concepts → Show workflow → List all commands
 - **Workflow**: Pick story → Implement to AC → Tests → PR → Update status
 - **WIP Limit**: Max 2 stories/agent
-- **Command List**: Dynamic injection via <!-- {{COMMAND_LIST}} -->
+
+### Tool Usage
+
+This command uses NO tools (display-only, no file writes).
+
+Output includes:
+- Folder map (docs/*) and what lives where
+- What Epics, Stories, ADRs are
+- How docs/09-agents/status.json and bus/log.jsonl work
+- Daily flow: Pick story → Implement to AC → Tests → PR → Update status
+- WIP limit: max 2 stories/agent
+- All available commands with examples
+- Dynamic injection: <!-- {{COMMAND_LIST}} -->
+
 - **Related**: All AgileFlow commands, system documentation
 <!-- COMPACT_SUMMARY_END -->
 

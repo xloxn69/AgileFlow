@@ -16,35 +16,22 @@ node .agileflow/scripts/obtain-context.js agent
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
-**Command**: `agent`
-**Purpose**: Onboard new agents with profiles and system prompts (contracts)
+**Command**: `agent` - Onboard new agents with profiles and system prompts (contracts)
 
 **Quick Usage**:
 ```
 /agileflow:agent AGENT_ID=AG-UI ROLE="Frontend Developer" TOOLS="Read,Write,Bash" SCOPE="src/components/,US-00*"
 ```
 
-**What It Does**:
-1. Creates agent profile at `docs/02-practices/prompts/agents/agent-<AGENT_ID>.md`
-2. Updates `docs/09-agents/roster.yaml` with agent mapping
-3. Generates persona snippet to paste as terminal system prompt
+**What It Does**: Create agent profile → Update roster → Generate system prompt snippet
 
-**Profile Components**:
-- Agent ID (e.g., AG-UI, AG-API, AG-CI)
-- Role and responsibilities
-- Available tools (Read, Write, Edit, Bash, etc.)
-- Scope boundaries (directories, story tags)
-- System prompt (contract with strict rules)
+### Tool Usage Examples
 
-**Contract Rules Include**:
-- Scope boundaries (what files/stories agent can touch)
-- Commit/branch rules (naming conventions)
-- Test requirements (when to run tests)
-- Status/bus update protocols
-
-**Example Agent Profile**:
-```markdown
----
+**Write** (to create agent profile):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/02-practices/prompts/agents/agent-AG-UI.md</parameter>
+<parameter name="content">---
 agent_id: AG-UI
 role: Frontend Developer
 tools: [Read, Write, Edit, Bash, Glob]
@@ -62,8 +49,38 @@ Build and maintain user interface components...
 **Scope**: Only modify files in src/components/ and src/pages/
 **Testing**: Run `npm test` before committing
 **Commits**: Prefix with "feat(ui):" or "fix(ui):"
-**Status**: Update status.json after completing stories
+**Status**: Update status.json after completing stories</parameter>
+</invoke>
 ```
+
+**Edit** (to update roster.yaml):
+```xml
+<invoke name="Edit">
+<parameter name="file_path">/full/path/to/docs/09-agents/roster.yaml</parameter>
+<parameter name="old_string">agents: []</parameter>
+<parameter name="new_string">agents:
+  - id: AG-UI
+    role: Frontend Developer
+    tools: [Read, Write, Edit, Bash, Glob]
+    scope:
+      directories: [src/components/, src/pages/]
+      story_tags: [frontend, ui, ux]</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (optional, for confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Create this agent profile?", "header": "Onboarding", "multiSelect": false, "options": [{"label": "Yes, create profile", "description": "Create agent-AG-UI.md and update roster"}, {"label": "No, cancel", "description": "Cancel without creating"}]}]</parameter>
+</invoke>
+```
+
+**Profile Components**:
+- Agent ID (e.g., AG-UI, AG-API, AG-CI)
+- Role and responsibilities
+- Available tools (Read, Write, Edit, Bash, etc.)
+- Scope boundaries (directories, story tags)
+- System prompt (contract with strict rules)
 
 **Best Practices**:
 - Use descriptive agent IDs (AG-UI, AG-API, not AG-001)

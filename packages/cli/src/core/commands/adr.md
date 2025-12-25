@@ -16,30 +16,33 @@ node .agileflow/scripts/obtain-context.js adr
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
-**Command**: `adr`
-**Purpose**: Create Architecture Decision Records (ADRs) documenting important architectural choices
+**Command**: `adr` - Create Architecture Decision Records (ADRs) documenting architectural choices
 
 **Quick Usage**:
 ```
 /agileflow:adr NUMBER=0042 TITLE="Use PostgreSQL for persistence" CONTEXT="Need reliable ACID database" DECISION="PostgreSQL chosen over MongoDB" CONSEQUENCES="Better data integrity, steeper learning curve"
 ```
 
-**What It Does**:
-1. Parses input parameters (NUMBER, TITLE, CONTEXT, DECISION, CONSEQUENCES, optional LINKS)
-2. Creates ADR file at `docs/03-decisions/adr-<NUMBER>-<slug>.md` using template
-3. Shows preview and waits for YES/NO confirmation
-4. Writes file if approved
+**What It Does**: Parse inputs → Create ADR file → Show preview → Write if approved
 
-**Template Structure** (@packages/cli/src/core/templates/adr-template.md):
-- Frontmatter (number, title, date, status, tags)
-- Context section (why decision needed)
-- Decision section (what was chosen)
-- Consequences section (trade-offs and impacts)
-- Optional links to related docs
+### Tool Usage Examples
 
-**Example ADR**:
-```markdown
----
+**TodoWrite** (to track ADR creation):
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse inputs (NUMBER, TITLE, CONTEXT, DECISION, CONSEQUENCES, LINKS)
+2. Create docs/03-decisions/adr-<NUMBER>-<slug>.md from template
+3. Show preview and wait for YES/NO confirmation</parameter>
+<parameter name="status">in-progress</parameter>
+<parameter name="activeForm">1</parameter>
+</invoke>
+```
+
+**Write** (to create ADR file):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/03-decisions/adr-0042-postgresql.md</parameter>
+<parameter name="content">---
 number: 0042
 title: Use PostgreSQL for persistence
 date: 2025-12-22
@@ -59,7 +62,26 @@ We will use PostgreSQL as our primary database...
 - Better data integrity and reliability
 - Team needs PostgreSQL training
 - Slightly higher operational complexity than NoSQL
+
+## Related
+- [ADR-0041: Database selection process](adr-0041-db-selection.md)
+- [US-0055: Database migration](../06-stories/US-0055.md)</parameter>
+</invoke>
 ```
+
+**AskUserQuestion** (for confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Create this ADR?", "header": "Preview", "multiSelect": false, "options": [{"label": "Yes, create ADR", "description": "Write ADR-0042 to docs/03-decisions/"}, {"label": "No, abort", "description": "Cancel without creating"}]}]</parameter>
+</invoke>
+```
+
+**Template Structure**:
+- Frontmatter (number, title, date, status, tags)
+- Context section (why decision needed)
+- Decision section (what was chosen)
+- Consequences section (trade-offs and impacts)
+- Optional links to related docs
 
 **Best Practices**:
 - Number ADRs sequentially (0001, 0002, etc.)

@@ -83,6 +83,28 @@ tests/
 - Documentation created
 - User confirmed via YES/NO prompt
 
+**Tools Used**:
+- TodoWrite: Track 10-step test infrastructure setup
+
+**TodoWrite Example**:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">
+1. Detect language/runtime and framework
+2. Check existing test setup
+3. Install testing framework dependencies
+4. Create test configuration files
+5. Create example tests (unit, integration, E2E if requested)
+6. Create test directory structure
+7. Add test scripts to package.json/equivalent
+8. Integrate with CI workflow
+9. Create docs/02-practices/testing.md documentation
+10. Run tests to verify setup
+</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

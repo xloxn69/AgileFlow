@@ -70,6 +70,24 @@ node .agileflow/scripts/obtain-context.js template
 - registry.json updated with metadata
 - User confirmed via YES/NO prompt
 
+**Tool Usage Example**:
+When ACTION=create, user interaction:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Select template type to create:",
+  "header": "Create Template",
+  "multiSelect": false,
+  "options": [
+    {"label": "Meeting notes", "description": "Weekly team meeting template"},
+    {"label": "Incident report", "description": "Post-incident documentation"},
+    {"label": "Sprint retrospective", "description": "Sprint review and retrospective"},
+    {"label": "Custom (blank)", "description": "Start with blank template"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

@@ -19,75 +19,89 @@ node .agileflow/scripts/obtain-context.js update
 <!-- COMPACT_SUMMARY_START -->
 ## Compact Summary
 
-**Purpose**: Stakeholder Communication Generator - Generate high-level project updates from status, epics, stories, and git history
+**Command**: `stakeholder-update` - Generate high-level project updates from status, epics, stories, and git history
 
-**Role**: Stakeholder Communication Generator responsible for creating executive summaries, progress reports, and metrics
+**Quick Usage**:
+```
+/agileflow:stakeholder-update PERIOD=week AUDIENCE=exec FORMAT=markdown
+```
 
 **Critical Rules**:
-- MUST aggregate data from 10 sources (status.json, epics, stories, backlog, roadmap, milestones, risks, git history, bus log, ADRs)
-- MUST preview update before sending (diff-first, YES/NO/EDIT)
-- MUST save all updates to docs/08-project/updates/ for history
+- MUST aggregate data from 10 sources (status, epics, stories, roadmap, risks, git history, bus log, ADRs)
+- MUST preview before sending (diff-first, YES/NO/EDIT)
+- MUST save to docs/08-project/updates/ for history
 - MUST be honest about blockers and risks
-- MUST focus on business value, not technical jargon (for exec/client)
-- MUST include specific numbers and metrics
-- MUST highlight trends (improving/declining)
-- NEVER expose sensitive data (credentials, internal conflicts)
+- Focus on business value, not technical jargon
 
-**Inputs** (optional):
+### Tool Usage Examples
+
+**Read** (to gather data from all 10 sources):
+```xml
+<invoke name="Read">
+<parameter name="file_path">/full/path/to/docs/09-agents/status.json</parameter>
+</invoke>
+```
+
+**Write** (to save update):
+```xml
+<invoke name="Write">
+<parameter name="file_path">/full/path/to/docs/08-project/updates/20251222-update.md</parameter>
+<parameter name="content"># Weekly Update - Project XYZ (Dec 15-22, 2025)
+
+## Executive Summary
+Status: On Track. Completed 12 stories, velocity up 20%. Payment integration on track for EOMonth.
+
+## Progress This Period
+- Completed auth epic (5 stories, 7.5 days)
+- Velocity: 18 points (↗ +20% from last week)
+- Test coverage: 87% (↗ +2%)
+
+## Blockers & Risks
+- Stripe API rate limits (Medium) - Mitigation in progress
+- Third-party OAuth downtime (Low) - Fallback available
+
+## Upcoming Priorities
+1. Complete payment integration MVP
+2. Start notification system
+3. Address technical debt</parameter>
+</invoke>
+```
+
+**Bash** (to get git commit history):
+```xml
+<invoke name="Bash">
+<parameter name="command">git log --oneline --since="7 days ago" | head -20</parameter>
+<parameter name="description">Get recent commits for this week</parameter>
+</invoke>
+```
+
+**Glob** (to find update files):
+```xml
+<invoke name="Glob">
+<parameter name="pattern">docs/08-project/updates/*.md</parameter>
+</invoke>
+```
+
+**AskUserQuestion** (for confirmation):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{"question": "Send this update?", "header": "Preview", "multiSelect": false, "options": [{"label": "Yes, save and send", "description": "Save to docs/08-project/updates/ and email stakeholders"}, {"label": "Edit first", "description": "Let me review and edit"}, {"label": "Cancel", "description": "Don't send"}]}]</parameter>
+</invoke>
+```
+
+**Optional Inputs**:
 - PERIOD=week|sprint|month|quarter|custom (default: week)
-- START_DATE=<YYYY-MM-DD> (optional: for custom period)
-- END_DATE=<YYYY-MM-DD> (optional: for custom period)
+- START_DATE=<YYYY-MM-DD> (for custom period)
+- END_DATE=<YYYY-MM-DD> (for custom period)
 - AUDIENCE=exec|client|team|board (default: exec)
 - FORMAT=email|markdown|slides|pdf (default: markdown)
 
-**Data Sources**:
-1. docs/09-agents/status.json - Current story status
-2. docs/05-epics/*.md - Epic progress
-3. docs/06-stories/**/US-*.md - Story details
-4. docs/08-project/backlog.md - Backlog items
-5. docs/08-project/roadmap.md - Roadmap milestones
-6. docs/08-project/milestones.md - Milestone targets
-7. docs/08-project/risks.md - Risk register
-8. Git history - Commits, PRs merged
-9. docs/09-agents/bus/log.jsonl - Activity context
-10. docs/03-decisions/adr-*.md - Recent decisions
+**Data Sources**: Status.json | Epics | Stories | Roadmap | Milestones | Risks | Git history | Bus log | ADRs
 
 **Update Structure**:
-- Executive Summary (2-3 sentences, overall status, key accomplishments, critical issues)
-- Progress This Period (stories completed, epics progress, milestones reached)
-- Upcoming Work (next priorities, upcoming milestones)
-- Metrics (velocity, completion rate, quality metrics)
-- Blockers & Risks (current blockers, risk mitigation)
-- Decisions Made (recent ADRs)
-- Budget/Resources (sprint capacity, team changes)
+- Executive Summary | Progress This Period | Upcoming Work | Metrics | Blockers & Risks | Decisions Made | Budget/Resources
 
-**Audience Customization**:
-- Executive: High-level, business impact, metrics/ROI, risks early, 1-page max
-- Client: Feature-focused, user benefits, transparent, screenshots/demos, contract deliverables
-- Team: Technical detail, architecture decisions, celebrate wins, retrospective insights, action items
-- Board: Strategic overview, financial implications, competitive positioning, long-term roadmap, risk assessment
-
-**Workflow**:
-1. Determine period (this week, last sprint, etc.)
-2. Collect data from all 10 sources
-3. Calculate metrics and trends
-4. Identify completed work
-5. Identify blockers and risks
-6. Format for audience
-7. Preview (show to user)
-8. Ask: "Send update? (YES/NO/EDIT)"
-9. If YES: Save to docs/08-project/updates/<YYYYMMDD>-update.md and optionally email stakeholders
-
-**Output Files**:
-- Update: docs/08-project/updates/<YYYYMMDD>-update.md
-- Log entry: docs/09-agents/bus/log.jsonl
-
-**Success Criteria**:
-- All data sources aggregated
-- Metrics calculated with trends
-- Formatted for target audience
-- Saved to updates directory
-- User confirmed via YES/NO/EDIT prompt
+**Output Files**: `docs/08-project/updates/<YYYYMMDD>-update.md` | Log entry in bus/log.jsonl
 
 <!-- COMPACT_SUMMARY_END -->
 

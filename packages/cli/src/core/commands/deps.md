@@ -26,63 +26,57 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 **Purpose**: Visualize and analyze story/epic dependency graphs with critical path detection, circular dependency checking, and blocking story impact analysis.
 
 **Input Parameters** (all optional):
-- SCOPE=story|epic|all (default: all)
-- EPIC=<EP_ID> (show dependencies within specific epic)
-- STORY=<US_ID> (show dependencies for specific story)
-- FORMAT=ascii|mermaid|graphviz|json (default: ascii)
-- ANALYSIS=critical-path|circular|blocking|all (default: all)
+- `SCOPE`: story|epic|all (default: all)
+- `EPIC`: <EP_ID> (dependencies within specific epic)
+- `STORY`: <US_ID> (dependencies for specific story)
+- `FORMAT`: ascii|mermaid|graphviz|json (default: ascii)
+- `ANALYSIS`: critical-path|circular|blocking|all (default: all)
 
 **Dependency Sources**:
-1. Story frontmatter (depends_on, blocks fields)
-2. Bus log (implicit dependencies from blocked events)
-3. Epic hierarchy (parent-child relationships)
+1. Story frontmatter - depends_on, blocks fields (YAML parsing):
+   ```yaml
+   depends_on:
+     - US-0030
+     - US-0031
+   blocks:
+     - US-0033
+   ```
+2. Bus log - implicit dependencies from blocked events (JSON parsing)
+3. Epic hierarchy - parent-child relationships
 
 **Core Analysis Types**:
-1. **Critical Path Detection**: Longest path from root to leaf story (delays here affect entire project)
-2. **Circular Dependency Detection**: Identify impossible-to-complete dependency cycles
-3. **Blocking Story Impact**: Find stories that block multiple others (high-priority bottlenecks)
-4. **Parallel Work Opportunities**: Identify stories that can be started now (no blockers)
+1. **Critical Path**: Longest path from root to leaf (delays affect entire project)
+2. **Circular Dependency Detection**: Impossible-to-complete cycles (flag as errors)
+3. **Blocking Story Impact**: Stories that block multiple others (bottlenecks)
+4. **Parallel Work Opportunities**: Stories ready to start (no blockers)
 
-**Output Format** (ASCII default):
+**Parsing Algorithm**:
+1. Read all story frontmatter files → Extract depends_on, blocks
+2. Query bus/log.jsonl for implicit dependencies
+3. Build adjacency list graph structure
+4. Run DFS for critical path (longest path from roots to leaves)
+5. Run cycle detection algorithm (DFS with visited tracking)
+6. Calculate impact scores for each blocking story
+7. Render in requested format
+
+**Example Usage**:
+```bash
+/agileflow:dependencies
+/agileflow:dependencies EPIC=EP-0010
+/agileflow:dependencies STORY=US-0032 ANALYSIS=critical-path
+/agileflow:dependencies FORMAT=mermaid
 ```
-Story Dependency Graph
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Legend:
-  ✅ Done    🟢 Ready    🟡 In Progress    🔵 In Review    ⚪ Blocked
-
-[Visual tree showing dependencies]
-
-Critical Path:
-  US-0030 → US-0031 → US-0032 → US-0033  (11 days total)
-
-Blocking Stories:
-  US-0040 blocks: US-0041, US-0042  (⚠️ High impact)
-
-Circular Dependencies: None detected ✅
-```
+**Output**: ASCII tree with legend, critical path, blocking stories, circular dependency check, actionable recommendations
 
 **Critical Rules**:
 - Parse frontmatter first (authoritative source)
-- Flag circular dependencies as errors (cannot be completed)
-- Highlight critical path stories (delays affect entire project)
+- Flag circular dependencies as errors (cannot complete)
+- Highlight critical path stories (delays affect project)
 - Show actionable recommendations
-- Use consistent color coding across all formats
+- Use consistent color coding across formats
 
-**Common Usage**:
-```bash
-/agileflow:dependencies                    # Show all dependencies
-/agileflow:dependencies EPIC=EP-0010       # Specific epic
-/agileflow:dependencies STORY=US-0032      # Specific story
-/agileflow:dependencies ANALYSIS=critical-path  # Only critical path
-/agileflow:dependencies FORMAT=mermaid     # Export as Mermaid
-```
-
-**Integration Points**:
-- Before `/board`: Understand blockers before planning
-- After `/story-new`: Visualize impact of new story
-- In `/babysit`: Check dependencies before starting work
-- With `/metrics`: Correlate cycle time with dependency depth
+**Integration**: Before `/board`, after `/story-new`, in `/babysit`, with `/metrics`
 
 <!-- COMPACT_SUMMARY_END -->
 

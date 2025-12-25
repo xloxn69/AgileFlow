@@ -55,8 +55,8 @@ ACTIVATION_SCRIPT
 **Purpose**: Analyze code change impact across codebase to prevent regressions
 
 **Core Workflow**:
-1. Detect changed files (git diff or FILES param)
-2. Build dependency graph (direct + indirect imports, 2 levels)
+1. Detect changed files (`git diff` or FILES param)
+2. Build dependency graph (direct + indirect imports, 2 levels deep)
 3. Find related tests (unit, integration, E2E)
 4. Analyze breaking changes (function signatures, types)
 5. Generate impact report with risk levels
@@ -64,77 +64,47 @@ ACTIVATION_SCRIPT
 
 **Key Analysis Methods**:
 - **Static Analysis**: AST parsing for imports, dependency graphs, circular deps, dead code
-- **Test Coverage Mapping**: Parse coverage reports, map changed lines to tests
-- **Pattern Matching**: Route tests for API changes, component tests for UI, etc.
+- **Test Coverage Mapping**: Parse coverage reports (coverage/lcov.info), map changed lines to tests
+- **Pattern Matching**: Route tests for API changes, component tests for UI changes
 
 **Input Parameters** (optional):
-- `FILES=<paths>` → Comma-separated file paths (default: auto-detect from git)
-- `BASE=<branch>` → Base branch for comparison (default: main/master)
-- `RUN_TESTS=yes|no` → Execute affected tests (default: yes if found)
+- `FILES`: <paths> (comma-separated file paths, default: auto-detect from git)
+- `BASE`: <branch> (base branch for comparison, default: main/master)
+- `RUN_TESTS`: yes|no (execute affected tests, default: yes if found)
 
-**Impact Report Structure**:
+**Parsing Strategy**:
+1. Run `git diff <BASE>...HEAD --name-only` → Extract file paths
+2. For each file: Parse imports/requires (regex or AST parsing)
+3. Build adjacency list for dependency graph
+4. Query coverage reports to map changed lines to tests
+5. Pattern-match to identify test files (*.test.*, *.spec.*)
+6. Run DFS for direct/indirect dependents (2 levels)
+
+**Impact Analysis Steps**:
+1. Detect changed files → Parse dependencies → Build graph
+2. Find related tests (unit, integration, E2E)
+3. Detect breaking changes (function signature changes, type modifications)
+4. Identify affected callers with line numbers
+5. Calculate risk scores (critical/recommended/optional)
+6. Generate impact report → Optionally run tests
+
+**Example Usage**:
+```bash
+/agileflow:impact
+/agileflow:impact FILES=src/api/auth.ts,src/middleware/jwt.ts
+/agileflow:impact BASE=develop RUN_TESTS=no
 ```
-# Impact Analysis Report
-- Changed Files: N
-- Affected Files: M
-- Tests to Run: X
 
-## Direct Impacts
-For each changed file:
-- Type (API/UI/Service/Model)
-- Changes (line count)
-- Direct dependents (imports this file)
-- Indirect dependents (2-level chain)
-- Related tests (✅ exists, ⚠️ needs update, ❌ missing)
-- Related stories (from docs/06-stories/)
-- Coverage percentage
-
-## Breaking Changes Detection
-- Function signature changes
-- Type modifications
-- Affected callers with line numbers
-
-## Test Recommendations
-- Critical (always run): Direct tests
-- Recommended (affected): Integration/E2E tests
-- Optional (low risk): Peripheral tests
-```
+**Output**: Impact report with changed files, affected files, tests to run, breaking changes detection, test recommendations, optional test execution
 
 **Actions After Analysis**:
 1. Show impact summary
 2. Prompt: "Run affected tests? (YES/NO)"
-3. If YES: Execute tests with `npm test -- <test-files>`
+3. If YES: Execute with `npm test -- <test-files>`
 4. If tests fail: Show failures, suggest regression story
 5. If breaking changes: Warn user, suggest ADR, create update stories
 
-**Integration Features**:
-- CI optimization (only run affected tests)
-- Story updates (append impact notes)
-- Event logging (bus/log.jsonl)
-- Dependency visualization (tree format)
-
-**Rules**:
-- Use static analysis over running tests (faster)
-- Prioritize tests by risk (critical path first)
-- Never skip tests for modified files
-- Warn about uncovered changes
-- Suggest creating tests for gaps
-- Always diff before modifying files
-
-**Example Usage**:
-```bash
-# Auto-detect changes
-/agileflow:impact
-
-# Specific files
-/agileflow:impact FILES=src/api/auth.ts,src/middleware/jwt.ts
-
-# Different base branch
-/agileflow:impact BASE=develop
-
-# Skip test execution
-/agileflow:impact RUN_TESTS=no
-```
+**Integration**: CI optimization (run only affected tests), story updates, event logging, dependency visualization
 <!-- COMPACT_SUMMARY_END -->
 
 ---
