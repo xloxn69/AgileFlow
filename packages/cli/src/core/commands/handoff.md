@@ -73,6 +73,35 @@ All endpoints tested and passing.
 - Documenting progress before pause
 - Highlighting blockers for next agent
 - Creating audit trail of work transitions
+
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse inputs (STORY, FROM, TO, SUMMARY, BLOCKERS)
+2. Create handoff note from template
+3. Append bus line with type="handoff"
+4. Show preview and wait for confirmation</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Create handoff from AG-API to AG-UI for US-0042?",
+  "header": "Confirm Handoff",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, create", "description": "Create handoff note and bus log"},
+    {"label": "No, cancel", "description": "Don't create"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

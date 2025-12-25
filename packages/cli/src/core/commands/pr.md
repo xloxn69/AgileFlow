@@ -86,6 +86,21 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - Preserve checkbox states from AC_CHECKED input
 - Format test evidence clearly and readably
 - Suggest meaningful commit messages aligned with change type
+
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse inputs (STORY, TITLE, AC_CHECKED, TEST_EVIDENCE, NOTES)
+2. Read story file to extract epic/summary/deps
+3. Generate PR description with all sections
+4. Output paste-ready PR body
+5. Suggest Conventional Commit subject</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ---

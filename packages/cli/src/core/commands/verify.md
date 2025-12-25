@@ -73,6 +73,22 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - Used by: /agileflow:session:resume, /agileflow:baseline
 - Uses: environment.json (config), status.json (story status), session-state.json (tracking)
 
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Run pre-flight checks (session harness initialized)
+2. Load test configuration from environment.json
+3. Execute test command with timeout
+4. Parse test results (exit code + output)
+5. Update status.json with test_status
+6. Update session-state.json (if exists)
+7. Generate and display verification report</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

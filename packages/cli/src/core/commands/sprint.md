@@ -62,6 +62,39 @@ Sprint Planner that creates data-driven sprint commitments based on historical v
 - Recommendations (sequencing, monitoring, next commands)
 - Next steps (different for MODE=suggest vs MODE=commit)
 
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Load knowledge sources (status.json, bus log, backlog)
+2. Analyze agent capacity and WIP
+3. Calculate historical velocity (last 30 days)
+4. Select stories based on priority and capacity
+5. Assess risks (dependencies, cross-agent coordination)
+6. Generate sprint plan report
+7. If MODE=commit: Update status.json and milestones.md
+8. Create sprint milestone and bus message</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Commit this sprint plan: 5 stories, 8.5 days?",
+  "header": "Confirm Sprint Commitment",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, commit plan", "description": "Update status.json and create milestone"},
+    {"label": "No, adjust", "description": "Modify story selection"},
+    {"label": "Cancel", "description": "Exit without changes"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 # sprint-plan

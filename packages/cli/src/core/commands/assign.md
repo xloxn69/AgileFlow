@@ -64,6 +64,23 @@ node .agileflow/scripts/obtain-context.js assign
 - Validate JSON after every update
 - Use appropriate status transitions (ready → in-progress → in-review → done)
 
+**Tool Usage Examples**:
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Assign US-0042 to AG-UI as in-progress?",
+  "header": "Confirm Assignment",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, assign", "description": "Update story and status.json"},
+    {"label": "No, cancel", "description": "Don't assign"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

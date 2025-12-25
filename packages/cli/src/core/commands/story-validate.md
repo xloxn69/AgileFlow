@@ -51,6 +51,38 @@ node .agileflow/scripts/obtain-context.js story-validate
 - **Read-Only**: Never modifies story, only validates
 - **Exit Code**: 0 if ready, 1 if issues found
 - **Related**: Story template, Architecture docs, status.json
+
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse story ID from input
+2. Load story file from docs/06-stories/
+3. Parse YAML frontmatter and extract sections
+4. Run validation checks (7 categories)
+5. Count passed/failed/warnings
+6. Generate comprehensive report
+7. Provide next steps recommendation</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Story has 3 warnings. Continue with validation?",
+  "header": "Story Validation",
+  "multiSelect": false,
+  "options": [
+    {"label": "Show full report", "description": "Display all validation results"},
+    {"label": "Cancel", "description": "Exit validation"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ---

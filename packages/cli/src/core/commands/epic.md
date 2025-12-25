@@ -77,6 +77,37 @@ Create a new epic with optional child stories.
 5. Ask: "Proceed with epic creation? (YES/NO)"
 6. On YES: Execute all writes
 7. On NO: Abort without changes
+
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse inputs (EPIC, TITLE, OWNER, GOAL, STORIES)
+2. Create epic file from template
+3. For each story: create docs/06-stories/
+4. Merge into status.json
+5. Append assign events to bus log
+6. Show preview and wait for confirmation</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Create epic EP-0010: Authentication with 3 stories?",
+  "header": "Confirm Epic Creation",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, create epic", "description": "Create epic and all stories"},
+    {"label": "No, revise", "description": "Modify before creating"},
+    {"label": "Cancel", "description": "Don't create"}
+  ]
+}]</parameter>
+</invoke>
+```
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt

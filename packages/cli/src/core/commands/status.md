@@ -49,6 +49,24 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - **Output**: Diff-first, then YES/NO confirmation
 - **Critical**: User text automatically escaped by jq
 - **Related**: docs/09-agents/status.json, bus/log.jsonl
+
+**Tool Usage Examples**:
+
+AskUserQuestion:
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "Update US-0042 to in-review?",
+  "header": "Confirm Status Update",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, update", "description": "Update status.json and bus log"},
+    {"label": "No, cancel", "description": "Don't update"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ---

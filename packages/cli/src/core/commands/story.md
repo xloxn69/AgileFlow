@@ -59,17 +59,32 @@ node .agileflow/scripts/obtain-context.js story
 - Status: docs/09-agents/status.json (merged)
 - Log: docs/09-agents/bus/log.jsonl (appended)
 
-**AskUserQuestion Format** (XML invoke):
+**Tool Usage Examples**:
+
+TodoWrite:
+```xml
+<invoke name="TodoWrite">
+<parameter name="content">1. Parse inputs (EPIC, STORY, TITLE, OWNER, ESTIMATE, AC)
+2. Create story file from template
+3. Create test case stub
+4. Merge into status.json
+5. Append assign event to bus log
+6. Show preview and confirm</parameter>
+<parameter name="status">in-progress</parameter>
+</invoke>
+```
+
+AskUserQuestion (XML invoke):
 ```xml
 <invoke name="AskUserQuestion">
 <parameter name="questions">[{
-  "question": "Create story <STORY>: <TITLE> with these files?",
-  "header": "Create story",
+  "question": "Create story US-0042: Login Form with these files?",
+  "header": "Confirm Story Creation",
   "multiSelect": false,
   "options": [
-    {"label": "Yes, create story", "description": "Write story file, test stub, and update status.json (Recommended)"},
-    {"label": "No, revise first", "description": "I want to modify the content before creating"},
-    {"label": "Cancel", "description": "Don't create this story"}
+    {"label": "Yes, create story", "description": "Write files and update status.json"},
+    {"label": "No, revise first", "description": "Modify before creating"},
+    {"label": "Cancel", "description": "Don't create"}
   ]
 }]</parameter>
 </invoke>

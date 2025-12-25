@@ -89,6 +89,25 @@ This gathers git status, stories/epics, session state, and registers for PreComp
 - Export board snapshots to track velocity over time
 - Use GROUP_BY=owner to balance workload
 
+**Tool Usage Examples**:
+
+AskUserQuestion (for actions after displaying board):
+```xml
+<invoke name="AskUserQuestion">
+<parameter name="questions">[{
+  "question": "What would you like to do?",
+  "header": "Board Actions",
+  "multiSelect": false,
+  "options": [
+    {"label": "Update a story status", "description": "Change story status on board"},
+    {"label": "Export board", "description": "Save board snapshot to file"},
+    {"label": "View story details", "description": "See full story information"},
+    {"label": "Filter board", "description": "Filter by epic/owner"}
+  ]
+}]</parameter>
+</invoke>
+```
+
 <!-- COMPACT_SUMMARY_END -->
 
 ## Prompt
