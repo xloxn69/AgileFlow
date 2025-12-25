@@ -80,7 +80,7 @@ Interactive mentor guides you through epic/story creation, implementation, and P
 
 | IDE | Status | Config Location |
 |-----|--------|-----------------|
-| Claude Code | ✅ Supported | `.claude/commands/agileflow/` |
+| Claude Code | ✅ Supported | `.claude/` |
 | Cursor | ✅ Supported | `.cursor/rules/agileflow/` |
 | Windsurf | ✅ Supported | `.windsurf/workflows/agileflow/` |
 | OpenAI Codex CLI | ✅ Supported | `.codex/skills/` + `~/.codex/prompts/` |
