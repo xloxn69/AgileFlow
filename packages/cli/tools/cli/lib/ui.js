@@ -8,6 +8,7 @@ const chalk = require('chalk');
 const inquirer = require('inquirer');
 const path = require('node:path');
 const fs = require('node:fs');
+const { IdeManager } = require('../installers/ide/manager');
 
 // Load package.json for version
 const packageJsonPath = path.join(__dirname, '..', '..', '..', 'package.json');
@@ -73,8 +74,27 @@ function info(message) {
   console.log(chalk.dim(`  ${message}`));
 }
 
+// IDE Manager instance for dynamic IDE discovery
+const ideManager = new IdeManager();
+
 /**
- * Available IDE configurations
+ * Get available IDE choices dynamically from installed handlers
+ * @returns {Array} IDE choices formatted for inquirer
+ */
+function getIdeChoices() {
+  const ides = ideManager.getAvailableIdes();
+
+  return ides.map((ide, index) => ({
+    name: ide.name,
+    value: ide.value,
+    // First IDE (preferred) is checked by default
+    checked: ide.preferred || index === 0,
+  }));
+}
+
+/**
+ * @deprecated Use getIdeChoices() instead - dynamically loaded from IDE handlers
+ * Legacy hardcoded IDE choices kept for backward compatibility
  */
 const IDE_CHOICES = [
   {
@@ -126,7 +146,7 @@ async function promptInstall() {
       type: 'checkbox',
       name: 'ides',
       message: 'Select your IDE(s):',
-      choices: IDE_CHOICES,
+      choices: getIdeChoices(),
       validate: input => {
         if (input.length === 0) {
           return 'Please select at least one IDE';
@@ -219,5 +239,6 @@ module.exports = {
   promptInstall,
   confirm,
   getIdeConfig,
-  IDE_CHOICES,
+  getIdeChoices,
+  IDE_CHOICES, // @deprecated - kept for backward compatibility
 };
