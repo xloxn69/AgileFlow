@@ -32,69 +32,39 @@ class CursorSetup extends BaseIdeSetup {
     // Clean up old installation first
     await this.cleanup(projectDir);
 
-    // Create .cursor/commands/agileflow directory
+    // Create .cursor/commands/AgileFlow directory
     const cursorDir = path.join(projectDir, this.configDir);
     const commandsDir = path.join(cursorDir, this.commandsDir);
     const agileflowCommandsDir = path.join(commandsDir, 'AgileFlow');
 
-    await this.ensureDir(agileflowCommandsDir);
-
-    // Get commands from AgileFlow installation
+    // Install commands using shared recursive method
     const commandsSource = path.join(agileflowDir, 'commands');
-    let commandCount = 0;
+    const commandResult = await this.installCommandsRecursive(
+      commandsSource,
+      agileflowCommandsDir,
+      agileflowDir,
+      true // Inject dynamic content
+    );
 
-    if (await this.exists(commandsSource)) {
-      const commands = await this.scanDirectory(commandsSource, '.md');
-
-      for (const command of commands) {
-        // Read the original command content
-        let content = await this.readFile(command.path);
-
-        // Inject dynamic content (agent lists, command lists)
-        content = this.injectDynamicContent(content, agileflowDir);
-
-        // Replace docs/ references with custom folder name
-        content = this.replaceDocsReferences(content);
-
-        const targetPath = path.join(agileflowCommandsDir, `${command.name}.md`);
-        await this.writeFile(targetPath, content);
-        commandCount++;
-      }
-    }
-
-    // Create agents subdirectory
-    const agileflowAgentsDir = path.join(agileflowCommandsDir, 'agents');
-    await this.ensureDir(agileflowAgentsDir);
-
-    // Get agents from AgileFlow installation
+    // Install agents as subdirectory
     const agentsSource = path.join(agileflowDir, 'agents');
-    let agentCount = 0;
-
-    if (await this.exists(agentsSource)) {
-      const agents = await this.scanDirectory(agentsSource, '.md');
-
-      for (const agent of agents) {
-        // Read the original agent content
-        let content = await this.readFile(agent.path);
-
-        // Replace docs/ references with custom folder name
-        content = this.replaceDocsReferences(content);
-
-        const targetPath = path.join(agileflowAgentsDir, `${agent.name}.md`);
-        await this.writeFile(targetPath, content);
-        agentCount++;
-      }
-    }
+    const agentsTargetDir = path.join(agileflowCommandsDir, 'agents');
+    const agentResult = await this.installCommandsRecursive(
+      agentsSource,
+      agentsTargetDir,
+      agileflowDir,
+      false // No dynamic content for agents
+    );
 
     console.log(chalk.green(`  ✓ ${this.displayName} configured:`));
-    console.log(chalk.dim(`    - ${commandCount} commands installed`));
-    console.log(chalk.dim(`    - ${agentCount} agents installed`));
+    console.log(chalk.dim(`    - ${commandResult.commands} commands installed`));
+    console.log(chalk.dim(`    - ${agentResult.commands} agents installed`));
     console.log(chalk.dim(`    - Path: ${path.relative(projectDir, agileflowCommandsDir)}`));
 
     return {
       success: true,
-      commands: commandCount,
-      agents: agentCount,
+      commands: commandResult.commands,
+      agents: agentResult.commands,
     };
   }
 

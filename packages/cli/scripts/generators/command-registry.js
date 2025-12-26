@@ -5,37 +5,25 @@
  *
  * Scans commands/ directory and extracts metadata from frontmatter.
  * Returns structured command registry for use in generators.
+ *
+ * Set DEBUG_REGISTRY=1 for verbose logging of skipped files.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { extractFrontmatter } = require('../lib/frontmatter-parser');
+
+// Debug mode: set DEBUG_REGISTRY=1 to see why files are skipped
+const DEBUG = process.env.DEBUG_REGISTRY === '1';
 
 /**
- * Extract frontmatter from markdown file
- * @param {string} filePath - Path to markdown file
- * @returns {object} Frontmatter object
+ * Log debug messages when DEBUG_REGISTRY=1
+ * @param {string} message - Message to log
  */
-function extractFrontmatter(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-
-  if (!frontmatterMatch) {
-    return {};
+function debugLog(message) {
+  if (DEBUG) {
+    console.error(`[command-registry] ${message}`);
   }
-
-  const frontmatter = {};
-  const lines = frontmatterMatch[1].split('\n');
-
-  for (const line of lines) {
-    const match = line.match(/^(\w+):\s*(.+)$/);
-    if (match) {
-      const [, key, value] = match;
-      // Remove quotes if present
-      frontmatter[key] = value.replace(/^["']|["']$/g, '');
-    }
-  }
-
-  return frontmatter;
 }
 
 /**
@@ -74,14 +62,36 @@ function categorizeCommand(name, description) {
  */
 function scanCommands(commandsDir) {
   const commands = [];
-  const files = fs.readdirSync(commandsDir);
+  const skipped = [];
+
+  let files;
+  try {
+    files = fs.readdirSync(commandsDir);
+  } catch (err) {
+    debugLog(`Failed to read directory: ${err.message}`);
+    return commands;
+  }
+
+  debugLog(`Scanning ${files.length} files in ${commandsDir}`);
 
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith('.md')) {
+      debugLog(`Skipping non-md file: ${file}`);
+      continue;
+    }
 
     const filePath = path.join(commandsDir, file);
     const frontmatter = extractFrontmatter(filePath);
     const name = file.replace('.md', '');
+
+    // Check if frontmatter was extracted successfully
+    if (Object.keys(frontmatter).length === 0) {
+      skipped.push({ file, reason: 'no frontmatter or parse error' });
+      debugLog(`Skipping ${file}: no frontmatter found`);
+      continue;
+    }
+
+    debugLog(`Loaded ${file}: description="${frontmatter.description || '(none)'}"`);
 
     commands.push({
       name,
@@ -100,6 +110,12 @@ function scanCommands(commandsDir) {
     }
     return a.name.localeCompare(b.name);
   });
+
+  if (skipped.length > 0) {
+    debugLog(`Skipped ${skipped.length} files: ${skipped.map(s => s.file).join(', ')}`);
+  }
+
+  debugLog(`Found ${commands.length} commands`);
 
   return commands;
 }
@@ -127,7 +143,7 @@ function main() {
 }
 
 // Export for use in other scripts
-module.exports = { scanCommands, extractFrontmatter, categorizeCommand };
+module.exports = { scanCommands, categorizeCommand };
 
 // Run if called directly
 if (require.main === module) {

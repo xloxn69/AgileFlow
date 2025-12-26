@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
+const { parseFrontmatter, normalizeTools } = require('../../../scripts/lib/frontmatter-parser');
 
 /**
  * Scan agents directory and generate formatted agent list
@@ -22,34 +22,20 @@ function generateAgentList(agentsDir) {
     const filePath = path.join(agentsDir, file);
     const content = fs.readFileSync(filePath, 'utf8');
 
-    // Extract YAML frontmatter
-    const match = content.match(/^---\n([\s\S]*?)\n---/);
-    if (!match) continue;
+    // Parse frontmatter using shared parser
+    const frontmatter = parseFrontmatter(content);
 
-    try {
-      const frontmatter = yaml.load(match[1]);
-
-      // Skip if frontmatter is null or not an object
-      if (!frontmatter || typeof frontmatter !== 'object') {
-        continue;
-      }
-
-      // Handle tools field - can be array or string
-      let tools = frontmatter.tools || [];
-      if (typeof tools === 'string') {
-        tools = tools.split(',').map(t => t.trim());
-      }
-
-      agents.push({
-        name: frontmatter.name || path.basename(file, '.md'),
-        description: frontmatter.description || '',
-        tools: tools,
-        model: frontmatter.model || 'haiku',
-      });
-    } catch (err) {
-      // Silently skip files with parsing errors
+    // Skip if no frontmatter found
+    if (!frontmatter || Object.keys(frontmatter).length === 0) {
       continue;
     }
+
+    agents.push({
+      name: frontmatter.name || path.basename(file, '.md'),
+      description: frontmatter.description || '',
+      tools: normalizeTools(frontmatter.tools),
+      model: frontmatter.model || 'haiku',
+    });
   }
 
   // Sort alphabetically by name
@@ -82,29 +68,20 @@ function generateCommandList(commandsDir) {
     const filePath = path.join(commandsDir, file);
     const content = fs.readFileSync(filePath, 'utf8');
 
-    // Extract YAML frontmatter
-    const match = content.match(/^---\n([\s\S]*?)\n---/);
-    if (!match) continue;
+    // Parse frontmatter using shared parser
+    const frontmatter = parseFrontmatter(content);
+    const cmdName = path.basename(file, '.md');
 
-    try {
-      const frontmatter = yaml.load(match[1]);
-      const cmdName = path.basename(file, '.md');
-
-      // Skip if frontmatter is null or not an object
-      if (!frontmatter || typeof frontmatter !== 'object') {
-        continue;
-      }
-
-      commands.push({
-        name: cmdName,
-        description: frontmatter.description || '',
-        argumentHint: frontmatter['argument-hint'] || '',
-      });
-    } catch (err) {
-      // Silently skip files with parsing errors - they might be generated files
-      // with content that looks like frontmatter but isn't
+    // Skip if no frontmatter found
+    if (!frontmatter || Object.keys(frontmatter).length === 0) {
       continue;
     }
+
+    commands.push({
+      name: cmdName,
+      description: frontmatter.description || '',
+      argumentHint: frontmatter['argument-hint'] || '',
+    });
   }
 
   // Sort alphabetically by name

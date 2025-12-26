@@ -5,37 +5,25 @@
  *
  * Scans skills/ directory and extracts metadata from SKILL.md frontmatter.
  * Returns structured skill registry for use in generators.
+ *
+ * Set DEBUG_REGISTRY=1 for verbose logging of skipped files.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { extractFrontmatter } = require('../lib/frontmatter-parser');
+
+// Debug mode: set DEBUG_REGISTRY=1 to see why files are skipped
+const DEBUG = process.env.DEBUG_REGISTRY === '1';
 
 /**
- * Extract YAML frontmatter from markdown file
- * @param {string} filePath - Path to markdown file
- * @returns {object} Frontmatter object
+ * Log debug messages when DEBUG_REGISTRY=1
+ * @param {string} message - Message to log
  */
-function extractFrontmatter(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-
-  if (!frontmatterMatch) {
-    return {};
+function debugLog(message) {
+  if (DEBUG) {
+    console.error(`[skill-registry] ${message}`);
   }
-
-  const frontmatter = {};
-  const lines = frontmatterMatch[1].split('\n');
-
-  for (const line of lines) {
-    const match = line.match(/^(\w+):\s*(.+)$/);
-    if (match) {
-      const [, key, value] = match;
-      // Remove quotes if present
-      frontmatter[key] = value.replace(/^["']|["']$/g, '');
-    }
-  }
-
-  return frontmatter;
 }
 
 /**
@@ -73,24 +61,57 @@ function categorizeSkill(name, description) {
  */
 function scanSkills(skillsDir) {
   const skills = [];
+  const skipped = [];
 
-  // Each skill is in its own directory with a SKILL.md file
-  const skillDirs = fs.readdirSync(skillsDir);
+  let skillDirs;
+  try {
+    skillDirs = fs.readdirSync(skillsDir);
+  } catch (err) {
+    debugLog(`Failed to read directory: ${err.message}`);
+    return skills;
+  }
+
+  debugLog(`Scanning ${skillDirs.length} entries in ${skillsDir}`);
 
   for (const skillDir of skillDirs) {
     const skillPath = path.join(skillsDir, skillDir);
 
     // Skip if not a directory
-    if (!fs.statSync(skillPath).isDirectory()) continue;
+    let stat;
+    try {
+      stat = fs.statSync(skillPath);
+    } catch (err) {
+      debugLog(`Failed to stat ${skillDir}: ${err.message}`);
+      continue;
+    }
+
+    if (!stat.isDirectory()) {
+      debugLog(`Skipping non-directory: ${skillDir}`);
+      continue;
+    }
 
     const skillFile = path.join(skillPath, 'SKILL.md');
 
     // Skip if SKILL.md doesn't exist
-    if (!fs.existsSync(skillFile)) continue;
+    if (!fs.existsSync(skillFile)) {
+      skipped.push({ dir: skillDir, reason: 'no SKILL.md file' });
+      debugLog(`Skipping ${skillDir}: no SKILL.md found`);
+      continue;
+    }
 
     const frontmatter = extractFrontmatter(skillFile);
+
+    // Check if frontmatter was extracted successfully
+    if (Object.keys(frontmatter).length === 0) {
+      skipped.push({ dir: skillDir, reason: 'no frontmatter or parse error' });
+      debugLog(`Skipping ${skillDir}: no frontmatter in SKILL.md`);
+      continue;
+    }
+
     const name = frontmatter.name || skillDir;
     const description = frontmatter.description || '';
+
+    debugLog(`Loaded ${skillDir}: name="${name}"`);
 
     skills.push({
       name,
@@ -109,6 +130,12 @@ function scanSkills(skillsDir) {
     }
     return a.name.localeCompare(b.name);
   });
+
+  if (skipped.length > 0) {
+    debugLog(`Skipped ${skipped.length} directories: ${skipped.map(s => s.dir).join(', ')}`);
+  }
+
+  debugLog(`Found ${skills.length} skills`);
 
   return skills;
 }
@@ -136,7 +163,7 @@ function main() {
 }
 
 // Export for use in other scripts
-module.exports = { scanSkills, extractFrontmatter, categorizeSkill };
+module.exports = { scanSkills, categorizeSkill };
 
 // Run if called directly
 if (require.main === module) {

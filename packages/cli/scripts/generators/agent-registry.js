@@ -5,58 +5,25 @@
  *
  * Scans agents/ directory and extracts metadata from frontmatter.
  * Returns structured agent registry for use in generators.
+ *
+ * Set DEBUG_REGISTRY=1 for verbose logging of skipped files.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { extractFrontmatter, normalizeTools } = require('../lib/frontmatter-parser');
+
+// Debug mode: set DEBUG_REGISTRY=1 to see why files are skipped
+const DEBUG = process.env.DEBUG_REGISTRY === '1';
 
 /**
- * Extract YAML frontmatter from markdown file
- * Handles multi-line values like tools arrays
- * @param {string} filePath - Path to markdown file
- * @returns {object} Frontmatter object
+ * Log debug messages when DEBUG_REGISTRY=1
+ * @param {string} message - Message to log
  */
-function extractFrontmatter(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-
-  if (!frontmatterMatch) {
-    return {};
+function debugLog(message) {
+  if (DEBUG) {
+    console.error(`[agent-registry] ${message}`);
   }
-
-  const frontmatter = {};
-  const lines = frontmatterMatch[1].split('\n');
-  let currentKey = null;
-  let currentArray = null;
-
-  for (const line of lines) {
-    // Handle array items (lines starting with -)
-    if (line.trim().startsWith('-')) {
-      if (currentArray) {
-        currentArray.push(line.trim().substring(1).trim());
-      }
-      continue;
-    }
-
-    // Handle key-value pairs
-    const match = line.match(/^(\w+):\s*(.*)$/);
-    if (match) {
-      const [, key, value] = match;
-      currentKey = key;
-
-      // If value is empty, it's likely an array
-      if (!value) {
-        currentArray = [];
-        frontmatter[key] = currentArray;
-      } else {
-        // Remove quotes if present
-        frontmatter[key] = value.replace(/^["']|["']$/g, '');
-        currentArray = null;
-      }
-    }
-  }
-
-  return frontmatter;
 }
 
 /**
@@ -93,24 +60,39 @@ function categorizeAgent(name, description) {
  */
 function scanAgents(agentsDir) {
   const agents = [];
-  const files = fs.readdirSync(agentsDir);
+  const skipped = [];
+
+  let files;
+  try {
+    files = fs.readdirSync(agentsDir);
+  } catch (err) {
+    debugLog(`Failed to read directory: ${err.message}`);
+    return agents;
+  }
+
+  debugLog(`Scanning ${files.length} files in ${agentsDir}`);
 
   for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith('.md')) {
+      debugLog(`Skipping non-md file: ${file}`);
+      continue;
+    }
 
     const filePath = path.join(agentsDir, file);
     const frontmatter = extractFrontmatter(filePath);
     const name = file.replace('.md', '');
 
-    // Parse tools array if it exists
-    let tools = [];
-    if (frontmatter.tools) {
-      if (Array.isArray(frontmatter.tools)) {
-        tools = frontmatter.tools;
-      } else if (typeof frontmatter.tools === 'string') {
-        tools = frontmatter.tools.split(',').map(t => t.trim());
-      }
+    // Check if frontmatter was extracted successfully
+    if (Object.keys(frontmatter).length === 0) {
+      skipped.push({ file, reason: 'no frontmatter or parse error' });
+      debugLog(`Skipping ${file}: no frontmatter found`);
+      continue;
     }
+
+    // Normalize tools field (handles array or comma-separated string)
+    const tools = normalizeTools(frontmatter.tools);
+
+    debugLog(`Loaded ${file}: name="${frontmatter.name || name}", tools=${tools.length}`);
 
     agents.push({
       name,
@@ -132,6 +114,12 @@ function scanAgents(agentsDir) {
     }
     return a.name.localeCompare(b.name);
   });
+
+  if (skipped.length > 0) {
+    debugLog(`Skipped ${skipped.length} files: ${skipped.map(s => s.file).join(', ')}`);
+  }
+
+  debugLog(`Found ${agents.length} agents`);
 
   return agents;
 }
@@ -159,7 +147,7 @@ function main() {
 }
 
 // Export for use in other scripts
-module.exports = { scanAgents, extractFrontmatter, categorizeAgent };
+module.exports = { scanAgents, categorizeAgent };
 
 // Run if called directly
 if (require.main === module) {

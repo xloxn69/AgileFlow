@@ -179,6 +179,61 @@ class BaseIdeSetup {
 
     return results;
   }
+
+  /**
+   * Recursively install markdown files from source to target directory
+   * Handles content injection and docs reference replacement.
+   * @param {string} sourceDir - Source directory path
+   * @param {string} targetDir - Target directory path
+   * @param {string} agileflowDir - AgileFlow installation directory (for dynamic content)
+   * @param {boolean} injectDynamic - Whether to inject dynamic content (only for top-level commands)
+   * @returns {Promise<{commands: number, subdirs: number}>} Count of installed items
+   */
+  async installCommandsRecursive(sourceDir, targetDir, agileflowDir, injectDynamic = false) {
+    let commandCount = 0;
+    let subdirCount = 0;
+
+    if (!(await this.exists(sourceDir))) {
+      return { commands: 0, subdirs: 0 };
+    }
+
+    await this.ensureDir(targetDir);
+
+    const entries = await fs.readdir(sourceDir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const sourcePath = path.join(sourceDir, entry.name);
+      const targetPath = path.join(targetDir, entry.name);
+
+      if (entry.isFile() && entry.name.endsWith('.md')) {
+        // Read and process .md file
+        let content = await this.readFile(sourcePath);
+
+        // Inject dynamic content if enabled (for top-level commands)
+        if (injectDynamic) {
+          content = this.injectDynamicContent(content, agileflowDir);
+        }
+
+        // Replace docs/ references with custom folder name
+        content = this.replaceDocsReferences(content);
+
+        await this.writeFile(targetPath, content);
+        commandCount++;
+      } else if (entry.isDirectory()) {
+        // Recursively process subdirectory
+        const subResult = await this.installCommandsRecursive(
+          sourcePath,
+          targetPath,
+          agileflowDir,
+          false // Don't inject dynamic content in subdirectories
+        );
+        commandCount += subResult.commands;
+        subdirCount += 1 + subResult.subdirs;
+      }
+    }
+
+    return { commands: commandCount, subdirs: subdirCount };
+  }
 }
 
 module.exports = { BaseIdeSetup };
