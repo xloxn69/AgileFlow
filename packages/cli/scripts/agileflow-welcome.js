@@ -13,7 +13,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
+
+// Session manager path (relative to script location)
+const SESSION_MANAGER_PATH = path.join(__dirname, 'session-manager.js');
 
 // ANSI color codes
 const c = {
@@ -201,6 +204,54 @@ function clearActiveCommands(rootDir) {
   return result;
 }
 
+function checkParallelSessions(rootDir) {
+  const result = { available: false, registered: false, otherActive: 0, currentId: null, cleaned: 0 };
+
+  try {
+    // Check if session manager exists
+    const managerPath = path.join(rootDir, '.agileflow', 'scripts', 'session-manager.js');
+    if (!fs.existsSync(managerPath) && !fs.existsSync(SESSION_MANAGER_PATH)) {
+      return result;
+    }
+
+    result.available = true;
+
+    // Try to register current session and get status
+    const scriptPath = fs.existsSync(managerPath) ? managerPath : SESSION_MANAGER_PATH;
+
+    // Register this session
+    try {
+      const registerOutput = execSync(`node "${scriptPath}" register`, {
+        cwd: rootDir,
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+      const registerData = JSON.parse(registerOutput);
+      result.registered = true;
+      result.currentId = registerData.id;
+    } catch (e) {
+      // Registration failed, continue anyway
+    }
+
+    // Get count of other active sessions
+    try {
+      const countOutput = execSync(`node "${scriptPath}" count`, {
+        cwd: rootDir,
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+      const countData = JSON.parse(countOutput);
+      result.otherActive = countData.count || 0;
+    } catch (e) {
+      // Count failed
+    }
+  } catch (e) {
+    // Session system not available
+  }
+
+  return result;
+}
+
 function checkPreCompact(rootDir) {
   const result = { configured: false, scriptExists: false, version: null, outdated: false };
 
@@ -323,7 +374,7 @@ function truncate(str, maxLen, suffix = '..') {
   return str.substring(0, cutIndex) + suffix;
 }
 
-function formatTable(info, archival, session, precompact) {
+function formatTable(info, archival, session, precompact, parallelSessions) {
   const W = 58; // inner width
   const R = W - 24; // right column width (34 chars)
   const lines = [];
@@ -396,6 +447,19 @@ function formatTable(info, archival, session, precompact) {
     lines.push(row('Context preserve', 'not configured', c.dim, c.dim));
   }
 
+  // Parallel sessions status
+  if (parallelSessions && parallelSessions.available) {
+    if (parallelSessions.otherActive > 0) {
+      const sessionStr = `⚠️ ${parallelSessions.otherActive} other active`;
+      lines.push(row('Sessions', sessionStr, c.dim, c.yellow));
+    } else {
+      const sessionStr = parallelSessions.currentId
+        ? `✓ Session ${parallelSessions.currentId} (only)`
+        : '✓ Only session';
+      lines.push(row('Sessions', sessionStr, c.dim, c.green));
+    }
+  }
+
   lines.push(divider());
 
   // Current story (if any) - row() auto-truncates
@@ -420,8 +484,17 @@ function main() {
   const archival = runArchival(rootDir);
   const session = clearActiveCommands(rootDir);
   const precompact = checkPreCompact(rootDir);
+  const parallelSessions = checkParallelSessions(rootDir);
 
-  console.log(formatTable(info, archival, session, precompact));
+  console.log(formatTable(info, archival, session, precompact, parallelSessions));
+
+  // Show warning and tip if other sessions are active
+  if (parallelSessions.otherActive > 0) {
+    console.log('');
+    console.log(`${c.yellow}⚠️  Other Claude session(s) active in this repo.${c.reset}`);
+    console.log(`${c.dim}   Run /agileflow:session:status to see all sessions.${c.reset}`);
+    console.log(`${c.dim}   Run /agileflow:session:new to create isolated workspace.${c.reset}`);
+  }
 }
 
 main();

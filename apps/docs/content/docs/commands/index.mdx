@@ -129,12 +129,13 @@ Specialized commands for complex tasks:
 
 ## Session Commands
 
-Commands for managing work sessions:
+Commands for managing work sessions and parallel workstreams:
 
 | Command | Description |
 |---------|-------------|
-| [`/session:init`](/commands/session-init) | Initialize session harness with test verification |
-| [`/session:resume`](/commands/session-resume) | Resume work with verification and context loading |
-| [`/session:status`](/commands/session-status) | View current session state and activity |
-| [`/session:end`](/commands/session-end) | Cleanly end session and record summary |
+| [`/session:new`](/commands/session-new) | Create a parallel session with git worktree |
+| [`/session:resume`](/commands/session-resume) | Switch to a different session |
+| [`/session:status`](/commands/session-status) | View all sessions and their state |
+| [`/session:end`](/commands/session-end) | End session and optionally clean up worktree |
 | [`/session:history`](/commands/session-history) | View past session history and metrics |
+| [`/session:init`](/commands/session-init) | Initialize session tracking system |
