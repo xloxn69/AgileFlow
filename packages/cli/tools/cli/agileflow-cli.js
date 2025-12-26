@@ -19,7 +19,7 @@ const commandsPath = path.join(__dirname, 'commands');
 const commands = {};
 
 if (fs.existsSync(commandsPath)) {
-  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
   for (const file of commandFiles) {
     try {
@@ -37,7 +37,9 @@ if (fs.existsSync(commandsPath)) {
 program
   .name('agileflow')
   .version(packageJson.version)
-  .description('AgileFlow - AI-driven agile development for Claude Code, Cursor, Windsurf, and more');
+  .description(
+    'AgileFlow - AI-driven agile development for Claude Code, Cursor, Windsurf, and more'
+  );
 
 // Register all commands
 for (const [name, cmd] of Object.entries(commands)) {

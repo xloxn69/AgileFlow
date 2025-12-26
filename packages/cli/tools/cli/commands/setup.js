@@ -11,7 +11,15 @@ const { spawnSync } = require('node:child_process');
 const semver = require('semver');
 const { Installer } = require('../installers/core/installer');
 const { IdeManager } = require('../installers/ide/manager');
-const { promptInstall, success, error, info, displaySection, displayLogo, warning } = require('../lib/ui');
+const {
+  promptInstall,
+  success,
+  error,
+  info,
+  displaySection,
+  displayLogo,
+  warning,
+} = require('../lib/ui');
 const { createDocsStructure } = require('../lib/docs-setup');
 const { getLatestVersion } = require('../lib/npm-utils');
 
@@ -27,7 +35,7 @@ module.exports = {
     ['--no-self-update', 'Skip automatic CLI self-update check'],
     ['--self-updated', 'Internal flag: indicates CLI was already self-updated'],
   ],
-  action: async (options) => {
+  action: async options => {
     try {
       // Self-update check: fetch latest version if CLI is outdated
       const shouldSelfUpdate = options.selfUpdate !== false && !options.selfUpdated;
@@ -116,7 +124,7 @@ module.exports = {
       if (!docsResult.success) {
         error('Failed to create docs structure');
         if (docsResult.errors.length > 0) {
-          docsResult.errors.forEach((err) => error(`  ${err}`));
+          docsResult.errors.forEach(err => error(`  ${err}`));
         }
       }
 

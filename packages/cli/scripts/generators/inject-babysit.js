@@ -83,7 +83,9 @@ function injectContentByMarker(content, markerName, generated) {
   const timestamp = new Date().toISOString().split('T')[0];
   const injectedContent = `${startMarker}\n<!-- Auto-generated on ${timestamp}. Do not edit manually. -->\n\n${generated}\n${endMarker}`;
 
-  return content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length);
+  return (
+    content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length)
+  );
 }
 
 /**
@@ -159,7 +161,12 @@ function main() {
 }
 
 // Export for use in orchestrator
-module.exports = { generateAgentList, generateCommandReference, injectContentByMarker, addMarkersIfMissing };
+module.exports = {
+  generateAgentList,
+  generateCommandReference,
+  injectContentByMarker,
+  addMarkersIfMissing,
+};
 
 // Run if called directly
 if (require.main === module) {

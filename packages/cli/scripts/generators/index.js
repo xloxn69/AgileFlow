@@ -25,7 +25,7 @@ function runGenerator(scriptName) {
   try {
     execSync(`node "${scriptPath}"`, {
       cwd: __dirname,
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
     console.log(`✅ ${scriptName} completed successfully`);
     return true;
@@ -42,11 +42,7 @@ function main() {
   console.log('🚀 AgileFlow Content Generation System');
   console.log('Generating content from metadata...\n');
 
-  const generators = [
-    'inject-help.js',
-    'inject-babysit.js',
-    'inject-readme.js'
-  ];
+  const generators = ['inject-help.js', 'inject-babysit.js', 'inject-readme.js'];
 
   const results = [];
 

@@ -35,9 +35,7 @@ function getProjectInfo() {
   }
 
   try {
-    rootPackage = JSON.parse(
-      fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8')
-    );
+    rootPackage = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
   } catch (err) {
     // Ignore if not found
   }
@@ -50,17 +48,17 @@ function getProjectInfo() {
   try {
     gitBranch = execSync('git branch --show-current', {
       cwd: rootDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
     }).trim();
     gitCommit = execSync('git rev-parse --short HEAD', {
       cwd: rootDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
     }).trim();
 
     // Get recent commits (last 5)
     const commitLog = execSync('git log --oneline -5 2>/dev/null', {
       cwd: rootDir,
-      encoding: 'utf8'
+      encoding: 'utf8',
     }).trim();
     recentCommits = commitLog.split('\n').filter(Boolean);
   } catch (err) {
@@ -68,10 +66,10 @@ function getProjectInfo() {
   }
 
   // Get AgileFlow status info
-  let activeStories = [];
+  const activeStories = [];
   let wipCount = 0;
   let blockedCount = 0;
-  let activeEpics = [];
+  const activeEpics = [];
 
   try {
     const statusPath = path.join(rootDir, 'docs/09-agents/status.json');
@@ -163,13 +161,16 @@ function formatOutput(info, asJson = false, compact = false) {
 
   // Header line with project info (brand color name, dim version, colored branch)
   const branchColor = info.git.branch === 'main' ? c.green : c.cyan;
-  lines.push(`${c.brand}${c.bold}${info.project.name}${c.reset} ${c.dim}v${info.project.version}${c.reset} | ${branchColor}${info.git.branch}${c.reset} ${c.dim}(${info.git.commit})${c.reset}`);
+  lines.push(
+    `${c.brand}${c.bold}${info.project.name}${c.reset} ${c.dim}v${info.project.version}${c.reset} | ${branchColor}${info.git.branch}${c.reset} ${c.dim}(${info.git.commit})${c.reset}`
+  );
 
   // Status line (yellow WIP, red blocked)
   const wipColor = info.agileflow.wipCount > 0 ? c.yellow : c.dim;
-  let statusLine = info.agileflow.wipCount > 0
-    ? `${wipColor}WIP: ${info.agileflow.wipCount}${c.reset}`
-    : `${c.dim}No active work${c.reset}`;
+  let statusLine =
+    info.agileflow.wipCount > 0
+      ? `${wipColor}WIP: ${info.agileflow.wipCount}${c.reset}`
+      : `${c.dim}No active work${c.reset}`;
   if (info.agileflow.blockedCount > 0) {
     statusLine += ` | ${c.red}Blocked: ${info.agileflow.blockedCount}${c.reset}`;
   }

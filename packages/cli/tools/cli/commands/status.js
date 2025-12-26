@@ -17,10 +17,8 @@ const installer = new Installer();
 module.exports = {
   name: 'status',
   description: 'Show AgileFlow installation status',
-  options: [
-    ['-d, --directory <path>', 'Project directory (default: current directory)'],
-  ],
-  action: async (options) => {
+  options: [['-d, --directory <path>', 'Project directory (default: current directory)']],
+  action: async options => {
     try {
       const directory = path.resolve(options.directory || '.');
 
@@ -98,8 +96,8 @@ module.exports = {
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
     'claude-code': '.claude/commands/agileflow',
-    'cursor': '.cursor/rules/agileflow',
-    'windsurf': '.windsurf/workflows/agileflow',
+    cursor: '.cursor/rules/agileflow',
+    windsurf: '.windsurf/workflows/agileflow',
   };
 
   return path.join(projectDir, paths[ide] || '');
@@ -113,8 +111,8 @@ function getIdeConfigPath(projectDir, ide) {
 function formatIdeName(ide) {
   const names = {
     'claude-code': 'Claude Code',
-    'cursor': 'Cursor',
-    'windsurf': 'Windsurf',
+    cursor: 'Cursor',
+    windsurf: 'Windsurf',
   };
 
   return names[ide] || ide;

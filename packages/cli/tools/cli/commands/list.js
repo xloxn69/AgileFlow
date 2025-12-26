@@ -25,7 +25,7 @@ module.exports = {
     ['--json', 'Output as JSON'],
     ['--compact', 'Compact output (names only)'],
   ],
-  action: async (options) => {
+  action: async options => {
     try {
       const directory = path.resolve(options.directory || '.');
 
@@ -307,19 +307,19 @@ function extractFirstLine(content) {
  */
 function displayCompact(result, showCommands, showAgents, showSkills, showExperts) {
   if (showCommands && result.commands?.length > 0) {
-    console.log(chalk.bold('Commands:'), result.commands.map((c) => c.name).join(', '));
+    console.log(chalk.bold('Commands:'), result.commands.map(c => c.name).join(', '));
   }
 
   if (showAgents && result.agents?.length > 0) {
-    console.log(chalk.bold('Agents:'), result.agents.map((a) => a.name).join(', '));
+    console.log(chalk.bold('Agents:'), result.agents.map(a => a.name).join(', '));
   }
 
   if (showSkills && result.skills?.length > 0) {
-    console.log(chalk.bold('Skills:'), result.skills.map((s) => s.name).join(', '));
+    console.log(chalk.bold('Skills:'), result.skills.map(s => s.name).join(', '));
   }
 
   if (showExperts && result.experts?.length > 0) {
-    console.log(chalk.bold('Experts:'), result.experts.map((e) => e.name).join(', '));
+    console.log(chalk.bold('Experts:'), result.experts.map(e => e.name).join(', '));
   }
 }
 
@@ -353,7 +353,11 @@ function displayFull(result, showCommands, showAgents, showSkills, showExperts) 
       console.log(chalk.hex('#e8683a')(`  ${skill.name}`));
       console.log(chalk.dim(`    ${skill.description}`));
       if (skill.triggers?.length > 0) {
-        console.log(chalk.dim(`    Triggers: ${skill.triggers.slice(0, 3).join(', ')}${skill.triggers.length > 3 ? '...' : ''}`));
+        console.log(
+          chalk.dim(
+            `    Triggers: ${skill.triggers.slice(0, 3).join(', ')}${skill.triggers.length > 3 ? '...' : ''}`
+          )
+        );
       }
     }
   }

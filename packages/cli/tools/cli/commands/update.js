@@ -11,7 +11,15 @@ const { spawnSync } = require('node:child_process');
 const semver = require('semver');
 const { Installer } = require('../installers/core/installer');
 const { IdeManager } = require('../installers/ide/manager');
-const { displayLogo, displaySection, success, warning, error, info, confirm } = require('../lib/ui');
+const {
+  displayLogo,
+  displaySection,
+  success,
+  warning,
+  error,
+  info,
+  confirm,
+} = require('../lib/ui');
 const { createDocsStructure, getDocsFolderName } = require('../lib/docs-setup');
 const { getLatestVersion } = require('../lib/npm-utils');
 
@@ -27,7 +35,7 @@ module.exports = {
     ['--no-self-update', 'Skip automatic CLI self-update check'],
     ['--self-updated', 'Internal flag: indicates CLI was already self-updated'],
   ],
-  action: async (options) => {
+  action: async options => {
     try {
       const directory = path.resolve(options.directory || '.');
 
@@ -99,7 +107,9 @@ module.exports = {
         console.log(chalk.dim(`  To update your installation, run:\n`));
         console.log(chalk.cyan(`  npx agileflow@latest update\n`));
 
-        const useOutdated = options.force ? true : await confirm('Continue with outdated CLI anyway?');
+        const useOutdated = options.force
+          ? true
+          : await confirm('Continue with outdated CLI anyway?');
         if (!useOutdated) {
           console.log(chalk.dim('\nUpdate cancelled\n'));
           process.exit(0);
@@ -169,12 +179,14 @@ module.exports = {
 
       // Create/update docs structure (idempotent - only creates missing files)
       displaySection('Updating Documentation Structure', `Folder: ${config.docsFolder}/`);
-      const docsResult = await createDocsStructure(directory, config.docsFolder, { updateGitignore: false });
+      const docsResult = await createDocsStructure(directory, config.docsFolder, {
+        updateGitignore: false,
+      });
 
       if (!docsResult.success) {
         warning('Failed to update docs structure');
         if (docsResult.errors.length > 0) {
-          docsResult.errors.forEach((err) => error(`  ${err}`));
+          docsResult.errors.forEach(err => error(`  ${err}`));
         }
       }
 

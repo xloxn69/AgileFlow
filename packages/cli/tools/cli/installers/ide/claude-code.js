@@ -114,12 +114,7 @@ class ClaudeCodeSetup extends BaseIdeSetup {
     // ALSO install agents as spawnable subagents (.claude/agents/agileflow/)
     // This allows Task tool to spawn them with subagent_type: "agileflow-ui"
     const spawnableAgentsDir = path.join(claudeDir, 'agents', 'agileflow');
-    await this.installCommandsRecursive(
-      agentsSource,
-      spawnableAgentsDir,
-      agileflowDir,
-      false
-    );
+    await this.installCommandsRecursive(agentsSource, spawnableAgentsDir, agileflowDir, false);
     console.log(chalk.dim(`    - Spawnable agents: .claude/agents/agileflow/`));
 
     // Install skills (.claude/skills/)
@@ -140,7 +135,8 @@ class ClaudeCodeSetup extends BaseIdeSetup {
     }
 
     const totalCommands = commandResult.commands + agentResult.commands;
-    const totalSubdirs = commandResult.subdirs + (agentResult.commands > 0 ? 1 : 0) + agentResult.subdirs;
+    const totalSubdirs =
+      commandResult.subdirs + (agentResult.commands > 0 ? 1 : 0) + agentResult.subdirs;
 
     console.log(chalk.green(`  ✓ ${this.displayName} configured:`));
     console.log(chalk.dim(`    - ${totalCommands} commands installed`));

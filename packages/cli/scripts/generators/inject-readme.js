@@ -91,7 +91,9 @@ function injectContentByMarker(content, markerName, generated) {
   const timestamp = new Date().toISOString().split('T')[0];
   const injectedContent = `${startMarker}\n<!-- Auto-generated on ${timestamp}. Do not edit manually. -->\n\n${generated}\n${endMarker}`;
 
-  return content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length);
+  return (
+    content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length)
+  );
 }
 
 /**
@@ -117,7 +119,9 @@ function main() {
   const agents = scanAgents(agentsDir);
   const skills = scanSkills(skillsDir);
 
-  console.log(`Found: ${commands.length} commands, ${agents.length} agents, ${skills.length} skills`);
+  console.log(
+    `Found: ${commands.length} commands, ${agents.length} agents, ${skills.length} skills`
+  );
 
   // Read README
   let readmeContent = fs.readFileSync(readmeFile, 'utf-8');
@@ -127,7 +131,7 @@ function main() {
   const stats = generateStats({
     commands: commands.length,
     agents: agents.length,
-    skills: skills.length
+    skills: skills.length,
   });
 
   console.log('Generating agent table...');

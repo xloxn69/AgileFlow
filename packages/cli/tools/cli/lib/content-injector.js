@@ -44,7 +44,7 @@ function generateAgentList(agentsDir) {
         name: frontmatter.name || path.basename(file, '.md'),
         description: frontmatter.description || '',
         tools: tools,
-        model: frontmatter.model || 'haiku'
+        model: frontmatter.model || 'haiku',
       });
     } catch (err) {
       // Silently skip files with parsing errors
@@ -98,7 +98,7 @@ function generateCommandList(commandsDir) {
       commands.push({
         name: cmdName,
         description: frontmatter.description || '',
-        argumentHint: frontmatter['argument-hint'] || ''
+        argumentHint: frontmatter['argument-hint'] || '',
       });
     } catch (err) {
       // Silently skip files with parsing errors - they might be generated files
@@ -149,5 +149,5 @@ function injectContent(templateContent, agentsDir, commandsDir) {
 module.exports = {
   generateAgentList,
   generateCommandList,
-  injectContent
+  injectContent,
 };

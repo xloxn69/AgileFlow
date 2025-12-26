@@ -18,17 +18,17 @@ const packageJson = require(packageJsonPath);
  * @returns {Promise<string|null>} Latest version or null
  */
 async function getLatestVersion(packageName = 'agileflow') {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const url = `https://registry.npmjs.org/${packageName}/latest`;
 
-    const req = https.get(url, { timeout: 5000 }, (res) => {
+    const req = https.get(url, { timeout: 5000 }, res => {
       if (res.statusCode !== 200) {
         resolve(null);
         return;
       }
 
       let data = '';
-      res.on('data', (chunk) => {
+      res.on('data', chunk => {
         data += chunk;
       });
 

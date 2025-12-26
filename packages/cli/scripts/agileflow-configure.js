@@ -41,34 +41,43 @@ const FEATURES = {
   precompact: { hook: 'PreCompact', script: 'precompact-context.sh', type: 'bash' },
   stop: { hook: 'Stop', script: 'agileflow-stop.sh', type: 'bash' },
   archival: { script: 'archive-completed-stories.sh', requiresHook: 'sessionstart' },
-  statusline: { script: 'agileflow-statusline.sh' }
+  statusline: { script: 'agileflow-statusline.sh' },
 };
 
 // Statusline component names
-const STATUSLINE_COMPONENTS = ['agileflow', 'model', 'story', 'epic', 'wip', 'context', 'cost', 'git'];
+const STATUSLINE_COMPONENTS = [
+  'agileflow',
+  'model',
+  'story',
+  'epic',
+  'wip',
+  'context',
+  'cost',
+  'git',
+];
 
 const PROFILES = {
   full: {
     description: 'All features enabled',
     enable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline'],
-    archivalDays: 7
+    archivalDays: 7,
   },
   basic: {
     description: 'Essential hooks + archival (SessionStart + PreCompact + Archival)',
     enable: ['sessionstart', 'precompact', 'archival'],
     disable: ['stop', 'statusline'],
-    archivalDays: 7
+    archivalDays: 7,
   },
   minimal: {
     description: 'SessionStart + archival only',
     enable: ['sessionstart', 'archival'],
     disable: ['precompact', 'stop', 'statusline'],
-    archivalDays: 7
+    archivalDays: 7,
   },
   none: {
     description: 'Disable all AgileFlow features',
-    disable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline']
-  }
+    disable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline'],
+  },
 };
 
 // ============================================================================
@@ -76,8 +85,13 @@ const PROFILES = {
 // ============================================================================
 
 const c = {
-  reset: '\x1b[0m', dim: '\x1b[2m', bold: '\x1b[1m',
-  green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m'
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
+  bold: '\x1b[1m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  red: '\x1b[31m',
+  cyan: '\x1b[36m',
 };
 
 const log = (msg, color = '') => console.log(`${color}${msg}${c.reset}`);
@@ -91,11 +105,16 @@ const header = msg => log(`\n${msg}`, c.bold + c.cyan);
 // FILE UTILITIES
 // ============================================================================
 
-const ensureDir = dir => { if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true }); };
+const ensureDir = dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+};
 
 const readJSON = filePath => {
-  try { return JSON.parse(fs.readFileSync(filePath, 'utf8')); }
-  catch { return null; }
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
 };
 
 const writeJSON = (filePath, data) => {
@@ -107,12 +126,14 @@ const copyTemplate = (templateName, destPath) => {
   const sources = [
     path.join(process.cwd(), '.agileflow', 'templates', templateName),
     path.join(__dirname, templateName),
-    path.join(__dirname, '..', 'templates', templateName)
+    path.join(__dirname, '..', 'templates', templateName),
   ];
   for (const src of sources) {
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, destPath);
-      try { fs.chmodSync(destPath, '755'); } catch {}
+      try {
+        fs.chmodSync(destPath, '755');
+      } catch {}
       return true;
     }
   }
@@ -134,16 +155,18 @@ function detectConfig() {
       precompact: { enabled: false, valid: true, issues: [] },
       stop: { enabled: false, valid: true, issues: [] },
       archival: { enabled: false, threshold: null },
-      statusline: { enabled: false, valid: true, issues: [] }
+      statusline: { enabled: false, valid: true, issues: [] },
     },
-    metadata: { exists: false, version: null }
+    metadata: { exists: false, version: null },
   };
 
   // Git
   if (fs.existsSync('.git')) {
     status.git.initialized = true;
     try {
-      status.git.remote = execSync('git remote get-url origin 2>/dev/null', { encoding: 'utf8' }).trim();
+      status.git.remote = execSync('git remote get-url origin 2>/dev/null', {
+        encoding: 'utf8',
+      }).trim();
     } catch {}
   }
 
@@ -160,7 +183,10 @@ function detectConfig() {
       if (settings.hooks) {
         // SessionStart
         if (settings.hooks.SessionStart) {
-          if (Array.isArray(settings.hooks.SessionStart) && settings.hooks.SessionStart.length > 0) {
+          if (
+            Array.isArray(settings.hooks.SessionStart) &&
+            settings.hooks.SessionStart.length > 0
+          ) {
             const hook = settings.hooks.SessionStart[0];
             if (hook.matcher !== undefined && hook.hooks) {
               status.features.sessionstart.enabled = true;
@@ -248,8 +274,10 @@ function printStatus(status) {
   header('📊 Current Configuration');
 
   // Git
-  log(`Git: ${status.git.initialized ? '✅' : '❌'} ${status.git.initialized ? 'initialized' : 'not initialized'}${status.git.remote ? ` (${status.git.remote})` : ''}`,
-    status.git.initialized ? c.green : c.dim);
+  log(
+    `Git: ${status.git.initialized ? '✅' : '❌'} ${status.git.initialized ? 'initialized' : 'not initialized'}${status.git.remote ? ` (${status.git.remote})` : ''}`,
+    status.git.initialized ? c.green : c.dim
+  );
 
   // Settings
   if (!status.settingsExists) {
@@ -287,8 +315,10 @@ function printStatus(status) {
   printFeature('stop', 'Stop Hook');
 
   const arch = status.features.archival;
-  log(`  ${arch.enabled ? '✅' : '❌'} Archival: ${arch.enabled ? `${arch.threshold} days` : 'disabled'}`,
-    arch.enabled ? c.green : c.dim);
+  log(
+    `  ${arch.enabled ? '✅' : '❌'} Archival: ${arch.enabled ? `${arch.threshold} days` : 'disabled'}`,
+    arch.enabled ? c.green : c.dim
+  );
 
   printFeature('statusline', 'Status Line');
 
@@ -335,10 +365,12 @@ function migrateSettings() {
       // String format → array format
       if (typeof hook === 'string') {
         const isNode = hook.includes('node ') || hook.endsWith('.js');
-        settings.hooks[hookName] = [{
-          matcher: '',
-          hooks: [{ type: 'command', command: isNode ? hook : `bash ${hook}` }]
-        }];
+        settings.hooks[hookName] = [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command: isNode ? hook : `bash ${hook}` }],
+          },
+        ];
         success(`Migrated ${hookName} from string format`);
         migrated = true;
       }
@@ -348,19 +380,23 @@ function migrateSettings() {
         if (first.enabled !== undefined || first.command !== undefined) {
           // Old format with enabled/command
           if (first.command) {
-            settings.hooks[hookName] = [{
-              matcher: '',
-              hooks: [{ type: 'command', command: first.command }]
-            }];
+            settings.hooks[hookName] = [
+              {
+                matcher: '',
+                hooks: [{ type: 'command', command: first.command }],
+              },
+            ];
             success(`Migrated ${hookName} from old object format`);
             migrated = true;
           }
         } else if (first.matcher === undefined) {
           // Missing matcher
-          settings.hooks[hookName] = [{
-            matcher: '',
-            hooks: first.hooks || [{ type: 'command', command: 'echo "hook"' }]
-          }];
+          settings.hooks[hookName] = [
+            {
+              matcher: '',
+              hooks: first.hooks || [{ type: 'command', command: 'echo "hook"' }],
+            },
+          ];
           success(`Migrated ${hookName} - added matcher`);
           migrated = true;
         }
@@ -374,7 +410,7 @@ function migrateSettings() {
       settings.statusLine = {
         type: 'command',
         command: settings.statusLine,
-        padding: 0
+        padding: 0,
       };
       success('Migrated statusLine from string format');
       migrated = true;
@@ -417,7 +453,7 @@ function enableFeature(feature, options = {}) {
   ensureDir('.claude');
   ensureDir('scripts');
 
-  let settings = readJSON('.claude/settings.json') || {};
+  const settings = readJSON('.claude/settings.json') || {};
   settings.hooks = settings.hooks || {};
   settings.permissions = settings.permissions || { allow: [], deny: [], ask: [] };
 
@@ -429,31 +465,39 @@ function enableFeature(feature, options = {}) {
     if (!copyTemplate(config.script, scriptPath)) {
       // Create minimal version
       if (feature === 'sessionstart') {
-        fs.writeFileSync(scriptPath, `#!/usr/bin/env node\nconsole.log('AgileFlow v${VERSION} loaded');\n`);
+        fs.writeFileSync(
+          scriptPath,
+          `#!/usr/bin/env node\nconsole.log('AgileFlow v${VERSION} loaded');\n`
+        );
       } else if (feature === 'precompact') {
         fs.writeFileSync(scriptPath, '#!/bin/bash\necho "PreCompact: preserving context"\n');
       } else if (feature === 'stop') {
-        fs.writeFileSync(scriptPath, `#!/bin/bash
+        fs.writeFileSync(
+          scriptPath,
+          `#!/bin/bash
 git rev-parse --git-dir > /dev/null 2>&1 || exit 0
 CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 [ "$CHANGES" -gt 0 ] && echo -e "\\n\\033[33m$CHANGES uncommitted change(s)\\033[0m"
-`);
+`
+        );
       }
-      try { fs.chmodSync(scriptPath, '755'); } catch {}
+      try {
+        fs.chmodSync(scriptPath, '755');
+      } catch {}
       warn(`Created minimal ${config.script}`);
     } else {
       success(`Deployed ${config.script}`);
     }
 
     // Configure hook
-    const command = config.type === 'node'
-      ? `node ${scriptPath}`
-      : `bash ${scriptPath}`;
+    const command = config.type === 'node' ? `node ${scriptPath}` : `bash ${scriptPath}`;
 
-    settings.hooks[config.hook] = [{
-      matcher: '',
-      hooks: [{ type: 'command', command }]
-    }];
+    settings.hooks[config.hook] = [
+      {
+        matcher: '',
+        hooks: [{ type: 'command', command }],
+      },
+    ];
     success(`${config.hook} hook enabled`);
   }
 
@@ -470,13 +514,13 @@ CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 
     // Add to SessionStart hook
     if (settings.hooks.SessionStart?.[0]?.hooks) {
-      const hasArchival = settings.hooks.SessionStart[0].hooks.some(
-        h => h.command?.includes('archive-completed-stories')
+      const hasArchival = settings.hooks.SessionStart[0].hooks.some(h =>
+        h.command?.includes('archive-completed-stories')
       );
       if (!hasArchival) {
         settings.hooks.SessionStart[0].hooks.push({
           type: 'command',
-          command: 'bash scripts/archive-completed-stories.sh --quiet'
+          command: 'bash scripts/archive-completed-stories.sh --quiet',
         });
       }
     }
@@ -491,12 +535,17 @@ CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
     const scriptPath = 'scripts/agileflow-statusline.sh';
 
     if (!copyTemplate('agileflow-statusline.sh', scriptPath)) {
-      fs.writeFileSync(scriptPath, `#!/bin/bash
+      fs.writeFileSync(
+        scriptPath,
+        `#!/bin/bash
 input=$(cat)
 MODEL=$(echo "$input" | jq -r '.model.display_name // "Claude"')
 echo "[$MODEL] AgileFlow"
-`);
-      try { fs.chmodSync(scriptPath, '755'); } catch {}
+`
+      );
+      try {
+        fs.chmodSync(scriptPath, '755');
+      } catch {}
       warn('Created minimal statusline script');
     } else {
       success('Deployed agileflow-statusline.sh');
@@ -505,13 +554,15 @@ echo "[$MODEL] AgileFlow"
     settings.statusLine = {
       type: 'command',
       command: 'bash scripts/agileflow-statusline.sh',
-      padding: 0
+      padding: 0,
     };
     success('Status line enabled');
   }
 
   writeJSON('.claude/settings.json', settings);
-  updateMetadata({ features: { [feature]: { enabled: true, version: VERSION, at: new Date().toISOString() } } });
+  updateMetadata({
+    features: { [feature]: { enabled: true, version: VERSION, at: new Date().toISOString() } },
+  });
   updateGitignore();
 
   return true;
@@ -557,7 +608,9 @@ function disableFeature(feature) {
   }
 
   writeJSON('.claude/settings.json', settings);
-  updateMetadata({ features: { [feature]: { enabled: false, version: VERSION, at: new Date().toISOString() } } });
+  updateMetadata({
+    features: { [feature]: { enabled: false, version: VERSION, at: new Date().toISOString() } },
+  });
 
   return true;
 }
@@ -600,7 +653,7 @@ function updateGitignore() {
     '.claude/context.log',
     '.claude/hook.log',
     '.claude/prompt-log.txt',
-    '.claude/session.log'
+    '.claude/session.log',
   ];
 
   let content = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
@@ -718,7 +771,9 @@ function applyProfile(profileName, options = {}) {
 
   // Enable features
   if (profile.enable) {
-    profile.enable.forEach(f => enableFeature(f, { archivalDays: profile.archivalDays || options.archivalDays }));
+    profile.enable.forEach(f =>
+      enableFeature(f, { archivalDays: profile.archivalDays || options.archivalDays })
+    );
   }
 
   // Disable features
@@ -842,10 +897,26 @@ function main() {
 
   args.forEach(arg => {
     if (arg.startsWith('--profile=')) profile = arg.split('=')[1];
-    else if (arg.startsWith('--enable=')) enable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--disable=')) disable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--show=')) show = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--hide=')) hide = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--enable='))
+      enable = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--disable='))
+      disable = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--show='))
+      show = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--hide='))
+      hide = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
     else if (arg.startsWith('--archival-days=')) archivalDays = parseInt(arg.split('=')[1]) || 7;
     else if (arg === '--migrate') migrate = true;
     else if (arg === '--detect' || arg === '--validate') detect = true;

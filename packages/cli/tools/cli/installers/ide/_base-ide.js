@@ -96,7 +96,9 @@ class BaseIdeSetup {
         const agileflowPath = path.join(projectDir, this.configDir, 'commands', folderName);
         if (await fs.pathExists(agileflowPath)) {
           await fs.remove(agileflowPath);
-          console.log(chalk.dim(`  Removed old ${folderName} configuration from ${this.displayName}`));
+          console.log(
+            chalk.dim(`  Removed old ${folderName} configuration from ${this.displayName}`)
+          );
         }
       }
     }

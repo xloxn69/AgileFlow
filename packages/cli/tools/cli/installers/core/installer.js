@@ -161,7 +161,11 @@ class Installer {
 
       // Create manifest
       spinner.text = 'Creating manifest...';
-      await this.createManifest(cfgDir, { ides, userName, agileflowFolder, docsFolder }, { force: effectiveForce });
+      await this.createManifest(
+        cfgDir,
+        { ides, userName, agileflowFolder, docsFolder },
+        { force: effectiveForce }
+      );
 
       // Persist file index (used for safe future updates)
       spinner.text = 'Writing file index...';
@@ -578,21 +582,21 @@ class Installer {
     const agentsDir = path.join(agileflowDir, 'agents');
     if (await fs.pathExists(agentsDir)) {
       const files = await fs.readdir(agentsDir);
-      counts.agents = files.filter((f) => f.endsWith('.md')).length;
+      counts.agents = files.filter(f => f.endsWith('.md')).length;
     }
 
     // Count commands
     const commandsDir = path.join(agileflowDir, 'commands');
     if (await fs.pathExists(commandsDir)) {
       const files = await fs.readdir(commandsDir);
-      counts.commands = files.filter((f) => f.endsWith('.md')).length;
+      counts.commands = files.filter(f => f.endsWith('.md')).length;
     }
 
     // Count skills
     const skillsDir = path.join(agileflowDir, 'skills');
     if (await fs.pathExists(skillsDir)) {
       const entries = await fs.readdir(skillsDir, { withFileTypes: true });
-      counts.skills = entries.filter((e) => e.isDirectory()).length;
+      counts.skills = entries.filter(e => e.isDirectory()).length;
     }
 
     return counts;

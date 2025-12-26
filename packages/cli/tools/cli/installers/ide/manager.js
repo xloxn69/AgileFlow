@@ -52,12 +52,8 @@ class IdeManager {
     const ideDir = __dirname;
 
     try {
-      const files = fs.readdirSync(ideDir).filter((file) => {
-        return (
-          file.endsWith('.js') &&
-          !file.startsWith('_') &&
-          file !== 'manager.js'
-        );
+      const files = fs.readdirSync(ideDir).filter(file => {
+        return file.endsWith('.js') && !file.startsWith('_') && file !== 'manager.js';
       });
 
       files.sort();

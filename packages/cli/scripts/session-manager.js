@@ -66,7 +66,7 @@ function loadRegistry() {
     schema_version: '1.0.0',
     next_id: 1,
     project_name: path.basename(ROOT),
-    sessions: {}
+    sessions: {},
   };
 
   saveRegistry(registry);
@@ -217,7 +217,7 @@ function registerSession(nickname = null) {
     nickname: nickname || null,
     created: new Date().toISOString(),
     last_active: new Date().toISOString(),
-    is_main: cwd === ROOT
+    is_main: cwd === ROOT,
   };
 
   writeLock(sessionId, pid);
@@ -252,7 +252,7 @@ function createSession(options = {}) {
   if (fs.existsSync(worktreePath)) {
     return {
       success: false,
-      error: `Directory already exists: ${worktreePath}`
+      error: `Directory already exists: ${worktreePath}`,
     };
   }
 
@@ -273,7 +273,7 @@ function createSession(options = {}) {
     execSync(`git worktree add "${worktreePath}" ${branchName}`, {
       cwd: ROOT,
       encoding: 'utf8',
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
   } catch (e) {
     return { success: false, error: `Failed to create worktree: ${e.message}` };
@@ -288,7 +288,7 @@ function createSession(options = {}) {
     nickname,
     created: new Date().toISOString(),
     last_active: new Date().toISOString(),
-    is_main: false
+    is_main: false,
   };
 
   saveRegistry(registry);
@@ -298,7 +298,7 @@ function createSession(options = {}) {
     sessionId,
     path: worktreePath,
     branch: branchName,
-    command: `cd "${worktreePath}" && claude`
+    command: `cd "${worktreePath}" && claude`,
   };
 }
 
@@ -313,7 +313,7 @@ function getSessions() {
       id,
       ...session,
       active: isSessionActive(id),
-      current: session.path === process.cwd()
+      current: session.path === process.cwd(),
     });
   }
 
@@ -458,11 +458,13 @@ function main() {
       const current = sessions.find(s => s.path === cwd);
       const others = sessions.filter(s => s.active && s.path !== cwd);
 
-      console.log(JSON.stringify({
-        current: current || null,
-        otherActive: others.length,
-        total: sessions.length
-      }));
+      console.log(
+        JSON.stringify({
+          current: current || null,
+          otherActive: others.length,
+          total: sessions.length,
+        })
+      );
       break;
     }
 
@@ -501,7 +503,7 @@ module.exports = {
   getActiveSessionCount,
   deleteSession,
   isSessionActive,
-  cleanupStaleLocks
+  cleanupStaleLocks,
 };
 
 // Run CLI if executed directly

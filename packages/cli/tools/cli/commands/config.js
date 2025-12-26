@@ -23,9 +23,7 @@ module.exports = {
     ['[key]', 'Config key (for get/set)'],
     ['[value]', 'Config value (for set)'],
   ],
-  options: [
-    ['-d, --directory <path>', 'Project directory (default: current directory)'],
-  ],
+  options: [['-d, --directory <path>', 'Project directory (default: current directory)']],
   action: async (subcommand, keyOrValue, valueOrUndefined, options) => {
     try {
       const directory = path.resolve(options.directory || '.');
@@ -64,7 +62,9 @@ module.exports = {
           console.log('  npx agileflow config set <key> <value>\n');
           console.log(chalk.bold('Keys:\n'));
           console.log('  userName           Your name for config files');
-          console.log('  ides               Comma-separated IDE list (claude-code,cursor,windsurf)');
+          console.log(
+            '  ides               Comma-separated IDE list (claude-code,cursor,windsurf)'
+          );
           console.log('  agileflowFolder    AgileFlow folder name (e.g., .agileflow)');
           console.log('  docsFolder         Documentation folder name (e.g., docs)\n');
           console.log(chalk.bold('Examples:\n'));
@@ -108,8 +108,12 @@ async function handleList(status) {
 
   console.log(chalk.bold('System Info:'));
   console.log(`  version:          ${chalk.cyan(status.version || 'unknown')}`);
-  console.log(`  installed:        ${chalk.cyan(status.installedAt ? new Date(status.installedAt).toLocaleDateString() : 'unknown')}`);
-  console.log(`  updated:          ${chalk.cyan(status.updatedAt ? new Date(status.updatedAt).toLocaleDateString() : 'unknown')}`);
+  console.log(
+    `  installed:        ${chalk.cyan(status.installedAt ? new Date(status.installedAt).toLocaleDateString() : 'unknown')}`
+  );
+  console.log(
+    `  updated:          ${chalk.cyan(status.updatedAt ? new Date(status.updatedAt).toLocaleDateString() : 'unknown')}`
+  );
   console.log();
 }
 
@@ -187,8 +191,8 @@ async function handleSet(directory, status, manifestPath, key, value) {
       info(`Setting userName to: ${chalk.cyan(value)}`);
       break;
 
-    case 'ides':
-      const newIdes = value.split(',').map((ide) => ide.trim());
+    case 'ides': {
+      const newIdes = value.split(',').map(ide => ide.trim());
       const validIdes = ['claude-code', 'cursor', 'windsurf'];
 
       // Validate IDEs
@@ -204,10 +208,13 @@ async function handleSet(directory, status, manifestPath, key, value) {
       needsIdeUpdate = true;
       info(`Setting ides to: ${chalk.cyan(newIdes.join(', '))}`);
       break;
+    }
 
     case 'agileflowFolder':
       warning('Changing agileflowFolder requires moving the installation directory.');
-      console.log(chalk.dim('This change will only update the config - you must move files manually.\n'));
+      console.log(
+        chalk.dim('This change will only update the config - you must move files manually.\n')
+      );
       manifest.agileflow_folder = value;
       info(`Setting agileflowFolder to: ${chalk.cyan(value)}`);
       break;
@@ -263,8 +270,8 @@ async function handleSet(directory, status, manifestPath, key, value) {
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
     'claude-code': '.claude/commands/agileflow',
-    'cursor': '.cursor/rules/agileflow',
-    'windsurf': '.windsurf/workflows/agileflow',
+    cursor: '.cursor/rules/agileflow',
+    windsurf: '.windsurf/workflows/agileflow',
   };
 
   return path.join(projectDir, paths[ide] || '');
@@ -276,8 +283,8 @@ function getIdeConfigPath(projectDir, ide) {
 function formatIdeName(ide) {
   const names = {
     'claude-code': 'Claude Code',
-    'cursor': 'Cursor',
-    'windsurf': 'Windsurf',
+    cursor: 'Cursor',
+    windsurf: 'Windsurf',
   };
 
   return names[ide] || ide;

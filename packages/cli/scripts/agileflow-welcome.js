@@ -42,9 +42,16 @@ const c = {
 
 // Box drawing characters
 const box = {
-  tl: '╭', tr: '╮', bl: '╰', br: '╯',
-  h: '─', v: '│',
-  lT: '├', rT: '┤', tT: '┬', bT: '┴',
+  tl: '╭',
+  tr: '╮',
+  bl: '╰',
+  br: '╯',
+  h: '─',
+  v: '│',
+  lT: '├',
+  rT: '┤',
+  tT: '┬',
+  bT: '┴',
   cross: '┼',
 };
 
@@ -73,7 +80,9 @@ function getProjectInfo(rootDir) {
 
   // Get package info
   try {
-    const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8'));
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8')
+    );
     info.version = pkg.version || info.version;
   } catch (e) {
     try {
@@ -86,7 +95,10 @@ function getProjectInfo(rootDir) {
   try {
     info.branch = execSync('git branch --show-current', { cwd: rootDir, encoding: 'utf8' }).trim();
     info.commit = execSync('git rev-parse --short HEAD', { cwd: rootDir, encoding: 'utf8' }).trim();
-    info.lastCommit = execSync('git log -1 --format="%s"', { cwd: rootDir, encoding: 'utf8' }).trim();
+    info.lastCommit = execSync('git log -1 --format="%s"', {
+      cwd: rootDir,
+      encoding: 'utf8',
+    }).trim();
   } catch (e) {}
 
   // Get status info
@@ -158,7 +170,7 @@ function runArchival(rootDir) {
         execSync('bash scripts/archive-completed-stories.sh', {
           cwd: rootDir,
           encoding: 'utf8',
-          stdio: 'pipe'
+          stdio: 'pipe',
         });
         result.archived = toArchiveCount;
         result.remaining -= toArchiveCount;
@@ -205,7 +217,13 @@ function clearActiveCommands(rootDir) {
 }
 
 function checkParallelSessions(rootDir) {
-  const result = { available: false, registered: false, otherActive: 0, currentId: null, cleaned: 0 };
+  const result = {
+    available: false,
+    registered: false,
+    otherActive: 0,
+    currentId: null,
+    cleaned: 0,
+  };
 
   try {
     // Check if session manager exists
@@ -224,7 +242,7 @@ function checkParallelSessions(rootDir) {
       const registerOutput = execSync(`node "${scriptPath}" register`, {
         cwd: rootDir,
         encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
       const registerData = JSON.parse(registerOutput);
       result.registered = true;
@@ -238,7 +256,7 @@ function checkParallelSessions(rootDir) {
       const countOutput = execSync(`node "${scriptPath}" count`, {
         cwd: rootDir,
         encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe']
+        stdio: ['pipe', 'pipe', 'pipe'],
       });
       const countData = JSON.parse(countOutput);
       result.otherActive = countData.count || 0;
@@ -309,7 +327,7 @@ function getFeatureVersions(rootDir) {
     hooks: { version: null, outdated: false },
     archival: { version: null, outdated: false },
     statusline: { version: null, outdated: false },
-    precompact: { version: null, outdated: false }
+    precompact: { version: null, outdated: false },
   };
 
   // Minimum compatible versions for each feature
@@ -317,7 +335,7 @@ function getFeatureVersions(rootDir) {
     hooks: '2.35.0',
     archival: '2.35.0',
     statusline: '2.35.0',
-    precompact: '2.40.0'  // Multi-command support
+    precompact: '2.40.0', // Multi-command support
   };
 
   try {
@@ -328,7 +346,8 @@ function getFeatureVersions(rootDir) {
       for (const feature of Object.keys(result)) {
         if (metadata.features?.[feature]?.configured_version) {
           result[feature].version = metadata.features[feature].configured_version;
-          result[feature].outdated = compareVersions(result[feature].version, minVersions[feature]) < 0;
+          result[feature].outdated =
+            compareVersions(result[feature].version, minVersions[feature]) < 0;
         }
       }
     }
@@ -342,7 +361,8 @@ function pad(str, len, align = 'left') {
   const diff = len - stripped.length;
   if (diff <= 0) return str;
   if (align === 'right') return ' '.repeat(diff) + str;
-  if (align === 'center') return ' '.repeat(Math.floor(diff/2)) + str + ' '.repeat(Math.ceil(diff/2));
+  if (align === 'center')
+    return ' '.repeat(Math.floor(diff / 2)) + str + ' '.repeat(Math.ceil(diff / 2));
   return str + ' '.repeat(diff);
 }
 
@@ -387,17 +407,20 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
     return `${c.dim}${box.v}${c.reset} ${pad(leftStr, 20)} ${c.dim}${box.v}${c.reset} ${pad(rightStr, R)} ${c.dim}${box.v}${c.reset}`;
   };
 
-  const divider = () => `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
+  const divider = () =>
+    `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
   const topBorder = `${c.dim}${box.tl}${box.h.repeat(22)}${box.tT}${box.h.repeat(W - 22)}${box.tr}${c.reset}`;
   const bottomBorder = `${c.dim}${box.bl}${box.h.repeat(22)}${box.bT}${box.h.repeat(W - 22)}${box.br}${c.reset}`;
 
   // Header (truncate branch name if too long)
-  const branchColor = info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
+  const branchColor =
+    info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
   // Fixed parts: "agileflow " (10) + "v" (1) + version + "  " (2) + " (" (2) + commit (7) + ")" (1) = 23 + version.length
-  const maxBranchLen = (W - 1) - 23 - info.version.length;
-  const branchDisplay = info.branch.length > maxBranchLen
-    ? info.branch.substring(0, maxBranchLen - 2) + '..'
-    : info.branch;
+  const maxBranchLen = W - 1 - 23 - info.version.length;
+  const branchDisplay =
+    info.branch.length > maxBranchLen
+      ? info.branch.substring(0, maxBranchLen - 2) + '..'
+      : info.branch;
   const header = `${c.brand}${c.bold}agileflow${c.reset} ${c.dim}v${info.version}${c.reset}  ${branchColor}${branchDisplay}${c.reset} ${c.dim}(${info.commit})${c.reset}`;
   const headerLine = `${c.dim}${box.v}${c.reset} ${pad(header, W - 1)} ${c.dim}${box.v}${c.reset}`;
 
@@ -406,10 +429,38 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
   lines.push(divider());
 
   // Stories section
-  lines.push(row('In Progress', info.wipCount > 0 ? `${info.wipCount}` : '0', c.dim, info.wipCount > 0 ? c.yellow : c.dim));
-  lines.push(row('Blocked', info.blockedCount > 0 ? `${info.blockedCount}` : '0', c.dim, info.blockedCount > 0 ? c.red : c.dim));
-  lines.push(row('Ready', info.readyCount > 0 ? `${info.readyCount}` : '0', c.dim, info.readyCount > 0 ? c.cyan : c.dim));
-  lines.push(row('Completed', info.completedCount > 0 ? `${info.completedCount}` : '0', c.dim, info.completedCount > 0 ? c.green : c.dim));
+  lines.push(
+    row(
+      'In Progress',
+      info.wipCount > 0 ? `${info.wipCount}` : '0',
+      c.dim,
+      info.wipCount > 0 ? c.yellow : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Blocked',
+      info.blockedCount > 0 ? `${info.blockedCount}` : '0',
+      c.dim,
+      info.blockedCount > 0 ? c.red : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Ready',
+      info.readyCount > 0 ? `${info.readyCount}` : '0',
+      c.dim,
+      info.readyCount > 0 ? c.cyan : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Completed',
+      info.completedCount > 0 ? `${info.completedCount}` : '0',
+      c.dim,
+      info.completedCount > 0 ? c.green : c.dim
+    )
+  );
 
   lines.push(divider());
 
@@ -417,16 +468,15 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
   if (archival.disabled) {
     lines.push(row('Auto-archival', 'disabled', c.dim, c.dim));
   } else {
-    const archivalStatus = archival.archived > 0
-      ? `archived ${archival.archived} stories`
-      : `nothing to archive`;
-    lines.push(row('Auto-archival', archivalStatus, c.dim, archival.archived > 0 ? c.green : c.dim));
+    const archivalStatus =
+      archival.archived > 0 ? `archived ${archival.archived} stories` : `nothing to archive`;
+    lines.push(
+      row('Auto-archival', archivalStatus, c.dim, archival.archived > 0 ? c.green : c.dim)
+    );
   }
 
   // Session cleanup
-  const sessionStatus = session.cleared > 0
-    ? `cleared ${session.cleared} command(s)`
-    : `clean`;
+  const sessionStatus = session.cleared > 0 ? `cleared ${session.cleared} command(s)` : `clean`;
   lines.push(row('Session state', sessionStatus, c.dim, session.cleared > 0 ? c.green : c.dim));
 
   // PreCompact status with version check
@@ -464,7 +514,14 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
 
   // Current story (if any) - row() auto-truncates
   if (info.currentStory) {
-    lines.push(row('Current', `${c.blue}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`, c.dim, ''));
+    lines.push(
+      row(
+        'Current',
+        `${c.blue}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`,
+        c.dim,
+        ''
+      )
+    );
   } else {
     lines.push(row('Current', 'No active story', c.dim, c.dim));
   }

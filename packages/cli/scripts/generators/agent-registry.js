@@ -74,7 +74,7 @@ function categorizeAgent(name, description) {
     'Maintenance & Optimization': ['refactor', 'performance', 'monitoring'],
     'Documentation & Knowledge': ['documentation', 'readme-updater', 'research'],
     'Compliance & Governance': ['compliance', 'analytics'],
-    'Mentorship': ['mentor']
+    Mentorship: ['mentor'],
   };
 
   for (const [category, keywords] of Object.entries(categories)) {
@@ -121,7 +121,7 @@ function scanAgents(agentsDir) {
       tools,
       model: frontmatter.model || 'haiku',
       color: frontmatter.color || 'blue',
-      category: categorizeAgent(name, frontmatter.description || '')
+      category: categorizeAgent(name, frontmatter.description || ''),
     });
   }
 

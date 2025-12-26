@@ -48,10 +48,10 @@ function categorizeSkill(name, description) {
   const categories = {
     'Story & Planning': ['story', 'epic', 'sprint', 'acceptance-criteria'],
     'Code Generation': ['type-definitions', 'validation-schema', 'error-handler'],
-    'Testing': ['test-case'],
-    'Documentation': ['adr', 'api-documentation', 'changelog', 'pr-description'],
-    'Architecture': ['sql-schema', 'diagram'],
-    'Deployment': ['deployment-guide', 'migration-checklist']
+    Testing: ['test-case'],
+    Documentation: ['adr', 'api-documentation', 'changelog', 'pr-description'],
+    Architecture: ['sql-schema', 'diagram'],
+    Deployment: ['deployment-guide', 'migration-checklist'],
   };
 
   const lowerName = name.toLowerCase();
@@ -98,7 +98,7 @@ function scanSkills(skillsDir) {
       file: 'SKILL.md',
       path: skillFile,
       description,
-      category: categorizeSkill(name, description)
+      category: categorizeSkill(name, description),
     });
   }
 

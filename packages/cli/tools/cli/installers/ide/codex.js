@@ -79,11 +79,13 @@ class CodexSetup extends BaseIdeSetup {
     }
 
     // Create SKILL.md with YAML frontmatter
-    const skillFrontmatter = yaml.dump({
-      name: `agileflow-${agentName}`,
-      description: description,
-      version: '1.0.0',
-    }).trim();
+    const skillFrontmatter = yaml
+      .dump({
+        name: `agileflow-${agentName}`,
+        description: description,
+        version: '1.0.0',
+      })
+      .trim();
 
     // Remove original frontmatter from content
     let bodyContent = content.replace(/^---\n[\s\S]*?\n---\n*/, '');

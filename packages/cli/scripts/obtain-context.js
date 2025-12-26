@@ -28,7 +28,11 @@ if (commandName) {
   if (fs.existsSync(sessionStatePath)) {
     try {
       const state = JSON.parse(fs.readFileSync(sessionStatePath, 'utf8'));
-      state.active_command = { name: commandName, activated_at: new Date().toISOString(), state: {} };
+      state.active_command = {
+        name: commandName,
+        activated_at: new Date().toISOString(),
+        state: {},
+      };
       fs.writeFileSync(sessionStatePath, JSON.stringify(state, null, 2) + '\n');
     } catch (e) {
       // Silently continue if session state can't be updated
@@ -92,9 +96,16 @@ function safeExec(cmd) {
 function generateSummary() {
   // Box drawing characters
   const box = {
-    tl: '╭', tr: '╮', bl: '╰', br: '╯',
-    h: '─', v: '│',
-    lT: '├', rT: '┤', tT: '┬', bT: '┴',
+    tl: '╭',
+    tr: '╮',
+    bl: '╰',
+    br: '╯',
+    h: '─',
+    v: '│',
+    lT: '├',
+    rT: '┤',
+    tT: '┬',
+    bT: '┴',
     cross: '┼',
   };
 
@@ -144,7 +155,8 @@ function generateSummary() {
     return `${C.dim}${box.v}${C.reset} ${pad(leftStr, L)} ${C.dim}${box.v}${C.reset} ${pad(rightStr, R)} ${C.dim}${box.v}${C.reset}\n`;
   }
 
-  const divider = () => `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
+  const divider = () =>
+    `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
   const headerTopBorder = `${C.dim}${box.tl}${box.h.repeat(W + 2)}${box.tr}${C.reset}\n`;
   const headerDivider = `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
   const bottomBorder = `${C.dim}${box.bl}${box.h.repeat(L + 2)}${box.bT}${box.h.repeat(R + 2)}${box.br}${C.reset}\n`;
@@ -156,12 +168,15 @@ function generateSummary() {
   const statusLines = (safeExec('git status --short') || '').split('\n').filter(Boolean);
   const statusJson = safeReadJSON('docs/09-agents/status.json');
   const sessionState = safeReadJSON('docs/09-agents/session-state.json');
-  const researchFiles = safeLs('docs/10-research').filter(f => f.endsWith('.md') && f !== 'README.md').sort().reverse();
+  const researchFiles = safeLs('docs/10-research')
+    .filter(f => f.endsWith('.md') && f !== 'README.md')
+    .sort()
+    .reverse();
   const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
 
   // Count stories by status
-  let byStatus = {};
-  let readyStories = [];
+  const byStatus = {};
+  const readyStories = [];
   if (statusJson && statusJson.stories) {
     Object.entries(statusJson.stories).forEach(([id, story]) => {
       const s = story.status || 'unknown';
@@ -187,23 +202,45 @@ function generateSummary() {
   const title = commandName ? `Context [${commandName}]` : 'Context Summary';
   const branchColor = branch === 'main' ? C.green : branch.startsWith('fix') ? C.red : C.cyan;
   const maxBranchLen = 20;
-  const branchDisplay = branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
+  const branchDisplay =
+    branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
   const header = `${C.brand}${C.bold}${title}${C.reset}  ${branchColor}${branchDisplay}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
   summary += `${C.dim}${box.v}${C.reset} ${pad(header, W)} ${C.dim}${box.v}${C.reset}\n`;
 
   summary += headerDivider;
 
   // Story counts with colorful labels
-  summary += row('In Progress', byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0', C.yellow, byStatus['in-progress'] ? C.brightYellow : C.dim);
-  summary += row('Blocked', byStatus['blocked'] ? `${byStatus['blocked']}` : '0', C.red, byStatus['blocked'] ? C.red : C.dim);
-  summary += row('Ready', byStatus['ready'] ? `${byStatus['ready']}` : '0', C.cyan, byStatus['ready'] ? C.brightCyan : C.dim);
+  summary += row(
+    'In Progress',
+    byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0',
+    C.yellow,
+    byStatus['in-progress'] ? C.brightYellow : C.dim
+  );
+  summary += row(
+    'Blocked',
+    byStatus['blocked'] ? `${byStatus['blocked']}` : '0',
+    C.red,
+    byStatus['blocked'] ? C.red : C.dim
+  );
+  summary += row(
+    'Ready',
+    byStatus['ready'] ? `${byStatus['ready']}` : '0',
+    C.cyan,
+    byStatus['ready'] ? C.brightCyan : C.dim
+  );
   const completedColor = `${C.bold}${C.green}`;
-  summary += row('Completed', byStatus['done'] ? `${byStatus['done']}` : '0', completedColor, byStatus['done'] ? completedColor : C.dim);
+  summary += row(
+    'Completed',
+    byStatus['done'] ? `${byStatus['done']}` : '0',
+    completedColor,
+    byStatus['done'] ? completedColor : C.dim
+  );
 
   summary += divider();
 
   // Git status
-  const uncommittedStatus = statusLines.length > 0 ? `${statusLines.length} uncommitted` : '✓ clean';
+  const uncommittedStatus =
+    statusLines.length > 0 ? `${statusLines.length} uncommitted` : '✓ clean';
   summary += row('Git', uncommittedStatus, C.blue, statusLines.length > 0 ? C.yellow : C.green);
 
   // Session
@@ -228,10 +265,12 @@ function generateSummary() {
     { path: 'docs/04-architecture/README.md', label: 'arch' },
     { path: 'docs/02-practices/README.md', label: 'practices' },
   ];
-  const keyFileStatus = keyFileChecks.map(f => {
-    const exists = fs.existsSync(f.path);
-    return exists ? `${C.brightGreen}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
-  }).join(' ');
+  const keyFileStatus = keyFileChecks
+    .map(f => {
+      const exists = fs.existsSync(f.path);
+      return exists ? `${C.brightGreen}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
+    })
+    .join(' ');
   summary += row('Key files', keyFileStatus, C.magenta, '');
 
   // Research
@@ -245,7 +284,12 @@ function generateSummary() {
   summary += divider();
 
   // Last commit
-  summary += row('Last commit', `${C.yellow}${lastCommitShort}${C.reset} ${lastCommitMsg}`, C.dim, '');
+  summary += row(
+    'Last commit',
+    `${C.yellow}${lastCommitShort}${C.reset} ${lastCommitMsg}`,
+    C.dim,
+    ''
+  );
 
   summary += bottomBorder;
 
@@ -276,8 +320,9 @@ function generateFullContent() {
   content += `Last commit: ${C.dim}${lastCommit}${C.reset}\n`;
   if (statusLines.length > 0) {
     content += `Uncommitted: ${C.yellow}${statusLines.length} file(s)${C.reset}\n`;
-    statusLines.slice(0, 10).forEach(line => content += `  ${C.dim}${line}${C.reset}\n`);
-    if (statusLines.length > 10) content += `  ${C.dim}... and ${statusLines.length - 10} more${C.reset}\n`;
+    statusLines.slice(0, 10).forEach(line => (content += `  ${C.dim}${line}${C.reset}\n`));
+    if (statusLines.length > 10)
+      content += `  ${C.dim}... and ${statusLines.length - 10} more${C.reset}\n`;
   } else {
     content += `Uncommitted: ${C.green}clean${C.reset}\n`;
   }
@@ -289,7 +334,11 @@ function generateFullContent() {
 
   if (statusJson) {
     content += `${C.dim}${'─'.repeat(50)}${C.reset}\n`;
-    content += JSON.stringify(statusJson, null, 2).split('\n').map(l => `  ${l}`).join('\n') + '\n';
+    content +=
+      JSON.stringify(statusJson, null, 2)
+        .split('\n')
+        .map(l => `  ${l}`)
+        .join('\n') + '\n';
     content += `${C.dim}${'─'.repeat(50)}${C.reset}\n`;
   } else {
     content += `${C.dim}No status.json found${C.reset}\n`;
@@ -321,7 +370,11 @@ function generateFullContent() {
   content += `\n${C.cyan}${C.bold}═══ Documentation ═══${C.reset}\n`;
   const docsDir = 'docs';
   const docFolders = safeLs(docsDir).filter(f => {
-    try { return fs.statSync(path.join(docsDir, f)).isDirectory(); } catch { return false; }
+    try {
+      return fs.statSync(path.join(docsDir, f)).isDirectory();
+    } catch {
+      return false;
+    }
   });
 
   if (docFolders.length > 0) {
@@ -330,7 +383,7 @@ function generateFullContent() {
       const files = safeLs(folderPath);
       const mdFiles = files.filter(f => f.endsWith('.md'));
       const jsonFiles = files.filter(f => f.endsWith('.json') || f.endsWith('.jsonl'));
-      let info = [];
+      const info = [];
       if (mdFiles.length > 0) info.push(`${mdFiles.length} md`);
       if (jsonFiles.length > 0) info.push(`${jsonFiles.length} json`);
       content += `  ${C.dim}${folder}/${C.reset} ${info.length > 0 ? `(${info.join(', ')})` : ''}\n`;
@@ -344,7 +397,7 @@ function generateFullContent() {
   if (researchFiles.length > 0) {
     researchFiles.sort().reverse();
     content += `${C.dim}───${C.reset} Available Research Notes\n`;
-    researchFiles.forEach(file => content += `  ${C.dim}${file}${C.reset}\n`);
+    researchFiles.forEach(file => (content += `  ${C.dim}${file}${C.reset}\n`));
 
     const mostRecentFile = researchFiles[0];
     const mostRecentPath = path.join(researchDir, mostRecentFile);
@@ -414,7 +467,7 @@ function generateFullContent() {
   content += `\n${C.cyan}${C.bold}═══ Epic Files ═══${C.reset}\n`;
   const epicFiles = safeLs('docs/05-epics').filter(f => f.endsWith('.md') && f !== 'README.md');
   if (epicFiles.length > 0) {
-    epicFiles.forEach(file => content += `  ${C.dim}${file}${C.reset}\n`);
+    epicFiles.forEach(file => (content += `  ${C.dim}${file}${C.reset}\n`));
   } else {
     content += `${C.dim}No epic files${C.reset}\n`;
   }

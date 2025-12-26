@@ -12,7 +12,7 @@ const https = require('https');
  * @returns {Promise<string|null>} Latest version or null if error
  */
 async function getLatestVersion(packageName) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const options = {
       hostname: 'registry.npmjs.org',
       port: 443,
@@ -23,10 +23,10 @@ async function getLatestVersion(packageName) {
       },
     };
 
-    const req = https.request(options, (res) => {
+    const req = https.request(options, res => {
       let data = '';
 
-      res.on('data', (chunk) => {
+      res.on('data', chunk => {
         data += chunk;
       });
 

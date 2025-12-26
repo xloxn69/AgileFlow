@@ -25,7 +25,8 @@ try {
   );
 } catch (e) {
   // Fallback if README not found
-  packageReadme = '# AgileFlow\n\nSee https://github.com/projectquestorg/AgileFlow for documentation.';
+  packageReadme =
+    '# AgileFlow\n\nSee https://github.com/projectquestorg/AgileFlow for documentation.';
 }
 
 /**
@@ -386,7 +387,7 @@ Document your CI/CD workflows and configuration here.
 
       if (fs.existsSync(gitignorePath)) {
         const existingGitignore = await fs.readFile(gitignorePath, 'utf8');
-        const newEntries = gitignoreEntries.filter((entry) => !existingGitignore.includes(entry));
+        const newEntries = gitignoreEntries.filter(entry => !existingGitignore.includes(entry));
         if (newEntries.length > 0) {
           await fs.appendFile(gitignorePath, '\n' + newEntries.join('\n') + '\n', 'utf8');
           console.log(chalk.yellow(`  ↻ Updated .gitignore with ${newEntries.length} entries`));

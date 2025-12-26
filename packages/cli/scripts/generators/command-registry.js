@@ -47,15 +47,15 @@ function extractFrontmatter(filePath) {
 function categorizeCommand(name, description) {
   const categories = {
     'Story Management': ['story', 'epic', 'assign', 'status'],
-    'Development': ['verify', 'baseline', 'resume', 'session-init', 'babysit'],
+    Development: ['verify', 'baseline', 'resume', 'session-init', 'babysit'],
     'Quality & Testing': ['tests', 'review', 'ci'],
-    'Documentation': ['docs', 'adr', 'readme-sync'],
+    Documentation: ['docs', 'adr', 'readme-sync'],
     'Planning & Metrics': ['sprint', 'velocity', 'metrics', 'board', 'deps'],
     'Research & Strategy': ['research', 'product'],
     'Deployment & Operations': ['deploy', 'packages'],
-    'Collaboration': ['update', 'handoff', 'feedback', 'retro'],
-    'Maintenance': ['debt', 'compress', 'template'],
-    'System': ['setup', 'help', 'diagnose', 'auto', 'agent']
+    Collaboration: ['update', 'handoff', 'feedback', 'retro'],
+    Maintenance: ['debt', 'compress', 'template'],
+    System: ['setup', 'help', 'diagnose', 'auto', 'agent'],
   };
 
   for (const [category, keywords] of Object.entries(categories)) {
@@ -89,7 +89,7 @@ function scanCommands(commandsDir) {
       path: filePath,
       description: frontmatter.description || '',
       argumentHint: frontmatter['argument-hint'] || '',
-      category: categorizeCommand(name, frontmatter.description || '')
+      category: categorizeCommand(name, frontmatter.description || ''),
     });
   }
 

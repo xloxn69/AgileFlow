@@ -9,7 +9,15 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const fs = require('fs-extra');
 const { Installer } = require('../installers/core/installer');
-const { displayLogo, displaySection, success, warning, error, info, confirm } = require('../lib/ui');
+const {
+  displayLogo,
+  displaySection,
+  success,
+  warning,
+  error,
+  info,
+  confirm,
+} = require('../lib/ui');
 const { IdeManager } = require('../installers/ide/manager');
 const { getCurrentVersion } = require('../lib/version-checker');
 
@@ -22,7 +30,7 @@ module.exports = {
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
     ['--fix', 'Automatically fix detected issues'],
   ],
-  action: async (options) => {
+  action: async options => {
     try {
       const directory = path.resolve(options.directory || '.');
 
@@ -113,7 +121,12 @@ module.exports = {
       if (await fs.pathExists(fileIndexPath)) {
         try {
           fileIndex = await fs.readJson(fileIndexPath);
-          if (!fileIndex || fileIndex.schema !== 1 || !fileIndex.files || typeof fileIndex.files !== 'object') {
+          if (
+            !fileIndex ||
+            fileIndex.schema !== 1 ||
+            !fileIndex.files ||
+            typeof fileIndex.files !== 'object'
+          ) {
             throw new Error('invalid format');
           }
           success('files.json present');
@@ -332,8 +345,8 @@ function compareVersions(a, b) {
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
     'claude-code': '.claude/commands/agileflow',
-    'cursor': '.cursor/rules/agileflow',
-    'windsurf': '.windsurf/workflows/agileflow',
+    cursor: '.cursor/rules/agileflow',
+    windsurf: '.windsurf/workflows/agileflow',
   };
 
   return path.join(projectDir, paths[ide] || '');
@@ -347,8 +360,8 @@ function getIdeConfigPath(projectDir, ide) {
 function formatIdeName(ide) {
   const names = {
     'claude-code': 'Claude Code',
-    'cursor': 'Cursor',
-    'windsurf': 'Windsurf',
+    cursor: 'Cursor',
+    windsurf: 'Windsurf',
   };
 
   return names[ide] || ide;
@@ -402,13 +415,16 @@ function toPosixPath(filePath) {
 
 function countProtectedFiles(fileIndex) {
   if (!fileIndex || !fileIndex.files || typeof fileIndex.files !== 'object') return 0;
-  return Object.values(fileIndex.files).filter((record) => record && record.protected).length;
+  return Object.values(fileIndex.files).filter(record => record && record.protected).length;
 }
 
 async function listSubdirectories(dirPath) {
   if (!(await fs.pathExists(dirPath))) return [];
   const entries = await fs.readdir(dirPath, { withFileTypes: true });
-  return entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
+  return entries
+    .filter(e => e.isDirectory())
+    .map(e => e.name)
+    .sort();
 }
 
 async function createProtectedFileIndex(agileflowDir, fileIndexPath) {

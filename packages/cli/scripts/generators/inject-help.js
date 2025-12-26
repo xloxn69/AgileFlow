@@ -62,7 +62,9 @@ function injectContent(content, generated) {
   const timestamp = new Date().toISOString().split('T')[0];
   const injectedContent = `${startMarker}\n<!-- Auto-generated on ${timestamp}. Do not edit manually. -->\n\n${generated}\n${endMarker}`;
 
-  return content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length);
+  return (
+    content.substring(0, startIdx) + injectedContent + content.substring(endIdx + endMarker.length)
+  );
 }
 
 /**

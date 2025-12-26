@@ -21,7 +21,7 @@ module.exports = {
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
     ['--force', 'Skip confirmation prompt'],
   ],
-  action: async (options) => {
+  action: async options => {
     try {
       const directory = path.resolve(options.directory || '.');
 
@@ -87,8 +87,8 @@ module.exports = {
 function getIdeConfigPath(projectDir, ide) {
   const paths = {
     'claude-code': '.claude/commands/agileflow',
-    'cursor': '.cursor/rules/agileflow',
-    'windsurf': '.windsurf/workflows/agileflow',
+    cursor: '.cursor/rules/agileflow',
+    windsurf: '.windsurf/workflows/agileflow',
   };
 
   return path.join(projectDir, paths[ide] || '');
@@ -102,8 +102,8 @@ function getIdeConfigPath(projectDir, ide) {
 function formatIdeName(ide) {
   const names = {
     'claude-code': 'Claude Code',
-    'cursor': 'Cursor',
-    'windsurf': 'Windsurf',
+    cursor: 'Cursor',
+    windsurf: 'Windsurf',
   };
 
   return names[ide] || ide;

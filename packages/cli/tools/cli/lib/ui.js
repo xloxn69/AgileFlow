@@ -82,7 +82,7 @@ const IDE_CHOICES = [
     value: 'claude-code',
     checked: true,
     configDir: '.claude/commands',
-    description: 'Anthropic\'s Claude Code IDE',
+    description: "Anthropic's Claude Code IDE",
   },
   {
     name: 'Cursor',
@@ -96,7 +96,7 @@ const IDE_CHOICES = [
     value: 'windsurf',
     checked: false,
     configDir: '.windsurf/workflows',
-    description: 'Codeium\'s AI IDE',
+    description: "Codeium's AI IDE",
   },
 ];
 
@@ -113,7 +113,7 @@ async function promptInstall() {
       name: 'directory',
       message: 'Where would you like to install AgileFlow?',
       default: '.',
-      validate: (input) => {
+      validate: input => {
         const resolved = path.resolve(input);
         const parent = path.dirname(resolved);
         if (!fs.existsSync(parent)) {
@@ -127,7 +127,7 @@ async function promptInstall() {
       name: 'ides',
       message: 'Select your IDE(s):',
       choices: IDE_CHOICES,
-      validate: (input) => {
+      validate: input => {
         if (input.length === 0) {
           return 'Please select at least one IDE';
         }
@@ -145,7 +145,7 @@ async function promptInstall() {
       name: 'agileflowFolder',
       message: 'AgileFlow installation folder name:',
       default: '.agileflow',
-      validate: (input) => {
+      validate: input => {
         if (!/^[a-zA-Z0-9._-]+$/.test(input)) {
           return 'Folder name can only contain letters, numbers, dots, underscores, and hyphens';
         }
@@ -157,7 +157,7 @@ async function promptInstall() {
       name: 'docsFolder',
       message: 'Documentation folder name:',
       default: 'docs',
-      validate: (input) => {
+      validate: input => {
         if (!/^[a-zA-Z0-9._-]+$/.test(input)) {
           return 'Folder name can only contain letters, numbers, dots, underscores, and hyphens';
         }
@@ -206,7 +206,7 @@ async function confirm(message, defaultValue = true) {
  * @returns {Object|null}
  */
 function getIdeConfig(ideName) {
-  return IDE_CHOICES.find((ide) => ide.value === ideName) || null;
+  return IDE_CHOICES.find(ide => ide.value === ideName) || null;
 }
 
 module.exports = {

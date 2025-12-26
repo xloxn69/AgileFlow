@@ -137,8 +137,8 @@ async function runAutoInstall() {
         output: process.stdout,
       });
 
-      const answer = await new Promise((resolve) => {
-        readline.question('Choose an option (1 or 2): ', (ans) => {
+      const answer = await new Promise(resolve => {
+        readline.question('Choose an option (1 or 2): ', ans => {
           readline.close();
           resolve(ans.trim());
         });
@@ -176,7 +176,6 @@ async function runAutoInstall() {
     console.log('');
     log('To skip auto-setup in the future, set: AGILEFLOW_SKIP_INSTALL=true', 'dim');
     console.log('');
-
   } catch (error) {
     console.log('');
     log('⚠️  Auto-setup encountered an issue.', 'yellow');
