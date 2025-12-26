@@ -306,6 +306,46 @@ sandbox_mode = "workspace-write"
   }
 
   /**
+   * Generate AGENTS.override.md template for subdirectories
+   * @param {string} targetDir - Directory to create override in
+   * @returns {Promise<boolean>} Whether file was created
+   */
+  async generateAgentsOverride(targetDir) {
+    const overridePath = path.join(targetDir, 'AGENTS.override.md');
+
+    // Don't overwrite existing override
+    if (await this.exists(overridePath)) {
+      return false;
+    }
+
+    const content = `# AGENTS.override.md
+
+> Override instructions for this subdirectory
+
+## Directory-Specific Context
+
+This directory contains: [describe purpose]
+
+## Additional Commands
+
+\`\`\`bash
+# Directory-specific commands here
+\`\`\`
+
+## Directory Conventions
+
+- [List any patterns specific to this directory]
+
+---
+
+*This file overrides AGENTS.md for this subdirectory*
+`;
+
+    await this.writeFile(overridePath, content);
+    return true;
+  }
+
+  /**
    * Setup Codex CLI configuration
    * @param {string} projectDir - Project directory
    * @param {string} agileflowDir - AgileFlow installation directory
@@ -354,8 +394,10 @@ sandbox_mode = "workspace-write"
   /**
    * Cleanup Codex configuration
    * @param {string} projectDir - Project directory
+   * @param {Object} options - Cleanup options
+   * @param {boolean} options.removeAgentsMd - Also remove AGENTS.md (requires confirmation)
    */
-  async cleanup(projectDir) {
+  async cleanup(projectDir, options = {}) {
     // Clean up per-repo skills
     const skillsDir = path.join(projectDir, this.configDir, 'skills');
     if (await this.exists(skillsDir)) {
@@ -380,7 +422,16 @@ sandbox_mode = "workspace-write"
       console.log(chalk.dim(`  Cleaned up AgileFlow prompts from ~/.codex/prompts/`));
     }
 
-    // Note: We don't remove AGENTS.md as user may have customized it
+    // Optionally remove AGENTS.md if explicitly requested
+    if (options.removeAgentsMd) {
+      const agentsMdPath = path.join(projectDir, 'AGENTS.md');
+      if (await this.exists(agentsMdPath)) {
+        await fs.remove(agentsMdPath);
+        console.log(chalk.dim(`  Removed AGENTS.md`));
+      }
+    } else {
+      console.log(chalk.dim(`  Note: AGENTS.md preserved (use removeAgentsMd option to delete)`));
+    }
   }
 }
 
