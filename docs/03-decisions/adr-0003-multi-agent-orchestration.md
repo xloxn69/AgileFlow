@@ -1,7 +1,8 @@
 # ADR-0003: Multi-Agent Orchestration Pattern
 
-**Status**: Proposed
+**Status**: Accepted
 **Date**: 2025-12-25
+**Implemented**: 2025-12-25 (Phase 1 Foundation)
 **Decision Makers**: Development Team
 **Research**: [Top 2% Agentic Engineer 2026](../10-research/20251225-top-2pct-agentic-engineer-2026.md)
 
@@ -129,11 +130,11 @@ Prompt-by-prompt         →     Prompt-to-PR autonomy
 
 ## Implementation Plan
 
-### Phase 1: Foundation (Q1 2026)
-- [ ] Add trust metrics to agent output (tool call count, chain length)
-- [ ] Enhance Task tool docs for parallel execution patterns
-- [ ] Create orchestrator agent type (`agileflow-orchestrator`)
-- [ ] Document best-of-N pattern in practices
+### Phase 1: Foundation (Q1 2026) ✅ COMPLETE
+- [x] Add trust metrics to agent output (tool call count, chain length) - *Docs complete; tracking deferred until Claude Code API*
+- [x] Enhance Task tool docs for parallel execution patterns - *Added to babysit.md*
+- [x] Create orchestrator agent type (`agileflow-orchestrator`) - *With forced delegation (Task/TaskOutput only)*
+- [x] Document best-of-N pattern in practices - *docs/02-practices/best-of-n-pattern.md*
 
 ### Phase 2: Orchestrator Enhancement (Q1 2026)
 - [ ] Upgrade babysit to spawn parallel agents for multi-domain tasks
