@@ -11,7 +11,6 @@ const footerLinks = {
       { label: "Installation", href: "/installation" },
       { label: "Commands", href: "/commands" },
       { label: "Agents", href: "/agents" },
-      { label: "Workflows", href: "/workflows" },
     ],
   },
   resources: {
@@ -19,7 +18,7 @@ const footerLinks = {
     links: [
       { label: "GitHub", href: siteConfig.links.github, external: true },
       { label: "npm", href: "https://www.npmjs.com/package/agileflow", external: true },
-      { label: "Changelog", href: `${siteConfig.links.github}/releases`, external: true },
+      { label: "Releases", href: `${siteConfig.links.github}/releases`, external: true },
     ],
   },
   community: {

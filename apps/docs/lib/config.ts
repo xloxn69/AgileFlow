@@ -21,10 +21,6 @@ export const siteConfig = {
       href: "/agents",
       label: "Agents",
     },
-    {
-      href: "/workflows",
-      label: "Workflows",
-    },
   ],
 }
 
