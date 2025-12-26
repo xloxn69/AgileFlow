@@ -26,10 +26,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: packages/cli/package-lock.json
 
       - name: Install dependencies
-        working-directory: packages/cli
         run: npm ci --legacy-peer-deps
 
       - name: Check formatting
