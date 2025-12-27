@@ -10,6 +10,7 @@ const fs = require('fs-extra');
 const yaml = require('js-yaml');
 const { Installer } = require('../installers/core/installer');
 const { displayLogo, displaySection, success, warning, info } = require('../lib/ui');
+const { parseFrontmatter: parseYamlFrontmatter } = require('../../../scripts/lib/frontmatter-parser');
 
 const installer = new Installer();
 
@@ -255,23 +256,17 @@ async function listExperts(agileflowPath) {
 }
 
 /**
- * Parse YAML frontmatter from markdown
+ * Parse YAML frontmatter from markdown (wrapper for shared parser)
  * @param {string} content - File content
  * @returns {{ frontmatter: Object|null, content: string }}
  */
 function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-
-  if (!match) {
-    return { frontmatter: null, content };
-  }
-
-  try {
-    const frontmatter = yaml.load(match[1]);
-    return { frontmatter, content: match[2] };
-  } catch {
-    return { frontmatter: null, content };
-  }
+  const frontmatter = parseYamlFrontmatter(content);
+  const body = content.replace(/^---\n[\s\S]*?\n---\n?/, '');
+  return {
+    frontmatter: Object.keys(frontmatter).length > 0 ? frontmatter : null,
+    content: body,
+  };
 }
 
 /**

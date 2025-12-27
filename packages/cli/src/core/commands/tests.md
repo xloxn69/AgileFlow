@@ -1,5 +1,6 @@
 ---
 description: Set up automated testing infrastructure
+argument-hint: (no arguments)
 ---
 
 # setup-tests

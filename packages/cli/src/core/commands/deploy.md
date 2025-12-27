@@ -1,5 +1,6 @@
 ---
 description: Set up automated deployment pipeline
+argument-hint: (no arguments)
 ---
 
 # setup-deployment

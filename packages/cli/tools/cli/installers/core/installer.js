@@ -5,25 +5,14 @@
  */
 
 const path = require('node:path');
-const crypto = require('node:crypto');
 const fs = require('fs-extra');
 const chalk = require('chalk');
 const ora = require('ora');
 const yaml = require('js-yaml');
+const { injectContent } = require('../../lib/content-injector');
+const { sha256Hex, toPosixPath, safeTimestampForPath } = require('../../lib/utils');
 
 const TEXT_EXTENSIONS = new Set(['.md', '.yaml', '.yml', '.txt', '.json']);
-
-function sha256Hex(data) {
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-function toPosixPath(filePath) {
-  return filePath.split(path.sep).join('/');
-}
-
-function safeTimestampForPath(date = new Date()) {
-  return date.toISOString().replace(/[:.]/g, '-');
-}
 
 /**
  * Get the source path for AgileFlow content
@@ -48,6 +37,11 @@ class Installer {
   constructor() {
     this.sourcePath = getSourcePath();
     this.packageRoot = getPackageRoot();
+    this.coreDir = path.join(this.sourcePath, 'core');
+
+    // Load version from package.json
+    const packageJson = require(path.join(this.packageRoot, 'package.json'));
+    this.version = packageJson.version;
   }
 
   /**
@@ -260,7 +254,7 @@ class Installer {
   }
 
   /**
-   * Copy a file with placeholder replacements
+   * Copy a file with placeholder replacements using content injector
    * @param {string} source - Source file path
    * @param {string} dest - Destination file path
    * @param {string} agileflowFolder - AgileFlow folder name
@@ -271,9 +265,12 @@ class Installer {
     if (TEXT_EXTENSIONS.has(ext)) {
       let content = await fs.readFile(source, 'utf8');
 
-      // Replace placeholders
-      content = content.replace(/\{agileflow_folder\}/g, agileflowFolder);
-      content = content.replace(/\{project-root\}/g, '{project-root}'); // Keep as-is for runtime
+      // Use content injector for all placeholder replacements
+      content = injectContent(content, {
+        coreDir: this.coreDir,
+        agileflowFolder,
+        version: this.version,
+      });
 
       await fs.writeFile(dest, content, 'utf8');
     } else {
@@ -304,8 +301,12 @@ class Installer {
     let newContent;
     if (isText) {
       let content = await fs.readFile(source, 'utf8');
-      content = content.replace(/\{agileflow_folder\}/g, agileflowFolder);
-      content = content.replace(/\{project-root\}/g, '{project-root}');
+      // Use content injector for all placeholder replacements
+      content = injectContent(content, {
+        coreDir: this.coreDir,
+        agileflowFolder,
+        version: this.version,
+      });
       newContent = content;
     } else {
       newContent = await fs.readFile(source);

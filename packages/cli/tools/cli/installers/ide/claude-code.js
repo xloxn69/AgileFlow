@@ -63,22 +63,11 @@ class ClaudeCodeSetup extends BaseIdeSetup {
     await this.installCommandsRecursive(agentsSource, spawnableAgentsDir, agileflowDir, false);
     console.log(chalk.dim(`    - Spawnable agents: .claude/agents/agileflow/`));
 
-    // Install skills (.claude/skills/)
-    const skillsSource = path.join(agileflowDir, 'skills');
+    // Create skills directory for user-generated skills (.claude/skills/)
+    // AgileFlow no longer ships static skills - users generate them via /agileflow:skill:create
     const skillsTargetDir = path.join(claudeDir, 'skills');
-    let skillCount = 0;
-    if (await this.exists(skillsSource)) {
-      const skillResult = await this.installCommandsRecursive(
-        skillsSource,
-        skillsTargetDir,
-        agileflowDir,
-        false
-      );
-      skillCount = skillResult.commands + skillResult.subdirs;
-      if (skillCount > 0) {
-        console.log(chalk.dim(`    - Skills: .claude/skills/`));
-      }
-    }
+    await this.ensureDir(skillsTargetDir);
+    console.log(chalk.dim(`    - Skills directory: .claude/skills/ (for user-generated skills)`));
 
     const totalCommands = commandResult.commands + agentResult.commands;
     const totalSubdirs =

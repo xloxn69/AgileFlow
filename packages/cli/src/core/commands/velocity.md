@@ -1,5 +1,6 @@
 ---
 description: Track velocity and forecast sprint capacity
+argument-hint: (no arguments)
 model: haiku
 ---
 

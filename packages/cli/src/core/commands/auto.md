@@ -1,5 +1,6 @@
 ---
 description: Auto-generate stories from PRDs, mockups, or specs
+argument-hint: (no arguments)
 ---
 
 # auto-story

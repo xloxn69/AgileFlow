@@ -16,6 +16,7 @@ const fs = require('fs-extra');
 const chalk = require('chalk');
 const yaml = require('js-yaml');
 const { BaseIdeSetup } = require('./_base-ide');
+const { parseFrontmatter } = require('../../../../scripts/lib/frontmatter-parser');
 
 /**
  * OpenAI Codex CLI setup handler
@@ -59,22 +60,17 @@ class CodexSetup extends BaseIdeSetup {
    * @returns {string} Codex SKILL.md content
    */
   convertAgentToSkill(content, agentName) {
-    // Extract frontmatter if present
+    // Extract frontmatter using shared parser
     let description = `AgileFlow ${agentName} agent`;
     let model = 'default';
 
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-    if (frontmatterMatch) {
-      try {
-        const frontmatter = yaml.load(frontmatterMatch[1]);
-        if (frontmatter.description) {
-          description = frontmatter.description;
-        }
-        if (frontmatter.model) {
-          model = frontmatter.model;
-        }
-      } catch (e) {
-        // Ignore YAML parse errors
+    const frontmatter = parseFrontmatter(content);
+    if (frontmatter && Object.keys(frontmatter).length > 0) {
+      if (frontmatter.description) {
+        description = frontmatter.description;
+      }
+      if (frontmatter.model) {
+        model = frontmatter.model;
       }
     }
 

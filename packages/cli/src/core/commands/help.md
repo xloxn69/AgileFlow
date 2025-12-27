@@ -1,5 +1,6 @@
 ---
 description: Display AgileFlow system overview and commands
+argument-hint: (no arguments)
 ---
 
 # system-help

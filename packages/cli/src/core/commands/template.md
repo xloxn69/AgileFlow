@@ -1,5 +1,6 @@
 ---
 description: Create and manage custom document templates
+argument-hint: (no arguments)
 ---
 
 # custom-template

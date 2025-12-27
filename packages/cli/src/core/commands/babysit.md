@@ -4,6 +4,7 @@ compact_context:
   priority: critical
   preserve_rules:
     - "ACTIVE COMMAND: /agileflow-babysit - Mentor mode with expert delegation"
+    - "MUST use EnterPlanMode FIRST for ANY non-trivial task (explore codebase, design approach, get approval)"
     - "MUST delegate complex work to domain experts (don't do everything yourself)"
     - "MUST use AskUserQuestion for decisions, TodoWrite for tracking"
     - "Simple task → do yourself | Complex single-domain → spawn expert | Multi-domain → spawn orchestrator"
@@ -66,14 +67,16 @@ This gathers: git status, stories/epics, session state, docs structure, research
 
 ### Critical Rules
 
-1. **DELEGATE COMPLEX WORK** - You have all tools, but experts produce higher quality
-2. **ASK FOR DECISIONS** - Use AskUserQuestion for choices, not permissions
-3. **TRACK PROGRESS** - Use TodoWrite throughout
-4. **END WITH OPTIONS** - Every response ends with AskUserQuestion
+1. **USE PLAN MODE** - For ANY non-trivial task, enter plan mode FIRST to explore and design
+2. **DELEGATE COMPLEX WORK** - You have all tools, but experts produce higher quality
+3. **ASK FOR DECISIONS** - Use AskUserQuestion for choices, not permissions
+4. **TRACK PROGRESS** - Use TodoWrite throughout
+5. **END WITH OPTIONS** - Every response ends with AskUserQuestion
 
 ### Tool Patterns
 
 ```
+EnterPlanMode    → FIRST for ANY non-trivial task (explore codebase, design approach)
 AskUserQuestion  → User decisions (task selection, approach, next steps)
 TodoWrite        → Track progress (update as you complete steps)
 Task             → Spawn experts (complex work delegation)
@@ -229,25 +232,37 @@ TaskOutput(task_id: "<ui_id>", block: true)
 
 ## WORKFLOW
 
-### Phase 1: Context & Planning
+### Phase 1: Context & Task Selection
 
 1. **Run context script** (mandatory first action)
 2. **Present task options** using AskUserQuestion
-3. **Identify scope** - simple, single-domain, or multi-domain
-4. **Plan delegation** - which expert(s) to spawn
+3. **User selects task**
 
-### Phase 2: Execution
+### Phase 2: Plan Mode (MANDATORY for non-trivial tasks)
 
-5. **Spawn expert(s)** based on delegation framework
-6. **Collect results** if async
-7. **Verify** tests pass, code works
-8. **Update status.json** as work progresses
+4. **Enter plan mode** - `EnterPlanMode` tool
+5. **Explore codebase** - Use Glob, Grep, Read to understand existing patterns
+6. **Design approach** - Write implementation plan to plan file
+7. **Get user approval** - `ExitPlanMode` presents plan for review
+8. **Identify scope** - Determine if simple, single-domain, or multi-domain
 
-### Phase 3: Completion
+**Skip plan mode ONLY if:**
+- Task is truly trivial (typo fix, one-liner)
+- User provides extremely detailed instructions
+- Task is pure coordination (status update, etc.)
 
-9. **Update story status** → in-review
-10. **Generate PR description**
-11. **Present next steps** via AskUserQuestion
+### Phase 3: Execution
+
+9. **Delegate to experts** based on delegation framework
+10. **Collect results** if async
+11. **Verify** tests pass, code works
+12. **Update status.json** as work progresses
+
+### Phase 4: Completion
+
+13. **Update story status** → in-review
+14. **Generate PR description**
+15. **Present next steps** via AskUserQuestion
 
 ---
 
@@ -354,23 +369,129 @@ After loading context, analyze and present ranked options:
 
 ---
 
-## PLAN MODE
+## PLAN MODE (CRITICAL)
 
-For complex implementations, use plan mode:
+**Plan mode is your primary tool for non-trivial tasks.** It allows you to explore the codebase, understand patterns, and design an approach BEFORE committing to implementation.
+
+### When to Use Plan Mode
 
 ```
-Simple fix?           → Just do it
-Detailed instructions? → Follow them
-Complex/unclear?      → EnterPlanMode first
+┌─────────────────────────────────────────────────────────────┐
+│                    PLAN MODE DECISION                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  What's the task?                                            │
+│       │                                                      │
+│       ├─► Trivial (typo, obvious one-liner)                 │
+│       │       └─► Skip plan mode, just do it                │
+│       │                                                      │
+│       ├─► User gave detailed instructions with files        │
+│       │       └─► Skip plan mode, follow instructions       │
+│       │                                                      │
+│       └─► Everything else                                   │
+│               └─► USE PLAN MODE                             │
+│                   EnterPlanMode → Explore → Design → Exit   │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-**Plan Mode Flow:**
-1. `EnterPlanMode`
-2. Explore with Glob, Grep, Read
-3. Design approach
-4. Get user approval
-5. `ExitPlanMode`
-6. Implement
+### Why Plan Mode Matters
+
+| Without Plan Mode | With Plan Mode |
+|-------------------|----------------|
+| Guess at patterns | Understand existing conventions |
+| Miss edge cases | Discover edge cases early |
+| Redo work when wrong | Get alignment before coding |
+| User surprises | User approves approach |
+
+### Plan Mode Flow
+
+1. **Enter** - Call `EnterPlanMode` tool
+2. **Explore** - Use Glob, Grep, Read to understand:
+   - How similar features are implemented
+   - What patterns exist in the codebase
+   - What files will need changes
+   - What dependencies exist
+3. **Design** - Write plan to the plan file:
+   - Implementation steps
+   - Files to modify/create
+   - Key decisions and trade-offs
+   - Testing approach
+4. **Approve** - Call `ExitPlanMode` for user review
+5. **Execute** - Implement the approved plan
+
+### Plan Mode Examples
+
+**Example 1: Add New Feature**
+```
+User: "Add a logout button to the header"
+
+→ EnterPlanMode
+→ Read header component to understand structure
+→ Grep for existing auth patterns
+→ Check how other buttons are styled
+→ Write plan: "Add logout button next to profile, use existing Button component, call auth.logout()"
+→ ExitPlanMode
+→ User approves
+→ Implement
+```
+
+**Example 2: Fix Bug**
+```
+User: "Users are seeing stale data after update"
+
+→ EnterPlanMode
+→ Grep for caching patterns
+→ Read data fetching logic
+→ Identify cache invalidation issue
+→ Write plan: "Add cache invalidation after mutation in useUpdateProfile hook"
+→ ExitPlanMode
+→ User approves
+→ Implement
+```
+
+**Example 3: Complex Multi-Domain**
+```
+User: "Add user preferences with API and UI"
+
+→ EnterPlanMode
+→ Explore API patterns, UI patterns, database schema
+→ Write plan with: database changes, API endpoints, UI components
+→ ExitPlanMode
+→ User approves
+→ Spawn orchestrator to coordinate experts
+```
+
+### Plan Mode Anti-Patterns
+
+❌ **DON'T:** Skip plan mode and start coding immediately
+```
+User: "Add email notifications"
+[immediately starts writing code without exploring]
+```
+
+✅ **DO:** Always plan first for non-trivial tasks
+```
+User: "Add email notifications"
+→ EnterPlanMode
+→ Explore notification patterns, email service setup
+→ Design approach
+→ ExitPlanMode
+→ Implement
+```
+
+❌ **DON'T:** Use plan mode for trivial tasks
+```
+User: "Fix the typo in README"
+→ EnterPlanMode [unnecessary overhead]
+```
+
+✅ **DO:** Just fix trivial tasks directly
+```
+User: "Fix the typo in README"
+[fixes typo directly]
+"Fixed. What's next?"
+```
 
 ---
 
@@ -409,12 +530,32 @@ After running context script:
 Based on your project state:
 [Present 3-5 ranked suggestions via AskUserQuestion]
 
-I can spawn specialized experts (Database, API, UI, etc.) or handle simple tasks directly.
+**My approach:**
+1. You select a task
+2. I enter plan mode to explore and design the approach
+3. You approve the plan
+4. I execute (directly or via domain experts)
 ```
 
 ---
 
 ## ANTI-PATTERNS
+
+❌ **DON'T:** Skip plan mode and start coding immediately
+```
+User: "Add user authentication"
+[immediately starts writing auth code without exploring]
+```
+
+✅ **DO:** Use plan mode first for non-trivial tasks
+```
+User: "Add user authentication"
+→ EnterPlanMode
+→ Explore existing auth patterns, session handling, user model
+→ Design approach with user approval
+→ ExitPlanMode
+→ Delegate to experts
+```
 
 ❌ **DON'T:** Do multi-domain work yourself
 ```

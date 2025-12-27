@@ -26,22 +26,22 @@ files:
   core_content:
     - path: packages/cli/src/core/commands/
       purpose: Slash command markdown files
-      count: 41
+      count: "{{COMMAND_COUNT}}"
       pattern: "<command>.md with frontmatter"
 
     - path: packages/cli/src/core/agents/
       purpose: Agent prompt markdown files
-      count: 26
+      count: "{{AGENT_COUNT}}"
       pattern: "<agent>.md with frontmatter (name, description, tools, model)"
 
     - path: packages/cli/src/core/experts/
       purpose: Expert knowledge files
-      count: 25
+      count: "{{SKILL_COUNT}}"
       pattern: "<domain>/expertise.yaml, question.md, self-improve.md, workflow.md"
 
     - path: packages/cli/src/core/skills/
       purpose: Auto-activating skills
-      count: 23
+      count: "{{SKILL_COUNT}}"
       pattern: "<skill>/SKILL.md"
 
   scripts:
@@ -67,10 +67,10 @@ relationships:
 
   - name: content_structure
     locations:
-      - "commands/ - 41 .md files"
-      - "agents/ - 26 .md files"
-      - "experts/ - 25 directories"
-      - "skills/ - 23 directories"
+      - "commands/ - {{COMMAND_COUNT}} .md files"
+      - "agents/ - {{AGENT_COUNT}} .md files"
+      - "experts/ - {{SKILL_COUNT}} directories"
+      - "skills/ - {{SKILL_COUNT}} directories"
     observation: "Consistent patterns across all content types"
 
 patterns:
@@ -78,9 +78,14 @@ patterns:
     description: "Placeholders replaced at install time"
     location: "lib/content-injector.js"
     placeholders:
-      - "<!-- {{AGENT_LIST}} -->"
-      - "<!-- {{COMMAND_LIST}} -->"
-    benefit: "Zero maintenance for lists"
+      - "{{COMMAND_COUNT}} - Number of commands"
+      - "{{AGENT_COUNT}} - Number of agents"
+      - "{{SKILL_COUNT}} - Number of skills"
+      - "{{VERSION}} - AgileFlow version"
+      - "{{INSTALL_DATE}} - Installation date"
+      - "<!-- {{AGENT_LIST}} --> - Full agent list"
+      - "<!-- {{COMMAND_LIST}} --> - Full command list"
+    benefit: "Zero maintenance for lists and counts"
 
   - name: IDE-Specific Installers
     description: "Separate installer per IDE"
@@ -116,7 +121,7 @@ learnings:
 
   - date: 2025-12-21
     context: "Analyzed content structure"
-    insight: "Consistent patterns: 41 commands, 26 agents, 25 experts, 23 skills - all use frontmatter markdown"
+    insight: "Consistent patterns: {{COMMAND_COUNT}} commands, {{AGENT_COUNT}} agents, {{SKILL_COUNT}} experts, {{SKILL_COUNT}} skills - all use frontmatter markdown"
     source: "packages/cli/src/core/"
 
   - date: 2025-12-21

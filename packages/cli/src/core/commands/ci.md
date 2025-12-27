@@ -1,5 +1,6 @@
 ---
 description: Bootstrap CI/CD workflow with testing and quality checks
+argument-hint: (no arguments)
 ---
 
 # ci-setup

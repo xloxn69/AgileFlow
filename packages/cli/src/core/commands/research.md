@@ -1,5 +1,6 @@
 ---
 description: Initialize research note with structured template
+argument-hint: (no arguments)
 ---
 
 # research-init

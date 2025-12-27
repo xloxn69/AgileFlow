@@ -1,5 +1,6 @@
 ---
 description: Display visual kanban board with WIP limits
+argument-hint: (no arguments)
 model: haiku
 ---
 

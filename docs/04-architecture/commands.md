@@ -1,6 +1,6 @@
 # Commands Reference
 
-AgileFlow provides **41 slash commands** for agile development workflows.
+AgileFlow provides **53 slash commands** for agile development workflows.
 
 ---
 
@@ -8,7 +8,6 @@ AgileFlow provides **41 slash commands** for agile development workflows.
 
 | Command | Description |
 |---------|-------------|
-| `/agileflow:setup` | Bootstrap the entire system - creates docs structure, templates, and configuration |
 | `/agileflow:help` | Display system overview and available commands |
 | `/agileflow:babysit` | Interactive mentor for end-to-end implementation |
 | `/agileflow:configure` | Interactive configuration menu for all AgileFlow features |
@@ -63,6 +62,7 @@ AgileFlow provides **41 slash commands** for agile development workflows.
 | `/agileflow:session:status` | View current session state and activity |
 | `/agileflow:session:end` | Cleanly end session and record summary |
 | `/agileflow:session:history` | View past session history and metrics |
+| `/agileflow:session:new` | Create a parallel session with git worktree |
 
 See [Session Harness](./session-harness.md) for details.
 
@@ -104,6 +104,7 @@ See [Session Harness](./session-harness.md) for details.
 |---------|-------------|
 | `/agileflow:context` | Generate/export context for web AI tools (ChatGPT, Perplexity, Gemini, Claude) |
 | `/agileflow:research` | Initialize research note with structured template |
+| `/agileflow:whats-new` | Show recent AgileFlow updates and version history |
 
 ---
 
@@ -134,6 +135,6 @@ Most commands accept parameters in `KEY=value` format:
 
 ## Related Documentation
 
-- [Subagents](./subagents.md) - 26 specialized agents
+- [Subagents](./subagents.md) - 27 specialized agents
 - [AgileFlow CLI Overview](./agileflow-cli-overview.md) - System architecture
 - [Command & Agent Flow](./command-agent-flow.md) - How commands and agents work together

@@ -1,5 +1,6 @@
 ---
 description: Generate stakeholder progress report
+argument-hint: (no arguments)
 ---
 
 # stakeholder-update

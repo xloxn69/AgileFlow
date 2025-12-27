@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '🚀 AgileFlow v2.19.0 loaded - Type /agileflow:help for commands'"
+            "command": "echo '🚀 AgileFlow v{{VERSION}} loaded - Type /agileflow:help for commands'"
           },
           {
             "type": "command",

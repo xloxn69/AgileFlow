@@ -40,6 +40,21 @@ fi
 echo "Starting release process for v$VERSION - $TITLE"
 echo ""
 
+# Step 0: Sync documentation counts
+echo "Step 0: Syncing component counts across documentation..."
+node scripts/sync-counts.js
+echo ""
+
+# Step 0.5: Validate documentation
+echo "Step 0.5: Validating documentation..."
+node scripts/validate-docs.js
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "⚠️  Documentation has staleness issues. Review above and fix before releasing."
+  echo "   (Continuing anyway - these are warnings, not blockers)"
+fi
+echo ""
+
 # Step 1: Sync README from root to CLI (root is source of truth)
 echo "Step 1: Syncing README.md from root to packages/cli/..."
 cp README.md packages/cli/README.md
