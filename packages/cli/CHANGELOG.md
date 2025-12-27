@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Standardized changelog format with human-readable summaries
 
-
 ## [2.59.0] - 2025-12-27
 
 ### Changed
@@ -85,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hooks system for event-driven automation
 - Status line integration for Claude Code
 
-[Unreleased]: https://github.com/projectquestorg/AgileFlow/compare/v2.59.0...HEAD
+[Unreleased]: https://github.com/projectquestorg/AgileFlow/compare/v2.60.0...HEAD
+[2.60.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.59.0...v2.60.0
 [2.59.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.58.0...v2.59.0
 [2.58.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.57.0...v2.58.0
 [2.57.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.56.0...v2.57.0

@@ -83,14 +83,14 @@ NEW_SECTION="## [${VERSION}] - ${DATE}\n\n"
 
 # Determine the appropriate category based on commits
 if [ "$HAS_FEAT" = true ]; then
-  NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n\n"
+  NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n"
 elif [ "$HAS_FIX" = true ]; then
-  NEW_SECTION="${NEW_SECTION}### Fixed\n- ${TITLE}\n\n"
+  NEW_SECTION="${NEW_SECTION}### Fixed\n- ${TITLE}\n"
 elif [ "$HAS_CHANGE" = true ]; then
-  NEW_SECTION="${NEW_SECTION}### Changed\n- ${TITLE}\n\n"
+  NEW_SECTION="${NEW_SECTION}### Changed\n- ${TITLE}\n"
 else
   # Default to Added if no conventional commits found
-  NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n\n"
+  NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n"
 fi
 
 # Insert new section after ## [Unreleased]
