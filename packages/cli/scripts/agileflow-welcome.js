@@ -18,6 +18,14 @@ const { execSync, spawnSync } = require('child_process');
 // Session manager path (relative to script location)
 const SESSION_MANAGER_PATH = path.join(__dirname, 'session-manager.js');
 
+// Update checker module
+let updateChecker;
+try {
+  updateChecker = require('./check-update.js');
+} catch (e) {
+  // Update checker not available
+}
+
 // ANSI color codes
 const c = {
   reset: '\x1b[0m',
@@ -322,6 +330,98 @@ function compareVersions(a, b) {
   return 0;
 }
 
+// Check for updates (async but we'll use sync approach for welcome)
+async function checkUpdates() {
+  const result = {
+    available: false,
+    installed: null,
+    latest: null,
+    justUpdated: false,
+    previousVersion: null,
+    autoUpdate: false,
+    changelog: [],
+  };
+
+  if (!updateChecker) return result;
+
+  try {
+    const updateInfo = await updateChecker.checkForUpdates();
+    result.installed = updateInfo.installed;
+    result.latest = updateInfo.latest;
+    result.available = updateInfo.updateAvailable;
+    result.justUpdated = updateInfo.justUpdated;
+    result.previousVersion = updateInfo.previousVersion;
+    result.autoUpdate = updateInfo.autoUpdate;
+
+    // If just updated, try to get changelog entries
+    if (result.justUpdated && result.installed) {
+      result.changelog = getChangelogEntries(result.installed);
+    }
+  } catch (e) {
+    // Silently fail - update check is non-critical
+  }
+
+  return result;
+}
+
+// Parse CHANGELOG.md for entries of a specific version
+function getChangelogEntries(version) {
+  const entries = [];
+
+  try {
+    // Look for CHANGELOG.md in .agileflow or package location
+    const possiblePaths = [
+      path.join(__dirname, '..', 'CHANGELOG.md'),
+      path.join(__dirname, 'CHANGELOG.md'),
+    ];
+
+    let changelogContent = null;
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        changelogContent = fs.readFileSync(p, 'utf8');
+        break;
+      }
+    }
+
+    if (!changelogContent) return entries;
+
+    // Find the section for this version
+    const versionPattern = new RegExp(`## \\[${version}\\].*?\\n([\\s\\S]*?)(?=## \\[|$)`);
+    const match = changelogContent.match(versionPattern);
+
+    if (match) {
+      // Extract bullet points from Added/Changed/Fixed sections
+      const lines = match[1].split('\n');
+      for (const line of lines) {
+        const bulletMatch = line.match(/^- (.+)$/);
+        if (bulletMatch && entries.length < 3) {
+          entries.push(bulletMatch[1]);
+        }
+      }
+    }
+  } catch (e) {
+    // Silently fail
+  }
+
+  return entries;
+}
+
+// Run auto-update if enabled
+async function runAutoUpdate(rootDir) {
+  try {
+    console.log(`${c.cyan}Updating AgileFlow...${c.reset}`);
+    execSync('npx agileflow update', {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: 'inherit',
+    });
+    return true;
+  } catch (e) {
+    console.log(`${c.yellow}Auto-update failed. Run manually: npx agileflow update${c.reset}`);
+    return false;
+  }
+}
+
 function getFeatureVersions(rootDir) {
   const result = {
     hooks: { version: null, outdated: false },
@@ -394,7 +494,7 @@ function truncate(str, maxLen, suffix = '..') {
   return str.substring(0, cutIndex) + suffix;
 }
 
-function formatTable(info, archival, session, precompact, parallelSessions) {
+function formatTable(info, archival, session, precompact, parallelSessions, updateInfo = {}) {
   const W = 58; // inner width
   const R = W - 24; // right column width (34 chars)
   const lines = [];
@@ -407,25 +507,66 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
     return `${c.dim}${box.v}${c.reset} ${pad(leftStr, 20)} ${c.dim}${box.v}${c.reset} ${pad(rightStr, R)} ${c.dim}${box.v}${c.reset}`;
   };
 
+  // Helper for full-width row (spans both columns)
+  const fullRow = (content, color = '') => {
+    const contentStr = `${color}${content}${color ? c.reset : ''}`;
+    return `${c.dim}${box.v}${c.reset} ${pad(contentStr, W - 1)} ${c.dim}${box.v}${c.reset}`;
+  };
+
   const divider = () =>
     `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
+  const fullDivider = () =>
+    `${c.dim}${box.lT}${box.h.repeat(W)}${box.rT}${c.reset}`;
   const topBorder = `${c.dim}${box.tl}${box.h.repeat(22)}${box.tT}${box.h.repeat(W - 22)}${box.tr}${c.reset}`;
   const bottomBorder = `${c.dim}${box.bl}${box.h.repeat(22)}${box.bT}${box.h.repeat(W - 22)}${box.br}${c.reset}`;
 
-  // Header (truncate branch name if too long)
+  // Header with version and optional update indicator
   const branchColor =
     info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
-  // Fixed parts: "agileflow " (10) + "v" (1) + version + "  " (2) + " (" (2) + commit (7) + ")" (1) = 23 + version.length
-  const maxBranchLen = W - 1 - 23 - info.version.length;
+
+  // Build version string with update status
+  let versionStr = `v${info.version}`;
+  if (updateInfo.justUpdated && updateInfo.previousVersion) {
+    versionStr = `v${info.version} ${c.green}✓${c.reset}${c.dim} (was v${updateInfo.previousVersion})`;
+  } else if (updateInfo.available && updateInfo.latest) {
+    versionStr = `v${info.version} ${c.yellow}↑${updateInfo.latest}${c.reset}`;
+  }
+
+  // Calculate remaining space for branch
+  const versionVisibleLen = updateInfo.justUpdated
+    ? info.version.length + 20 + (updateInfo.previousVersion?.length || 0)
+    : updateInfo.available
+      ? info.version.length + 3 + (updateInfo.latest?.length || 0)
+      : info.version.length;
+  const maxBranchLen = W - 1 - 15 - versionVisibleLen;
   const branchDisplay =
     info.branch.length > maxBranchLen
-      ? info.branch.substring(0, maxBranchLen - 2) + '..'
+      ? info.branch.substring(0, Math.max(5, maxBranchLen - 2)) + '..'
       : info.branch;
-  const header = `${c.brand}${c.bold}agileflow${c.reset} ${c.dim}v${info.version}${c.reset}  ${branchColor}${branchDisplay}${c.reset} ${c.dim}(${info.commit})${c.reset}`;
+
+  const header = `${c.brand}${c.bold}agileflow${c.reset} ${c.dim}${versionStr}${c.reset}  ${branchColor}${branchDisplay}${c.reset} ${c.dim}(${info.commit})${c.reset}`;
   const headerLine = `${c.dim}${box.v}${c.reset} ${pad(header, W - 1)} ${c.dim}${box.v}${c.reset}`;
 
   lines.push(topBorder);
   lines.push(headerLine);
+
+  // Show update available notification
+  if (updateInfo.available && updateInfo.latest && !updateInfo.justUpdated) {
+    lines.push(fullDivider());
+    lines.push(fullRow(`↑ Update available: v${updateInfo.latest}`, c.yellow));
+    lines.push(fullRow(`  Run: npx agileflow update`, c.dim));
+  }
+
+  // Show "just updated" changelog
+  if (updateInfo.justUpdated && updateInfo.changelog && updateInfo.changelog.length > 0) {
+    lines.push(fullDivider());
+    lines.push(fullRow(`What's new in v${info.version}:`, c.green));
+    for (const entry of updateInfo.changelog.slice(0, 2)) {
+      lines.push(fullRow(`• ${truncate(entry, W - 4)}`, c.dim));
+    }
+    lines.push(fullRow(`Run /agileflow:whats-new for full changelog`, c.dim));
+  }
+
   lines.push(divider());
 
   // Stories section
@@ -535,7 +676,7 @@ function formatTable(info, archival, session, precompact, parallelSessions) {
 }
 
 // Main
-function main() {
+async function main() {
   const rootDir = getProjectRoot();
   const info = getProjectInfo(rootDir);
   const archival = runArchival(rootDir);
@@ -543,7 +684,29 @@ function main() {
   const precompact = checkPreCompact(rootDir);
   const parallelSessions = checkParallelSessions(rootDir);
 
-  console.log(formatTable(info, archival, session, precompact, parallelSessions));
+  // Check for updates (async, cached)
+  let updateInfo = {};
+  try {
+    updateInfo = await checkUpdates();
+
+    // If auto-update is enabled and update available, run it
+    if (updateInfo.available && updateInfo.autoUpdate) {
+      const updated = await runAutoUpdate(rootDir);
+      if (updated) {
+        // Re-run welcome after update (the new version will show changelog)
+        return;
+      }
+    }
+
+    // Mark current version as seen to track for next update
+    if (updateInfo.justUpdated && updateChecker) {
+      updateChecker.markVersionSeen(info.version);
+    }
+  } catch (e) {
+    // Update check failed - continue without it
+  }
+
+  console.log(formatTable(info, archival, session, precompact, parallelSessions, updateInfo));
 
   // Show warning and tip if other sessions are active
   if (parallelSessions.otherActive > 0) {
@@ -554,4 +717,4 @@ function main() {
   }
 }
 
-main();
+main().catch(console.error);
