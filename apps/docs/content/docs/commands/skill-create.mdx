@@ -1,0 +1,248 @@
+---
+title: /agileflow:skill:create
+description: Generate custom skills with web research, cookbook patterns, and MCP integration
+---
+
+# /agileflow:skill:create
+
+Generate dynamic, research-backed skills that combine web documentation, user's local docs, and codebase patterns.
+
+## Quick Start
+
+```bash
+/agileflow:skill:create
+```
+
+Optionally provide a skill name hint:
+
+```bash
+/agileflow:skill:create supabase-swift
+```
+
+## How It Works
+
+This command generates custom skills through comprehensive research of three sources:
+
+1. **Web Documentation** - Official docs, API references, best practices
+2. **Local Documentation** - Your project's practices and architecture decisions
+3. **Codebase Patterns** - Existing code patterns and conventions in your project
+
+## Workflow
+
+### Phase 1: Requirements Gathering
+
+The command asks what skill you'd like to create:
+
+- Describe what you need
+- Database integration (Supabase, PostgreSQL, MongoDB)
+- API integration (REST APIs, GraphQL, webhooks)
+- UI/Frontend (Components, styling, design systems)
+- Development workflow (Testing, deployment, CI/CD)
+
+You provide details about:
+- Technology or framework
+- Primary use cases
+- Target workflow
+
+### Phase 2: Plan Mode Research
+
+The command enters plan mode to research:
+
+**Web Documentation**
+- Searches for official documentation and best practices
+- Collects URLs (doesn't copy content)
+- Finds GitHub repositories and tutorials
+
+**Local Documentation**
+- Scans your `docs/` directory for relevant practices
+- Checks `docs/02-practices/` for development guidelines
+- Looks at `docs/04-architecture/` for design decisions
+- Finds existing documentation about the technology
+
+**Codebase Patterns**
+- Explores existing code for patterns
+- Identifies design systems and component structures
+- Finds database client setups and middleware patterns
+- Documents error handling and styling approaches
+
+**MCP Servers**
+- Searches for Model Context Protocol servers for the technology
+- Notes the package name and documentation
+
+### Phase 3: Skill Generation
+
+Based on research, the command generates:
+
+**SKILL.md** - Main skill file containing:
+- Activation triggers (when to use)
+- Project context and local patterns
+- Cookbook workflows for different use cases
+- Quick reference table
+- MCP integration (if available)
+- Common mistakes to avoid
+
+**references.md** - Complete documentation guide with:
+- External documentation links
+- Local project documentation
+- Codebase patterns with code examples
+- MCP server information
+
+**cookbook/** - Use-case specific workflows:
+- Prerequisites for each workflow
+- Step-by-step instructions
+- Code examples
+- Troubleshooting guides
+
+**.mcp.json** - MCP server configuration (if applicable)
+
+### Phase 4: Preview & Confirmation
+
+The command shows:
+- Generated skill structure
+- Preview of SKILL.md content
+- Option to create, edit, or cancel
+
+### Phase 5: File Creation
+
+Once confirmed:
+- Creates `.claude/skills/<skill-name>/` directory
+- Writes all files
+- Verifies creation
+
+## Generated Skill Structure
+
+```
+.claude/skills/<skill-name>/
+├── SKILL.md              # Main skill file with activation triggers and cookbook
+├── references.md         # Links to web docs, local docs, and code patterns
+├── cookbook/             # Per-use-case workflows
+│   ├── use-case-1.md
+│   └── use-case-2.md
+└── .mcp.json            # MCP server config (if applicable)
+```
+
+## Example Output
+
+When creating a Supabase Swift skill:
+
+```
+🔍 Researching supabase-swift...
+
+Found Web Documentation:
+  • Supabase Swift SDK docs
+  • API reference guide
+  • GitHub repository
+
+Found Local Documentation:
+  • docs/02-practices/database.md
+  • docs/04-architecture/data-layer.md
+
+Found Codebase Patterns:
+  • src/lib/supabase.ts (existing client setup)
+  • src/models/ (database model patterns)
+
+Found MCP Server:
+  • @supabase/mcp-server
+
+Generating skill structure...
+```
+
+## Parameters
+
+This command uses interactive prompts (AskUserQuestion) instead of command-line parameters.
+
+| Option | Description |
+|--------|-------------|
+| Skill name | What you want to build (technology or domain) |
+| Technology details | Framework, primary use cases |
+| MCP integration | Whether to include MCP server if available |
+
+## Skill Features
+
+### Activation Triggers
+
+Each skill includes "When to Use" section with keywords that trigger its use:
+
+```
+This skill activates when:
+- Building Supabase features in Swift apps
+- Need authentication or real-time data
+- Keywords: "Supabase", "Swift", "database", "authentication"
+```
+
+### Cookbook Patterns
+
+Multi-use-case skills include workflows for:
+
+- CRUD operations
+- Authentication
+- Real-time subscriptions
+- Data migrations
+- Error handling
+
+### MCP Integration
+
+If an MCP server is found, the skill includes:
+- Server configuration
+- Tools provided by the server
+- Setup instructions
+- Copy-to-project guidance
+
+## When to Create Skills
+
+Create a custom skill when you need to:
+
+- **Master a new technology** in your project context
+- **Establish patterns** for a common workflow
+- **Integrate external tools** with your codebase
+- **Document domain expertise** for team consistency
+- **Automate repetitive processes** with research-backed guidance
+
+## Best Practices
+
+1. **Use descriptive names** - `supabase-swift` not just `database`
+2. **Include cookbook entries** - Multiple use cases make skills reusable
+3. **Link to local patterns** - Reference your project's conventions
+4. **Add troubleshooting** - Anticipate common problems
+5. **Update references** - Keep documentation links current
+
+## Related Commands
+
+- [`/agileflow:skill:list`](/commands/skill-list) - View all installed skills
+- [`/agileflow:skill:edit`](/commands/skill-edit) - Modify an existing skill
+- [`/agileflow:skill:delete`](/commands/skill-delete) - Remove a skill
+- [`/agileflow:skill:test`](/commands/skill-test) - Verify a skill works
+
+## How Skills Are Used
+
+After creation, the skill is stored in `.claude/skills/` and can be:
+
+1. **Referenced in projects** - Copy the skill directory to another project
+2. **Shared with teammates** - Commit to version control or share directly
+3. **Tested and refined** - Use `/agileflow:skill:test` to validate
+4. **Integrated with Claude Code** - Automatically loaded as context
+5. **Exported and versioned** - Manage as part of your team's knowledge base
+
+## Troubleshooting
+
+### Web Search Returns No Results
+
+- Ask you to provide a documentation URL
+- Creates skill with generic patterns
+- Includes note to review manually
+
+### MCP Server Not Found
+
+- Creates skill without `.mcp.json`
+- Adds note in SKILL.md for manual MCP setup later
+- Provides instructions for adding MCP configuration
+
+### Validation Errors
+
+Before writing files, the command validates:
+- Skill name uses only letters, numbers, hyphens
+- Description is under 1024 characters
+- SKILL.md body is under 500 lines
+- All referenced files exist
+
+If errors occur, the command offers to fix automatically.

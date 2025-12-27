@@ -10,7 +10,7 @@ AgileFlow is distributed as an npm package that installs directly into your proj
 ## Prerequisites
 
 - **Node.js** 18.0 or higher
-- **Claude Code**, **Cursor**, or **Windsurf**
+- **Claude Code**, **Cursor**, **Windsurf**, or **OpenAI Codex CLI**
 - A Git repository for your project
 
 ## Quick Install
@@ -154,7 +154,7 @@ All commands become available as `/agileflow:command-name` in Claude Code:
 | `/agileflow:board` | View kanban board |
 | `/agileflow:babysit` | Start guided implementation |
 
-See the [full command reference](/commands) for all 40+ commands.
+See the [full command reference](/commands) for all 53 commands.
 
 ## Verify Installation
 
@@ -174,8 +174,9 @@ AgileFlow works with multiple AI-powered IDEs:
 | IDE | Status | Config Location |
 |-----|--------|-----------------|
 | Claude Code | Supported | `.claude/commands/agileflow/` |
-| Cursor | Supported | `.cursor/rules/agileflow/` |
+| Cursor | Supported | `.cursor/commands/agileflow/` |
 | Windsurf | Supported | `.windsurf/workflows/agileflow/` |
+| OpenAI Codex CLI | Supported | `.codex/skills/` and `~/.codex/prompts/` |
 
 ### IDE-Specific Setup
 
@@ -188,6 +189,9 @@ agileflow setup --ide cursor
 
 # Windsurf
 agileflow setup --ide windsurf
+
+# OpenAI Codex CLI
+agileflow setup --ide codex
 ```
 
 ## Configuration

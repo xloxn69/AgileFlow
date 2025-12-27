@@ -1,0 +1,333 @@
+---
+title: /agileflow:skill:edit
+description: Edit an existing skill's SKILL.md, cookbook entries, or references
+---
+
+# /agileflow:skill:edit
+
+Modify an existing skill in `.claude/skills/` with support for various editing modes.
+
+## Quick Start
+
+```bash
+# Interactive mode - select which skill to edit
+/agileflow:skill:edit
+
+# Edit a specific skill
+/agileflow:skill:edit supabase-swift
+```
+
+## How It Works
+
+This command allows you to update any part of an installed skill:
+
+1. **Select which skill** to edit (or provide skill name)
+2. **Choose what to edit** (SKILL.md, references, cookbook, etc.)
+3. **Select edit mode** (describe changes, full rewrite, etc.)
+4. **Preview changes** before saving
+5. **Confirm and save**
+
+## Workflow
+
+### Step 1: Select Skill to Edit
+
+If you don't provide a skill name, the command lists available skills:
+
+```
+Which skill would you like to edit?
+  • supabase-swift
+  • ui-components
+  • api-integration
+```
+
+The selection prompt shows:
+- Skill name
+- Description from SKILL.md
+- Checkbox for each option
+
+### Step 2: Show Skill Structure
+
+The command displays the current skill's files:
+
+```
+📝 Editing: supabase-swift
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Files:
+  1. SKILL.md (main skill file)
+  2. references.md (documentation links)
+  3. cookbook/crud-operations.md
+  4. cookbook/authentication.md
+  5. .mcp.json (MCP configuration)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Step 3: Choose What to Edit
+
+```
+What would you like to modify?
+  • SKILL.md - Edit main skill instructions
+  • references.md - Update documentation links
+  • Cookbook entry - Edit a specific workflow
+  • Add new cookbook - Create a new workflow
+  • MCP configuration - Modify MCP server settings
+  • Rename skill - Change skill name and folder
+```
+
+### Step 4: Select Edit Mode
+
+For the chosen file, select how to edit:
+
+```
+How would you like to modify this file?
+  • Describe changes - Tell me what to change and I'll update it
+  • Add content - Append new sections or examples
+  • Replace section - Rewrite a specific section
+  • Full rewrite - Regenerate with research (Recommended)
+  • Cancel - Return without changes
+```
+
+#### Describe Changes
+
+- You describe what to modify
+- Command reads current file
+- Applies your described modifications
+- Shows diff preview
+
+#### Add Content
+
+- Appends new sections or examples
+- Preserves existing content
+- Good for adding cookbook entries or examples
+
+#### Replace Section
+
+- You specify which section to rewrite
+- Replaces only that part
+- Keeps rest of file intact
+
+#### Full Rewrite
+
+- Enters plan mode to research
+- Gathers updated web docs, local docs, codebase patterns
+- Regenerates file with new research
+- Best for major updates
+
+### Step 5: Show Diff and Confirm
+
+The command displays what will change:
+
+```
+📝 Changes to SKILL.md:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- old line content
++ new line content
+- another old line
++ updated content here
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then asks for confirmation:
+
+```
+Apply these changes?
+  • Yes, save changes
+  • No, discard
+  • Edit more
+```
+
+### Step 6: Write Changes
+
+If confirmed:
+- Writes updated file
+- Shows success message
+- Offers to edit more or perform other actions
+
+## Special Edits
+
+### Rename Skill
+
+To rename a skill:
+
+1. Choose "Rename skill" option
+2. Provide new name (letters, numbers, hyphens only)
+3. Confirm the change
+4. Command creates new directory and updates SKILL.md
+5. Deletes old directory
+
+Example:
+
+```bash
+/agileflow:skill:edit my-skill
+# Choose: Rename skill
+# New name: my-improved-skill
+# ✅ Skill renamed to: my-improved-skill
+```
+
+### Add Cookbook Entry
+
+To add a new workflow to a skill:
+
+1. Choose "Add new cookbook"
+2. Provide use case name
+3. Command creates from template: `cookbook/<use-case>.md`
+4. Updates SKILL.md to reference new entry
+5. Shows diff and asks for confirmation
+
+## Cookbook Template
+
+When creating new cookbook entries, they follow this structure:
+
+```markdown
+# <Use Case Title>
+
+<Brief description of this workflow.>
+
+## Prerequisites
+
+- <Prerequisite 1>
+- <Prerequisite 2>
+
+## Instructions
+
+1. **<Step 1>**:
+   <Details>
+
+2. **<Step 2>**:
+   ```<language>
+   <code example>
+   ```
+
+3. **<Step 3>**:
+   <Details>
+
+## Example
+
+**Input**: <sample>
+**Output**: <result>
+
+## Troubleshooting
+
+- **<Problem>**: <Solution>
+```
+
+## What You Can Edit
+
+### SKILL.md
+
+The main skill file containing:
+- Name and description
+- Activation triggers ("When to Use")
+- Project context
+- Cookbook guide
+- Quick reference
+- MCP integration
+- Common mistakes
+
+Good for:
+- Updating activation triggers
+- Adding common mistakes
+- Improving descriptions
+- Refining cookbook references
+
+### references.md
+
+Documentation links file containing:
+- External documentation URLs
+- Local project documentation references
+- Codebase patterns with examples
+- MCP server information
+
+Good for:
+- Updating outdated URLs
+- Adding new documentation links
+- Including new codebase patterns
+- Fixing broken references
+
+### Cookbook Entries
+
+Use-case specific workflows containing:
+- Prerequisites
+- Step-by-step instructions
+- Code examples
+- Troubleshooting
+
+Good for:
+- Adding new use cases
+- Improving step clarity
+- Adding more examples
+- Fixing troubleshooting sections
+
+### MCP Configuration
+
+.mcp.json file containing:
+- MCP server settings
+- Command and arguments
+- Environment variables
+
+Good for:
+- Updating server package version
+- Adding environment variables
+- Changing command parameters
+
+## Error Handling
+
+### Skill Not Found
+
+```
+❌ Skill "<name>" not found.
+
+Available skills:
+  - supabase-swift
+  - ui-components
+
+Use /agileflow:skill:list to see all skills.
+```
+
+### No Skills Installed
+
+```
+❌ No skills installed yet.
+
+Create a skill first: /agileflow:skill:create
+```
+
+### Invalid File Selection
+
+If the selected file doesn't exist:
+
+```
+❌ File not found: cookbook/nonexistent.md
+
+Available files in <skill-name>:
+  - SKILL.md
+  - references.md
+  - cookbook/crud.md
+```
+
+## Best Practices
+
+1. **Use "Full rewrite" for major updates** - Ensures research is current
+2. **Use "Describe changes" for small fixes** - Faster for minor edits
+3. **Preview before confirming** - Always review diffs
+4. **Keep descriptions concise** - Under 1024 characters
+5. **Update references when changing technology** - Keep URLs current
+6. **Add troubleshooting sections** - Anticipate user problems
+7. **Include multiple cookbook entries** - Different use cases need different workflows
+
+## Related Commands
+
+- [`/agileflow:skill:create`](/commands/skill-create) - Generate a new skill
+- [`/agileflow:skill:list`](/commands/skill-list) - View all installed skills
+- [`/agileflow:skill:delete`](/commands/skill-delete) - Remove a skill
+- [`/agileflow:skill:test`](/commands/skill-test) - Verify changes work
+
+## Tips
+
+- **Edit frequently** - Keep skills current with your project
+- **Add cookbook entries** - Complex skills benefit from multiple workflows
+- **Share updates** - Commit edited skills to version control
+- **Document changes** - Note why you updated something for team clarity
