@@ -32,6 +32,7 @@ module.exports = {
   options: [
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
     ['--force', 'Force reinstall (skip prompts; overwrites local changes)'],
+    ['--ides <list>', 'Comma-separated list of IDEs to update (overrides manifest)'],
     ['--no-self-update', 'Skip automatic CLI self-update check'],
     ['--self-updated', 'Internal flag: indicates CLI was already self-updated'],
   ],
@@ -56,6 +57,7 @@ module.exports = {
         const args = ['agileflow@latest', 'update', '--self-updated'];
         if (options.directory) args.push('-d', options.directory);
         if (options.force) args.push('--force');
+        if (options.ides) args.push('--ides', options.ides);
 
         const result = spawnSync('npx', args, {
           stdio: 'inherit',
@@ -88,10 +90,10 @@ module.exports = {
 
       const latestVersion = npmLatestVersion || localCliVersion;
 
-      console.log(chalk.bold('Installed:   '), status.version);
-      console.log(chalk.bold('CLI version: '), localCliVersion);
+      console.log(chalk.bold('Currently installed:'), status.version);
+      console.log(chalk.bold('CLI version:        '), localCliVersion);
       if (npmLatestVersion) {
-        console.log(chalk.bold('Latest (npm):'), npmLatestVersion);
+        console.log(chalk.bold('Latest (npm):       '), npmLatestVersion);
       }
 
       // If we self-updated, show confirmation
@@ -136,10 +138,25 @@ module.exports = {
       // Get docs folder name from metadata (or default to 'docs')
       const docsFolder = await getDocsFolderName(directory);
 
+      // Determine which IDEs to update
+      let idesToUpdate;
+      if (options.ides) {
+        // User explicitly specified IDEs via --ides flag
+        idesToUpdate = options.ides.split(',').map(ide => ide.trim().toLowerCase());
+        console.log(chalk.dim(`Updating specified IDEs: ${idesToUpdate.join(', ')}`));
+      } else {
+        // Use IDEs from manifest
+        idesToUpdate = status.ides || ['claude-code'];
+        if (idesToUpdate.length > 1) {
+          console.log(chalk.dim(`IDEs to update (from manifest): ${idesToUpdate.join(', ')}`));
+          console.log(chalk.dim(`  Tip: Use --ides=claude-code to update only specific IDEs\n`));
+        }
+      }
+
       // Re-run installation with existing config from manifest
       const config = {
         directory,
-        ides: status.ides || ['claude-code'],
+        ides: idesToUpdate,
         userName: status.userName || 'Developer',
         agileflowFolder: status.agileflowFolder || path.basename(status.path),
         docsFolder: status.docsFolder || docsFolder,

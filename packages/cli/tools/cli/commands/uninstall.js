@@ -19,6 +19,7 @@ module.exports = {
   description: 'Remove AgileFlow from a project',
   options: [
     ['-d, --directory <path>', 'Project directory (default: current directory)'],
+    ['--ide <name>', 'Remove only a specific IDE (e.g., windsurf, cursor)'],
     ['--force', 'Skip confirmation prompt'],
   ],
   action: async options => {
@@ -35,6 +36,68 @@ module.exports = {
         process.exit(0);
       }
 
+      // Check if removing just one IDE
+      if (options.ide) {
+        const ideName = options.ide.toLowerCase();
+        displaySection('Removing IDE Configuration', `IDE: ${formatIdeName(ideName)}`);
+
+        if (!status.ides || !status.ides.includes(ideName)) {
+          warning(`${formatIdeName(ideName)} is not configured in this installation`);
+          console.log(chalk.dim(`Configured IDEs: ${(status.ides || []).join(', ') || 'none'}\n`));
+          process.exit(0);
+        }
+
+        // Confirm removal
+        if (!options.force) {
+          const proceed = await confirm(
+            `Remove ${formatIdeName(ideName)} configuration?`,
+            false
+          );
+          if (!proceed) {
+            console.log(chalk.dim('\nCancelled\n'));
+            process.exit(0);
+          }
+        }
+
+        console.log();
+
+        // Remove the IDE configuration
+        const configPath = getIdeConfigPath(directory, ideName);
+        if (await fs.pathExists(configPath)) {
+          await fs.remove(configPath);
+          success(`Removed ${formatIdeName(ideName)} configuration`);
+        }
+
+        // Also remove spawnable agents for claude-code
+        if (ideName === 'claude-code') {
+          const agentsPath = path.join(directory, '.claude', 'agents', 'agileflow');
+          if (await fs.pathExists(agentsPath)) {
+            await fs.remove(agentsPath);
+            success('Removed spawnable agents');
+          }
+        }
+
+        // Update the manifest to remove this IDE
+        const manifestPath = path.join(status.path, '_cfg', 'manifest.yaml');
+        if (await fs.pathExists(manifestPath)) {
+          const yaml = require('js-yaml');
+          const manifestContent = await fs.readFile(manifestPath, 'utf8');
+          const manifest = yaml.load(manifestContent);
+          manifest.ides = (manifest.ides || []).filter(ide => ide !== ideName);
+          manifest.updated_at = new Date().toISOString();
+          await fs.writeFile(manifestPath, yaml.dump(manifest), 'utf8');
+          success('Updated manifest');
+        }
+
+        console.log(chalk.green(`\n${formatIdeName(ideName)} has been removed.\n`));
+        if (status.ides.length > 1) {
+          console.log(chalk.dim(`Remaining IDEs: ${status.ides.filter(i => i !== ideName).join(', ')}\n`));
+        }
+
+        process.exit(0);
+      }
+
+      // Full uninstall
       displaySection('Uninstalling AgileFlow', `Location: ${status.path}`);
 
       // Confirm uninstall
@@ -55,6 +118,13 @@ module.exports = {
           if (await fs.pathExists(configPath)) {
             await fs.remove(configPath);
             success(`Removed ${formatIdeName(ide)} configuration`);
+          }
+          // Also remove spawnable agents for claude-code
+          if (ide === 'claude-code') {
+            const agentsPath = path.join(directory, '.claude', 'agents', 'agileflow');
+            if (await fs.pathExists(agentsPath)) {
+              await fs.remove(agentsPath);
+            }
           }
         }
       }
