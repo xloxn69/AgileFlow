@@ -39,43 +39,16 @@ module.exports = {
     try {
       const directory = path.resolve(options.directory || '.');
 
-      displayLogo();
-
-      // Check for existing installation
-      const status = await installer.getStatus(directory);
-
-      if (!status.installed) {
-        warning('No AgileFlow installation found');
-        console.log(chalk.dim(`\nRun 'npx agileflow setup' to set up AgileFlow\n`));
-        process.exit(1);
-      }
-
-      displaySection('Updating AgileFlow', `Current version: ${status.version}`);
-
-      // Get local CLI version and npm registry version
+      // Get local CLI version and npm registry version early to decide on self-update
       const packageJson = require(path.join(__dirname, '..', '..', '..', 'package.json'));
       const localCliVersion = packageJson.version;
-
-      console.log(chalk.dim('Checking npm registry for latest version...'));
       const npmLatestVersion = await getLatestVersion('agileflow');
 
-      if (!npmLatestVersion) {
-        warning('Could not check npm registry for latest version');
-        console.log(chalk.dim('Continuing with local CLI version...\n'));
-      }
-
-      const latestVersion = npmLatestVersion || localCliVersion;
-
-      console.log(chalk.bold('Installed:   '), status.version);
-      console.log(chalk.bold('CLI version: '), localCliVersion);
-      if (npmLatestVersion) {
-        console.log(chalk.bold('Latest (npm):'), npmLatestVersion);
-      }
-
-      // Self-update: if CLI is outdated and we haven't already self-updated, re-run with latest
+      // Self-update check: if CLI is outdated and we haven't already self-updated, re-run with latest
       const shouldSelfUpdate = options.selfUpdate !== false && !options.selfUpdated;
       if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion) && shouldSelfUpdate) {
-        console.log();
+        // Don't show logo - the self-updated process will show it
+        console.log(chalk.hex('#e8683a').bold('\n  AgileFlow CLI Update\n'));
         info(`Updating CLI from v${localCliVersion} to v${npmLatestVersion}...`);
         console.log(chalk.dim('  Fetching latest version from npm...\n'));
 
@@ -92,6 +65,33 @@ module.exports = {
 
         // Exit with the same code as the spawned process
         process.exit(result.status ?? 0);
+      }
+
+      // Now show the logo (either first run without update, or after self-update)
+      displayLogo();
+
+      // Check for existing installation
+      const status = await installer.getStatus(directory);
+
+      if (!status.installed) {
+        warning('No AgileFlow installation found');
+        console.log(chalk.dim(`\nRun 'npx agileflow setup' to set up AgileFlow\n`));
+        process.exit(1);
+      }
+
+      displaySection('Updating AgileFlow', `Current version: ${status.version}`);
+
+      if (!npmLatestVersion) {
+        warning('Could not check npm registry for latest version');
+        console.log(chalk.dim('Continuing with local CLI version...\n'));
+      }
+
+      const latestVersion = npmLatestVersion || localCliVersion;
+
+      console.log(chalk.bold('Installed:   '), status.version);
+      console.log(chalk.bold('CLI version: '), localCliVersion);
+      if (npmLatestVersion) {
+        console.log(chalk.bold('Latest (npm):'), npmLatestVersion);
       }
 
       // If we self-updated, show confirmation

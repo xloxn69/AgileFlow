@@ -46,7 +46,8 @@ module.exports = {
         const npmLatestVersion = await getLatestVersion('agileflow');
 
         if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion)) {
-          displayLogo();
+          // Don't show logo here - it will be shown by promptInstall() or after self-update
+          console.log(chalk.hex('#e8683a').bold('\n  AgileFlow Update Available\n'));
           info(`Newer version available: v${localCliVersion} → v${npmLatestVersion}`);
           console.log(chalk.dim('  Fetching latest version from npm...\n'));
 
@@ -69,7 +70,10 @@ module.exports = {
       // If we self-updated, show confirmation
       if (options.selfUpdated) {
         const packageJson = require(path.join(__dirname, '..', '..', '..', 'package.json'));
-        displayLogo();
+        // Only show logo here if using -y flag (since promptInstall won't be called)
+        if (options.yes) {
+          displayLogo();
+        }
         success(`Using latest CLI v${packageJson.version}`);
         console.log();
       }
