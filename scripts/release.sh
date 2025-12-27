@@ -59,47 +59,37 @@ else
   COMMITS=$(git log --pretty=format:"%s" --no-merges -20 2>/dev/null || echo "")
 fi
 
-# Parse commits into categories
-ADDED=""
-CHANGED=""
-FIXED=""
+# Determine category from commits (for section header)
+HAS_FEAT=false
+HAS_FIX=false
+HAS_CHANGE=false
 
 while IFS= read -r commit; do
   [ -z "$commit" ] && continue
-  # Skip version bump commits
   [[ "$commit" == *"bump version"* ]] && continue
   [[ "$commit" == *"chore: bump"* ]] && continue
 
   if [[ "$commit" == feat:* ]] || [[ "$commit" == feat\(*\):* ]]; then
-    # Remove prefix and add to ADDED
-    msg=$(echo "$commit" | sed 's/^feat[^:]*: //')
-    ADDED="${ADDED}- ${msg}\n"
+    HAS_FEAT=true
   elif [[ "$commit" == fix:* ]] || [[ "$commit" == fix\(*\):* ]]; then
-    msg=$(echo "$commit" | sed 's/^fix[^:]*: //')
-    FIXED="${FIXED}- ${msg}\n"
-  elif [[ "$commit" == refactor:* ]] || [[ "$commit" == perf:* ]] || [[ "$commit" == chore:* ]]; then
-    msg=$(echo "$commit" | sed 's/^[a-z]*[^:]*: //')
-    CHANGED="${CHANGED}- ${msg}\n"
+    HAS_FIX=true
+  elif [[ "$commit" == refactor:* ]] || [[ "$commit" == perf:* ]] || [[ "$commit" == chore:* ]] || [[ "$commit" == docs:* ]]; then
+    HAS_CHANGE=true
   fi
 done <<< "$COMMITS"
 
-# Build the new changelog section
+# Build the new changelog section using TITLE as main description
 NEW_SECTION="## [${VERSION}] - ${DATE}\n\n"
 
-if [ -n "$ADDED" ]; then
-  NEW_SECTION="${NEW_SECTION}### Added\n${ADDED}\n"
-fi
-
-if [ -n "$CHANGED" ]; then
-  NEW_SECTION="${NEW_SECTION}### Changed\n${CHANGED}\n"
-fi
-
-if [ -n "$FIXED" ]; then
-  NEW_SECTION="${NEW_SECTION}### Fixed\n${FIXED}\n"
-fi
-
-# If no categorized commits, add the title as the main change
-if [ -z "$ADDED" ] && [ -z "$CHANGED" ] && [ -z "$FIXED" ]; then
+# Determine the appropriate category based on commits
+if [ "$HAS_FEAT" = true ]; then
+  NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n\n"
+elif [ "$HAS_FIX" = true ]; then
+  NEW_SECTION="${NEW_SECTION}### Fixed\n- ${TITLE}\n\n"
+elif [ "$HAS_CHANGE" = true ]; then
+  NEW_SECTION="${NEW_SECTION}### Changed\n- ${TITLE}\n\n"
+else
+  # Default to Added if no conventional commits found
   NEW_SECTION="${NEW_SECTION}### Added\n- ${TITLE}\n\n"
 fi
 

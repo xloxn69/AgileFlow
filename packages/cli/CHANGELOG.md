@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.59.0] - 2025-12-27
 
-### Added
-- auto-update CHANGELOG.md in release script
+### Changed
+- Automated CHANGELOG.md updates in release script
 
+## [2.58.0] - 2025-12-27
+
+### Added
+- Auto-update configuration via `/agileflow:configure --enable=autoupdate`
+
+### Fixed
+- Metadata merge for nested `updates` object in configure script
 
 ## [2.57.0] - 2025-12-27
 
@@ -19,11 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-update system with configurable check frequency
 - Update notifications in welcome message and status line
 - Changelog display after updates showing what's new
+- `/agileflow:whats-new` command for viewing full changelog
 
 ## [2.56.0] - 2025-12-27
 
 ### Added
-- Dynamic IDE discovery - IDEs auto-detected from handlers
+- Dynamic IDE discovery with auto-detection from handlers
 - OpenAI Codex CLI now appears in setup IDE selection
 
 ### Changed
@@ -71,7 +79,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hooks system for event-driven automation
 - Status line integration for Claude Code
 
-[Unreleased]: https://github.com/projectquestorg/AgileFlow/compare/v2.57.0...HEAD
+[Unreleased]: https://github.com/projectquestorg/AgileFlow/compare/v2.59.0...HEAD
+[2.59.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.58.0...v2.59.0
+[2.58.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.57.0...v2.58.0
 [2.57.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.56.0...v2.57.0
 [2.56.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.55.0...v2.56.0
 [2.55.0]: https://github.com/projectquestorg/AgileFlow/compare/v2.54.0...v2.55.0
