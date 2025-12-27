@@ -23,7 +23,7 @@
  *   --detect                            Show current status
  *   --help                              Show help
  *
- * Features: sessionstart, precompact, stop, archival, statusline
+ * Features: sessionstart, precompact, stop, archival, statusline, autoupdate
  */
 
 const fs = require('fs');
@@ -42,6 +42,7 @@ const FEATURES = {
   stop: { hook: 'Stop', script: 'agileflow-stop.sh', type: 'bash' },
   archival: { script: 'archive-completed-stories.sh', requiresHook: 'sessionstart' },
   statusline: { script: 'agileflow-statusline.sh' },
+  autoupdate: { metadataOnly: true }, // Stored in metadata.updates.autoUpdate
 };
 
 // Statusline component names
@@ -559,6 +560,21 @@ echo "[$MODEL] AgileFlow"
     success('Status line enabled');
   }
 
+  // Handle autoupdate (metadata only, no hooks needed)
+  if (feature === 'autoupdate') {
+    const frequency = options.checkFrequency || 'daily';
+    updateMetadata({
+      updates: {
+        autoUpdate: true,
+        checkFrequency: frequency,
+        showChangelog: true,
+      },
+    });
+    success(`Auto-update enabled (check frequency: ${frequency})`);
+    info('AgileFlow will automatically update on session start');
+    return true; // Skip settings.json write for this feature
+  }
+
   writeJSON('.claude/settings.json', settings);
   updateMetadata({
     features: { [feature]: { enabled: true, version: VERSION, at: new Date().toISOString() } },
@@ -607,6 +623,17 @@ function disableFeature(feature) {
     success('Status line disabled');
   }
 
+  // Disable autoupdate
+  if (feature === 'autoupdate') {
+    updateMetadata({
+      updates: {
+        autoUpdate: false,
+      },
+    });
+    success('Auto-update disabled');
+    return true; // Skip settings.json write for this feature
+  }
+
   writeJSON('.claude/settings.json', settings);
   updateMetadata({
     features: { [feature]: { enabled: false, version: VERSION, at: new Date().toISOString() } },
@@ -638,6 +665,9 @@ function updateMetadata(updates) {
     Object.entries(updates.features).forEach(([key, value]) => {
       meta.features[key] = { ...meta.features[key], ...value };
     });
+  }
+  if (updates.updates) {
+    meta.updates = { ...meta.updates, ...updates.updates };
   }
 
   meta.version = VERSION;

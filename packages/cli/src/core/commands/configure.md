@@ -28,7 +28,7 @@ node .agileflow/scripts/agileflow-configure.js --disable=archival # Disable spec
 
 ### Features
 
-`sessionstart`, `precompact`, `stop`, `archival`, `statusline`
+`sessionstart`, `precompact`, `stop`, `archival`, `statusline`, `autoupdate`
 
 ### Critical Rules
 
@@ -178,7 +178,8 @@ Based on selection, run appropriate command.
     {"label": "PreCompact Hook", "description": "Context preservation on compact"},
     {"label": "Stop Hook", "description": "Warns about uncommitted git changes"},
     {"label": "Archival", "description": "Auto-archive old completed stories"},
-    {"label": "Status Line", "description": "Custom status bar"}
+    {"label": "Status Line", "description": "Custom status bar"},
+    {"label": "Auto-Update", "description": "Automatically update AgileFlow on session start"}
   ]
 }]</parameter>
 </invoke>
@@ -190,6 +191,29 @@ Map selections:
 - "Stop Hook" → `stop`
 - "Archival" → `archival`
 - "Status Line" → `statusline`
+- "Auto-Update" → `autoupdate`
+
+## Auto-Update Configuration
+
+Enable auto-update to automatically update AgileFlow when a new version is available:
+
+```bash
+# Enable auto-update
+node .agileflow/scripts/agileflow-configure.js --enable=autoupdate
+
+# Or manually edit docs/00-meta/agileflow-metadata.json:
+```
+
+```json
+{
+  "updates": {
+    "autoUpdate": true,
+    "checkFrequency": "daily"
+  }
+}
+```
+
+**Check frequencies:** `hourly`, `daily`, `weekly`, `never`
 
 ## Format Migration Details
 
