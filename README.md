@@ -15,16 +15,15 @@
 
 ### Installation
 
-**Global (Recommended):**
 ```bash
-npm install -g agileflow
-agileflow setup
+npx agileflow@latest setup
 ```
 
-**Project-Level:**
+That's it! The `npx` command always fetches the latest version.
+
+**Updates:**
 ```bash
-npm install agileflow
-npx agileflow setup
+npx agileflow@latest update
 ```
 
 ### After Setup
