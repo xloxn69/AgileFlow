@@ -34,7 +34,39 @@ const { execSync } = require('child_process');
 // CONFIGURATION
 // ============================================================================
 
-const VERSION = '2.41.0';
+// Get version dynamically from metadata or package.json
+function getVersion() {
+  // Try agileflow-metadata.json first (user's installed version)
+  try {
+    const metaPath = path.join(process.cwd(), 'docs/00-meta/agileflow-metadata.json');
+    if (fs.existsSync(metaPath)) {
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      if (meta.version) return meta.version;
+    }
+  } catch {}
+
+  // Try .agileflow/package.json
+  try {
+    const pkgPath = path.join(process.cwd(), '.agileflow/package.json');
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      if (pkg.version) return pkg.version;
+    }
+  } catch {}
+
+  // Fallback to script's own package.json (when running from npm package)
+  try {
+    const pkgPath = path.join(__dirname, '..', 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      if (pkg.version) return pkg.version;
+    }
+  } catch {}
+
+  return 'unknown';
+}
+
+const VERSION = getVersion();
 
 const FEATURES = {
   sessionstart: { hook: 'SessionStart', script: 'agileflow-welcome.js', type: 'node' },
