@@ -46,11 +46,11 @@ class Installer {
 
   /**
    * Clean up existing content directories before installing.
-   * Removes agents/, commands/, skills/, templates/ but preserves _cfg/ and config.yaml.
+   * Removes agents/, commands/, skills/, scripts/, templates/ but preserves _cfg/ and config.yaml.
    * @param {string} agileflowDir - AgileFlow installation directory
    */
   async cleanup(agileflowDir) {
-    const dirsToRemove = ['agents', 'commands', 'skills', 'templates'];
+    const dirsToRemove = ['agents', 'commands', 'skills', 'scripts', 'templates'];
 
     for (const dir of dirsToRemove) {
       const dirPath = path.join(agileflowDir, dir);
@@ -243,14 +243,6 @@ class Installer {
       await fs.ensureDir(skillsDest);
       await this.copyContent(skillsSource, skillsDest, agileflowFolder, policy);
     }
-
-    // Copy templates
-    const templatesSource = path.join(packageRoot, 'templates');
-    const templatesDest = path.join(agileflowDir, 'templates');
-    if (await fs.pathExists(templatesSource)) {
-      await fs.ensureDir(templatesDest);
-      await this.copyContent(templatesSource, templatesDest, agileflowFolder, policy);
-    }
   }
 
   /**
@@ -430,7 +422,7 @@ class Installer {
     const backupRoot = path.join(cfgDir, 'backups', timestamp);
     await fs.ensureDir(backupRoot);
 
-    const candidates = ['agents', 'commands', 'skills', 'templates', 'config.yaml'];
+    const candidates = ['agents', 'commands', 'skills', 'scripts', 'templates', 'config.yaml'];
     for (const name of candidates) {
       const srcPath = path.join(agileflowDir, name);
       if (await fs.pathExists(srcPath)) {

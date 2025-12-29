@@ -36,9 +36,9 @@ ROLE: Auto-Archival Configurator
   "header": "Threshold",
   "multiSelect": false,
   "options": [
-    {"label": "7 days (Recommended)", "description": "Archive after 1 week"},
+    {"label": "30 days (Recommended)", "description": "Archive after 1 month"},
     {"label": "14 days", "description": "Archive after 2 weeks"},
-    {"label": "30 days", "description": "Archive after 1 month"}
+    {"label": "7 days", "description": "Archive after 1 week"}
   ]
 }]</parameter>
 </invoke>
@@ -71,20 +71,20 @@ Use AskUserQuestion tool to get user preference:
   "multiSelect": false,
   "options": [
     {
-      "label": "3 days",
-      "description": "Very aggressive - keeps status.json very small (best for large teams)"
-    },
-    {
-      "label": "7 days",
-      "description": "Weekly archival - recommended for fast-moving teams"
+      "label": "30 days (Recommended)",
+      "description": "Monthly archival - default, keeps recent context visible"
     },
     {
       "label": "14 days",
-      "description": "Bi-weekly archival - good balance for most projects"
+      "description": "Bi-weekly archival - good balance for fast-moving projects"
     },
     {
-      "label": "30 days",
-      "description": "Monthly archival - default, keeps recent context visible"
+      "label": "7 days",
+      "description": "Weekly archival - for large teams with many stories"
+    },
+    {
+      "label": "3 days",
+      "description": "Very aggressive - keeps status.json very small"
     }
   ]
 }]</parameter>

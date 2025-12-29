@@ -11,7 +11,7 @@
  *   - RECONFIGURE: Change settings (archival days, etc.)
  *
  * Usage:
- *   node scripts/agileflow-configure.js [options]
+ *   node .agileflow/scripts/agileflow-configure.js [options]
  *
  * Options:
  *   --profile=full|basic|minimal|none   Apply a preset
@@ -93,19 +93,19 @@ const PROFILES = {
   full: {
     description: 'All features enabled',
     enable: ['sessionstart', 'precompact', 'archival', 'statusline'],
-    archivalDays: 7,
+    archivalDays: 30,
   },
   basic: {
     description: 'Essential hooks + archival (SessionStart + PreCompact + Archival)',
     enable: ['sessionstart', 'precompact', 'archival'],
     disable: ['statusline'],
-    archivalDays: 7,
+    archivalDays: 30,
   },
   minimal: {
     description: 'SessionStart + archival only',
     enable: ['sessionstart', 'archival'],
     disable: ['precompact', 'statusline'],
-    archivalDays: 7,
+    archivalDays: 30,
   },
   none: {
     description: 'Disable all AgileFlow features',
@@ -155,22 +155,16 @@ const writeJSON = (filePath, data) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
 };
 
-const copyTemplate = (templateName, destPath) => {
-  const sources = [
-    path.join(process.cwd(), '.agileflow', 'templates', templateName),
-    path.join(__dirname, templateName),
-    path.join(__dirname, '..', 'templates', templateName),
-  ];
-  for (const src of sources) {
-    if (fs.existsSync(src)) {
-      fs.copyFileSync(src, destPath);
-      try {
-        fs.chmodSync(destPath, '755');
-      } catch {}
-      return true;
-    }
-  }
-  return false;
+// Scripts are located in .agileflow/scripts/ (installed by AgileFlow)
+const SCRIPTS_DIR = path.join(process.cwd(), '.agileflow', 'scripts');
+
+const scriptExists = scriptName => {
+  const scriptPath = path.join(SCRIPTS_DIR, scriptName);
+  return fs.existsSync(scriptPath);
+};
+
+const getScriptPath = scriptName => {
+  return `.agileflow/scripts/${scriptName}`;
 };
 
 // ============================================================================
@@ -184,12 +178,14 @@ function detectConfig() {
     settingsValid: true,
     settingsIssues: [],
     features: {
-      sessionstart: { enabled: false, valid: true, issues: [] },
-      precompact: { enabled: false, valid: true, issues: [] },
-      archival: { enabled: false, threshold: null },
-      statusline: { enabled: false, valid: true, issues: [] },
+      sessionstart: { enabled: false, valid: true, issues: [], version: null, outdated: false },
+      precompact: { enabled: false, valid: true, issues: [], version: null, outdated: false },
+      archival: { enabled: false, threshold: null, version: null, outdated: false },
+      statusline: { enabled: false, valid: true, issues: [], version: null, outdated: false },
     },
     metadata: { exists: false, version: null },
+    currentVersion: VERSION,
+    hasOutdated: false,
   };
 
   // Git
@@ -280,6 +276,20 @@ function detectConfig() {
         status.features.archival.enabled = true;
         status.features.archival.threshold = meta.archival.threshold_days;
       }
+
+      // Read feature versions from metadata and check if outdated
+      if (meta.features) {
+        Object.entries(meta.features).forEach(([feature, data]) => {
+          if (status.features[feature] && data.version) {
+            status.features[feature].version = data.version;
+            // Check if feature version differs from current VERSION
+            if (data.version !== VERSION && status.features[feature].enabled) {
+              status.features[feature].outdated = true;
+              status.hasOutdated = true;
+            }
+          }
+        });
+      }
     }
   }
 
@@ -317,6 +327,10 @@ function printStatus(status) {
       statusIcon = '⚠️';
       statusText = 'INVALID FORMAT';
       color = c.yellow;
+    } else if (f.enabled && f.outdated) {
+      statusIcon = '🔄';
+      statusText = `outdated (v${f.version} → v${status.currentVersion})`;
+      color = c.yellow;
     }
 
     log(`  ${statusIcon} ${label}: ${statusText}`, color);
@@ -348,7 +362,11 @@ function printStatus(status) {
     log('\n⚠️  Format issues detected! Run with --migrate to fix.', c.yellow);
   }
 
-  return hasIssues;
+  if (status.hasOutdated) {
+    log('\n🔄 Outdated scripts detected! Run with --upgrade to update.', c.yellow);
+  }
+
+  return { hasIssues, hasOutdated: status.hasOutdated };
 }
 
 // ============================================================================
@@ -455,6 +473,34 @@ function migrateSettings() {
 }
 
 // ============================================================================
+// UPGRADE FEATURES
+// ============================================================================
+
+function upgradeFeatures(status) {
+  header('🔄 Upgrading Outdated Features...');
+
+  let upgraded = 0;
+
+  Object.entries(status.features).forEach(([feature, data]) => {
+    if (data.enabled && data.outdated) {
+      log(`\nUpgrading ${feature}...`, c.cyan);
+      // Re-enable the feature to deploy latest scripts
+      if (enableFeature(feature, { archivalDays: data.threshold || 30, isUpgrade: true })) {
+        upgraded++;
+      }
+    }
+  });
+
+  if (upgraded === 0) {
+    info('No features needed upgrading');
+  } else {
+    success(`Upgraded ${upgraded} feature(s) to v${VERSION}`);
+  }
+
+  return upgraded > 0;
+}
+
+// ============================================================================
 // ENABLE/DISABLE FEATURES
 // ============================================================================
 
@@ -466,7 +512,6 @@ function enableFeature(feature, options = {}) {
   }
 
   ensureDir('.claude');
-  ensureDir('scripts');
 
   const settings = readJSON('.claude/settings.json') || {};
   settings.hooks = settings.hooks || {};
@@ -474,25 +519,13 @@ function enableFeature(feature, options = {}) {
 
   // Handle hook-based features
   if (config.hook) {
-    const scriptPath = `scripts/${config.script}`;
+    const scriptPath = getScriptPath(config.script);
 
-    // Deploy script
-    if (!copyTemplate(config.script, scriptPath)) {
-      // Create minimal version
-      if (feature === 'sessionstart') {
-        fs.writeFileSync(
-          scriptPath,
-          `#!/usr/bin/env node\nconsole.log('AgileFlow v${VERSION} loaded');\n`
-        );
-      } else if (feature === 'precompact') {
-        fs.writeFileSync(scriptPath, '#!/bin/bash\necho "PreCompact: preserving context"\n');
-      }
-      try {
-        fs.chmodSync(scriptPath, '755');
-      } catch {}
-      warn(`Created minimal ${config.script}`);
-    } else {
-      success(`Deployed ${config.script}`);
+    // Verify script exists
+    if (!scriptExists(config.script)) {
+      error(`Script not found: ${scriptPath}`);
+      info('Run "npx agileflow update" to reinstall scripts');
+      return false;
     }
 
     // Configure hook
@@ -504,18 +537,18 @@ function enableFeature(feature, options = {}) {
         hooks: [{ type: 'command', command }],
       },
     ];
-    success(`${config.hook} hook enabled`);
+    success(`${config.hook} hook enabled (${config.script})`);
   }
 
   // Handle archival
   if (feature === 'archival') {
-    const days = options.archivalDays || 7;
-    const scriptPath = 'scripts/archive-completed-stories.sh';
+    const days = options.archivalDays || 30;
+    const scriptPath = getScriptPath('archive-completed-stories.sh');
 
-    if (!copyTemplate('archive-completed-stories.sh', scriptPath)) {
-      warn('Archival script template not found');
-    } else {
-      success('Deployed archive-completed-stories.sh');
+    if (!scriptExists('archive-completed-stories.sh')) {
+      error(`Script not found: ${scriptPath}`);
+      info('Run "npx agileflow update" to reinstall scripts');
+      return false;
     }
 
     // Add to SessionStart hook
@@ -526,7 +559,7 @@ function enableFeature(feature, options = {}) {
       if (!hasArchival) {
         settings.hooks.SessionStart[0].hooks.push({
           type: 'command',
-          command: 'bash scripts/archive-completed-stories.sh --quiet',
+          command: `bash ${scriptPath} --quiet`,
         });
       }
     }
@@ -538,28 +571,17 @@ function enableFeature(feature, options = {}) {
 
   // Handle statusLine
   if (feature === 'statusline') {
-    const scriptPath = 'scripts/agileflow-statusline.sh';
+    const scriptPath = getScriptPath('agileflow-statusline.sh');
 
-    if (!copyTemplate('agileflow-statusline.sh', scriptPath)) {
-      fs.writeFileSync(
-        scriptPath,
-        `#!/bin/bash
-input=$(cat)
-MODEL=$(echo "$input" | jq -r '.model.display_name // "Claude"')
-echo "[$MODEL] AgileFlow"
-`
-      );
-      try {
-        fs.chmodSync(scriptPath, '755');
-      } catch {}
-      warn('Created minimal statusline script');
-    } else {
-      success('Deployed agileflow-statusline.sh');
+    if (!scriptExists('agileflow-statusline.sh')) {
+      error(`Script not found: ${scriptPath}`);
+      info('Run "npx agileflow update" to reinstall scripts');
+      return false;
     }
 
     settings.statusLine = {
       type: 'command',
-      command: 'bash scripts/agileflow-statusline.sh',
+      command: `bash ${scriptPath}`,
       padding: 0,
     };
     success('Status line enabled');
@@ -855,7 +877,7 @@ function printHelp() {
 ${c.bold}AgileFlow Configure${c.reset} - Manage AgileFlow features
 
 ${c.cyan}Usage:${c.reset}
-  node scripts/agileflow-configure.js [options]
+  node .agileflow/scripts/agileflow-configure.js [options]
 
 ${c.cyan}Profiles:${c.reset}
   --profile=full      All features (hooks, archival, statusline)
@@ -877,37 +899,41 @@ ${c.cyan}Statusline Components:${c.reset}
   Components: agileflow, model, story, epic, wip, context, cost, git
 
 ${c.cyan}Settings:${c.reset}
-  --archival-days=N   Set archival threshold (default: 7)
+  --archival-days=N   Set archival threshold (default: 30)
 
 ${c.cyan}Maintenance:${c.reset}
   --migrate           Fix old/invalid formats
+  --upgrade           Re-deploy all enabled features with latest scripts
   --validate          Check for issues (same as --detect)
   --detect            Show current configuration
 
 ${c.cyan}Examples:${c.reset}
   # Quick setup with all features
-  node scripts/agileflow-configure.js --profile=full
+  node .agileflow/scripts/agileflow-configure.js --profile=full
 
   # Enable specific features
-  node scripts/agileflow-configure.js --enable=sessionstart,precompact,archival
+  node .agileflow/scripts/agileflow-configure.js --enable=sessionstart,precompact,archival
 
   # Disable a feature
-  node scripts/agileflow-configure.js --disable=statusline
+  node .agileflow/scripts/agileflow-configure.js --disable=statusline
 
   # Show only agileflow branding and context in statusline
-  node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+  node .agileflow/scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
 
   # Re-enable git branch in statusline
-  node scripts/agileflow-configure.js --show=git
+  node .agileflow/scripts/agileflow-configure.js --show=git
 
   # List component status
-  node scripts/agileflow-configure.js --components
+  node .agileflow/scripts/agileflow-configure.js --components
 
   # Fix format issues
-  node scripts/agileflow-configure.js --migrate
+  node .agileflow/scripts/agileflow-configure.js --migrate
 
   # Check current status
-  node scripts/agileflow-configure.js --detect
+  node .agileflow/scripts/agileflow-configure.js --detect
+
+  # Upgrade outdated scripts to latest version
+  node .agileflow/scripts/agileflow-configure.js --upgrade
 `);
 }
 
@@ -924,9 +950,10 @@ function main() {
   let disable = [];
   let show = [];
   let hide = [];
-  let archivalDays = 7;
+  let archivalDays = 30;
   let migrate = false;
   let detect = false;
+  let upgrade = false;
   let components = false;
   let help = false;
 
@@ -952,9 +979,10 @@ function main() {
         .split('=')[1]
         .split(',')
         .map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--archival-days=')) archivalDays = parseInt(arg.split('=')[1]) || 7;
+    else if (arg.startsWith('--archival-days=')) archivalDays = parseInt(arg.split('=')[1]) || 30;
     else if (arg === '--migrate') migrate = true;
     else if (arg === '--detect' || arg === '--validate') detect = true;
+    else if (arg === '--upgrade') upgrade = true;
     else if (arg === '--components') components = true;
     else if (arg === '--help' || arg === '-h') help = true;
   });
@@ -979,10 +1007,16 @@ function main() {
 
   // Always detect first
   const status = detectConfig();
-  const hasIssues = printStatus(status);
+  const { hasIssues, hasOutdated } = printStatus(status);
 
   // Detect only mode
-  if (detect && !migrate && !profile && enable.length === 0 && disable.length === 0) {
+  if (detect && !migrate && !upgrade && !profile && enable.length === 0 && disable.length === 0) {
+    return;
+  }
+
+  // Upgrade mode
+  if (upgrade) {
+    upgradeFeatures(status);
     return;
   }
 
