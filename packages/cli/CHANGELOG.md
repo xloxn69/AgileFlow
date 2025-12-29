@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.69.0] - 2025-12-29
+
+### Added
+- Fix configure script to read version dynamically instead of hardcoded
+
 ## [2.68.0] - 2025-12-29
 
 ### Fixed
