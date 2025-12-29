@@ -86,15 +86,26 @@ function getProjectInfo(rootDir) {
     currentStory: null,
   };
 
-  // Get package info
+  // Get AgileFlow version (check multiple sources in priority order)
+  // 1. AgileFlow metadata (installed user projects)
+  // 2. packages/cli/package.json (AgileFlow dev project)
+  // 3. .agileflow/package.json (fallback)
   try {
-    const pkg = JSON.parse(
-      fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8')
-    );
-    info.version = pkg.version || info.version;
+    const metadataPath = path.join(rootDir, 'docs/00-meta/agileflow-metadata.json');
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+      info.version = metadata.version || info.version;
+    } else {
+      // Dev project: check packages/cli/package.json
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8')
+      );
+      info.version = pkg.version || info.version;
+    }
   } catch (e) {
+    // Fallback: check .agileflow/package.json
     try {
-      const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
+      const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, '.agileflow/package.json'), 'utf8'));
       info.version = pkg.version || info.version;
     } catch (e2) {}
   }

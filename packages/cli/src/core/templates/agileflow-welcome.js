@@ -13,7 +13,18 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
+
+// Session manager path (relative to script location)
+const SESSION_MANAGER_PATH = path.join(__dirname, 'session-manager.js');
+
+// Update checker module
+let updateChecker;
+try {
+  updateChecker = require('./check-update.js');
+} catch (e) {
+  // Update checker not available
+}
 
 // ANSI color codes
 const c = {
@@ -39,9 +50,16 @@ const c = {
 
 // Box drawing characters
 const box = {
-  tl: '╭', tr: '╮', bl: '╰', br: '╯',
-  h: '─', v: '│',
-  lT: '├', rT: '┤', tT: '┬', bT: '┴',
+  tl: '╭',
+  tr: '╮',
+  bl: '╰',
+  br: '╯',
+  h: '─',
+  v: '│',
+  lT: '├',
+  rT: '┤',
+  tT: '┬',
+  bT: '┴',
   cross: '┼',
 };
 
@@ -68,13 +86,26 @@ function getProjectInfo(rootDir) {
     currentStory: null,
   };
 
-  // Get package info
+  // Get AgileFlow version (check multiple sources in priority order)
+  // 1. AgileFlow metadata (installed user projects)
+  // 2. packages/cli/package.json (AgileFlow dev project)
+  // 3. .agileflow/package.json (fallback)
   try {
-    const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8'));
-    info.version = pkg.version || info.version;
+    const metadataPath = path.join(rootDir, 'docs/00-meta/agileflow-metadata.json');
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+      info.version = metadata.version || info.version;
+    } else {
+      // Dev project: check packages/cli/package.json
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(rootDir, 'packages/cli/package.json'), 'utf8')
+      );
+      info.version = pkg.version || info.version;
+    }
   } catch (e) {
+    // Fallback: check .agileflow/package.json
     try {
-      const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
+      const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, '.agileflow/package.json'), 'utf8'));
       info.version = pkg.version || info.version;
     } catch (e2) {}
   }
@@ -83,7 +114,10 @@ function getProjectInfo(rootDir) {
   try {
     info.branch = execSync('git branch --show-current', { cwd: rootDir, encoding: 'utf8' }).trim();
     info.commit = execSync('git rev-parse --short HEAD', { cwd: rootDir, encoding: 'utf8' }).trim();
-    info.lastCommit = execSync('git log -1 --format="%s"', { cwd: rootDir, encoding: 'utf8' }).trim();
+    info.lastCommit = execSync('git log -1 --format="%s"', {
+      cwd: rootDir,
+      encoding: 'utf8',
+    }).trim();
   } catch (e) {}
 
   // Get status info
@@ -152,10 +186,10 @@ function runArchival(rootDir) {
     if (toArchiveCount > 0) {
       // Run archival
       try {
-        execSync('bash .agileflow/scripts/archive-completed-stories.sh', {
+        execSync('bash scripts/archive-completed-stories.sh', {
           cwd: rootDir,
           encoding: 'utf8',
-          stdio: 'pipe'
+          stdio: 'pipe',
         });
         result.archived = toArchiveCount;
         result.remaining -= toArchiveCount;
@@ -197,6 +231,60 @@ function clearActiveCommands(rootDir) {
       fs.writeFileSync(sessionStatePath, JSON.stringify(state, null, 2) + '\n');
     }
   } catch (e) {}
+
+  return result;
+}
+
+function checkParallelSessions(rootDir) {
+  const result = {
+    available: false,
+    registered: false,
+    otherActive: 0,
+    currentId: null,
+    cleaned: 0,
+  };
+
+  try {
+    // Check if session manager exists
+    const managerPath = path.join(rootDir, '.agileflow', 'scripts', 'session-manager.js');
+    if (!fs.existsSync(managerPath) && !fs.existsSync(SESSION_MANAGER_PATH)) {
+      return result;
+    }
+
+    result.available = true;
+
+    // Try to register current session and get status
+    const scriptPath = fs.existsSync(managerPath) ? managerPath : SESSION_MANAGER_PATH;
+
+    // Register this session
+    try {
+      const registerOutput = execSync(`node "${scriptPath}" register`, {
+        cwd: rootDir,
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+      const registerData = JSON.parse(registerOutput);
+      result.registered = true;
+      result.currentId = registerData.id;
+    } catch (e) {
+      // Registration failed, continue anyway
+    }
+
+    // Get count of other active sessions
+    try {
+      const countOutput = execSync(`node "${scriptPath}" count`, {
+        cwd: rootDir,
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+      const countData = JSON.parse(countOutput);
+      result.otherActive = countData.count || 0;
+    } catch (e) {
+      // Count failed
+    }
+  } catch (e) {
+    // Session system not available
+  }
 
   return result;
 }
@@ -253,12 +341,104 @@ function compareVersions(a, b) {
   return 0;
 }
 
+// Check for updates (async but we'll use sync approach for welcome)
+async function checkUpdates() {
+  const result = {
+    available: false,
+    installed: null,
+    latest: null,
+    justUpdated: false,
+    previousVersion: null,
+    autoUpdate: false,
+    changelog: [],
+  };
+
+  if (!updateChecker) return result;
+
+  try {
+    const updateInfo = await updateChecker.checkForUpdates();
+    result.installed = updateInfo.installed;
+    result.latest = updateInfo.latest;
+    result.available = updateInfo.updateAvailable;
+    result.justUpdated = updateInfo.justUpdated;
+    result.previousVersion = updateInfo.previousVersion;
+    result.autoUpdate = updateInfo.autoUpdate;
+
+    // If just updated, try to get changelog entries
+    if (result.justUpdated && result.installed) {
+      result.changelog = getChangelogEntries(result.installed);
+    }
+  } catch (e) {
+    // Silently fail - update check is non-critical
+  }
+
+  return result;
+}
+
+// Parse CHANGELOG.md for entries of a specific version
+function getChangelogEntries(version) {
+  const entries = [];
+
+  try {
+    // Look for CHANGELOG.md in .agileflow or package location
+    const possiblePaths = [
+      path.join(__dirname, '..', 'CHANGELOG.md'),
+      path.join(__dirname, 'CHANGELOG.md'),
+    ];
+
+    let changelogContent = null;
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p)) {
+        changelogContent = fs.readFileSync(p, 'utf8');
+        break;
+      }
+    }
+
+    if (!changelogContent) return entries;
+
+    // Find the section for this version
+    const versionPattern = new RegExp(`## \\[${version}\\].*?\\n([\\s\\S]*?)(?=## \\[|$)`);
+    const match = changelogContent.match(versionPattern);
+
+    if (match) {
+      // Extract bullet points from Added/Changed/Fixed sections
+      const lines = match[1].split('\n');
+      for (const line of lines) {
+        const bulletMatch = line.match(/^- (.+)$/);
+        if (bulletMatch && entries.length < 3) {
+          entries.push(bulletMatch[1]);
+        }
+      }
+    }
+  } catch (e) {
+    // Silently fail
+  }
+
+  return entries;
+}
+
+// Run auto-update if enabled
+async function runAutoUpdate(rootDir) {
+  try {
+    console.log(`${c.cyan}Updating AgileFlow...${c.reset}`);
+    execSync('npx agileflow update', {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: 'inherit',
+    });
+    return true;
+  } catch (e) {
+    console.log(`${c.yellow}Auto-update failed. Run manually: npx agileflow update${c.reset}`);
+    return false;
+  }
+}
+
 function getFeatureVersions(rootDir) {
   const result = {
     hooks: { version: null, outdated: false },
     archival: { version: null, outdated: false },
     statusline: { version: null, outdated: false },
-    precompact: { version: null, outdated: false }
+    precompact: { version: null, outdated: false },
   };
 
   // Minimum compatible versions for each feature
@@ -266,7 +446,7 @@ function getFeatureVersions(rootDir) {
     hooks: '2.35.0',
     archival: '2.35.0',
     statusline: '2.35.0',
-    precompact: '2.40.0'  // Multi-command support
+    precompact: '2.40.0', // Multi-command support
   };
 
   try {
@@ -277,7 +457,8 @@ function getFeatureVersions(rootDir) {
       for (const feature of Object.keys(result)) {
         if (metadata.features?.[feature]?.configured_version) {
           result[feature].version = metadata.features[feature].configured_version;
-          result[feature].outdated = compareVersions(result[feature].version, minVersions[feature]) < 0;
+          result[feature].outdated =
+            compareVersions(result[feature].version, minVersions[feature]) < 0;
         }
       }
     }
@@ -291,7 +472,8 @@ function pad(str, len, align = 'left') {
   const diff = len - stripped.length;
   if (diff <= 0) return str;
   if (align === 'right') return ' '.repeat(diff) + str;
-  if (align === 'center') return ' '.repeat(Math.floor(diff/2)) + str + ' '.repeat(Math.ceil(diff/2));
+  if (align === 'center')
+    return ' '.repeat(Math.floor(diff / 2)) + str + ' '.repeat(Math.ceil(diff / 2));
   return str + ' '.repeat(diff);
 }
 
@@ -323,7 +505,7 @@ function truncate(str, maxLen, suffix = '..') {
   return str.substring(0, cutIndex) + suffix;
 }
 
-function formatTable(info, archival, session, precompact) {
+function formatTable(info, archival, session, precompact, parallelSessions, updateInfo = {}) {
   const W = 58; // inner width
   const R = W - 24; // right column width (34 chars)
   const lines = [];
@@ -336,29 +518,101 @@ function formatTable(info, archival, session, precompact) {
     return `${c.dim}${box.v}${c.reset} ${pad(leftStr, 20)} ${c.dim}${box.v}${c.reset} ${pad(rightStr, R)} ${c.dim}${box.v}${c.reset}`;
   };
 
-  const divider = () => `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
+  // Helper for full-width row (spans both columns)
+  const fullRow = (content, color = '') => {
+    const contentStr = `${color}${content}${color ? c.reset : ''}`;
+    return `${c.dim}${box.v}${c.reset} ${pad(contentStr, W - 1)} ${c.dim}${box.v}${c.reset}`;
+  };
+
+  const divider = () =>
+    `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
+  const fullDivider = () =>
+    `${c.dim}${box.lT}${box.h.repeat(W)}${box.rT}${c.reset}`;
   const topBorder = `${c.dim}${box.tl}${box.h.repeat(22)}${box.tT}${box.h.repeat(W - 22)}${box.tr}${c.reset}`;
   const bottomBorder = `${c.dim}${box.bl}${box.h.repeat(22)}${box.bT}${box.h.repeat(W - 22)}${box.br}${c.reset}`;
 
-  // Header (truncate branch name if too long)
-  const branchColor = info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
-  // Fixed parts: "agileflow " (10) + "v" (1) + version + "  " (2) + " (" (2) + commit (7) + ")" (1) = 23 + version.length
-  const maxBranchLen = (W - 1) - 23 - info.version.length;
-  const branchDisplay = info.branch.length > maxBranchLen
-    ? info.branch.substring(0, maxBranchLen - 2) + '..'
-    : info.branch;
-  const header = `${c.brand}${c.bold}agileflow${c.reset} ${c.dim}v${info.version}${c.reset}  ${branchColor}${branchDisplay}${c.reset} ${c.dim}(${info.commit})${c.reset}`;
+  // Header with version and optional update indicator
+  const branchColor =
+    info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
+
+  // Build version string with update status
+  let versionStr = `v${info.version}`;
+  if (updateInfo.justUpdated && updateInfo.previousVersion) {
+    versionStr = `v${info.version} ${c.green}✓${c.reset}${c.dim} (was v${updateInfo.previousVersion})`;
+  } else if (updateInfo.available && updateInfo.latest) {
+    versionStr = `v${info.version} ${c.yellow}↑${updateInfo.latest}${c.reset}`;
+  }
+
+  // Calculate remaining space for branch
+  const versionVisibleLen = updateInfo.justUpdated
+    ? info.version.length + 20 + (updateInfo.previousVersion?.length || 0)
+    : updateInfo.available
+      ? info.version.length + 3 + (updateInfo.latest?.length || 0)
+      : info.version.length;
+  const maxBranchLen = W - 1 - 15 - versionVisibleLen;
+  const branchDisplay =
+    info.branch.length > maxBranchLen
+      ? info.branch.substring(0, Math.max(5, maxBranchLen - 2)) + '..'
+      : info.branch;
+
+  const header = `${c.brand}${c.bold}agileflow${c.reset} ${c.dim}${versionStr}${c.reset}  ${branchColor}${branchDisplay}${c.reset} ${c.dim}(${info.commit})${c.reset}`;
   const headerLine = `${c.dim}${box.v}${c.reset} ${pad(header, W - 1)} ${c.dim}${box.v}${c.reset}`;
 
   lines.push(topBorder);
   lines.push(headerLine);
+
+  // Show update available notification
+  if (updateInfo.available && updateInfo.latest && !updateInfo.justUpdated) {
+    lines.push(fullDivider());
+    lines.push(fullRow(`↑ Update available: v${updateInfo.latest}`, c.yellow));
+    lines.push(fullRow(`  Run: npx agileflow update`, c.dim));
+  }
+
+  // Show "just updated" changelog
+  if (updateInfo.justUpdated && updateInfo.changelog && updateInfo.changelog.length > 0) {
+    lines.push(fullDivider());
+    lines.push(fullRow(`What's new in v${info.version}:`, c.green));
+    for (const entry of updateInfo.changelog.slice(0, 2)) {
+      lines.push(fullRow(`• ${truncate(entry, W - 4)}`, c.dim));
+    }
+    lines.push(fullRow(`Run /agileflow:whats-new for full changelog`, c.dim));
+  }
+
   lines.push(divider());
 
   // Stories section
-  lines.push(row('In Progress', info.wipCount > 0 ? `${info.wipCount}` : '0', c.dim, info.wipCount > 0 ? c.yellow : c.dim));
-  lines.push(row('Blocked', info.blockedCount > 0 ? `${info.blockedCount}` : '0', c.dim, info.blockedCount > 0 ? c.red : c.dim));
-  lines.push(row('Ready', info.readyCount > 0 ? `${info.readyCount}` : '0', c.dim, info.readyCount > 0 ? c.cyan : c.dim));
-  lines.push(row('Completed', info.completedCount > 0 ? `${info.completedCount}` : '0', c.dim, info.completedCount > 0 ? c.green : c.dim));
+  lines.push(
+    row(
+      'In Progress',
+      info.wipCount > 0 ? `${info.wipCount}` : '0',
+      c.dim,
+      info.wipCount > 0 ? c.yellow : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Blocked',
+      info.blockedCount > 0 ? `${info.blockedCount}` : '0',
+      c.dim,
+      info.blockedCount > 0 ? c.red : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Ready',
+      info.readyCount > 0 ? `${info.readyCount}` : '0',
+      c.dim,
+      info.readyCount > 0 ? c.cyan : c.dim
+    )
+  );
+  lines.push(
+    row(
+      'Completed',
+      info.completedCount > 0 ? `${info.completedCount}` : '0',
+      c.dim,
+      info.completedCount > 0 ? c.green : c.dim
+    )
+  );
 
   lines.push(divider());
 
@@ -366,16 +620,15 @@ function formatTable(info, archival, session, precompact) {
   if (archival.disabled) {
     lines.push(row('Auto-archival', 'disabled', c.dim, c.dim));
   } else {
-    const archivalStatus = archival.archived > 0
-      ? `archived ${archival.archived} stories`
-      : `nothing to archive`;
-    lines.push(row('Auto-archival', archivalStatus, c.dim, archival.archived > 0 ? c.green : c.dim));
+    const archivalStatus =
+      archival.archived > 0 ? `archived ${archival.archived} stories` : `nothing to archive`;
+    lines.push(
+      row('Auto-archival', archivalStatus, c.dim, archival.archived > 0 ? c.green : c.dim)
+    );
   }
 
   // Session cleanup
-  const sessionStatus = session.cleared > 0
-    ? `cleared ${session.cleared} command(s)`
-    : `clean`;
+  const sessionStatus = session.cleared > 0 ? `cleared ${session.cleared} command(s)` : `clean`;
   lines.push(row('Session state', sessionStatus, c.dim, session.cleared > 0 ? c.green : c.dim));
 
   // PreCompact status with version check
@@ -396,11 +649,31 @@ function formatTable(info, archival, session, precompact) {
     lines.push(row('Context preserve', 'not configured', c.dim, c.dim));
   }
 
+  // Parallel sessions status
+  if (parallelSessions && parallelSessions.available) {
+    if (parallelSessions.otherActive > 0) {
+      const sessionStr = `⚠️ ${parallelSessions.otherActive} other active`;
+      lines.push(row('Sessions', sessionStr, c.dim, c.yellow));
+    } else {
+      const sessionStr = parallelSessions.currentId
+        ? `✓ Session ${parallelSessions.currentId} (only)`
+        : '✓ Only session';
+      lines.push(row('Sessions', sessionStr, c.dim, c.green));
+    }
+  }
+
   lines.push(divider());
 
   // Current story (if any) - row() auto-truncates
   if (info.currentStory) {
-    lines.push(row('Current', `${c.blue}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`, c.dim, ''));
+    lines.push(
+      row(
+        'Current',
+        `${c.blue}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`,
+        c.dim,
+        ''
+      )
+    );
   } else {
     lines.push(row('Current', 'No active story', c.dim, c.dim));
   }
@@ -414,14 +687,45 @@ function formatTable(info, archival, session, precompact) {
 }
 
 // Main
-function main() {
+async function main() {
   const rootDir = getProjectRoot();
   const info = getProjectInfo(rootDir);
   const archival = runArchival(rootDir);
   const session = clearActiveCommands(rootDir);
   const precompact = checkPreCompact(rootDir);
+  const parallelSessions = checkParallelSessions(rootDir);
 
-  console.log(formatTable(info, archival, session, precompact));
+  // Check for updates (async, cached)
+  let updateInfo = {};
+  try {
+    updateInfo = await checkUpdates();
+
+    // If auto-update is enabled and update available, run it
+    if (updateInfo.available && updateInfo.autoUpdate) {
+      const updated = await runAutoUpdate(rootDir);
+      if (updated) {
+        // Re-run welcome after update (the new version will show changelog)
+        return;
+      }
+    }
+
+    // Mark current version as seen to track for next update
+    if (updateInfo.justUpdated && updateChecker) {
+      updateChecker.markVersionSeen(info.version);
+    }
+  } catch (e) {
+    // Update check failed - continue without it
+  }
+
+  console.log(formatTable(info, archival, session, precompact, parallelSessions, updateInfo));
+
+  // Show warning and tip if other sessions are active
+  if (parallelSessions.otherActive > 0) {
+    console.log('');
+    console.log(`${c.yellow}⚠️  Other Claude session(s) active in this repo.${c.reset}`);
+    console.log(`${c.dim}   Run /agileflow:session:status to see all sessions.${c.reset}`);
+    console.log(`${c.dim}   Run /agileflow:session:new to create isolated workspace.${c.reset}`);
+  }
 }
 
-main();
+main().catch(console.error);

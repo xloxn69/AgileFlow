@@ -11,7 +11,7 @@
  *   - RECONFIGURE: Change settings (archival days, etc.)
  *
  * Usage:
- *   node .agileflow/scripts/agileflow-configure.js [options]
+ *   node scripts/agileflow-configure.js [options]
  *
  * Options:
  *   --profile=full|basic|minimal|none   Apply a preset
@@ -23,7 +23,7 @@
  *   --detect                            Show current status
  *   --help                              Show help
  *
- * Features: sessionstart, precompact, stop, archival, statusline
+ * Features: sessionstart, precompact, archival, statusline, autoupdate
  */
 
 const fs = require('fs');
@@ -39,36 +39,46 @@ const VERSION = '2.41.0';
 const FEATURES = {
   sessionstart: { hook: 'SessionStart', script: 'agileflow-welcome.js', type: 'node' },
   precompact: { hook: 'PreCompact', script: 'precompact-context.sh', type: 'bash' },
-  stop: { hook: 'Stop', script: 'agileflow-stop.sh', type: 'bash' },
+  // Note: Stop hook removed due to Claude Code reliability issues (see GitHub issues #6974, #11544)
   archival: { script: 'archive-completed-stories.sh', requiresHook: 'sessionstart' },
-  statusline: { script: 'agileflow-statusline.sh' }
+  statusline: { script: 'agileflow-statusline.sh' },
+  autoupdate: { metadataOnly: true }, // Stored in metadata.updates.autoUpdate
 };
 
 // Statusline component names
-const STATUSLINE_COMPONENTS = ['agileflow', 'model', 'story', 'epic', 'wip', 'context', 'cost', 'git'];
+const STATUSLINE_COMPONENTS = [
+  'agileflow',
+  'model',
+  'story',
+  'epic',
+  'wip',
+  'context',
+  'cost',
+  'git',
+];
 
 const PROFILES = {
   full: {
     description: 'All features enabled',
-    enable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline'],
-    archivalDays: 7
+    enable: ['sessionstart', 'precompact', 'archival', 'statusline'],
+    archivalDays: 7,
   },
   basic: {
     description: 'Essential hooks + archival (SessionStart + PreCompact + Archival)',
     enable: ['sessionstart', 'precompact', 'archival'],
-    disable: ['stop', 'statusline'],
-    archivalDays: 7
+    disable: ['statusline'],
+    archivalDays: 7,
   },
   minimal: {
     description: 'SessionStart + archival only',
     enable: ['sessionstart', 'archival'],
-    disable: ['precompact', 'stop', 'statusline'],
-    archivalDays: 7
+    disable: ['precompact', 'statusline'],
+    archivalDays: 7,
   },
   none: {
     description: 'Disable all AgileFlow features',
-    disable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline']
-  }
+    disable: ['sessionstart', 'precompact', 'archival', 'statusline'],
+  },
 };
 
 // ============================================================================
@@ -76,8 +86,13 @@ const PROFILES = {
 // ============================================================================
 
 const c = {
-  reset: '\x1b[0m', dim: '\x1b[2m', bold: '\x1b[1m',
-  green: '\x1b[32m', yellow: '\x1b[33m', red: '\x1b[31m', cyan: '\x1b[36m'
+  reset: '\x1b[0m',
+  dim: '\x1b[2m',
+  bold: '\x1b[1m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  red: '\x1b[31m',
+  cyan: '\x1b[36m',
 };
 
 const log = (msg, color = '') => console.log(`${color}${msg}${c.reset}`);
@@ -91,11 +106,16 @@ const header = msg => log(`\n${msg}`, c.bold + c.cyan);
 // FILE UTILITIES
 // ============================================================================
 
-const ensureDir = dir => { if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true }); };
+const ensureDir = dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+};
 
 const readJSON = filePath => {
-  try { return JSON.parse(fs.readFileSync(filePath, 'utf8')); }
-  catch { return null; }
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
 };
 
 const writeJSON = (filePath, data) => {
@@ -107,12 +127,14 @@ const copyTemplate = (templateName, destPath) => {
   const sources = [
     path.join(process.cwd(), '.agileflow', 'templates', templateName),
     path.join(__dirname, templateName),
-    path.join(__dirname, '..', 'templates', templateName)
+    path.join(__dirname, '..', 'templates', templateName),
   ];
   for (const src of sources) {
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, destPath);
-      try { fs.chmodSync(destPath, '755'); } catch {}
+      try {
+        fs.chmodSync(destPath, '755');
+      } catch {}
       return true;
     }
   }
@@ -132,18 +154,19 @@ function detectConfig() {
     features: {
       sessionstart: { enabled: false, valid: true, issues: [] },
       precompact: { enabled: false, valid: true, issues: [] },
-      stop: { enabled: false, valid: true, issues: [] },
       archival: { enabled: false, threshold: null },
-      statusline: { enabled: false, valid: true, issues: [] }
+      statusline: { enabled: false, valid: true, issues: [] },
     },
-    metadata: { exists: false, version: null }
+    metadata: { exists: false, version: null },
   };
 
   // Git
   if (fs.existsSync('.git')) {
     status.git.initialized = true;
     try {
-      status.git.remote = execSync('git remote get-url origin 2>/dev/null', { encoding: 'utf8' }).trim();
+      status.git.remote = execSync('git remote get-url origin 2>/dev/null', {
+        encoding: 'utf8',
+      }).trim();
     } catch {}
   }
 
@@ -160,7 +183,10 @@ function detectConfig() {
       if (settings.hooks) {
         // SessionStart
         if (settings.hooks.SessionStart) {
-          if (Array.isArray(settings.hooks.SessionStart) && settings.hooks.SessionStart.length > 0) {
+          if (
+            Array.isArray(settings.hooks.SessionStart) &&
+            settings.hooks.SessionStart.length > 0
+          ) {
             const hook = settings.hooks.SessionStart[0];
             if (hook.matcher !== undefined && hook.hooks) {
               status.features.sessionstart.enabled = true;
@@ -194,23 +220,7 @@ function detectConfig() {
           }
         }
 
-        // Stop
-        if (settings.hooks.Stop) {
-          if (Array.isArray(settings.hooks.Stop) && settings.hooks.Stop.length > 0) {
-            const hook = settings.hooks.Stop[0];
-            if (hook.matcher !== undefined && hook.hooks) {
-              status.features.stop.enabled = true;
-            } else {
-              status.features.stop.enabled = true;
-              status.features.stop.valid = false;
-              status.features.stop.issues.push('Old format - needs migration');
-            }
-          } else if (typeof settings.hooks.Stop === 'string') {
-            status.features.stop.enabled = true;
-            status.features.stop.valid = false;
-            status.features.stop.issues.push('String format - needs migration');
-          }
-        }
+        // Note: Stop hook removed due to reliability issues
       }
 
       // StatusLine
@@ -248,8 +258,10 @@ function printStatus(status) {
   header('📊 Current Configuration');
 
   // Git
-  log(`Git: ${status.git.initialized ? '✅' : '❌'} ${status.git.initialized ? 'initialized' : 'not initialized'}${status.git.remote ? ` (${status.git.remote})` : ''}`,
-    status.git.initialized ? c.green : c.dim);
+  log(
+    `Git: ${status.git.initialized ? '✅' : '❌'} ${status.git.initialized ? 'initialized' : 'not initialized'}${status.git.remote ? ` (${status.git.remote})` : ''}`,
+    status.git.initialized ? c.green : c.dim
+  );
 
   // Settings
   if (!status.settingsExists) {
@@ -284,11 +296,12 @@ function printStatus(status) {
 
   printFeature('sessionstart', 'SessionStart Hook');
   printFeature('precompact', 'PreCompact Hook');
-  printFeature('stop', 'Stop Hook');
 
   const arch = status.features.archival;
-  log(`  ${arch.enabled ? '✅' : '❌'} Archival: ${arch.enabled ? `${arch.threshold} days` : 'disabled'}`,
-    arch.enabled ? c.green : c.dim);
+  log(
+    `  ${arch.enabled ? '✅' : '❌'} Archival: ${arch.enabled ? `${arch.threshold} days` : 'disabled'}`,
+    arch.enabled ? c.green : c.dim
+  );
 
   printFeature('statusline', 'Status Line');
 
@@ -326,19 +339,21 @@ function migrateSettings() {
 
   let migrated = false;
 
-  // Migrate hooks
+  // Migrate hooks (Stop hook removed due to reliability issues)
   if (settings.hooks) {
-    ['SessionStart', 'PreCompact', 'Stop', 'UserPromptSubmit'].forEach(hookName => {
+    ['SessionStart', 'PreCompact', 'UserPromptSubmit'].forEach(hookName => {
       const hook = settings.hooks[hookName];
       if (!hook) return;
 
       // String format → array format
       if (typeof hook === 'string') {
         const isNode = hook.includes('node ') || hook.endsWith('.js');
-        settings.hooks[hookName] = [{
-          matcher: '',
-          hooks: [{ type: 'command', command: isNode ? hook : `bash ${hook}` }]
-        }];
+        settings.hooks[hookName] = [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command: isNode ? hook : `bash ${hook}` }],
+          },
+        ];
         success(`Migrated ${hookName} from string format`);
         migrated = true;
       }
@@ -348,19 +363,23 @@ function migrateSettings() {
         if (first.enabled !== undefined || first.command !== undefined) {
           // Old format with enabled/command
           if (first.command) {
-            settings.hooks[hookName] = [{
-              matcher: '',
-              hooks: [{ type: 'command', command: first.command }]
-            }];
+            settings.hooks[hookName] = [
+              {
+                matcher: '',
+                hooks: [{ type: 'command', command: first.command }],
+              },
+            ];
             success(`Migrated ${hookName} from old object format`);
             migrated = true;
           }
         } else if (first.matcher === undefined) {
           // Missing matcher
-          settings.hooks[hookName] = [{
-            matcher: '',
-            hooks: first.hooks || [{ type: 'command', command: 'echo "hook"' }]
-          }];
+          settings.hooks[hookName] = [
+            {
+              matcher: '',
+              hooks: first.hooks || [{ type: 'command', command: 'echo "hook"' }],
+            },
+          ];
           success(`Migrated ${hookName} - added matcher`);
           migrated = true;
         }
@@ -374,7 +393,7 @@ function migrateSettings() {
       settings.statusLine = {
         type: 'command',
         command: settings.statusLine,
-        padding: 0
+        padding: 0,
       };
       success('Migrated statusLine from string format');
       migrated = true;
@@ -417,7 +436,7 @@ function enableFeature(feature, options = {}) {
   ensureDir('.claude');
   ensureDir('scripts');
 
-  let settings = readJSON('.claude/settings.json') || {};
+  const settings = readJSON('.claude/settings.json') || {};
   settings.hooks = settings.hooks || {};
   settings.permissions = settings.permissions || { allow: [], deny: [], ask: [] };
 
@@ -429,31 +448,30 @@ function enableFeature(feature, options = {}) {
     if (!copyTemplate(config.script, scriptPath)) {
       // Create minimal version
       if (feature === 'sessionstart') {
-        fs.writeFileSync(scriptPath, `#!/usr/bin/env node\nconsole.log('AgileFlow v${VERSION} loaded');\n`);
+        fs.writeFileSync(
+          scriptPath,
+          `#!/usr/bin/env node\nconsole.log('AgileFlow v${VERSION} loaded');\n`
+        );
       } else if (feature === 'precompact') {
         fs.writeFileSync(scriptPath, '#!/bin/bash\necho "PreCompact: preserving context"\n');
-      } else if (feature === 'stop') {
-        fs.writeFileSync(scriptPath, `#!/bin/bash
-git rev-parse --git-dir > /dev/null 2>&1 || exit 0
-CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-[ "$CHANGES" -gt 0 ] && echo -e "\\n\\033[33m$CHANGES uncommitted change(s)\\033[0m"
-`);
       }
-      try { fs.chmodSync(scriptPath, '755'); } catch {}
+      try {
+        fs.chmodSync(scriptPath, '755');
+      } catch {}
       warn(`Created minimal ${config.script}`);
     } else {
       success(`Deployed ${config.script}`);
     }
 
     // Configure hook
-    const command = config.type === 'node'
-      ? `node ${scriptPath}`
-      : `bash ${scriptPath}`;
+    const command = config.type === 'node' ? `node ${scriptPath}` : `bash ${scriptPath}`;
 
-    settings.hooks[config.hook] = [{
-      matcher: '',
-      hooks: [{ type: 'command', command }]
-    }];
+    settings.hooks[config.hook] = [
+      {
+        matcher: '',
+        hooks: [{ type: 'command', command }],
+      },
+    ];
     success(`${config.hook} hook enabled`);
   }
 
@@ -470,13 +488,13 @@ CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 
     // Add to SessionStart hook
     if (settings.hooks.SessionStart?.[0]?.hooks) {
-      const hasArchival = settings.hooks.SessionStart[0].hooks.some(
-        h => h.command?.includes('archive-completed-stories')
+      const hasArchival = settings.hooks.SessionStart[0].hooks.some(h =>
+        h.command?.includes('archive-completed-stories')
       );
       if (!hasArchival) {
         settings.hooks.SessionStart[0].hooks.push({
           type: 'command',
-          command: 'bash .agileflow/scripts/archive-completed-stories.sh --quiet'
+          command: 'bash scripts/archive-completed-stories.sh --quiet',
         });
       }
     }
@@ -491,12 +509,17 @@ CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
     const scriptPath = 'scripts/agileflow-statusline.sh';
 
     if (!copyTemplate('agileflow-statusline.sh', scriptPath)) {
-      fs.writeFileSync(scriptPath, `#!/bin/bash
+      fs.writeFileSync(
+        scriptPath,
+        `#!/bin/bash
 input=$(cat)
 MODEL=$(echo "$input" | jq -r '.model.display_name // "Claude"')
 echo "[$MODEL] AgileFlow"
-`);
-      try { fs.chmodSync(scriptPath, '755'); } catch {}
+`
+      );
+      try {
+        fs.chmodSync(scriptPath, '755');
+      } catch {}
       warn('Created minimal statusline script');
     } else {
       success('Deployed agileflow-statusline.sh');
@@ -504,14 +527,31 @@ echo "[$MODEL] AgileFlow"
 
     settings.statusLine = {
       type: 'command',
-      command: 'bash .agileflow/scripts/agileflow-statusline.sh',
-      padding: 0
+      command: 'bash scripts/agileflow-statusline.sh',
+      padding: 0,
     };
     success('Status line enabled');
   }
 
+  // Handle autoupdate (metadata only, no hooks needed)
+  if (feature === 'autoupdate') {
+    const frequency = options.checkFrequency || 'daily';
+    updateMetadata({
+      updates: {
+        autoUpdate: true,
+        checkFrequency: frequency,
+        showChangelog: true,
+      },
+    });
+    success(`Auto-update enabled (check frequency: ${frequency})`);
+    info('AgileFlow will automatically update on session start');
+    return true; // Skip settings.json write for this feature
+  }
+
   writeJSON('.claude/settings.json', settings);
-  updateMetadata({ features: { [feature]: { enabled: true, version: VERSION, at: new Date().toISOString() } } });
+  updateMetadata({
+    features: { [feature]: { enabled: true, version: VERSION, at: new Date().toISOString() } },
+  });
   updateGitignore();
 
   return true;
@@ -556,8 +596,21 @@ function disableFeature(feature) {
     success('Status line disabled');
   }
 
+  // Disable autoupdate
+  if (feature === 'autoupdate') {
+    updateMetadata({
+      updates: {
+        autoUpdate: false,
+      },
+    });
+    success('Auto-update disabled');
+    return true; // Skip settings.json write for this feature
+  }
+
   writeJSON('.claude/settings.json', settings);
-  updateMetadata({ features: { [feature]: { enabled: false, version: VERSION, at: new Date().toISOString() } } });
+  updateMetadata({
+    features: { [feature]: { enabled: false, version: VERSION, at: new Date().toISOString() } },
+  });
 
   return true;
 }
@@ -586,6 +639,9 @@ function updateMetadata(updates) {
       meta.features[key] = { ...meta.features[key], ...value };
     });
   }
+  if (updates.updates) {
+    meta.updates = { ...meta.updates, ...updates.updates };
+  }
 
   meta.version = VERSION;
   meta.updated = new Date().toISOString();
@@ -600,7 +656,7 @@ function updateGitignore() {
     '.claude/context.log',
     '.claude/hook.log',
     '.claude/prompt-log.txt',
-    '.claude/session.log'
+    '.claude/session.log',
   ];
 
   let content = fs.existsSync('.gitignore') ? fs.readFileSync('.gitignore', 'utf8') : '';
@@ -718,7 +774,9 @@ function applyProfile(profileName, options = {}) {
 
   // Enable features
   if (profile.enable) {
-    profile.enable.forEach(f => enableFeature(f, { archivalDays: profile.archivalDays || options.archivalDays }));
+    profile.enable.forEach(f =>
+      enableFeature(f, { archivalDays: profile.archivalDays || options.archivalDays })
+    );
   }
 
   // Disable features
@@ -765,7 +823,7 @@ function printHelp() {
 ${c.bold}AgileFlow Configure${c.reset} - Manage AgileFlow features
 
 ${c.cyan}Usage:${c.reset}
-  node .agileflow/scripts/agileflow-configure.js [options]
+  node scripts/agileflow-configure.js [options]
 
 ${c.cyan}Profiles:${c.reset}
   --profile=full      All features (hooks, archival, statusline)
@@ -777,7 +835,7 @@ ${c.cyan}Feature Control:${c.reset}
   --enable=<list>     Enable features (comma-separated)
   --disable=<list>    Disable features (comma-separated)
 
-  Features: sessionstart, precompact, stop, archival, statusline
+  Features: sessionstart, precompact, archival, statusline
 
 ${c.cyan}Statusline Components:${c.reset}
   --show=<list>       Show statusline components (comma-separated)
@@ -796,28 +854,28 @@ ${c.cyan}Maintenance:${c.reset}
 
 ${c.cyan}Examples:${c.reset}
   # Quick setup with all features
-  node .agileflow/scripts/agileflow-configure.js --profile=full
+  node scripts/agileflow-configure.js --profile=full
 
   # Enable specific features
-  node .agileflow/scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
+  node scripts/agileflow-configure.js --enable=sessionstart,precompact,archival
 
   # Disable a feature
-  node .agileflow/scripts/agileflow-configure.js --disable=statusline
+  node scripts/agileflow-configure.js --disable=statusline
 
   # Show only agileflow branding and context in statusline
-  node .agileflow/scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
+  node scripts/agileflow-configure.js --hide=model,story,epic,wip,cost,git
 
   # Re-enable git branch in statusline
-  node .agileflow/scripts/agileflow-configure.js --show=git
+  node scripts/agileflow-configure.js --show=git
 
   # List component status
-  node .agileflow/scripts/agileflow-configure.js --components
+  node scripts/agileflow-configure.js --components
 
   # Fix format issues
-  node .agileflow/scripts/agileflow-configure.js --migrate
+  node scripts/agileflow-configure.js --migrate
 
   # Check current status
-  node .agileflow/scripts/agileflow-configure.js --detect
+  node scripts/agileflow-configure.js --detect
 `);
 }
 
@@ -842,10 +900,26 @@ function main() {
 
   args.forEach(arg => {
     if (arg.startsWith('--profile=')) profile = arg.split('=')[1];
-    else if (arg.startsWith('--enable=')) enable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--disable=')) disable = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--show=')) show = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--hide=')) hide = arg.split('=')[1].split(',').map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--enable='))
+      enable = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--disable='))
+      disable = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--show='))
+      show = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
+    else if (arg.startsWith('--hide='))
+      hide = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim().toLowerCase());
     else if (arg.startsWith('--archival-days=')) archivalDays = parseInt(arg.split('=')[1]) || 7;
     else if (arg === '--migrate') migrate = true;
     else if (arg === '--detect' || arg === '--validate') detect = true;

@@ -36,17 +36,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash scripts/agileflow-stop.sh"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {

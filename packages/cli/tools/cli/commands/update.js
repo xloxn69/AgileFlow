@@ -105,15 +105,20 @@ module.exports = {
       // Check if CLI itself is still outdated (only if self-update was disabled)
       if (npmLatestVersion && semver.lt(localCliVersion, npmLatestVersion) && !shouldSelfUpdate) {
         console.log();
-        warning('Your CLI is outdated!');
-        console.log(chalk.dim(`  To update your installation, run:\n`));
-        console.log(chalk.cyan(`  npx agileflow@latest update\n`));
+        warning('Your global CLI is outdated!');
+        console.log(
+          chalk.dim(`  You have a global installation at v${localCliVersion}, but v${npmLatestVersion} is available.\n`)
+        );
+        console.log(chalk.dim(`  Options:`));
+        console.log(chalk.dim(`  1. Cancel and run: `) + chalk.cyan(`npx agileflow@latest update`));
+        console.log(chalk.dim(`  2. Remove global:  `) + chalk.cyan(`npm uninstall -g agileflow`) + chalk.dim(` (recommended)`));
+        console.log(chalk.dim(`  3. Update global:  `) + chalk.cyan(`npm install -g agileflow@latest\n`));
 
         const useOutdated = options.force
           ? true
           : await confirm('Continue with outdated CLI anyway?');
         if (!useOutdated) {
-          console.log(chalk.dim('\nUpdate cancelled\n'));
+          console.log(chalk.dim('\nUpdate cancelled. Run: npx agileflow@latest update\n'));
           process.exit(0);
         }
       }
@@ -208,6 +213,19 @@ module.exports = {
       }
 
       console.log(chalk.green(`\n✨ Update complete! (${status.version} → ${latestVersion})\n`));
+
+      // If running from outdated global installation, remind user to update it
+      if (
+        npmLatestVersion &&
+        semver.lt(localCliVersion, npmLatestVersion) &&
+        !options.selfUpdated
+      ) {
+        console.log(chalk.yellow('💡 Tip: Your global AgileFlow CLI is outdated.'));
+        console.log(chalk.dim('   To avoid this message, either:'));
+        console.log(chalk.dim('   • Remove global: npm uninstall -g agileflow (recommended)'));
+        console.log(chalk.dim('   • Use npx:       npx agileflow@latest update'));
+        console.log(chalk.dim('   • Update global: npm install -g agileflow@latest\n'));
+      }
 
       process.exit(0);
     } catch (err) {

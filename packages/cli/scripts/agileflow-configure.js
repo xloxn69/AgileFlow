@@ -23,7 +23,7 @@
  *   --detect                            Show current status
  *   --help                              Show help
  *
- * Features: sessionstart, precompact, stop, archival, statusline, autoupdate
+ * Features: sessionstart, precompact, archival, statusline, autoupdate
  */
 
 const fs = require('fs');
@@ -39,7 +39,7 @@ const VERSION = '2.41.0';
 const FEATURES = {
   sessionstart: { hook: 'SessionStart', script: 'agileflow-welcome.js', type: 'node' },
   precompact: { hook: 'PreCompact', script: 'precompact-context.sh', type: 'bash' },
-  stop: { hook: 'Stop', script: 'agileflow-stop.sh', type: 'bash' },
+  // Note: Stop hook removed due to Claude Code reliability issues (see GitHub issues #6974, #11544)
   archival: { script: 'archive-completed-stories.sh', requiresHook: 'sessionstart' },
   statusline: { script: 'agileflow-statusline.sh' },
   autoupdate: { metadataOnly: true }, // Stored in metadata.updates.autoUpdate
@@ -60,24 +60,24 @@ const STATUSLINE_COMPONENTS = [
 const PROFILES = {
   full: {
     description: 'All features enabled',
-    enable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline'],
+    enable: ['sessionstart', 'precompact', 'archival', 'statusline'],
     archivalDays: 7,
   },
   basic: {
     description: 'Essential hooks + archival (SessionStart + PreCompact + Archival)',
     enable: ['sessionstart', 'precompact', 'archival'],
-    disable: ['stop', 'statusline'],
+    disable: ['statusline'],
     archivalDays: 7,
   },
   minimal: {
     description: 'SessionStart + archival only',
     enable: ['sessionstart', 'archival'],
-    disable: ['precompact', 'stop', 'statusline'],
+    disable: ['precompact', 'statusline'],
     archivalDays: 7,
   },
   none: {
     description: 'Disable all AgileFlow features',
-    disable: ['sessionstart', 'precompact', 'stop', 'archival', 'statusline'],
+    disable: ['sessionstart', 'precompact', 'archival', 'statusline'],
   },
 };
 
@@ -154,7 +154,6 @@ function detectConfig() {
     features: {
       sessionstart: { enabled: false, valid: true, issues: [] },
       precompact: { enabled: false, valid: true, issues: [] },
-      stop: { enabled: false, valid: true, issues: [] },
       archival: { enabled: false, threshold: null },
       statusline: { enabled: false, valid: true, issues: [] },
     },
@@ -221,23 +220,7 @@ function detectConfig() {
           }
         }
 
-        // Stop
-        if (settings.hooks.Stop) {
-          if (Array.isArray(settings.hooks.Stop) && settings.hooks.Stop.length > 0) {
-            const hook = settings.hooks.Stop[0];
-            if (hook.matcher !== undefined && hook.hooks) {
-              status.features.stop.enabled = true;
-            } else {
-              status.features.stop.enabled = true;
-              status.features.stop.valid = false;
-              status.features.stop.issues.push('Old format - needs migration');
-            }
-          } else if (typeof settings.hooks.Stop === 'string') {
-            status.features.stop.enabled = true;
-            status.features.stop.valid = false;
-            status.features.stop.issues.push('String format - needs migration');
-          }
-        }
+        // Note: Stop hook removed due to reliability issues
       }
 
       // StatusLine
@@ -313,7 +296,6 @@ function printStatus(status) {
 
   printFeature('sessionstart', 'SessionStart Hook');
   printFeature('precompact', 'PreCompact Hook');
-  printFeature('stop', 'Stop Hook');
 
   const arch = status.features.archival;
   log(
@@ -357,9 +339,9 @@ function migrateSettings() {
 
   let migrated = false;
 
-  // Migrate hooks
+  // Migrate hooks (Stop hook removed due to reliability issues)
   if (settings.hooks) {
-    ['SessionStart', 'PreCompact', 'Stop', 'UserPromptSubmit'].forEach(hookName => {
+    ['SessionStart', 'PreCompact', 'UserPromptSubmit'].forEach(hookName => {
       const hook = settings.hooks[hookName];
       if (!hook) return;
 
@@ -472,15 +454,6 @@ function enableFeature(feature, options = {}) {
         );
       } else if (feature === 'precompact') {
         fs.writeFileSync(scriptPath, '#!/bin/bash\necho "PreCompact: preserving context"\n');
-      } else if (feature === 'stop') {
-        fs.writeFileSync(
-          scriptPath,
-          `#!/bin/bash
-git rev-parse --git-dir > /dev/null 2>&1 || exit 0
-CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
-[ "$CHANGES" -gt 0 ] && echo -e "\\n\\033[33m$CHANGES uncommitted change(s)\\033[0m"
-`
-        );
       }
       try {
         fs.chmodSync(scriptPath, '755');
@@ -862,7 +835,7 @@ ${c.cyan}Feature Control:${c.reset}
   --enable=<list>     Enable features (comma-separated)
   --disable=<list>    Disable features (comma-separated)
 
-  Features: sessionstart, precompact, stop, archival, statusline
+  Features: sessionstart, precompact, archival, statusline
 
 ${c.cyan}Statusline Components:${c.reset}
   --show=<list>       Show statusline components (comma-separated)
@@ -884,7 +857,7 @@ ${c.cyan}Examples:${c.reset}
   node scripts/agileflow-configure.js --profile=full
 
   # Enable specific features
-  node scripts/agileflow-configure.js --enable=sessionstart,precompact,stop
+  node scripts/agileflow-configure.js --enable=sessionstart,precompact,archival
 
   # Disable a feature
   node scripts/agileflow-configure.js --disable=statusline
