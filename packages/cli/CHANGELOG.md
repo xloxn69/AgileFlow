@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.74.0] - 2025-12-31
+
+### Added
+- Script repair and diagnostics for /configure command
+
 ## [2.73.0] - 2025-12-29
 
 ### Changed
