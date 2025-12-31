@@ -77,6 +77,34 @@ const FEATURES = {
   autoupdate: { metadataOnly: true }, // Stored in metadata.updates.autoUpdate
 };
 
+// Complete registry of all scripts that may need repair
+const ALL_SCRIPTS = {
+  // Core feature scripts (linked to FEATURES)
+  'agileflow-welcome.js': { feature: 'sessionstart', required: true },
+  'precompact-context.sh': { feature: 'precompact', required: true },
+  'archive-completed-stories.sh': { feature: 'archival', required: true },
+  'agileflow-statusline.sh': { feature: 'statusline', required: true },
+
+  // Support scripts (used by commands/agents)
+  'obtain-context.js': { usedBy: ['/babysit', '/mentor', '/sprint'] },
+  'session-manager.js': { usedBy: ['/session:new', '/session:resume'] },
+  'check-update.js': { usedBy: ['SessionStart hook'] },
+  'get-env.js': { usedBy: ['SessionStart hook'] },
+  'clear-active-command.js': { usedBy: ['session commands'] },
+
+  // Utility scripts
+  'compress-status.sh': { usedBy: ['/compress'] },
+  'validate-expertise.sh': { usedBy: ['/validate-expertise'] },
+  'expertise-metrics.sh': { usedBy: ['agent experts'] },
+  'session-coordinator.sh': { usedBy: ['session management'] },
+  'validate-tokens.sh': { usedBy: ['token validation'] },
+  'worktree-create.sh': { usedBy: ['/session:new'] },
+  'resume-session.sh': { usedBy: ['/session:resume'] },
+  'init.sh': { usedBy: ['/session:init'] },
+  'agileflow-configure.js': { usedBy: ['/configure'] },
+  'generate-all.sh': { usedBy: ['content generation'] },
+};
+
 // Statusline component names
 const STATUSLINE_COMPONENTS = [
   'agileflow',
@@ -812,6 +840,240 @@ function listStatuslineComponents() {
 }
 
 // ============================================================================
+// REPAIR & DIAGNOSTICS
+// ============================================================================
+
+const crypto = require('crypto');
+
+/**
+ * Calculate SHA256 hash of a file
+ */
+function sha256(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+/**
+ * Get the source scripts directory (from npm package)
+ */
+function getSourceScriptsDir() {
+  // When running from installed package, __dirname is .agileflow/scripts
+  // The source is the same directory since it was copied during install
+  // But for repair, we need the npm package source
+
+  // Try to find the npm package (when run via npx or global install)
+  const possiblePaths = [
+    path.join(__dirname, '..', '..', 'scripts'), // npm package structure
+    path.join(__dirname), // Same directory (for development)
+  ];
+
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p) && fs.existsSync(path.join(p, 'agileflow-welcome.js'))) {
+      return p;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * List all scripts with their status (present/missing/modified)
+ */
+function listScripts() {
+  header('📋 Installed Scripts');
+
+  const scriptsDir = path.join(process.cwd(), '.agileflow', 'scripts');
+  const fileIndexPath = path.join(process.cwd(), '.agileflow', '_cfg', 'files.json');
+  const fileIndex = readJSON(fileIndexPath);
+
+  let missing = 0;
+  let modified = 0;
+  let present = 0;
+
+  Object.entries(ALL_SCRIPTS).forEach(([script, info]) => {
+    const scriptPath = path.join(scriptsDir, script);
+    const exists = fs.existsSync(scriptPath);
+
+    // Check if modified (compare to file index hash)
+    let isModified = false;
+    if (exists && fileIndex?.files?.[`scripts/${script}`]) {
+      try {
+        const currentHash = sha256(fs.readFileSync(scriptPath));
+        const indexHash = fileIndex.files[`scripts/${script}`].sha256;
+        isModified = currentHash !== indexHash;
+      } catch {}
+    }
+
+    // Print status
+    if (!exists) {
+      log(`  ❌ ${script}: MISSING`, c.red);
+      if (info.usedBy) log(`     └─ Used by: ${info.usedBy.join(', ')}`, c.dim);
+      if (info.feature) log(`     └─ Feature: ${info.feature}`, c.dim);
+      missing++;
+    } else if (isModified) {
+      log(`  ⚠️  ${script}: modified (local changes)`, c.yellow);
+      modified++;
+    } else {
+      log(`  ✅ ${script}: present`, c.green);
+      present++;
+    }
+  });
+
+  // Summary
+  log('');
+  log(`Summary: ${present} present, ${modified} modified, ${missing} missing`, c.dim);
+
+  if (missing > 0) {
+    log('\n💡 Run with --repair to restore missing scripts', c.yellow);
+  }
+}
+
+/**
+ * Show version information
+ */
+function showVersionInfo() {
+  header('📊 Version Information');
+
+  const meta = readJSON('docs/00-meta/agileflow-metadata.json') || {};
+  const manifest = readJSON('.agileflow/_cfg/manifest.yaml');
+
+  const installedVersion = meta.version || 'unknown';
+
+  log(`Installed:  v${installedVersion}`);
+  log(`CLI:        v${VERSION}`);
+
+  // Check npm for latest
+  let latestVersion = null;
+  try {
+    latestVersion = execSync('npm view agileflow version 2>/dev/null', { encoding: 'utf8' }).trim();
+    log(`Latest:     v${latestVersion}`);
+
+    if (installedVersion !== 'unknown' && latestVersion && installedVersion !== latestVersion) {
+      const installed = installedVersion.split('.').map(Number);
+      const latest = latestVersion.split('.').map(Number);
+
+      if (latest[0] > installed[0] ||
+          (latest[0] === installed[0] && latest[1] > installed[1]) ||
+          (latest[0] === installed[0] && latest[1] === installed[1] && latest[2] > installed[2])) {
+        log('\n🔄 Update available! Run: npx agileflow update', c.yellow);
+      }
+    }
+  } catch {
+    log('Latest:     (could not check npm)', c.dim);
+  }
+
+  // Show per-feature versions
+  if (meta.features && Object.keys(meta.features).length > 0) {
+    header('Feature Versions:');
+    Object.entries(meta.features).forEach(([feature, data]) => {
+      if (!data) return;
+      const featureVersion = data.version || 'unknown';
+      const enabled = data.enabled !== false;
+      const outdated = featureVersion !== VERSION && enabled;
+
+      let icon = '❌';
+      let color = c.dim;
+      let statusText = `v${featureVersion}`;
+
+      if (!enabled) {
+        statusText = 'disabled';
+      } else if (outdated) {
+        icon = '🔄';
+        color = c.yellow;
+        statusText = `v${featureVersion} → v${VERSION}`;
+      } else {
+        icon = '✅';
+        color = c.green;
+      }
+
+      log(`  ${icon} ${feature}: ${statusText}`, color);
+    });
+  }
+
+  // Show installation metadata
+  if (meta.created || meta.updated) {
+    header('Installation:');
+    if (meta.created) log(`  Created:  ${new Date(meta.created).toLocaleDateString()}`, c.dim);
+    if (meta.updated) log(`  Updated:  ${new Date(meta.updated).toLocaleDateString()}`, c.dim);
+  }
+}
+
+/**
+ * Repair missing or corrupted scripts
+ */
+function repairScripts(targetFeature = null) {
+  header('🔧 Repairing Scripts...');
+
+  const scriptsDir = path.join(process.cwd(), '.agileflow', 'scripts');
+  const sourceDir = getSourceScriptsDir();
+
+  if (!sourceDir) {
+    warn('Could not find source scripts directory');
+    info('Try running: npx agileflow@latest update');
+    return false;
+  }
+
+  let repaired = 0;
+  let errors = 0;
+  let skipped = 0;
+
+  // Determine which scripts to check
+  const scriptsToCheck = targetFeature
+    ? Object.entries(ALL_SCRIPTS).filter(([_, info]) => info.feature === targetFeature)
+    : Object.entries(ALL_SCRIPTS);
+
+  if (scriptsToCheck.length === 0 && targetFeature) {
+    error(`Unknown feature: ${targetFeature}`);
+    log(`Available features: ${Object.keys(FEATURES).join(', ')}`, c.dim);
+    return false;
+  }
+
+  // Ensure scripts directory exists
+  ensureDir(scriptsDir);
+
+  for (const [script, info] of scriptsToCheck) {
+    const destPath = path.join(scriptsDir, script);
+    const srcPath = path.join(sourceDir, script);
+
+    if (!fs.existsSync(destPath)) {
+      // Script is missing - reinstall from source
+      if (fs.existsSync(srcPath)) {
+        try {
+          fs.copyFileSync(srcPath, destPath);
+          // Make executable
+          try {
+            fs.chmodSync(destPath, 0o755);
+          } catch {}
+          success(`Restored ${script}`);
+          repaired++;
+        } catch (err) {
+          error(`Failed to restore ${script}: ${err.message}`);
+          errors++;
+        }
+      } else {
+        warn(`Source not found for ${script}`);
+        errors++;
+      }
+    } else {
+      skipped++;
+    }
+  }
+
+  // Summary
+  log('');
+  if (repaired === 0 && errors === 0) {
+    info('All scripts present - nothing to repair');
+  } else {
+    log(`Repaired: ${repaired}, Errors: ${errors}, Skipped: ${skipped}`, c.dim);
+  }
+
+  if (errors > 0) {
+    log('\n💡 For comprehensive repair, run: npx agileflow update --force', c.yellow);
+  }
+
+  return repaired > 0;
+}
+
+// ============================================================================
 // PROFILES
 // ============================================================================
 
@@ -907,6 +1169,12 @@ ${c.cyan}Maintenance:${c.reset}
   --validate          Check for issues (same as --detect)
   --detect            Show current configuration
 
+${c.cyan}Repair & Diagnostics:${c.reset}
+  --repair              Check for and restore missing scripts
+  --repair=<feature>    Repair scripts for a specific feature (e.g., statusline)
+  --version             Show installed vs latest version info
+  --list-scripts        List all scripts with their status (missing/present/modified)
+
 ${c.cyan}Examples:${c.reset}
   # Quick setup with all features
   node .agileflow/scripts/agileflow-configure.js --profile=full
@@ -934,6 +1202,18 @@ ${c.cyan}Examples:${c.reset}
 
   # Upgrade outdated scripts to latest version
   node .agileflow/scripts/agileflow-configure.js --upgrade
+
+  # List all scripts with status
+  node .agileflow/scripts/agileflow-configure.js --list-scripts
+
+  # Show version information
+  node .agileflow/scripts/agileflow-configure.js --version
+
+  # Repair missing scripts
+  node .agileflow/scripts/agileflow-configure.js --repair
+
+  # Repair scripts for a specific feature
+  node .agileflow/scripts/agileflow-configure.js --repair=statusline
 `);
 }
 
@@ -956,6 +1236,10 @@ function main() {
   let upgrade = false;
   let components = false;
   let help = false;
+  let repair = false;
+  let repairFeature = null;
+  let showVersion = false;
+  let listScriptsMode = false;
 
   args.forEach(arg => {
     if (arg.startsWith('--profile=')) profile = arg.split('=')[1];
@@ -985,10 +1269,41 @@ function main() {
     else if (arg === '--upgrade') upgrade = true;
     else if (arg === '--components') components = true;
     else if (arg === '--help' || arg === '-h') help = true;
+    else if (arg === '--repair') repair = true;
+    else if (arg.startsWith('--repair=')) {
+      repair = true;
+      repairFeature = arg.split('=')[1].trim().toLowerCase();
+    }
+    else if (arg === '--version' || arg === '-v') showVersion = true;
+    else if (arg === '--list-scripts' || arg === '--scripts') listScriptsMode = true;
   });
 
   if (help) {
     printHelp();
+    return;
+  }
+
+  // List scripts mode (standalone, doesn't need detection)
+  if (listScriptsMode) {
+    listScripts();
+    return;
+  }
+
+  // Version info mode (standalone, doesn't need detection)
+  if (showVersion) {
+    showVersionInfo();
+    return;
+  }
+
+  // Repair mode (standalone, doesn't need detection)
+  if (repair) {
+    const needsRestart = repairScripts(repairFeature);
+    if (needsRestart) {
+      log('\n' + '═'.repeat(55), c.red);
+      log('🔴 RESTART CLAUDE CODE NOW!', c.red + c.bold);
+      log('   Quit completely, wait 5 seconds, restart', c.red);
+      log('═'.repeat(55), c.red);
+    }
     return;
   }
 

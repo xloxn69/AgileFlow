@@ -1,6 +1,6 @@
 ---
 description: Configure advanced AgileFlow features (git, hooks, archival, CI, status line)
-argument-hint: [--profile=full|basic|minimal|none] [--enable/--disable=features] [--migrate] [--upgrade]
+argument-hint: [--profile=full|basic|minimal|none] [--enable/--disable=features] [--migrate] [--upgrade] [--repair] [--version] [--list-scripts]
 ---
 
 <!-- COMPACT_SUMMARY_START -->
@@ -26,6 +26,10 @@ node .agileflow/scripts/agileflow-configure.js --profile=full       # Enable all
 node .agileflow/scripts/agileflow-configure.js --profile=none       # Disable all
 node .agileflow/scripts/agileflow-configure.js --enable=sessionstart  # Enable specific
 node .agileflow/scripts/agileflow-configure.js --disable=archival   # Disable specific
+node .agileflow/scripts/agileflow-configure.js --list-scripts       # Show all scripts status
+node .agileflow/scripts/agileflow-configure.js --version            # Version info
+node .agileflow/scripts/agileflow-configure.js --repair             # Fix missing scripts
+node .agileflow/scripts/agileflow-configure.js --repair=statusline  # Fix specific feature
 ```
 
 **Note:** All scripts are located in `.agileflow/scripts/` - no files in project root `scripts/`.
@@ -343,3 +347,86 @@ Upgrading precompact...
 
 ✅ Upgraded 2 feature(s) to v2.71.0
 ```
+
+## Repair & Diagnostics
+
+When scripts are accidentally deleted or corrupted, use these commands:
+
+### List Scripts Status
+
+```bash
+node .agileflow/scripts/agileflow-configure.js --list-scripts
+```
+
+Shows all scripts with their status (present/missing/modified):
+
+```
+📋 Installed Scripts
+  ✅ agileflow-welcome.js: present
+  ✅ precompact-context.sh: present
+  ❌ agileflow-statusline.sh: MISSING
+     └─ Feature: statusline
+  ⚠️  obtain-context.js: modified (local changes)
+
+Summary: 15 present, 1 modified, 1 missing
+
+💡 Run with --repair to restore missing scripts
+```
+
+### Show Version Info
+
+```bash
+node .agileflow/scripts/agileflow-configure.js --version
+```
+
+Shows installed vs latest versions:
+
+```
+📊 Version Information
+Installed:  v2.71.0
+CLI:        v2.73.0
+Latest:     v2.73.0
+
+🔄 Update available! Run: npx agileflow update
+
+Feature Versions:
+  ✅ sessionstart: v2.73.0
+  🔄 precompact: v2.68.0 → v2.73.0
+  ✅ archival: v2.73.0
+  ❌ statusline: disabled
+```
+
+### Repair Missing Scripts
+
+```bash
+# Repair all missing scripts
+node .agileflow/scripts/agileflow-configure.js --repair
+
+# Repair scripts for a specific feature only
+node .agileflow/scripts/agileflow-configure.js --repair=statusline
+```
+
+Output:
+
+```
+🔧 Repairing Scripts...
+✅ Restored agileflow-statusline.sh
+
+Repaired: 1, Errors: 0, Skipped: 18
+
+═══════════════════════════════════════════════════════
+🔴 RESTART CLAUDE CODE NOW!
+   Quit completely, wait 5 seconds, restart
+═══════════════════════════════════════════════════════
+```
+
+### When to Use Each Command
+
+| Scenario | Command |
+|----------|---------|
+| Accidentally deleted a script | `--repair` |
+| Want to see what's installed | `--list-scripts` |
+| Check if update is available | `--version` |
+| Scripts outdated (feature version differs) | `--upgrade` |
+| Settings format broken | `--migrate` |
+| Major corruption/reinstall needed | `npx agileflow update --force`
