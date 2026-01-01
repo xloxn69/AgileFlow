@@ -4,7 +4,7 @@ import { codeToHtml } from '@/lib/shiki';
 import { LINKS } from '@/lib/links';
 import { getAgileFlowStats } from '@/lib/stats';
 
-export type Stat = { value: number; label: string };
+export type Stat = { value: number | string; label: string; isText?: boolean };
 
 export type HowItWorksStep = {
   step: number;
@@ -191,8 +191,8 @@ index 3b18c71..8c2aa0f 100644
     },
     stats: [
       { value: stats.commands, label: 'Slash commands' },
-      { value: stats.agents, label: 'Specialized agents' },
-      { value: stats.skills, label: 'Code generation skills' },
+      { value: stats.agents, label: 'Agents & experts' },
+      { value: 'Dynamic', label: 'Skill generator', isText: true },
       { value: stats.ides, label: 'IDEs supported' },
     ],
     howItWorks: {

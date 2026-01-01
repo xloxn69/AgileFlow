@@ -1,6 +1,7 @@
 import { Container } from '@/components/ui/container';
 import { Reveal } from '@/components/ui/reveal';
 import { LottieAsset } from '@/components/lottie-asset';
+import { LINKS } from '@/lib/links';
 import type { LandingContent } from '@/lib/landing-content';
 
 export function DocsPreview({ content }: { content: LandingContent['docsPreview'] }) {
@@ -27,6 +28,22 @@ export function DocsPreview({ content }: { content: LandingContent['docsPreview'
                 <div className="text-xs font-medium tracking-wide text-[var(--text-muted)]">{content.callout.title}</div>
                 <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{content.callout.body}</p>
               </div>
+            </Reveal>
+
+            <Reveal className="mt-6">
+              <a
+                href={LINKS.docs}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-white shadow-tile transition-shadow hover:shadow-tileHover"
+              >
+                View Full Documentation
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
             </Reveal>
           </div>
 

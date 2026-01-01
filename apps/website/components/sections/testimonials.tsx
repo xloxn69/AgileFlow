@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { Container } from '@/components/ui/container';
 import { Marquee } from '@/components/ui/marquee';
+import { Modal } from '@/components/ui/Modal';
 import type { LandingContent } from '@/lib/landing-content';
 import { cn } from '@/lib/cn';
 
@@ -73,10 +75,18 @@ function initials(name: string) {
   return parts.map((p) => p.slice(0, 1).toUpperCase()).join('');
 }
 
-function TestimonialCard({ quote, name, role }: { quote: string; name: string; role: string }) {
+type Testimonial = { quote: string; name: string; role: string };
+
+function TestimonialCard({ quote, name, role, onClick }: Testimonial & { onClick: () => void }) {
   return (
-    <figure className="surface relative w-full cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover md:w-64">
-      <blockquote className="text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
+    <figure
+      className="surface relative w-full cursor-pointer overflow-hidden rounded-card p-4 shadow-tile transition-shadow hover:shadow-tileHover md:w-64"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
+    >
+      <blockquote className="line-clamp-4 text-sm leading-6 text-[var(--text-primary)]">&ldquo;{quote}&rdquo;</blockquote>
       <div className="mt-4 flex items-center gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-xs text-[var(--text-muted)]">
           {initials(name)}
@@ -95,6 +105,7 @@ function TestimonialCard({ quote, name, role }: { quote: string; name: string; r
 }
 
 export function Testimonials({ content }: { content: LandingContent['testimonials'] }) {
+  const [selected, setSelected] = useState<Testimonial | null>(null);
   const column1 = TESTIMONIALS.slice(0, 3);
   const column2 = TESTIMONIALS.slice(3, 6);
   const column3 = TESTIMONIALS.slice(6, 9);
@@ -117,37 +128,61 @@ export function Testimonials({ content }: { content: LandingContent['testimonial
       }}>
         {/* Mobile: Single column */}
         <div className="flex md:hidden">
-          <Marquee pauseOnHover vertical className="[--duration:20s]">
+          <Marquee vertical className="[--duration:20s]">
             {TESTIMONIALS.map((testimonial, idx) => (
-              <TestimonialCard key={idx} {...testimonial} />
+              <TestimonialCard key={idx} {...testimonial} onClick={() => setSelected(testimonial)} />
             ))}
           </Marquee>
         </div>
 
         {/* Desktop: 4 columns */}
         <div className="hidden md:flex md:flex-row">
-          <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+          <Marquee reverse vertical className="[--duration:20s]">
             {column1.map((testimonial, idx) => (
-              <TestimonialCard key={idx} {...testimonial} />
+              <TestimonialCard key={idx} {...testimonial} onClick={() => setSelected(testimonial)} />
             ))}
           </Marquee>
-          <Marquee pauseOnHover vertical className="[--duration:20s]">
+          <Marquee vertical className="[--duration:20s]">
             {column2.map((testimonial, idx) => (
-              <TestimonialCard key={idx} {...testimonial} />
+              <TestimonialCard key={idx} {...testimonial} onClick={() => setSelected(testimonial)} />
             ))}
           </Marquee>
-          <Marquee reverse pauseOnHover vertical className="[--duration:20s]">
+          <Marquee reverse vertical className="[--duration:20s]">
             {column3.map((testimonial, idx) => (
-              <TestimonialCard key={idx} {...testimonial} />
+              <TestimonialCard key={idx} {...testimonial} onClick={() => setSelected(testimonial)} />
             ))}
           </Marquee>
-          <Marquee pauseOnHover vertical className="[--duration:20s]">
+          <Marquee vertical className="[--duration:20s]">
             {column4.map((testimonial, idx) => (
-              <TestimonialCard key={idx} {...testimonial} />
+              <TestimonialCard key={idx} {...testimonial} onClick={() => setSelected(testimonial)} />
             ))}
           </Marquee>
         </div>
       </div>
+
+      {/* Testimonial Dialog */}
+      <Modal
+        open={selected !== null}
+        onClose={() => setSelected(null)}
+        title="Testimonial"
+      >
+        {selected && (
+          <div className="space-y-4">
+            <blockquote className="text-lg leading-7 text-[var(--text-primary)]">
+              &ldquo;{selected.quote}&rdquo;
+            </blockquote>
+            <div className="flex items-center gap-3 pt-2">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] font-mono text-sm text-[var(--text-muted)]">
+                {initials(selected.name)}
+              </div>
+              <div>
+                <div className="font-semibold text-[var(--text-primary)]">{selected.name}</div>
+                <div className="text-sm text-[var(--text-muted)]">{selected.role}</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
     </section>
   );
 }

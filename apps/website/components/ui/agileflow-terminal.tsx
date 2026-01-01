@@ -7,7 +7,7 @@ interface AgileFlowTerminalProps {
   version: string;
   commands: number;
   agents: number;
-  skills: number;
+  skills: number | string;
 }
 
 export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFlowTerminalProps) {
@@ -50,7 +50,7 @@ export function AgileFlowTerminal({ version, commands, agents, skills }: AgileFl
       <AnimatedSpan className="text-[#6a9955]">✔ Core installation complete</AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">✓ Installed {agents} agents</AnimatedSpan>
       <AnimatedSpan className="text-[#6a9955]">✓ Installed {commands} commands</AnimatedSpan>
-      <AnimatedSpan className="text-[#6a9955]">✓ Installed {skills} skills</AnimatedSpan>
+      <AnimatedSpan className="text-[#6a9955]">✓ {typeof skills === 'string' ? `${skills} skill generator` : `Installed ${skills} skills`}</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>
       <AnimatedSpan className="text-[#e8683a] font-bold">Configuring IDEs</AnimatedSpan>
       <AnimatedSpan> </AnimatedSpan>

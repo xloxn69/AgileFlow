@@ -12,7 +12,7 @@ interface HeroProps {
   stats: {
     commands: number;
     agents: number;
-    skills: number;
+    skills: number | string;
   };
 }
 

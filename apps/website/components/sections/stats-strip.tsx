@@ -23,7 +23,11 @@ export function StatsStrip({ stats }: { stats: Stat[] }) {
             {stats.map((stat) => (
               <div key={stat.label} className="px-5 py-4">
                 <div className="text-[28px] font-semibold leading-none tracking-[-0.02em] text-[var(--text-primary)]">
-                  <CountUp value={stat.value} />
+                  {stat.isText || typeof stat.value === 'string' ? (
+                    stat.value
+                  ) : (
+                    <CountUp value={stat.value as number} />
+                  )}
                 </div>
                 <div className="mt-2 text-xs font-medium tracking-wide text-[var(--text-muted)]">{stat.label}</div>
               </div>
