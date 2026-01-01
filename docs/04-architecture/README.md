@@ -31,6 +31,7 @@ System architecture, component design, and technical documentation for AgileFlow
 | [Agent Expert System](./agent-expert-system.md) | Self-improving agents with expertise files |
 | [Multi-Expert Orchestration](./multi-expert-orchestration.md) | Parallel expert analysis and synthesis |
 | [Babysit Mentor System](./babysit-mentor-system.md) | End-to-end implementation mentor |
+| [Ralph Loop](./ralph-loop.md) | Autonomous story processing with test validation |
 | [Unified Context Gathering](./unified-context-gathering.md) | How agents gather project context |
 
 ---
