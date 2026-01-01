@@ -99,7 +99,7 @@ Need investigation before proceeding. Stale research may need updating.
 
 **Example**: Deployment comparison research outdated (90+ days old)
 
-**Resolution**: Run `/agileflow:context MODE=research` for current best practices, update research notes.
+**Resolution**: Run `/agileflow:research:ask` for current best practices, update research notes.
 
 ## Output Format
 
@@ -139,7 +139,7 @@ US-0051 | AG-DEVOPS | Blocked for 16 days
   💡 Resolution:
      - Ask stakeholder: Which platform? (Vercel, AWS, Docker)
      - Related research: docs/10-research/deployment-comparison.md (90 days old)
-     - Suggest: /agileflow:context MODE=research TOPIC="Modern deployment 2025"
+     - Suggest: /agileflow:research:ask TOPIC="Modern deployment 2025"
 ```
 
 ### Active Blockers Section
@@ -190,7 +190,7 @@ Prioritized next steps with specific commands:
    Command: /agileflow:status STORY=US-0038 STATUS=in-review
 
 3. [Medium] Update stale deployment research (90 days old)
-   Command: /agileflow:context MODE=research TOPIC="Deployment platforms"
+   Command: /agileflow:research:ask TOPIC="Deployment platforms"
 
 4. [Low] Redistribute AG-API backlog when capacity opens
    Command: /agileflow:assign STORY=US-0055 NEW_OWNER=AG-API

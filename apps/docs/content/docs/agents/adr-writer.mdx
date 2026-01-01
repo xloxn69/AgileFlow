@@ -35,7 +35,7 @@ Use this agent when you need to document:
 
 2. **Understanding**: Agent clarifies what decision is being made and why it's needed now
 
-3. **Research Integration**: Agent checks for existing research on the decision topic, or requests research if needed via `/agileflow:context MODE=research`
+3. **Research Integration**: Agent checks for existing research on the decision topic, or requests research if needed via `/agileflow:research:ask`
 
 4. **Alternatives Analysis**: Agent identifies 2-5 alternatives with pros/cons (from research or user input)
 
@@ -245,7 +245,7 @@ This decision was replaced because [reason].
 
 The ADR Writer Agent always:
 1. Checks docs/10-research/ for existing research on the topic
-2. If research missing, requests: `/agileflow:context MODE=research TOPIC=<decision>`
+2. If research missing, requests: `/agileflow:research:ask TOPIC=<decision>`
 3. Incorporates research findings into Alternatives section
 4. References research note in ADR "References" section
 5. Links ADR back to research note for future reference

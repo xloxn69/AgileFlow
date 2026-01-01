@@ -1,178 +1,566 @@
 ---
-title: /research
-description: Initialize research note with structured template
+title: /agileflow:research
+description: Research subdirectory commands for AI-powered investigation and knowledge import
 ---
 
-# /research
+# /agileflow:research
 
-Create and organize research notes with structured analysis to document findings, investigations, and learning from external sources.
+Comprehensive research system for generating detailed investigation prompts, importing findings, and managing research notes.
 
 ## Quick Start
 
-```bash
-/agileflow:research
-```
-
-The command will guide you to create a new research note in `docs/10-research/`.
-
-## How It Works
-
-### What Gets Created
-
-When you create a research note, the command:
-
-1. **Creates the research folder** if it doesn't exist at `docs/10-research/`
-2. **Creates an index** in `docs/10-research/README.md` with a table of all research notes
-3. **Creates research file** at `docs/10-research/<YYYYMMDD>-<slug>.md` (newest first)
-4. **Adds index entry** with Date, Topic, Path, and Summary
-
-### File Format
-
-Research notes are stored with ISO date prefixes:
-
-<FileTree>
-  <Folder name="docs">
-    <Folder name="10-research">
-      <File name="README.md" comment="Index table" />
-      <File name="20251224-oauth-implementation-guide.md" />
-      <File name="20251220-typescript-performance-tuning.md" />
-      <File name="20251215-stripe-webhook-integration.md" />
-    </Folder>
-  </Folder>
-</FileTree>
-
-## Examples
-
-### Create a New Research Note
+The research system provides four specialized commands:
 
 ```bash
-/agileflow:research
+/agileflow:research:ask TOPIC="your research topic"       # Generate research prompt
+/agileflow:research:import TOPIC="title"                  # Import external results
+/agileflow:research:list                                   # View all research notes
+/agileflow:research:view FILE=<filename>                  # Read specific note
 ```
 
-The command guides you through:
+## Overview
 
-1. Creating the research folder structure
-2. Pasting or providing research content
-3. Extracting key findings
-4. Generating a structured markdown file
-5. Adding an entry to the index
+The research system enables:
 
-### Typical Research Note Structure
+1. **Generate detailed research prompts** for ChatGPT, Claude web, Perplexity, or Gemini
+2. **Import results** from external AI tools into your project
+3. **Browse and reference** past research findings
+4. **Organize findings** with structured templates and indexes
 
-Research notes follow a consistent template with these sections:
+Research is essential for:
+- Troubleshooting difficult problems with external AI expertise
+- Investigating technologies before architecture decisions
+- Documenting learning from external sources
+- Building knowledge base for your team
 
-- **Header** - Title, date, topic, and source URL
-- **Summary** - Brief overview of the research
-- **Key Findings** - Bulleted list of important discoveries
-- **Implementation Approach** - Step-by-step guidance
-- **Security Considerations** - Security best practices
-- **Testing Strategy** - How to test the implementation
-- **Risks & Gotchas** - Common pitfalls to avoid
-- **References** - Source links and citations
+## Subcommands
 
-## Research Index
+### /agileflow:research:ask - Generate Research Prompt
 
-The `docs/10-research/README.md` maintains a table of all research:
+Generate a comprehensive, context-rich research prompt for web AI tools.
+
+**Purpose**: Creates detailed 200+ line prompts that include your codebase context, exact error messages, what you've tried, and specific questions.
+
+**Command**:
+```bash
+/agileflow:research:ask TOPIC="your topic" [DETAILS="constraints"] [ERROR="error message"]
+```
+
+**Parameters**:
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| TOPIC | Yes | What you're researching (e.g., "OAuth 2.0 with Google") |
+| DETAILS | No | Constraints, deadlines, or specific requirements |
+| ERROR | No | Exact error message if troubleshooting |
+
+**Key Features**:
+
+- **Generates 200+ lines minimum** - Detailed and comprehensive
+- **Includes actual code snippets** - 50+ lines from your codebase
+- **Embeds exact errors** - Full stack traces if troubleshooting
+- **Lists attempted solutions** - Shows what you've already tried
+- **Asks specific questions** - 3+ targeted questions for the AI
+- **Output only** - No files written, you copy to external AI tool
+
+**What Gets Generated**:
+
+The prompt includes these mandatory sections:
+
+- **Project Context** - Framework, dependencies, relevant files
+- **Current Implementation** - 50+ lines of actual code from your codebase
+- **The Problem** - Exact error messages, stack traces, expected vs actual behavior
+- **What We've Already Tried** - 2+ approaches with results and analysis
+- **Specific Questions** - 3+ targeted questions to answer
+- **What I Need** - Root cause analysis, step-by-step solution, code examples, gotchas
+- **Environment Details** - Versions and system information
+- **References** - Source links if citing documentation
+
+**Quality Validation**:
+
+Before outputting, the command verifies:
+- Length ≥ 200 lines
+- Code snippets ≥ 50 lines
+- Error messages verbatim (if applicable)
+- ≥ 2 tried approaches listed
+- ≥ 3 specific questions included
+
+**Example**:
+
+```bash
+# Research OAuth issue
+/agileflow:research:ask TOPIC="next-auth Google OAuth unauthorized_client" ERROR="[auth][error] CallbackRouteError: unauthorized_client"
+
+# Output: 250+ line prompt with code, error details, what was tried, and specific questions
+# Copy output → ChatGPT/Claude web → Get expert analysis
+# Then use /agileflow:research:import to save the response
+```
+
+**Workflow**:
+
+```
+1. /agileflow:research:ask TOPIC="..."
+   ↓ (command generates prompt)
+2. Copy prompt output
+3. Paste into ChatGPT/Claude web/Perplexity
+4. Get expert analysis
+5. /agileflow:research:import TOPIC="..." CONTENT="paste response"
+   ↓ (command saves and structures results)
+6. Results saved to docs/10-research/YYYYMMDD-topic-slug.md
+```
+
+**Integration with babysit**:
+
+When `/babysit` detects you're stuck, it suggests:
+```
+Looks like you're stuck on this problem.
+Try: /agileflow:research:ask TOPIC="describe your problem"
+```
+
+---
+
+### /agileflow:research:import - Import Research Results
+
+Import research results from external AI tools into your research folder with structured formatting.
+
+**Purpose**: Takes results from ChatGPT, Claude web, Perplexity, YouTube transcripts, or blog posts and saves them as organized markdown files.
+
+**Command**:
+```bash
+/agileflow:research:import TOPIC="topic" [CONTENT="results"] [SOURCE="url"]
+```
+
+**Parameters**:
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| TOPIC | Yes | Name for the research file (e.g., "OAuth 2.0 Setup") |
+| CONTENT | Yes* | Research results to import (*can be pasted after command) |
+| SOURCE | No | Original source URL for attribution |
+
+**Key Features**:
+
+- **Preserves ALL code snippets** - Exactly as provided
+- **Generates actionable items** - Concrete next steps, not vague suggestions
+- **Diff-first preview** - Show formatted result before saving
+- **Updates research index** - Automatically adds to docs/10-research/README.md
+- **Links to decisions** - Can reference ADRs, Epics, or Stories
+
+**What Gets Created**:
+
+Structured research file with sections:
+
+- **Summary** - 2-3 paragraph TL;DR
+- **Key Findings** - Main takeaways as bullet points
+- **Implementation Approach** - Step-by-step plan if applicable
+- **Code Snippets** - All code preserved exactly as provided
+- **Action Items** - Concrete next steps (checkboxes)
+- **Risks & Gotchas** - Warnings and edge cases
+- **Story Suggestions** - Potential features if research suggests work
+- **Raw Content Reference** - Original content collapsed for reference
+
+**File Location**:
+```
+docs/10-research/YYYYMMDD-topic-slug.md
+```
+
+**Index Update**:
+
+Research entry added to `docs/10-research/README.md`:
+```markdown
+| Date | Topic | File | Summary |
+|------|-------|------|---------|
+| 2025-01-01 | OAuth 2.0 Setup | 20250101-oauth-setup.md | OAuth flows, security, best practices |
+```
+
+**Example**:
+
+```bash
+# After getting ChatGPT response about OAuth
+/agileflow:research:import TOPIC="OAuth 2.0 Setup" SOURCE="https://chatgpt.com"
+
+# Prompts: "Paste the ChatGPT response"
+# You paste content
+# Command shows preview
+# You confirm
+# Results saved to docs/10-research/20250101-oauth-setup.md
+```
+
+**Works With**:
+
+- ChatGPT responses
+- Claude web conversations
+- Perplexity research results
+- YouTube video transcripts
+- Blog post excerpts
+- Conference talk notes
+- Documentation pages
+- Meeting notes
+
+---
+
+### /agileflow:research:list - Show Research Notes Index
+
+Display all research notes in your project with a quick overview.
+
+**Purpose**: Shows research notes stored in `docs/10-research/` with date, topic, filename, and summary.
+
+**Command**:
+```bash
+/agileflow:research:list
+```
+
+**Parameters**: None
+
+**Key Features**:
+
+- **Read-only** - No files written
+- **Shows all notes** - Date, topic, filename
+- **Sorted by date** - Newest first
+- **Quick action hints** - Suggestions for next commands
+
+**Output Example**:
+
+```
+## Research Notes
+
+| Date | Topic | File |
+|------|-------|------|
+| 2025-01-01 | OAuth 2.0 Setup | 20250101-oauth-setup.md |
+| 2024-12-31 | TypeScript Performance | 20241231-typescript-perf.md |
+| 2024-12-28 | Mermaid Diagrams | 20241228-mermaid.md |
+
+Total: 3 research notes
+
+Quick actions:
+- /agileflow:research:view FILE=20250101-oauth-setup.md - Read a note
+- /agileflow:research:ask TOPIC="new topic" - Create new research
+- /agileflow:research:import - Import external content
+```
+
+**When to Use**:
+
+- Find past research before implementing
+- Look up code snippets you've researched
+- Check action items from previous research
+
+---
+
+### /agileflow:research:view - Read Specific Research Note
+
+Display the full content of a research note from your research folder.
+
+**Purpose**: Read and review research notes to find code snippets, action items, and findings.
+
+**Command**:
+```bash
+/agileflow:research:view FILE=<filename>
+```
+
+**Parameters**:
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| FILE | Yes | Filename of the research note (e.g., "20250101-oauth-setup.md") |
+
+**Key Features**:
+
+- **Read-only** - No files written
+- **Full content** - Entire file displayed, not truncated
+- **Find anything** - Code snippets, action items, findings
+
+**Example**:
+
+```bash
+# View OAuth research
+/agileflow:research:view FILE=20250101-oauth-setup.md
+
+# Output: Full content of the file
+```
+
+**Output Includes**:
+
+- Complete research file content
+- All code snippets from the research
+- Action items with checkboxes
+- Key findings and gotchas
+- Risks and considerations
+- References and sources
+
+---
+
+## Workflow Examples
+
+### Full Research Workflow
+
+**Scenario**: You're stuck on authentication and need expert help.
+
+```bash
+# Step 1: Generate detailed research prompt
+/agileflow:research:ask TOPIC="next-auth Google OAuth unauthorized_client error" \
+  ERROR="[auth][error] CallbackRouteError: unauthorized_client"
+
+# Output: 250+ line detailed prompt with your code, error, what you tried, questions
+# → Copy the prompt
+
+# Step 2: Paste into ChatGPT/Perplexity
+# → Get expert analysis back
+
+# Step 3: Import the results
+/agileflow:research:import TOPIC="next-auth OAuth Fix" SOURCE="https://chatgpt.com"
+
+# Prompts for content → paste ChatGPT response
+# → Shows preview of formatted file
+# → Saves to docs/10-research/YYYYMMDD-nextauth-oauth-fix.md
+
+# Step 4: Reference in your work
+# - Create ADR referencing the research
+# - Create story based on action items
+# - Check action items when implementing
+
+# Step 5: Review research when implementing
+/agileflow:research:list                    # See all research
+/agileflow:research:view FILE=<filename>    # Review details
+```
+
+### Investigating Before Architecture Decision
+
+```bash
+# Step 1: Research database options
+/agileflow:research:ask TOPIC="PostgreSQL vs MongoDB for real-time collaboration"
+
+# Step 2: Get expert comparison, use cases, tradeoffs
+# → Copy response from ChatGPT/Perplexity
+
+# Step 3: Import results
+/agileflow:research:import TOPIC="Database Selection Analysis"
+
+# Step 4: Create ADR referencing research
+# /agileflow:adr NEW
+# Mention: "See research in docs/10-research/"
+
+# Step 5: Team reviews research before decision
+/agileflow:research:view FILE=20250101-database-selection.md
+```
+
+### Learning from External Content
+
+```bash
+# You find a great article/YouTube video about your tech
+
+# Step 1: Import the content
+/agileflow:research:import TOPIC="Next.js App Router Advanced Patterns" \
+  SOURCE="https://example.com/article"
+
+# Copy/paste key sections → saves to research folder
+
+# Step 2: Reference from architecture docs
+# docs/04-architecture/... → "See research: [link]"
+
+# Step 3: Create stories from action items
+# "Per research, we should implement error boundaries"
+```
+
+---
+
+## Integration with Other Commands
+
+### babysit - Stuck Detection
+
+When `/babysit` detects you're stuck on a problem:
+
+```
+⚠️ You're working on this for a while. Need help?
+
+Try:
+  /agileflow:research:ask TOPIC="describe your problem"
+```
+
+### ADR - Architecture Decisions
+
+Reference research in architecture decisions:
+
+```markdown
+# ADR-0042: Use PostgreSQL for persistence
+
+**Research**: See [Database Comparison](../10-research/20250101-database-selection.md)
+
+Based on the research findings, we decided to use PostgreSQL because...
+```
+
+### Stories and Epics
+
+Create work from research findings:
+
+```bash
+# After importing research results
+/agileflow:research:import TOPIC="Auth Pattern"
+
+# Then create story based on action items
+/agileflow:epic NEW
+# Include: "Based on research: docs/10-research/20250101-auth-pattern.md"
+```
+
+---
+
+## Best Practices
+
+### Research Prompt Generation
+
+1. **Be specific with TOPIC** - Don't just say "help with auth", say "next-auth 5.0 with Google OAuth"
+2. **Include ERROR messages** - Full stack traces help tremendously
+3. **Document what you tried** - Shows the AI you've done homework
+4. **Ask specific questions** - "Why is X happening?" not "How do I fix this?"
+
+**Good TOPIC examples:**
+- "next-auth Google OAuth unauthorized_client error with Next.js 14 App Router"
+- "TypeScript strict mode compilation errors in monorepo setup"
+- "Stripe webhook signature validation failing in development"
+
+**Bad TOPIC examples:**
+- "help with authentication"
+- "why is my code broken"
+- "error in my app"
+
+### Research Import
+
+1. **Always cite the source** - Where did you get this from?
+2. **Preserve code snippets exactly** - Don't modify examples
+3. **Extract key findings** - Don't just paste raw content
+4. **Generate action items** - What should you do with this?
+5. **Link to decisions** - Reference ADRs, Epics, Stories if relevant
+
+### Managing Research
+
+1. **Review before implementing** - Don't blindly follow research
+2. **Check action items** - Use checkboxes to track what you did
+3. **Keep files current** - Update if you learn more
+4. **Reference in decisions** - Link from ADRs and stories
+5. **Archive old research** - Move outdated findings to archive directory
+
+---
+
+## Research Structure
+
+Research files are stored with ISO date prefixes:
+
+```
+docs/10-research/
+├── README.md                                    (Index table)
+├── 20250101-oauth-setup.md
+├── 20241231-typescript-performance.md
+└── 20241228-mermaid-diagrams.md
+```
+
+### File Naming
+
+```
+YYYYMMDD-topic-slug.md
+
+Examples:
+- 20250101-oauth-setup.md
+- 20241231-stripe-webhooks.md
+- 20241228-typescript-strict-mode.md
+```
+
+### Research Index
+
+The `docs/10-research/README.md` maintains a table of all research notes:
 
 ```markdown
 # Research Notes
 
-| Date | Topic | Path | Summary |
+| Date | Topic | File | Summary |
 |------|-------|------|---------|
-| 2025-12-24 | OAuth 2.0 Implementation | 20251224-oauth-implementation-guide.md | OAuth 2.0 flows, security, and best practices for web apps |
-| 2025-12-20 | TypeScript Performance | 20251220-typescript-performance-tuning.md | Optimization techniques and build configuration |
-| 2025-12-15 | Stripe Webhooks | 20251215-stripe-webhook-integration.md | Webhook setup, security, and retry strategies |
+| 2025-01-01 | OAuth 2.0 Setup | 20250101-oauth-setup.md | OAuth flows, security, best practices |
+| 2024-12-31 | TypeScript Performance | 20241231-typescript-perf.md | Optimization techniques and tsconfig tuning |
+| 2024-12-28 | Mermaid Diagrams | 20241228-mermaid.md | Diagram syntax, rendering, and best practices |
 ```
 
-## When to Use Research Notes
+---
+
+## When to Use Research
 
 ### Before Architecture Decisions
 Research tools and frameworks before recommending them:
 
 ```bash
-/agileflow:research
-# Document findings about potential solutions
-# Then create ADR referencing the research
+/agileflow:research:ask TOPIC="PostgreSQL vs MongoDB for real-time sync"
+# → Get expert comparison
+/agileflow:research:import  # Import results
+# → Create ADR referencing the research
 ```
 
 ### Feature Investigation
 Deep-dive into how to implement complex features:
 
 ```bash
-# Research authentication approach
-# Research payment integration
-# Research real-time synchronization
+/agileflow:research:ask TOPIC="Next.js App Router middleware patterns"
+/agileflow:research:ask TOPIC="OAuth 2.0 implementation with security best practices"
+/agileflow:research:ask TOPIC="Real-time WebSocket architecture in Node.js"
 ```
 
-### Technology Evaluation
-Compare options and document findings:
+### Troubleshooting Difficult Problems
+Get expert help when stuck:
 
 ```bash
-# Compare database options (PostgreSQL vs. MongoDB)
-# Compare UI frameworks (React vs. Vue vs. Svelte)
-# Compare hosting platforms (Vercel vs. AWS vs. Heroku)
+/agileflow:research:ask TOPIC="TypeScript strict mode in monorepo" \
+  ERROR="error TS1149: File is a CommonJS module..."
 ```
 
 ### Learning & Training
 Document learnings from courses, tutorials, or documentation:
 
 ```bash
-# Summarize conference talk
-# Document tutorial findings
-# Capture best practices from book
+/agileflow:research:import TOPIC="React 18 Suspense and Streaming" \
+  SOURCE="https://react.dev/reference/react/Suspense"
 ```
 
-## Best Practices
+### Technology Evaluation
+Compare options before adoption:
 
-### Research Title Format
-Use descriptive, specific titles:
-
-```text
-Good:
-- OAuth 2.0 Implementation for Web Applications
-- PostgreSQL vs MongoDB for Real-time Data
-- Next.js App Router Optimization Techniques
-
-Avoid:
-- Research Notes
-- How to do stuff
-- Random findings
+```bash
+/agileflow:research:ask TOPIC="GraphQL vs tRPC for type-safe APIs"
+/agileflow:research:ask TOPIC="SvelteKit vs Next.js for new project"
 ```
 
-### Include Sources
-Always cite where information came from:
+---
 
-```markdown
-## References
+## Troubleshooting
 
-- Source Title: https://example.com/
-- Another Source: https://docs.example.com/guide
-- IETF RFC 1234: https://tools.ietf.org/
+### Research Prompt Too Short
+
+If you get a prompt under 200 lines, the command will regenerate. Make sure:
+- TOPIC is specific (include framework versions, error types)
+- ERROR includes full stack trace if troubleshooting
+- Command reads your actual codebase
+
+### Import Not Updating Index
+
+The index (`docs/10-research/README.md`) is automatically created and updated. If it's missing:
+
+```bash
+/agileflow:research:list  # This will create the index if missing
 ```
 
-### Key Findings
-Extract 3-5 most important takeaways:
+### Can't Find Research File
 
-```markdown
-## Key Findings
+Use `/agileflow:research:list` to see all available files:
 
-- **Finding 1**: Brief description with context
-- **Finding 2**: Why this matters to the project
-- **Finding 3**: Trade-offs or considerations
+```bash
+/agileflow:research:list
+# Shows all files with correct filenames for /agileflow:research:view
 ```
 
-### Link to Work
-Reference research from ADRs, Epics, and Stories:
+### Research Folder Doesn't Exist
 
-```markdown
-# ADR-0042: Use PostgreSQL for persistence
+First research import or list command creates the `docs/10-research/` directory automatically. No manual setup needed.
 
-**Research**: See [Database Comparison](../10-research/20251220-database-comparison.md)
-```
+---
 
 ## Related Commands
 
-- [`/context MODE=research`](/commands/context) - Generate research prompt for web AI tools
-- [`/context MODE=import`](/commands/context) - Import and organize external content
-- [`/adr`](/commands/adr) - Create architecture decisions based on research
-- [`/epic-new`](/commands/epic-new) - Create epics from research findings
+- [`/agileflow:babysit`](/commands/babysit) - Detects stuck situations and suggests research:ask
+- [`/agileflow:adr`](/commands/adr) - Create architecture decisions referencing research
+- [`/agileflow:epic`](/commands/epic) - Create epics based on research findings
+- [`/agileflow:story`](/commands/story) - Create stories with research references
