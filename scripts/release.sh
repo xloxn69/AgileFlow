@@ -137,7 +137,15 @@ sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
 # Step 5: Commit changes
 echo ""
 echo "Step 5: Committing changes..."
+# Add core release files
 git add README.md packages/cli/README.md packages/cli/package.json package.json packages/cli/CHANGELOG.md
+# Add files potentially updated by sync-counts.js
+git add docs/04-architecture/*.md 2>/dev/null || true
+git add CLAUDE.md 2>/dev/null || true
+git add apps/docs/content/docs/index.mdx 2>/dev/null || true
+git add apps/docs/content/docs/agents/index.mdx 2>/dev/null || true
+git add apps/docs/content/docs/commands/index.mdx 2>/dev/null || true
+git add apps/website/lib/landing-content.ts 2>/dev/null || true
 git commit -m "chore: bump version to v${VERSION}"
 
 # Step 6: Push to GitHub
