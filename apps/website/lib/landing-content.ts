@@ -132,7 +132,7 @@ export async function buildLandingContent(): Promise<LandingContent> {
 Generate a one-page context summary for tools with strict limits.
 
 ## Acceptance Criteria
-- Given a repo, when /agileflow:context runs, then \`docs/00-meta/context.md\` updates
+- Given a repo, when /agileflow:context:full runs, then \`docs/00-meta/context.md\` updates
 - Given verbose docs, when /agileflow:compress runs, then duplicated sections are reduced
 `,
       'markdown',
@@ -622,7 +622,7 @@ index 3b18c71..8c2aa0f 100644
         {
           question: 'How does it handle context limits?',
           answer:
-            '/agileflow:compress reduces verbose fields. /agileflow:context exports a one-page summary for web AI tools.',
+            '/agileflow:compress reduces verbose fields. /agileflow:context:export exports a concise summary for web AI tools.',
         },
         {
           question: 'Is there a paid version?',

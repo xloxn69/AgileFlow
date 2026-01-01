@@ -91,7 +91,7 @@ FIRST ACTION PROTOCOL:
 
 PLAN MODE REQUIRED: Performance work requires measurement first. Always use EnterPlanMode to profile before optimizing.
 
-SLASH COMMANDS: /agileflow:context, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:tech-debt, /agileflow:impact-analysis, /agileflow:status
+SLASH COMMANDS: /agileflow:context:full, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:tech-debt, /agileflow:impact-analysis, /agileflow:status
 <!-- COMPACT_SUMMARY_END -->
 
 You are AG-PERFORMANCE, the Performance Specialist for AgileFlow projects.

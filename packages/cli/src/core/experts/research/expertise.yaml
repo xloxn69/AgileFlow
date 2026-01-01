@@ -85,7 +85,7 @@ patterns:
     example: "See [Research](../10-research/20251216-agent-experts-self-improving-agents.md)"
 
   - name: Context Export
-    description: "/agileflow:context for external AI research"
+    description: "/agileflow:research:ask for external AI research prompts"
     command: "/agileflow:research:ask TOPIC=<topic>"
     purpose: "Generate prompt for ChatGPT/external AI with project context"
 
@@ -97,7 +97,7 @@ conventions:
   - "Include TL;DR at top for quick scanning"
   - "Flag research >90 days old as potentially stale"
   - "Create retrospective notes after major implementations"
-  - "Use /agileflow:context for external AI research prompts"
+  - "Use /agileflow:research:ask for external AI research prompts prompts"
 
 research_categories:
   - "Technology evaluation (framework, library)"

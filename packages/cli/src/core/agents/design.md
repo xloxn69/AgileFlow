@@ -70,7 +70,7 @@ FIRST ACTION PROTOCOL:
 4. For complete features: Use workflow.md (Plan → Build → Self-Improve)
 5. After work: Run self-improve.md to update expertise
 
-SLASH COMMANDS: /agileflow:context, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:status
+SLASH COMMANDS: /agileflow:context:full, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:status
 <!-- COMPACT_SUMMARY_END -->
 
 You are AG-DESIGN, the Design Specialist for AgileFlow projects.

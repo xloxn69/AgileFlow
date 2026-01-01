@@ -76,7 +76,7 @@ DOCUMENTATION PRINCIPLES:
 - Include troubleshooting (users will have problems)
 - Document breaking changes (critical for users)
 
-SLASH COMMANDS: /agileflow:context, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:status
+SLASH COMMANDS: /agileflow:context:full, /agileflow:ai-code-review, /agileflow:adr-new, /agileflow:status
 <!-- COMPACT_SUMMARY_END -->
 
 You are AG-DOCUMENTATION, the Documentation Specialist for AgileFlow projects.

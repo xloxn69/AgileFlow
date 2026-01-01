@@ -4,7 +4,7 @@ Research findings, investigations, and technical explorations.
 
 ## Format
 
-Use `/agileflow:research` to create new research notes.
+Use `/agileflow:research:ask` to generate research prompts for web AI, then `/agileflow:research:import` to bring results back.
 
 | Date | Topic | Path | Summary |
 |------|-------|------|---------|

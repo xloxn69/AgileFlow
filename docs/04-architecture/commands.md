@@ -102,8 +102,13 @@ See [Session Harness](./session-harness.md) for details.
 
 | Command | Description |
 |---------|-------------|
-| `/agileflow:context` | Generate/export context for web AI tools (ChatGPT, Perplexity, Gemini, Claude) |
-| `/agileflow:research` | Initialize research note with structured template |
+| `/agileflow:context:full` | Generate/refresh comprehensive project context |
+| `/agileflow:context:export` | Export concise context excerpt for web AI |
+| `/agileflow:context:note` | Add timestamped note to context file |
+| `/agileflow:research:ask` | Generate detailed 200+ line research prompt |
+| `/agileflow:research:import` | Import results from web AI tools |
+| `/agileflow:research:list` | View research notes index |
+| `/agileflow:research:view` | Read specific research note |
 | `/agileflow:whats-new` | Show recent AgileFlow updates and version history |
 
 ---
@@ -128,7 +133,7 @@ Most commands accept parameters in `KEY=value` format:
 
 /agileflow:status STORY=US-0001 STATUS=in-progress SUMMARY="Started implementation"
 
-/agileflow:context MODE=research TOPIC="JWT best practices"
+/agileflow:research:ask TOPIC="JWT best practices"
 ```
 
 ---
