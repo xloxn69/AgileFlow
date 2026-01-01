@@ -556,8 +556,9 @@ function enableFeature(feature, options = {}) {
       return false;
     }
 
-    // Configure hook
-    const command = config.type === 'node' ? `node ${scriptPath}` : `bash ${scriptPath}`;
+    // Use absolute path so hooks work from any subdirectory
+    const absoluteScriptPath = path.join(process.cwd(), scriptPath);
+    const command = config.type === 'node' ? `node ${absoluteScriptPath}` : `bash ${absoluteScriptPath}`;
 
     settings.hooks[config.hook] = [
       {
@@ -579,7 +580,8 @@ function enableFeature(feature, options = {}) {
       return false;
     }
 
-    // Add to SessionStart hook
+    // Use absolute path so hooks work from any subdirectory
+    const absoluteScriptPath = path.join(process.cwd(), scriptPath);
     if (settings.hooks.SessionStart?.[0]?.hooks) {
       const hasArchival = settings.hooks.SessionStart[0].hooks.some(h =>
         h.command?.includes('archive-completed-stories')
@@ -587,7 +589,7 @@ function enableFeature(feature, options = {}) {
       if (!hasArchival) {
         settings.hooks.SessionStart[0].hooks.push({
           type: 'command',
-          command: `bash ${scriptPath} --quiet`,
+          command: `bash ${absoluteScriptPath} --quiet`,
         });
       }
     }
@@ -607,9 +609,11 @@ function enableFeature(feature, options = {}) {
       return false;
     }
 
+    // Use absolute path so hooks work from any subdirectory
+    const absoluteScriptPath = path.join(process.cwd(), scriptPath);
     settings.statusLine = {
       type: 'command',
-      command: `bash ${scriptPath}`,
+      command: `bash ${absoluteScriptPath}`,
       padding: 0,
     };
     success('Status line enabled');
