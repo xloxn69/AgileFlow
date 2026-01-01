@@ -113,6 +113,10 @@ conventions:
 
 # Learned from AgileFlow codebase exploration
 learnings:
+  - date: "2026-01-01"
+    auto_generated: true
+    context: "Test learning"
+    insight: "This is a test"
   - date: 2025-12-21
     context: "Analyzed docs/ directory structure"
     insight: "10 numbered directories (00-meta through 10-research) organize all project documentation"
