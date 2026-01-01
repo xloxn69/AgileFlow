@@ -140,9 +140,11 @@ export function CommandsShowcase({ content }: { content: LandingContent['command
                         <div className="font-mono text-sm text-[var(--text-primary)]">{selectedMeta.label}</div>
                         <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{selectedMeta.description}</p>
                       </div>
-                      <div className="rounded-card border border-[var(--border-default)] bg-[var(--bg-code)] p-4">
-                        <div className="code-shiki text-sm" dangerouslySetInnerHTML={{ __html: selectedMeta.exampleHtml }} />
-                      </div>
+                      {selectedMeta.exampleHtml && (
+                        <div className="rounded-card border border-[var(--border-default)] bg-[var(--bg-code)] p-4">
+                          <div className="code-shiki text-sm" dangerouslySetInnerHTML={{ __html: selectedMeta.exampleHtml }} />
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-sm text-[var(--text-secondary)]">Select a command to view details.</p>

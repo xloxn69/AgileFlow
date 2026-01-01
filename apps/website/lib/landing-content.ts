@@ -79,7 +79,7 @@ export type LandingContent = {
       commands: Array<{
         name: string;
         description: string;
-        exampleHtml: string;
+        exampleHtml?: string;
       }>;
     }>;
   };
@@ -178,9 +178,6 @@ index 3b18c71..8c2aa0f 100644
       'diff',
     ),
   ]);
-
-  const commandExample = async (command: string, lines: string[]) =>
-    codeToHtml([`/agileflow:${command}`, ...lines].join('\n'), 'bash');
 
   return {
     version: stats.version,
@@ -441,170 +438,130 @@ index 3b18c71..8c2aa0f 100644
     },
     commands: {
       heading: 'Commands',
-      subhead: 'Slash commands grouped by workflow stage.',
+      subhead: `All ${stats.commands} slash commands grouped by workflow stage.`,
       categories: [
         {
           id: 'core',
           name: 'Core',
           commands: [
-            {
-              name: 'setup',
-              description: 'Scaffold folders, templates, and config into the repo.',
-              exampleHtml: await commandExample('setup', [
-                'Scaffolding docs/…',
-                'Created 11 folders and templates',
-                'Configured IDE command packs',
-              ]),
-            },
-            {
-              name: 'help',
-              description: 'Show the command surface area and conventions.',
-              exampleHtml: await commandExample('help', [
-                `Commands: ${stats.commands}`,
-                `Agents: ${stats.agents}`,
-                `Skills: ${stats.skills}`,
-              ]),
-            },
-            {
-              name: 'babysit',
-              description: 'Keep work moving with status checks and reminders.',
-              exampleHtml: await commandExample('babysit', ['Checked WIP limits', 'Flagged stale stories: 2']),
-            },
+            { name: 'help', description: 'Display system overview and all available commands.' },
+            { name: 'babysit', description: 'Interactive mentor for end-to-end feature implementation.' },
+            { name: 'configure', description: 'Configure hooks, status line, archival, and other features.' },
+            { name: 'diagnose', description: 'System health diagnostics and troubleshooting.' },
+            { name: 'whats-new', description: 'Show recent AgileFlow updates and version history.' },
           ],
         },
         {
           id: 'planning',
           name: 'Planning',
           commands: [
-            {
-              name: 'epic',
-              description: 'Create or update an epic with scope and milestones.',
-              exampleHtml: await commandExample('epic', ['Created docs/05-epics/EP-0042.md']),
-            },
-            {
-              name: 'story',
-              description: 'Create a story with acceptance criteria and ownership.',
-              exampleHtml: await commandExample('story', ['Created docs/06-stories/US-0123.md']),
-            },
-            {
-              name: 'sprint',
-              description: 'Plan a sprint with WIP limits and story selection.',
-              exampleHtml: await commandExample('sprint', ['Selected stories: 6', 'WIP limit: 3']),
-            },
-            {
-              name: 'assign',
-              description: 'Assign ownership for a story or task.',
-              exampleHtml: await commandExample('assign', ['US-0123 → @devhandle']),
-            },
-            {
-              name: 'status',
-              description: 'Update lifecycle state: in-progress → in-review → done.',
-              exampleHtml: await commandExample('status', ['US-0123: in-review', 'Updated docs/09-agents/status.json']),
-            },
+            { name: 'epic', description: 'Create a new epic with stories and milestones.' },
+            { name: 'story', description: 'Create a user story with acceptance criteria.' },
+            { name: 'story-validate', description: 'Validate story completeness before development.' },
+            { name: 'sprint', description: 'Data-driven sprint planning with velocity forecasting.' },
+            { name: 'assign', description: 'Assign or reassign a story to an owner.' },
+            { name: 'status', description: 'Update story status and progress.' },
+            { name: 'deps', description: 'Visualize dependency graph with critical path detection.' },
+            { name: 'auto', description: 'Auto-generate stories from PRDs, mockups, or specs.' },
+            { name: 'template', description: 'Create and manage custom document templates.' },
+          ],
+        },
+        {
+          id: 'development',
+          name: 'Development',
+          commands: [
+            { name: 'verify', description: 'Run project tests and update story test status.' },
+            { name: 'baseline', description: 'Mark current state as verified baseline.' },
+            { name: 'review', description: 'AI-powered code review with quality suggestions.' },
+            { name: 'pr', description: 'Generate pull request description from story.' },
+            { name: 'tests', description: 'Set up automated testing infrastructure.' },
+            { name: 'ci', description: 'Bootstrap CI/CD workflow with testing and quality checks.' },
+            { name: 'impact', description: 'Analyze change impact across codebase.' },
+            { name: 'debt', description: 'Track and prioritize technical debt items.' },
           ],
         },
         {
           id: 'docs',
           name: 'Documentation',
           commands: [
-            {
-              name: 'adr',
-              description: 'Record an architecture decision with rationale and consequences.',
-              exampleHtml: await commandExample('adr', ['Created docs/03-decisions/ADR-0042.md']),
-            },
-            {
-              name: 'docs',
-              description: 'Generate or refresh docs indexes and summaries.',
-              exampleHtml: await commandExample('docs', ['Updated docs/00-meta/README.md']),
-            },
-            {
-              name: 'readme-sync',
-              description: 'Sync project README from structured repo docs.',
-              exampleHtml: await commandExample('readme-sync', ['Updated README.md']),
-            },
-            {
-              name: 'changelog',
-              description: 'Generate a changelog from merged work.',
-              exampleHtml: await commandExample('changelog', ['Updated CHANGELOG.md']),
-            },
-          ],
-        },
-        {
-          id: 'quality',
-          name: 'Quality',
-          commands: [
-            {
-              name: 'verify',
-              description: 'Run a verification pass that matches the story contract.',
-              exampleHtml: await commandExample('verify', ['Harness: ready', 'Status: passing']),
-            },
-            {
-              name: 'tests',
-              description: 'Generate or update tests from acceptance criteria.',
-              exampleHtml: await commandExample('tests', ['Added cases for US-0123', 'Updated docs/07-testing/']),
-            },
-            {
-              name: 'ci',
-              description: 'Add or update CI conventions for the workflow.',
-              exampleHtml: await commandExample('ci', ['Updated .github/workflows/']),
-            },
-            {
-              name: 'review',
-              description: 'Prepare review context from story and ADR references.',
-              exampleHtml: await commandExample('review', ['Summary ready', 'Linked ADR-0042, US-0123']),
-            },
+            { name: 'adr', description: 'Create an Architecture Decision Record.' },
+            { name: 'docs', description: 'Synchronize documentation with code changes.' },
+            { name: 'readme-sync', description: 'Synchronize folder READMEs with contents.' },
+            { name: 'changelog', description: 'Auto-generate changelog from commit history.' },
+            { name: 'update', description: 'Generate stakeholder progress report.' },
           ],
         },
         {
           id: 'analytics',
           name: 'Analytics',
           commands: [
-            {
-              name: 'board',
-              description: 'Render a board view from story files and status.',
-              exampleHtml: await commandExample('board', ['in-progress: 2', 'in-review: 1', 'done: 5']),
-            },
-            {
-              name: 'velocity',
-              description: 'Compute velocity over recent iterations from repo history.',
-              exampleHtml: await commandExample('velocity', ['Last 3 sprints: 18, 21, 19']),
-            },
-            {
-              name: 'metrics',
-              description: 'Summarize WIP, cycle time, and blockers from structured state.',
-              exampleHtml: await commandExample('metrics', ['Cycle time (p50): 2.1d', 'Blockers: 1']),
-            },
-            {
-              name: 'blockers',
-              description: 'List blocked work and the recorded reason.',
-              exampleHtml: await commandExample('blockers', ['US-0107: waiting on API contract']),
-            },
+            { name: 'board', description: 'Display visual kanban board with WIP limits.' },
+            { name: 'velocity', description: 'Track velocity and forecast sprint capacity.' },
+            { name: 'metrics', description: 'Analytics dashboard with cycle time and throughput.' },
+            { name: 'blockers', description: 'Track and resolve blockers with actionable suggestions.' },
+            { name: 'retro', description: 'Generate retrospective with Start/Stop/Continue format.' },
+            { name: 'feedback', description: 'Collect and process agent feedback.' },
           ],
         },
         {
           id: 'devops',
           name: 'DevOps',
           commands: [
-            {
-              name: 'pr',
-              description: 'Generate a PR description tied to a story and ADRs.',
-              exampleHtml: await commandExample('pr', ['PR summary drafted', 'Includes acceptance criteria']),
-            },
-            {
-              name: 'deploy',
-              description: 'Record deploy notes alongside the work shipped.',
-              exampleHtml: await commandExample('deploy', ['Created docs/08-project/deploy-2025-01-12.md']),
-            },
-            {
-              name: 'packages',
-              description: 'Keep package changes consistent across a monorepo.',
-              exampleHtml: await commandExample('packages', ['Checked workspace versions', 'No drift detected']),
-            },
-            {
-              name: 'impact',
-              description: 'Summarize impact and follow-ups from shipped stories.',
-              exampleHtml: await commandExample('impact', ['US-0123: shipped', 'Follow-ups: 2']),
-            },
+            { name: 'deploy', description: 'Set up automated deployment pipeline.' },
+            { name: 'packages', description: 'Manage dependencies with updates and security audits.' },
+            { name: 'compress', description: 'Compress status.json to reduce token usage.' },
+            { name: 'handoff', description: 'Document work handoff between agents.' },
+          ],
+        },
+        {
+          id: 'agents',
+          name: 'Agents',
+          commands: [
+            { name: 'agent', description: 'Onboard a new agent with profile and contract.' },
+            { name: 'multi-expert', description: 'Deploy multiple domain experts for cross-domain analysis.' },
+            { name: 'validate-expertise', description: 'Validate expertise files for drift and staleness.' },
+          ],
+        },
+        {
+          id: 'context',
+          name: 'Context',
+          commands: [
+            { name: 'context:full', description: 'Generate/refresh comprehensive project context.' },
+            { name: 'context:export', description: 'Export concise context excerpt for web AI.' },
+            { name: 'context:note', description: 'Add timestamped note to context file.' },
+          ],
+        },
+        {
+          id: 'research',
+          name: 'Research',
+          commands: [
+            { name: 'research:ask', description: 'Generate detailed 200+ line research prompt for web AI.' },
+            { name: 'research:import', description: 'Import results from ChatGPT, Perplexity, or other AI.' },
+            { name: 'research:list', description: 'View research notes index.' },
+            { name: 'research:view', description: 'Read specific research note.' },
+          ],
+        },
+        {
+          id: 'sessions',
+          name: 'Sessions',
+          commands: [
+            { name: 'session:new', description: 'Create a parallel session with git worktree.' },
+            { name: 'session:resume', description: 'Switch to a different session.' },
+            { name: 'session:status', description: 'View current session state and activity.' },
+            { name: 'session:end', description: 'End session and optionally clean up worktree.' },
+            { name: 'session:init', description: 'Initialize session harness with test verification.' },
+            { name: 'session:history', description: 'View past session history and metrics.' },
+          ],
+        },
+        {
+          id: 'skills',
+          name: 'Skills',
+          commands: [
+            { name: 'skill:create', description: 'Generate a custom skill with web research and MCP.' },
+            { name: 'skill:list', description: 'List all installed skills with descriptions.' },
+            { name: 'skill:edit', description: 'Edit an existing skill.' },
+            { name: 'skill:delete', description: 'Remove an installed skill.' },
+            { name: 'skill:test', description: 'Verify a skill works correctly.' },
           ],
         },
       ],
