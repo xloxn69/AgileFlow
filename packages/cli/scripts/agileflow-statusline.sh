@@ -197,19 +197,51 @@ input=$(cat)
 MODEL_DISPLAY=$(echo "$input" | jq -r '.model.display_name // empty' 2>/dev/null)
 [ -z "$MODEL_DISPLAY" ] && MODEL_DISPLAY=""
 
-# Parse context usage
-CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
-USAGE=$(echo "$input" | jq '.context_window.current_usage // null')
+# ============================================================================
+# Context Window Usage (reads from session JSONL file like cc-statusline)
+# ============================================================================
+# Claude Code doesn't pass context usage via stdin reliably, so we read it
+# directly from the session's JSONL file (same approach as cc-statusline)
 
 CTX_DISPLAY=""
 CTX_BAR_DISPLAY=""
 CTX_COLOR="$CTX_GREEN"
 PERCENT_USED=0
 
-if [ "$USAGE" != "null" ]; then
-  CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null)
-  if [ -n "$CURRENT_TOKENS" ] && [ "$CURRENT_TOKENS" != "null" ] && [ "$CURRENT_TOKENS" -gt 0 ] 2>/dev/null; then
-    PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
+# Get session_id and current_dir from input
+SESSION_ID=$(echo "$input" | jq -r '.session_id // empty' 2>/dev/null)
+CURRENT_DIR=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty' 2>/dev/null)
+
+# Determine max context based on model (all modern models use 200K)
+get_max_context() {
+  local model="$1"
+  case "$model" in
+    *"Claude 3 Haiku"*|*"claude 3 haiku"*)
+      echo "100000"  # 100K for original Claude 3 Haiku
+      ;;
+    *)
+      echo "200000"  # 200K for Opus, Sonnet, modern Haiku
+      ;;
+  esac
+}
+
+MAX_CONTEXT=$(get_max_context "$MODEL_DISPLAY")
+
+if [ -n "$SESSION_ID" ] && [ -n "$CURRENT_DIR" ]; then
+  # Convert current dir to session file path (same as cc-statusline)
+  # e.g., /home/coder/AgileFlow -> home-coder-AgileFlow
+  PROJECT_DIR=$(echo "$CURRENT_DIR" | sed "s|^$HOME|~|g" | sed "s|~|$HOME|g" | sed 's|/|-|g' | sed 's|^-||')
+  SESSION_FILE="$HOME/.claude/projects/-${PROJECT_DIR}/${SESSION_ID}.jsonl"
+
+  if [ -f "$SESSION_FILE" ]; then
+    # Get the latest input token count from the session file (last 20 lines)
+    LATEST_TOKENS=$(tail -20 "$SESSION_FILE" | jq -r 'select(.message.usage) | .message.usage | ((.input_tokens // 0) + (.cache_read_input_tokens // 0))' 2>/dev/null | tail -1)
+
+    if [ -n "$LATEST_TOKENS" ] && [ "$LATEST_TOKENS" -gt 0 ] 2>/dev/null; then
+      PERCENT_USED=$((LATEST_TOKENS * 100 / MAX_CONTEXT))
+      # Cap at 100%
+      [ "$PERCENT_USED" -gt 100 ] && PERCENT_USED=100
+    fi
   fi
 fi
 
