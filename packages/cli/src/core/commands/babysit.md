@@ -1,5 +1,6 @@
 ---
 description: Interactive mentor for end-to-end feature implementation
+argument-hint: "[EPIC=<id>] [MODE=loop] [MAX=<iterations>]"
 compact_context:
   priority: critical
   preserve_rules:
@@ -31,6 +32,78 @@ node .agileflow/scripts/obtain-context.js babysit
 **DO THIS IMMEDIATELY. NO EXCEPTIONS.**
 
 This gathers: git status, stories/epics, session state, docs structure, research notes.
+
+---
+
+## LOOP MODE (Autonomous Execution)
+
+When invoked with `MODE=loop`, babysit runs autonomously through an epic's stories:
+
+```
+/agileflow:babysit EPIC=EP-0042 MODE=loop MAX=20
+```
+
+### How Loop Mode Works
+
+1. **Initialization**: Writes loop config to `session-state.json`
+2. **First Story**: Picks first "ready" story, marks it "in_progress"
+3. **Work**: You implement the story normally
+4. **Stop Hook**: When you stop, `ralph-loop.js` runs:
+   - Runs `npm test` (or configured test command)
+   - If tests pass → marks story complete, loads next story
+   - If tests fail → shows failures, you continue fixing
+5. **Loop**: Continues until epic complete or MAX iterations reached
+
+### Parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `EPIC` | Yes | Epic ID to process (e.g., EP-0042) |
+| `MODE` | Yes | Must be `loop` for autonomous mode |
+| `MAX` | No | Max iterations (default: 20) |
+
+### To Start Loop Mode
+
+After running the context script, if EPIC and MODE=loop are specified:
+
+```bash
+# Initialize the loop
+node scripts/ralph-loop.js --init --epic=EP-0042 --max=20
+```
+
+Or manually write to session-state.json:
+
+```json
+{
+  "ralph_loop": {
+    "enabled": true,
+    "epic": "EP-0042",
+    "current_story": "US-0015",
+    "iteration": 0,
+    "max_iterations": 20
+  }
+}
+```
+
+### Loop Control Commands
+
+```bash
+node scripts/ralph-loop.js --status   # Check loop status
+node scripts/ralph-loop.js --stop     # Stop the loop
+node scripts/ralph-loop.js --reset    # Reset loop state
+```
+
+### When to Use Loop Mode
+
+**Good for:**
+- Working through a well-defined epic with clear stories
+- Test-driven development (tests define "done")
+- Batch processing multiple stories overnight
+
+**Not good for:**
+- Exploratory work without clear acceptance criteria
+- Stories requiring human review before proceeding
+- Complex multi-domain work needing coordination
 
 ---
 
