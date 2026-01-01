@@ -26,7 +26,12 @@ const path = require('path');
 
 // Use shared modules
 const { parseFrontmatter, normalizeTools } = require('../../../scripts/lib/frontmatter-parser');
-const { countCommands, countAgents, countSkills, getCounts } = require('../../../scripts/lib/counter');
+const {
+  countCommands,
+  countAgents,
+  countSkills,
+  getCounts,
+} = require('../../../scripts/lib/counter');
 
 // =============================================================================
 // List Generation Functions

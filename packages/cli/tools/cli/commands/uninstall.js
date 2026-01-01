@@ -49,10 +49,7 @@ module.exports = {
 
         // Confirm removal
         if (!options.force) {
-          const proceed = await confirm(
-            `Remove ${formatIdeName(ideName)} configuration?`,
-            false
-          );
+          const proceed = await confirm(`Remove ${formatIdeName(ideName)} configuration?`, false);
           if (!proceed) {
             console.log(chalk.dim('\nCancelled\n'));
             process.exit(0);
@@ -91,7 +88,9 @@ module.exports = {
 
         console.log(chalk.green(`\n${formatIdeName(ideName)} has been removed.\n`));
         if (status.ides.length > 1) {
-          console.log(chalk.dim(`Remaining IDEs: ${status.ides.filter(i => i !== ideName).join(', ')}\n`));
+          console.log(
+            chalk.dim(`Remaining IDEs: ${status.ides.filter(i => i !== ideName).join(', ')}\n`)
+          );
         }
 
         process.exit(0);

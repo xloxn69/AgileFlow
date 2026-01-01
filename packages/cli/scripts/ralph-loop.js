@@ -136,9 +136,7 @@ function getNextStory(status, epicId, currentStoryId) {
   // Get all stories in this epic that are ready
   const readyStories = Object.entries(stories)
     .filter(([id, story]) => {
-      return story.epic === epicId &&
-             story.status === 'ready' &&
-             id !== currentStoryId;
+      return story.epic === epicId && story.status === 'ready' && id !== currentStoryId;
     })
     .sort((a, b) => {
       // Sort by story number if possible
@@ -215,9 +213,15 @@ function handleLoop(rootDir) {
   const maxIterations = loop.max_iterations || 20;
 
   console.log('');
-  console.log(`${c.brand}${c.bold}══════════════════════════════════════════════════════════${c.reset}`);
-  console.log(`${c.brand}${c.bold}  RALPH LOOP - Iteration ${iteration}/${maxIterations}${c.reset}`);
-  console.log(`${c.brand}${c.bold}══════════════════════════════════════════════════════════${c.reset}`);
+  console.log(
+    `${c.brand}${c.bold}══════════════════════════════════════════════════════════${c.reset}`
+  );
+  console.log(
+    `${c.brand}${c.bold}  RALPH LOOP - Iteration ${iteration}/${maxIterations}${c.reset}`
+  );
+  console.log(
+    `${c.brand}${c.bold}══════════════════════════════════════════════════════════${c.reset}`
+  );
   console.log('');
 
   // Check iteration limit
@@ -243,7 +247,9 @@ function handleLoop(rootDir) {
     return;
   }
 
-  console.log(`${c.cyan}Current Story:${c.reset} ${currentStoryId} - ${currentStory.title || 'Untitled'}`);
+  console.log(
+    `${c.cyan}Current Story:${c.reset} ${currentStoryId} - ${currentStory.title || 'Untitled'}`
+  );
   console.log('');
 
   // Run tests
@@ -283,11 +289,12 @@ function handleLoop(rootDir) {
         criteria.slice(0, 3).forEach(ac => console.log(`  • ${ac}`));
       }
       console.log('');
-      console.log(`${c.dim}Epic Progress: ${progress.completed}/${progress.total} stories complete${c.reset}`);
+      console.log(
+        `${c.dim}Epic Progress: ${progress.completed}/${progress.total} stories complete${c.reset}`
+      );
       console.log('');
       console.log(`${c.brand}▶ Continue implementing ${nextStory.id}${c.reset}`);
       console.log(`${c.dim}  Run tests when ready. Loop will validate and continue.${c.reset}`);
-
     } else {
       // No more stories - epic complete!
       const progress = getEpicProgress(getStatus(rootDir), epicId);
@@ -297,15 +304,18 @@ function handleLoop(rootDir) {
       saveSessionState(rootDir, state);
 
       console.log('');
-      console.log(`${c.green}${c.bold}════════════════════════════════════════════════════════${c.reset}`);
+      console.log(
+        `${c.green}${c.bold}════════════════════════════════════════════════════════${c.reset}`
+      );
       console.log(`${c.green}${c.bold}  🎉 EPIC COMPLETE!${c.reset}`);
-      console.log(`${c.green}${c.bold}════════════════════════════════════════════════════════${c.reset}`);
+      console.log(
+        `${c.green}${c.bold}════════════════════════════════════════════════════════${c.reset}`
+      );
       console.log('');
       console.log(`${c.green}Epic ${epicId} finished in ${iteration} iterations${c.reset}`);
       console.log(`${c.dim}${progress.completed} stories completed${c.reset}`);
       console.log('');
     }
-
   } else {
     // Tests failed - feed back to Claude
     console.log(`${c.red}✗ Tests failed${c.reset} (${(testResult.duration / 1000).toFixed(1)}s)`);
@@ -440,7 +450,9 @@ function handleCLI() {
       criteria.slice(0, 3).forEach(ac => console.log(`    • ${ac}`));
     }
     console.log('');
-    console.log(`${c.dim}Work on this story. When you stop, tests will run automatically.${c.reset}`);
+    console.log(
+      `${c.dim}Work on this story. When you stop, tests will run automatically.${c.reset}`
+    );
     console.log(`${c.dim}If tests pass, the next story will be loaded.${c.reset}`);
     console.log('');
 

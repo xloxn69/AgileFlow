@@ -107,12 +107,20 @@ module.exports = {
         console.log();
         warning('Your global CLI is outdated!');
         console.log(
-          chalk.dim(`  You have a global installation at v${localCliVersion}, but v${npmLatestVersion} is available.\n`)
+          chalk.dim(
+            `  You have a global installation at v${localCliVersion}, but v${npmLatestVersion} is available.\n`
+          )
         );
         console.log(chalk.dim(`  Options:`));
         console.log(chalk.dim(`  1. Cancel and run: `) + chalk.cyan(`npx agileflow@latest update`));
-        console.log(chalk.dim(`  2. Remove global:  `) + chalk.cyan(`npm uninstall -g agileflow`) + chalk.dim(` (recommended)`));
-        console.log(chalk.dim(`  3. Update global:  `) + chalk.cyan(`npm install -g agileflow@latest\n`));
+        console.log(
+          chalk.dim(`  2. Remove global:  `) +
+            chalk.cyan(`npm uninstall -g agileflow`) +
+            chalk.dim(` (recommended)`)
+        );
+        console.log(
+          chalk.dim(`  3. Update global:  `) + chalk.cyan(`npm install -g agileflow@latest\n`)
+        );
 
         const useOutdated = options.force
           ? true

@@ -584,9 +584,10 @@ function enableFeature(feature, options = {}) {
 
     // Stop hooks use error suppression to avoid blocking Claude
     const isStoHook = config.hook === 'Stop';
-    const command = config.type === 'node'
-      ? `node ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`
-      : `bash ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`;
+    const command =
+      config.type === 'node'
+        ? `node ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`
+        : `bash ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`;
 
     if (isStoHook) {
       // Stop hooks stack - add to existing hooks instead of replacing
@@ -599,9 +600,7 @@ function enableFeature(feature, options = {}) {
       }
 
       // Check if this script is already added
-      const hasHook = settings.hooks.Stop[0].hooks.some(h =>
-        h.command?.includes(config.script)
-      );
+      const hasHook = settings.hooks.Stop[0].hooks.some(h => h.command?.includes(config.script));
 
       if (!hasHook) {
         settings.hooks.Stop[0].hooks.push({ type: 'command', command });
@@ -1027,9 +1026,11 @@ function showVersionInfo() {
       const installed = installedVersion.split('.').map(Number);
       const latest = latestVersion.split('.').map(Number);
 
-      if (latest[0] > installed[0] ||
-          (latest[0] === installed[0] && latest[1] > installed[1]) ||
-          (latest[0] === installed[0] && latest[1] === installed[1] && latest[2] > installed[2])) {
+      if (
+        latest[0] > installed[0] ||
+        (latest[0] === installed[0] && latest[1] > installed[1]) ||
+        (latest[0] === installed[0] && latest[1] === installed[1] && latest[2] > installed[2])
+      ) {
         log('\n🔄 Update available! Run: npx agileflow update', c.yellow);
       }
     }
@@ -1351,8 +1352,7 @@ function main() {
     else if (arg.startsWith('--repair=')) {
       repair = true;
       repairFeature = arg.split('=')[1].trim().toLowerCase();
-    }
-    else if (arg === '--version' || arg === '-v') showVersion = true;
+    } else if (arg === '--version' || arg === '-v') showVersion = true;
     else if (arg === '--list-scripts' || arg === '--scripts') listScriptsMode = true;
   });
 

@@ -105,7 +105,9 @@ function getProjectInfo(rootDir) {
   } catch (e) {
     // Fallback: check .agileflow/package.json
     try {
-      const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, '.agileflow/package.json'), 'utf8'));
+      const pkg = JSON.parse(
+        fs.readFileSync(path.join(rootDir, '.agileflow/package.json'), 'utf8')
+      );
       info.version = pkg.version || info.version;
     } catch (e2) {}
   }
@@ -449,7 +451,8 @@ function validateExpertise(rootDir) {
   const MAX_LINES = 200;
 
   try {
-    const domains = fs.readdirSync(expertsDir, { withFileTypes: true })
+    const domains = fs
+      .readdirSync(expertsDir, { withFileTypes: true })
       .filter(d => d.isDirectory() && d.name !== 'templates')
       .map(d => d.name);
 
@@ -584,7 +587,15 @@ function truncate(str, maxLen, suffix = '..') {
   return str.substring(0, cutIndex) + suffix;
 }
 
-function formatTable(info, archival, session, precompact, parallelSessions, updateInfo = {}, expertise = {}) {
+function formatTable(
+  info,
+  archival,
+  session,
+  precompact,
+  parallelSessions,
+  updateInfo = {},
+  expertise = {}
+) {
   const W = 58; // inner width
   const R = W - 24; // right column width (34 chars)
   const lines = [];
@@ -605,8 +616,7 @@ function formatTable(info, archival, session, precompact, parallelSessions, upda
 
   const divider = () =>
     `${c.dim}${box.lT}${box.h.repeat(22)}${box.cross}${box.h.repeat(W - 22)}${box.rT}${c.reset}`;
-  const fullDivider = () =>
-    `${c.dim}${box.lT}${box.h.repeat(W)}${box.rT}${c.reset}`;
+  const fullDivider = () => `${c.dim}${box.lT}${box.h.repeat(W)}${box.rT}${c.reset}`;
   const topBorder = `${c.dim}${box.tl}${box.h.repeat(22)}${box.tT}${box.h.repeat(W - 22)}${box.tr}${c.reset}`;
   const bottomBorder = `${c.dim}${box.bl}${box.h.repeat(22)}${box.bT}${box.h.repeat(W - 22)}${box.br}${c.reset}`;
 
@@ -810,7 +820,9 @@ async function main() {
     // Update check failed - continue without it
   }
 
-  console.log(formatTable(info, archival, session, precompact, parallelSessions, updateInfo, expertise));
+  console.log(
+    formatTable(info, archival, session, precompact, parallelSessions, updateInfo, expertise)
+  );
 
   // Show warning and tip if other sessions are active
   if (parallelSessions.otherActive > 0) {

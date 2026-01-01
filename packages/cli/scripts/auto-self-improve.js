@@ -36,24 +36,44 @@ const c = {
 
 // Agents that have expertise files
 const AGENTS_WITH_EXPERTISE = [
-  'accessibility', 'adr-writer', 'analytics', 'api', 'ci', 'compliance',
-  'database', 'datamigration', 'design', 'devops', 'documentation',
-  'epic-planner', 'integrations', 'mentor', 'mobile', 'monitoring',
-  'performance', 'product', 'qa', 'readme-updater', 'refactor',
-  'research', 'security', 'testing', 'ui'
+  'accessibility',
+  'adr-writer',
+  'analytics',
+  'api',
+  'ci',
+  'compliance',
+  'database',
+  'datamigration',
+  'design',
+  'devops',
+  'documentation',
+  'epic-planner',
+  'integrations',
+  'mentor',
+  'mobile',
+  'monitoring',
+  'performance',
+  'product',
+  'qa',
+  'readme-updater',
+  'refactor',
+  'research',
+  'security',
+  'testing',
+  'ui',
 ];
 
 // File patterns that suggest domain expertise
 const DOMAIN_PATTERNS = {
-  'database': [/schema/, /migration/, /\.sql$/, /prisma/, /drizzle/, /sequelize/],
-  'api': [/\/api\//, /controller/, /route/, /endpoint/, /graphql/],
-  'ui': [/component/, /\.tsx$/, /\.jsx$/, /styles/, /\.css$/, /\.scss$/],
-  'testing': [/\.test\./, /\.spec\./, /__tests__/, /jest/, /vitest/],
-  'security': [/auth/, /password/, /token/, /jwt/, /oauth/, /permission/],
-  'ci': [/\.github\/workflows/, /\.gitlab-ci/, /dockerfile/i, /docker-compose/],
-  'documentation': [/\.md$/, /readme/i, /docs\//, /jsdoc/],
-  'performance': [/cache/, /optimize/, /performance/, /benchmark/],
-  'devops': [/deploy/, /kubernetes/, /k8s/, /terraform/, /ansible/],
+  database: [/schema/, /migration/, /\.sql$/, /prisma/, /drizzle/, /sequelize/],
+  api: [/\/api\//, /controller/, /route/, /endpoint/, /graphql/],
+  ui: [/component/, /\.tsx$/, /\.jsx$/, /styles/, /\.css$/, /\.scss$/],
+  testing: [/\.test\./, /\.spec\./, /__tests__/, /jest/, /vitest/],
+  security: [/auth/, /password/, /token/, /jwt/, /oauth/, /permission/],
+  ci: [/\.github\/workflows/, /\.gitlab-ci/, /dockerfile/i, /docker-compose/],
+  documentation: [/\.md$/, /readme/i, /docs\//, /jsdoc/],
+  performance: [/cache/, /optimize/, /performance/, /benchmark/],
+  devops: [/deploy/, /kubernetes/, /k8s/, /terraform/, /ansible/],
 };
 
 // Find project root
@@ -83,19 +103,28 @@ function getGitDiff(rootDir) {
     const diffFiles = execSync('git diff --name-only HEAD 2>/dev/null || git diff --name-only', {
       cwd: rootDir,
       encoding: 'utf8',
-    }).trim().split('\n').filter(Boolean);
+    })
+      .trim()
+      .split('\n')
+      .filter(Boolean);
 
     // Get staged files
     const stagedFiles = execSync('git diff --cached --name-only 2>/dev/null', {
       cwd: rootDir,
       encoding: 'utf8',
-    }).trim().split('\n').filter(Boolean);
+    })
+      .trim()
+      .split('\n')
+      .filter(Boolean);
 
     // Get untracked files
     const untrackedFiles = execSync('git ls-files --others --exclude-standard 2>/dev/null', {
       cwd: rootDir,
       encoding: 'utf8',
-    }).trim().split('\n').filter(Boolean);
+    })
+      .trim()
+      .split('\n')
+      .filter(Boolean);
 
     // Combine all
     const allFiles = [...new Set([...diffFiles, ...stagedFiles, ...untrackedFiles])];
@@ -186,7 +215,16 @@ function getExpertisePath(rootDir, agent) {
   if (fs.existsSync(installedPath)) return installedPath;
 
   // Try source location
-  const sourcePath = path.join(rootDir, 'packages', 'cli', 'src', 'core', 'experts', agent, 'expertise.yaml');
+  const sourcePath = path.join(
+    rootDir,
+    'packages',
+    'cli',
+    'src',
+    'core',
+    'experts',
+    agent,
+    'expertise.yaml'
+  );
   if (fs.existsSync(sourcePath)) return sourcePath;
 
   return null;
@@ -219,7 +257,10 @@ function appendLearning(expertisePath, learning) {
 // Format learning as YAML
 function formatLearning(summary, files, detectedDomain) {
   const date = new Date().toISOString().split('T')[0];
-  const topFiles = files.slice(0, 5).map(f => `      - ${f}`).join('\n');
+  const topFiles = files
+    .slice(0, 5)
+    .map(f => `      - ${f}`)
+    .join('\n');
 
   return `  - date: "${date}"
     auto_generated: true
@@ -281,7 +322,9 @@ function main() {
     console.log('');
     console.log(`${c.green}✓ Auto-learned:${c.reset} ${c.dim}${activeAgent}${c.reset}`);
     console.log(`${c.dim}  ${summary}${c.reset}`);
-    console.log(`${c.dim}  → Updated ${path.basename(path.dirname(expertisePath))}/expertise.yaml${c.reset}`);
+    console.log(
+      `${c.dim}  → Updated ${path.basename(path.dirname(expertisePath))}/expertise.yaml${c.reset}`
+    );
     console.log('');
   }
 }

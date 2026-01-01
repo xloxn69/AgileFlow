@@ -232,10 +232,7 @@ async function checkForUpdates(options = {}) {
   }
 
   // Check if we just updated (lastSeenVersion < installed)
-  if (
-    config.lastSeenVersion &&
-    compareVersions(config.lastSeenVersion, installedVersion) < 0
-  ) {
+  if (config.lastSeenVersion && compareVersions(config.lastSeenVersion, installedVersion) < 0) {
     result.justUpdated = true;
     result.previousVersion = config.lastSeenVersion;
   }

@@ -69,7 +69,10 @@ function normalizeTools(tools) {
   if (!tools) return [];
   if (Array.isArray(tools)) return tools;
   if (typeof tools === 'string') {
-    return tools.split(',').map(t => t.trim()).filter(Boolean);
+    return tools
+      .split(',')
+      .map(t => t.trim())
+      .filter(Boolean);
   }
   return [];
 }

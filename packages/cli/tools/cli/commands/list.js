@@ -10,7 +10,9 @@ const fs = require('fs-extra');
 const yaml = require('js-yaml');
 const { Installer } = require('../installers/core/installer');
 const { displayLogo, displaySection, success, warning, info } = require('../lib/ui');
-const { parseFrontmatter: parseYamlFrontmatter } = require('../../../scripts/lib/frontmatter-parser');
+const {
+  parseFrontmatter: parseYamlFrontmatter,
+} = require('../../../scripts/lib/frontmatter-parser');
 
 const installer = new Installer();
 
