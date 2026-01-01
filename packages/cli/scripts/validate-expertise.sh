@@ -22,12 +22,16 @@
 
 set -e
 
-# Colors
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Colors (using vibrant 256-color palette)
+NC='\033[0m'        # No Color / Reset
+RED='\033[0;31m'    # Standard red (fallback)
+GREEN='\033[0;32m'  # Standard green (fallback)
+
+# Vibrant 256-color palette
+MINT_GREEN='\033[38;5;158m'   # Healthy/success states
+PEACH='\033[38;5;215m'        # Warning states
+CORAL='\033[38;5;203m'        # Critical/error states
+SKY_BLUE='\033[38;5;117m'     # Headers/titles
 
 # Configuration
 EXPERTS_DIR="packages/cli/src/core/experts"
@@ -180,18 +184,18 @@ validate_expertise() {
         fi
     fi
 
-    # Output result
+    # Output result (using vibrant 256-color palette)
     case "$status" in
         PASS)
-            echo -e "${GREEN}PASS${NC}  $domain"
+            echo -e "${MINT_GREEN}PASS${NC}  $domain"
             PASSED=$((PASSED + 1))
             ;;
         WARN)
-            echo -e "${YELLOW}WARN${NC}  $domain - ${issues[*]}"
+            echo -e "${PEACH}WARN${NC}  $domain - ${issues[*]}"
             WARNINGS=$((WARNINGS + 1))
             ;;
         FAIL)
-            echo -e "${RED}FAIL${NC}  $domain - ${issues[*]}"
+            echo -e "${CORAL}FAIL${NC}  $domain - ${issues[*]}"
             FAILED=$((FAILED + 1))
             ;;
     esac
@@ -212,12 +216,12 @@ main() {
 
     # Check experts directory exists
     if [ ! -d "$EXPERTS_DIR" ]; then
-        echo -e "${RED}Error:${NC} Experts directory not found: $EXPERTS_DIR"
+        echo -e "${CORAL}Error:${NC} Experts directory not found: $EXPERTS_DIR"
         echo "Are you running this from the repository root?"
         exit 1
     fi
 
-    echo -e "${BLUE}Validating Agent Expert Files${NC}"
+    echo -e "${SKY_BLUE}Validating Agent Expert Files${NC}"
     echo "================================"
     echo ""
 
@@ -225,7 +229,7 @@ main() {
     if [ -n "$1" ]; then
         # Single domain
         if [ ! -d "$EXPERTS_DIR/$1" ]; then
-            echo -e "${RED}Error:${NC} Domain not found: $1"
+            echo -e "${CORAL}Error:${NC} Domain not found: $1"
             echo "Available domains:"
             ls -1 "$EXPERTS_DIR" | grep -v templates | grep -v README
             exit 1
@@ -244,10 +248,10 @@ main() {
         done
     fi
 
-    # Summary
+    # Summary (using vibrant 256-color palette)
     echo ""
     echo "================================"
-    echo -e "Total: $TOTAL | ${GREEN}Passed: $PASSED${NC} | ${YELLOW}Warnings: $WARNINGS${NC} | ${RED}Failed: $FAILED${NC}"
+    echo -e "Total: $TOTAL | ${MINT_GREEN}Passed: $PASSED${NC} | ${PEACH}Warnings: $WARNINGS${NC} | ${CORAL}Failed: $FAILED${NC}"
 
     # Exit code
     if [ "$FAILED" -gt 0 ]; then

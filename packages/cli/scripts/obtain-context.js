@@ -55,6 +55,16 @@ const C = {
   brightYellow: '\x1b[93m',
   brightGreen: '\x1b[92m',
   brand: '\x1b[38;2;232;104;58m', // AgileFlow brand orange
+
+  // Vibrant 256-color palette (modern, sleek look)
+  mintGreen: '\x1b[38;5;158m',    // Healthy/success states
+  peach: '\x1b[38;5;215m',        // Warning states
+  coral: '\x1b[38;5;203m',        // Critical/error states
+  lightGreen: '\x1b[38;5;194m',   // Session healthy
+  lightYellow: '\x1b[38;5;228m',  // Session warning
+  skyBlue: '\x1b[38;5;117m',      // Directories/paths
+  lavender: '\x1b[38;5;147m',     // Model info
+  softGold: '\x1b[38;5;222m',     // Cost/money
 };
 
 function safeRead(filePath) {
@@ -111,7 +121,7 @@ function generateSummary() {
 
   const W = 58; // Total inner width (matches welcome script)
   const L = 20; // Left column width
-  const R = W - L - 3; // Right column width (35 chars)
+  const R = W - 24; // Right column width (34 chars) - matches welcome
 
   // Pad string to length, accounting for ANSI codes
   function pad(str, len) {
@@ -155,11 +165,12 @@ function generateSummary() {
     return `${C.dim}${box.v}${C.reset} ${pad(leftStr, L)} ${C.dim}${box.v}${C.reset} ${pad(rightStr, R)} ${C.dim}${box.v}${C.reset}\n`;
   }
 
+  // All borders use same width formula: 22 dashes + separator + 36 dashes = 61 total chars
   const divider = () =>
-    `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
-  const headerTopBorder = `${C.dim}${box.tl}${box.h.repeat(W + 2)}${box.tr}${C.reset}\n`;
-  const headerDivider = `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(R + 2)}${box.rT}${C.reset}\n`;
-  const bottomBorder = `${C.dim}${box.bl}${box.h.repeat(L + 2)}${box.bT}${box.h.repeat(R + 2)}${box.br}${C.reset}\n`;
+    `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.cross}${box.h.repeat(W - L - 2)}${box.rT}${C.reset}\n`;
+  const headerTopBorder = `${C.dim}${box.tl}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(W - L - 2)}${box.tr}${C.reset}\n`;
+  const headerDivider = `${C.dim}${box.lT}${box.h.repeat(L + 2)}${box.tT}${box.h.repeat(W - L - 2)}${box.rT}${C.reset}\n`;
+  const bottomBorder = `${C.dim}${box.bl}${box.h.repeat(L + 2)}${box.bT}${box.h.repeat(W - L - 2)}${box.br}${C.reset}\n`;
 
   // Gather data
   const branch = safeExec('git branch --show-current') || 'unknown';
@@ -200,35 +211,35 @@ function generateSummary() {
 
   // Header row (full width, no column divider)
   const title = commandName ? `Context [${commandName}]` : 'Context Summary';
-  const branchColor = branch === 'main' ? C.green : branch.startsWith('fix') ? C.red : C.cyan;
+  const branchColor = branch === 'main' ? C.mintGreen : branch.startsWith('fix') ? C.coral : C.skyBlue;
   const maxBranchLen = 20;
   const branchDisplay =
     branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
   const header = `${C.brand}${C.bold}${title}${C.reset}  ${branchColor}${branchDisplay}${C.reset} ${C.dim}(${lastCommitShort})${C.reset}`;
-  summary += `${C.dim}${box.v}${C.reset} ${pad(header, W)} ${C.dim}${box.v}${C.reset}\n`;
+  summary += `${C.dim}${box.v}${C.reset} ${pad(header, W - 1)} ${C.dim}${box.v}${C.reset}\n`;
 
   summary += headerDivider;
 
-  // Story counts with colorful labels
+  // Story counts with vibrant 256-color palette
   summary += row(
     'In Progress',
     byStatus['in-progress'] ? `${byStatus['in-progress']}` : '0',
-    C.yellow,
-    byStatus['in-progress'] ? C.brightYellow : C.dim
+    C.peach,
+    byStatus['in-progress'] ? C.peach : C.dim
   );
   summary += row(
     'Blocked',
     byStatus['blocked'] ? `${byStatus['blocked']}` : '0',
-    C.red,
-    byStatus['blocked'] ? C.red : C.dim
+    C.coral,
+    byStatus['blocked'] ? C.coral : C.dim
   );
   summary += row(
     'Ready',
     byStatus['ready'] ? `${byStatus['ready']}` : '0',
-    C.cyan,
-    byStatus['ready'] ? C.brightCyan : C.dim
+    C.skyBlue,
+    byStatus['ready'] ? C.skyBlue : C.dim
   );
-  const completedColor = `${C.bold}${C.green}`;
+  const completedColor = `${C.bold}${C.mintGreen}`;
   summary += row(
     'Completed',
     byStatus['done'] ? `${byStatus['done']}` : '0',
@@ -238,27 +249,27 @@ function generateSummary() {
 
   summary += divider();
 
-  // Git status
+  // Git status (using vibrant 256-color palette)
   const uncommittedStatus =
     statusLines.length > 0 ? `${statusLines.length} uncommitted` : '✓ clean';
-  summary += row('Git', uncommittedStatus, C.blue, statusLines.length > 0 ? C.yellow : C.green);
+  summary += row('Git', uncommittedStatus, C.blue, statusLines.length > 0 ? C.peach : C.mintGreen);
 
   // Session
   const sessionText = sessionDuration !== null ? `${sessionDuration} min active` : 'no session';
-  summary += row('Session', sessionText, C.blue, sessionDuration !== null ? C.brightGreen : C.dim);
+  summary += row('Session', sessionText, C.blue, sessionDuration !== null ? C.lightGreen : C.dim);
 
   // Current story
   const storyText = currentStory ? currentStory : 'none';
-  summary += row('Working on', storyText, C.blue, currentStory ? C.brightYellow : C.dim);
+  summary += row('Working on', storyText, C.blue, currentStory ? C.lightYellow : C.dim);
 
   // Ready stories (if any)
   if (readyStories.length > 0) {
-    summary += row('⭐ Up Next', readyStories.slice(0, 3).join(', '), C.brightCyan, C.cyan);
+    summary += row('⭐ Up Next', readyStories.slice(0, 3).join(', '), C.skyBlue, C.skyBlue);
   }
 
   summary += divider();
 
-  // Key files
+  // Key files (using vibrant 256-color palette)
   const keyFileChecks = [
     { path: 'CLAUDE.md', label: 'CLAUDE' },
     { path: 'README.md', label: 'README' },
@@ -268,31 +279,31 @@ function generateSummary() {
   const keyFileStatus = keyFileChecks
     .map(f => {
       const exists = fs.existsSync(f.path);
-      return exists ? `${C.brightGreen}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
+      return exists ? `${C.mintGreen}✓${C.reset}${f.label}` : `${C.dim}○${f.label}${C.reset}`;
     })
     .join(' ');
-  summary += row('Key files', keyFileStatus, C.magenta, '');
+  summary += row('Key files', keyFileStatus, C.lavender, '');
 
   // Research
   const researchText = researchFiles.length > 0 ? `${researchFiles.length} notes` : 'none';
-  summary += row('Research', researchText, C.magenta, researchFiles.length > 0 ? C.cyan : C.dim);
+  summary += row('Research', researchText, C.lavender, researchFiles.length > 0 ? C.skyBlue : C.dim);
 
   // Epics
   const epicText = epicFiles.length > 0 ? `${epicFiles.length} epics` : 'none';
-  summary += row('Epics', epicText, C.magenta, epicFiles.length > 0 ? C.cyan : C.dim);
+  summary += row('Epics', epicText, C.lavender, epicFiles.length > 0 ? C.skyBlue : C.dim);
 
   summary += divider();
 
-  // Last commit
+  // Last commit (using vibrant 256-color palette)
   summary += row(
     'Last commit',
-    `${C.yellow}${lastCommitShort}${C.reset} ${lastCommitMsg}`,
+    `${C.peach}${lastCommitShort}${C.reset} ${lastCommitMsg}`,
     C.dim,
     ''
   );
 
   summary += bottomBorder;
-
+  summary += '\n';
   summary += `${C.dim}Full context continues below (Claude sees all)...${C.reset}\n\n`;
 
   return summary;
@@ -306,29 +317,29 @@ function generateFullContent() {
   let content = '';
 
   const title = commandName ? `AgileFlow Context [${commandName}]` : 'AgileFlow Context';
-  content += `${C.magenta}${C.bold}${title}${C.reset}\n`;
+  content += `${C.lavender}${C.bold}${title}${C.reset}\n`;
   content += `${C.dim}Generated: ${new Date().toISOString()}${C.reset}\n`;
 
-  // 1. GIT STATUS
-  content += `\n${C.cyan}${C.bold}═══ Git Status ═══${C.reset}\n`;
+  // 1. GIT STATUS (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Git Status ═══${C.reset}\n`;
   const branch = safeExec('git branch --show-current') || 'unknown';
   const status = safeExec('git status --short') || '';
   const statusLines = status.split('\n').filter(Boolean);
   const lastCommit = safeExec('git log -1 --format="%h %s"') || 'no commits';
 
-  content += `Branch: ${C.green}${branch}${C.reset}\n`;
+  content += `Branch: ${C.mintGreen}${branch}${C.reset}\n`;
   content += `Last commit: ${C.dim}${lastCommit}${C.reset}\n`;
   if (statusLines.length > 0) {
-    content += `Uncommitted: ${C.yellow}${statusLines.length} file(s)${C.reset}\n`;
+    content += `Uncommitted: ${C.peach}${statusLines.length} file(s)${C.reset}\n`;
     statusLines.slice(0, 10).forEach(line => (content += `  ${C.dim}${line}${C.reset}\n`));
     if (statusLines.length > 10)
       content += `  ${C.dim}... and ${statusLines.length - 10} more${C.reset}\n`;
   } else {
-    content += `Uncommitted: ${C.green}clean${C.reset}\n`;
+    content += `Uncommitted: ${C.mintGreen}clean${C.reset}\n`;
   }
 
-  // 2. STATUS.JSON - Full Content
-  content += `\n${C.cyan}${C.bold}═══ Status.json (Full Content) ═══${C.reset}\n`;
+  // 2. STATUS.JSON - Full Content (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Status.json (Full Content) ═══${C.reset}\n`;
   const statusJsonPath = 'docs/09-agents/status.json';
   const statusJson = safeReadJSON(statusJsonPath);
 
@@ -344,30 +355,30 @@ function generateFullContent() {
     content += `${C.dim}No status.json found${C.reset}\n`;
   }
 
-  // 3. SESSION STATE
-  content += `\n${C.cyan}${C.bold}═══ Session State ═══${C.reset}\n`;
+  // 3. SESSION STATE (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Session State ═══${C.reset}\n`;
   const sessionState = safeReadJSON('docs/09-agents/session-state.json');
   if (sessionState) {
     const current = sessionState.current_session;
     if (current && current.started_at) {
       const started = new Date(current.started_at);
       const duration = Math.round((Date.now() - started.getTime()) / 60000);
-      content += `Active session: ${C.green}${duration} min${C.reset}\n`;
+      content += `Active session: ${C.lightGreen}${duration} min${C.reset}\n`;
       if (current.current_story) {
-        content += `Working on: ${C.yellow}${current.current_story}${C.reset}\n`;
+        content += `Working on: ${C.lightYellow}${current.current_story}${C.reset}\n`;
       }
     } else {
       content += `${C.dim}No active session${C.reset}\n`;
     }
     if (sessionState.active_command) {
-      content += `Active command: ${C.cyan}${sessionState.active_command.name}${C.reset}\n`;
+      content += `Active command: ${C.skyBlue}${sessionState.active_command.name}${C.reset}\n`;
     }
   } else {
     content += `${C.dim}No session-state.json found${C.reset}\n`;
   }
 
-  // 4. DOCS STRUCTURE
-  content += `\n${C.cyan}${C.bold}═══ Documentation ═══${C.reset}\n`;
+  // 4. DOCS STRUCTURE (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Documentation ═══${C.reset}\n`;
   const docsDir = 'docs';
   const docFolders = safeLs(docsDir).filter(f => {
     try {
@@ -390,8 +401,8 @@ function generateFullContent() {
     });
   }
 
-  // 5. RESEARCH NOTES - List + Full content of most recent
-  content += `\n${C.cyan}${C.bold}═══ Research Notes ═══${C.reset}\n`;
+  // 5. RESEARCH NOTES - List + Full content of most recent (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Research Notes ═══${C.reset}\n`;
   const researchDir = 'docs/10-research';
   const researchFiles = safeLs(researchDir).filter(f => f.endsWith('.md') && f !== 'README.md');
   if (researchFiles.length > 0) {
@@ -404,7 +415,7 @@ function generateFullContent() {
     const mostRecentContent = safeRead(mostRecentPath);
 
     if (mostRecentContent) {
-      content += `\n${C.green}📄 Most Recent: ${mostRecentFile}${C.reset}\n`;
+      content += `\n${C.mintGreen}📄 Most Recent: ${mostRecentFile}${C.reset}\n`;
       content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
       content += mostRecentContent + '\n';
       content += `${C.dim}${'─'.repeat(60)}${C.reset}\n`;
@@ -413,8 +424,8 @@ function generateFullContent() {
     content += `${C.dim}No research notes${C.reset}\n`;
   }
 
-  // 6. BUS MESSAGES
-  content += `\n${C.cyan}${C.bold}═══ Recent Agent Messages ═══${C.reset}\n`;
+  // 6. BUS MESSAGES (using vibrant 256-color palette)
+  content += `\n${C.skyBlue}${C.bold}═══ Recent Agent Messages ═══${C.reset}\n`;
   const busPath = 'docs/09-agents/bus/log.jsonl';
   const busContent = safeRead(busPath);
   if (busContent) {

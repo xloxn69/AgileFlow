@@ -154,32 +154,40 @@ function formatOutput(info, asJson = false, compact = false) {
     cyan: '\x1b[36m',
     red: '\x1b[31m',
     brand: '\x1b[38;2;232;104;58m', // #e8683a - AgileFlow brand orange
+
+    // Vibrant 256-color palette (modern, sleek look)
+    mintGreen: '\x1b[38;5;158m',    // Healthy/success states
+    peach: '\x1b[38;5;215m',        // Warning states
+    coral: '\x1b[38;5;203m',        // Critical/error states
+    lightGreen: '\x1b[38;5;194m',   // Session healthy
+    skyBlue: '\x1b[38;5;117m',      // Directories/paths
+    lavender: '\x1b[38;5;147m',     // Model info
   };
 
-  // Beautiful compact colorful format
+  // Beautiful compact colorful format (using vibrant 256-color palette)
   const lines = [];
 
   // Header line with project info (brand color name, dim version, colored branch)
-  const branchColor = info.git.branch === 'main' ? c.green : c.cyan;
+  const branchColor = info.git.branch === 'main' ? c.mintGreen : c.skyBlue;
   lines.push(
     `${c.brand}${c.bold}${info.project.name}${c.reset} ${c.dim}v${info.project.version}${c.reset} | ${branchColor}${info.git.branch}${c.reset} ${c.dim}(${info.git.commit})${c.reset}`
   );
 
-  // Status line (yellow WIP, red blocked)
-  const wipColor = info.agileflow.wipCount > 0 ? c.yellow : c.dim;
+  // Status line (peach WIP, coral blocked)
+  const wipColor = info.agileflow.wipCount > 0 ? c.peach : c.dim;
   let statusLine =
     info.agileflow.wipCount > 0
       ? `${wipColor}WIP: ${info.agileflow.wipCount}${c.reset}`
       : `${c.dim}No active work${c.reset}`;
   if (info.agileflow.blockedCount > 0) {
-    statusLine += ` | ${c.red}Blocked: ${info.agileflow.blockedCount}${c.reset}`;
+    statusLine += ` | ${c.coral}Blocked: ${info.agileflow.blockedCount}${c.reset}`;
   }
   lines.push(statusLine);
 
-  // Active story (if any) - just the first one (blue label)
+  // Active story (if any) - just the first one (sky blue label)
   if (info.agileflow.activeStories.length > 0) {
     const story = info.agileflow.activeStories[0];
-    lines.push(`${c.blue}Current:${c.reset} ${story.id} - ${story.title}`);
+    lines.push(`${c.skyBlue}Current:${c.reset} ${story.id} - ${story.title}`);
   }
 
   // Last commit (just one, dim)

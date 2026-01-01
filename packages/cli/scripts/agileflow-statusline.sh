@@ -29,7 +29,7 @@ MAGENTA="\033[35m"
 CYAN="\033[36m"
 WHITE="\033[37m"
 
-# Bright foreground colors
+# Bright foreground colors (standard ANSI)
 BRIGHT_RED="\033[91m"
 BRIGHT_GREEN="\033[92m"
 BRIGHT_YELLOW="\033[93m"
@@ -37,8 +37,73 @@ BRIGHT_BLUE="\033[94m"
 BRIGHT_MAGENTA="\033[95m"
 BRIGHT_CYAN="\033[96m"
 
+# 256-color palette (vibrant modern colors from cc-statusline)
+# Use these for context/session indicators for better visibility
+CTX_GREEN="\033[38;5;158m"      # Mint green - healthy context
+CTX_YELLOW="\033[38;5;215m"     # Peach - moderate usage
+CTX_ORANGE="\033[38;5;215m"     # Peach/orange - high usage
+CTX_RED="\033[38;5;203m"        # Coral red - critical
+
+SESSION_GREEN="\033[38;5;194m"  # Light green - plenty of time
+SESSION_YELLOW="\033[38;5;228m" # Light yellow - getting low
+SESSION_RED="\033[38;5;210m"    # Light pink/red - critical
+
 # Brand color (burnt orange #e8683a = RGB 232,104,58)
 BRAND="\033[38;2;232;104;58m"
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+# Progress bar with custom characters: ▓ (filled) ░ (empty)
+# Usage: progress_bar <percent> <width>
+# Example: progress_bar 75 10 → "▓▓▓▓▓▓▓░░░"
+progress_bar() {
+  local pct="${1:-0}"
+  local width="${2:-10}"
+
+  # Validate and clamp percentage
+  [[ "$pct" =~ ^[0-9]+$ ]] || pct=0
+  ((pct < 0)) && pct=0
+  ((pct > 100)) && pct=100
+
+  local filled=$(( pct * width / 100 ))
+  local empty=$(( width - filled ))
+
+  # Build bar with custom characters
+  local bar=""
+  for ((i=0; i<filled; i++)); do bar+="▓"; done
+  for ((i=0; i<empty; i++)); do bar+="░"; done
+
+  echo "$bar"
+}
+
+# Convert ISO timestamp to epoch seconds (cross-platform)
+to_epoch() {
+  local ts="$1"
+  # Try gdate first (macOS with coreutils)
+  if command -v gdate >/dev/null 2>&1; then
+    gdate -d "$ts" +%s 2>/dev/null && return
+  fi
+  # Try BSD date (macOS)
+  date -u -j -f "%Y-%m-%dT%H:%M:%S%z" "${ts/Z/+0000}" +%s 2>/dev/null && return
+  # Fallback to Python
+  python3 - "$ts" <<'PY' 2>/dev/null
+import sys, datetime
+s=sys.argv[1].replace('Z','+00:00')
+print(int(datetime.datetime.fromisoformat(s).timestamp()))
+PY
+}
+
+# Format epoch to HH:MM
+fmt_time_hm() {
+  local epoch="$1"
+  if date -r 0 +%s >/dev/null 2>&1; then
+    date -r "$epoch" +"%H:%M"
+  else
+    date -d "@$epoch" +"%H:%M"
+  fi
+}
 
 # ============================================================================
 # Read Component Configuration
@@ -50,6 +115,8 @@ SHOW_STORY=true
 SHOW_EPIC=true
 SHOW_WIP=true
 SHOW_CONTEXT=true
+SHOW_CONTEXT_BAR=true
+SHOW_SESSION_TIME=true
 SHOW_COST=true
 SHOW_GIT=true
 
@@ -65,6 +132,8 @@ if [ -f "docs/00-meta/agileflow-metadata.json" ]; then
     SHOW_EPIC=$(echo "$COMPONENTS" | jq -r '.epic | if . == null then true else . end')
     SHOW_WIP=$(echo "$COMPONENTS" | jq -r '.wip | if . == null then true else . end')
     SHOW_CONTEXT=$(echo "$COMPONENTS" | jq -r '.context | if . == null then true else . end')
+    SHOW_CONTEXT_BAR=$(echo "$COMPONENTS" | jq -r '.context_bar | if . == null then true else . end')
+    SHOW_SESSION_TIME=$(echo "$COMPONENTS" | jq -r '.session_time | if . == null then true else . end')
     SHOW_COST=$(echo "$COMPONENTS" | jq -r '.cost | if . == null then true else . end')
     SHOW_GIT=$(echo "$COMPONENTS" | jq -r '.git | if . == null then true else . end')
   fi
@@ -132,24 +201,29 @@ CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200
 USAGE=$(echo "$input" | jq '.context_window.current_usage // null')
 
 CTX_DISPLAY=""
-CTX_COLOR="$GREEN"
+CTX_BAR_DISPLAY=""
+CTX_COLOR="$CTX_GREEN"
 if [ "$USAGE" != "null" ]; then
   CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)')
   if [ "$CURRENT_TOKENS" != "null" ] && [ "$CURRENT_TOKENS" -gt 0 ] 2>/dev/null; then
     PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
 
-    # Color based on usage level
+    # Color based on usage level (using vibrant 256-color palette)
     if [ "$PERCENT_USED" -ge 80 ]; then
-      CTX_COLOR="$BRIGHT_RED"
+      CTX_COLOR="$CTX_RED"      # Coral red - critical
     elif [ "$PERCENT_USED" -ge 60 ]; then
-      CTX_COLOR="$YELLOW"
+      CTX_COLOR="$CTX_ORANGE"   # Peach - high usage
     elif [ "$PERCENT_USED" -ge 40 ]; then
-      CTX_COLOR="$BRIGHT_YELLOW"
+      CTX_COLOR="$CTX_YELLOW"   # Peach - moderate
     else
-      CTX_COLOR="$GREEN"
+      CTX_COLOR="$CTX_GREEN"    # Mint green - healthy
     fi
 
     CTX_DISPLAY="${CTX_COLOR}${PERCENT_USED}%${RESET}"
+
+    # Generate progress bar (8 chars wide for compactness)
+    CTX_BAR=$(progress_bar "$PERCENT_USED" 8)
+    CTX_BAR_DISPLAY="${DIM}[${RESET}${CTX_COLOR}${CTX_BAR}${RESET}${DIM}]${RESET}"
   fi
 fi
 
@@ -163,6 +237,67 @@ if [ "$TOTAL_COST" != "0" ] && [ "$TOTAL_COST" != "null" ]; then
     COST_DISPLAY="${YELLOW}$(printf '$%.2f' "$TOTAL_COST")${RESET}"
   else
     COST_DISPLAY="${DIM}$(printf '$%.2f' "$TOTAL_COST")${RESET}"
+  fi
+fi
+
+# ============================================================================
+# Session Time Remaining (via ccusage if available)
+# ============================================================================
+SESSION_DISPLAY=""
+if [ "$SHOW_SESSION_TIME" = "true" ]; then
+  # Try to get session info from ccusage (fast cached check)
+  if command -v npx >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    # Use timeout to prevent blocking - ccusage should be fast
+    BLOCKS_OUTPUT=$(timeout 3 npx ccusage@latest blocks --json 2>/dev/null || true)
+
+    if [ -n "$BLOCKS_OUTPUT" ]; then
+      ACTIVE_BLOCK=$(echo "$BLOCKS_OUTPUT" | jq -c '.blocks[] | select(.isActive == true)' 2>/dev/null | head -n1)
+
+      if [ -n "$ACTIVE_BLOCK" ]; then
+        # Get reset time
+        RESET_TIME_STR=$(echo "$ACTIVE_BLOCK" | jq -r '.usageLimitResetTime // .endTime // empty')
+        START_TIME_STR=$(echo "$ACTIVE_BLOCK" | jq -r '.startTime // empty')
+
+        if [ -n "$RESET_TIME_STR" ] && [ -n "$START_TIME_STR" ]; then
+          START_SEC=$(to_epoch "$START_TIME_STR")
+          END_SEC=$(to_epoch "$RESET_TIME_STR")
+          NOW_SEC=$(date +%s)
+
+          if [ -n "$START_SEC" ] && [ -n "$END_SEC" ] && [ "$START_SEC" -gt 0 ] && [ "$END_SEC" -gt 0 ]; then
+            TOTAL=$(( END_SEC - START_SEC ))
+            [ "$TOTAL" -lt 1 ] && TOTAL=1
+
+            ELAPSED=$(( NOW_SEC - START_SEC ))
+            [ "$ELAPSED" -lt 0 ] && ELAPSED=0
+            [ "$ELAPSED" -gt "$TOTAL" ] && ELAPSED=$TOTAL
+
+            SESSION_PCT=$(( ELAPSED * 100 / TOTAL ))
+            REMAINING=$(( END_SEC - NOW_SEC ))
+            [ "$REMAINING" -lt 0 ] && REMAINING=0
+
+            # Format remaining time
+            RH=$(( REMAINING / 3600 ))
+            RM=$(( (REMAINING % 3600) / 60 ))
+
+            # Color based on time remaining (using vibrant 256-color palette)
+            if [ "$RH" -eq 0 ] && [ "$RM" -lt 30 ]; then
+              SESSION_COLOR="$SESSION_RED"     # Light pink - critical
+            elif [ "$RH" -eq 0 ]; then
+              SESSION_COLOR="$SESSION_YELLOW"  # Light yellow - getting low
+            else
+              SESSION_COLOR="$SESSION_GREEN"   # Light green - plenty of time
+            fi
+
+            # Build compact display: "⏱2h15m" or "⏱45m"
+            if [ "$RH" -gt 0 ]; then
+              SESSION_DISPLAY="${SESSION_COLOR}⏱${RH}h${RM}m${RESET}"
+            else
+              SESSION_DISPLAY="${SESSION_COLOR}⏱${RM}m${RESET}"
+            fi
+          fi
+        fi
+      fi
+    fi
   fi
 fi
 
@@ -334,10 +469,21 @@ if [ "$SHOW_WIP" = "true" ] && [ -n "$WIP_DISPLAY" ]; then
   OUTPUT="${OUTPUT}${WIP_DISPLAY}"
 fi
 
-# Add context usage (if enabled)
+# Add context usage (if enabled) - percentage and/or bar
 if [ "$SHOW_CONTEXT" = "true" ] && [ -n "$CTX_DISPLAY" ]; then
   [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
-  OUTPUT="${OUTPUT}${CTX_DISPLAY}"
+  if [ "$SHOW_CONTEXT_BAR" = "true" ] && [ -n "$CTX_BAR_DISPLAY" ]; then
+    # Show both percentage and bar: "45% [▓▓▓▓░░░░]"
+    OUTPUT="${OUTPUT}${CTX_DISPLAY} ${CTX_BAR_DISPLAY}"
+  else
+    OUTPUT="${OUTPUT}${CTX_DISPLAY}"
+  fi
+fi
+
+# Add session time remaining (if enabled and available)
+if [ "$SHOW_SESSION_TIME" = "true" ] && [ -n "$SESSION_DISPLAY" ]; then
+  [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
+  OUTPUT="${OUTPUT}${SESSION_DISPLAY}"
 fi
 
 # Add cost (if enabled)

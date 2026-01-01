@@ -32,6 +32,7 @@ const c = {
   bold: '\x1b[1m',
   dim: '\x1b[2m',
 
+  // Standard ANSI colors
   red: '\x1b[31m',
   green: '\x1b[32m',
   yellow: '\x1b[33m',
@@ -43,6 +44,22 @@ const c = {
   brightGreen: '\x1b[92m',
   brightYellow: '\x1b[93m',
   brightCyan: '\x1b[96m',
+
+  // Vibrant 256-color palette (modern, sleek look)
+  mintGreen: '\x1b[38;5;158m',    // Healthy/success states
+  peach: '\x1b[38;5;215m',        // Warning states
+  coral: '\x1b[38;5;203m',        // Critical/error states
+  lightGreen: '\x1b[38;5;194m',   // Session healthy
+  lightYellow: '\x1b[38;5;228m',  // Session warning
+  lightPink: '\x1b[38;5;210m',    // Session critical
+  skyBlue: '\x1b[38;5;117m',      // Directories/paths
+  lavender: '\x1b[38;5;147m',     // Model info, story IDs
+  softGold: '\x1b[38;5;222m',     // Cost/money
+  teal: '\x1b[38;5;80m',          // Ready/pending states
+  slate: '\x1b[38;5;103m',        // Secondary info
+  rose: '\x1b[38;5;211m',         // Blocked/critical accent
+  amber: '\x1b[38;5;214m',        // WIP/in-progress accent
+  powder: '\x1b[38;5;153m',       // Labels/headers
 
   // Brand color (#e8683a)
   brand: '\x1b[38;2;232;104;58m',
@@ -422,7 +439,7 @@ function getChangelogEntries(version) {
 // Run auto-update if enabled
 async function runAutoUpdate(rootDir) {
   try {
-    console.log(`${c.cyan}Updating AgileFlow...${c.reset}`);
+    console.log(`${c.skyBlue}Updating AgileFlow...${c.reset}`);
     execSync('npx agileflow update', {
       cwd: rootDir,
       encoding: 'utf8',
@@ -430,7 +447,7 @@ async function runAutoUpdate(rootDir) {
     });
     return true;
   } catch (e) {
-    console.log(`${c.yellow}Auto-update failed. Run manually: npx agileflow update${c.reset}`);
+    console.log(`${c.peach}Auto-update failed. Run manually: npx agileflow update${c.reset}`);
     return false;
   }
 }
@@ -621,15 +638,16 @@ function formatTable(
   const bottomBorder = `${c.dim}${box.bl}${box.h.repeat(22)}${box.bT}${box.h.repeat(W - 22)}${box.br}${c.reset}`;
 
   // Header with version and optional update indicator
+  // Use vibrant colors for branch
   const branchColor =
-    info.branch === 'main' ? c.green : info.branch.startsWith('fix') ? c.red : c.cyan;
+    info.branch === 'main' ? c.mintGreen : info.branch.startsWith('fix') ? c.coral : c.skyBlue;
 
-  // Build version string with update status
+  // Build version string with update status (vibrant colors)
   let versionStr = `v${info.version}`;
   if (updateInfo.justUpdated && updateInfo.previousVersion) {
-    versionStr = `v${info.version} ${c.green}✓${c.reset}${c.dim} (was v${updateInfo.previousVersion})`;
+    versionStr = `v${info.version} ${c.mintGreen}✓${c.reset}${c.slate} (was v${updateInfo.previousVersion})`;
   } else if (updateInfo.available && updateInfo.latest) {
-    versionStr = `v${info.version} ${c.yellow}↑${updateInfo.latest}${c.reset}`;
+    versionStr = `v${info.version} ${c.amber}↑${updateInfo.latest}${c.reset}`;
   }
 
   // Calculate remaining space for branch
@@ -650,138 +668,139 @@ function formatTable(
   lines.push(topBorder);
   lines.push(headerLine);
 
-  // Show update available notification
+  // Show update available notification (using vibrant colors)
   if (updateInfo.available && updateInfo.latest && !updateInfo.justUpdated) {
     lines.push(fullDivider());
-    lines.push(fullRow(`↑ Update available: v${updateInfo.latest}`, c.yellow));
-    lines.push(fullRow(`  Run: npx agileflow update`, c.dim));
+    lines.push(fullRow(`${c.amber}↑${c.reset} Update available: ${c.softGold}v${updateInfo.latest}${c.reset}`, ''));
+    lines.push(fullRow(`  Run: ${c.skyBlue}npx agileflow update${c.reset}`, ''));
   }
 
   // Show "just updated" changelog
   if (updateInfo.justUpdated && updateInfo.changelog && updateInfo.changelog.length > 0) {
     lines.push(fullDivider());
-    lines.push(fullRow(`What's new in v${info.version}:`, c.green));
+    lines.push(fullRow(`${c.mintGreen}✨${c.reset} What's new in ${c.softGold}v${info.version}${c.reset}:`, ''));
     for (const entry of updateInfo.changelog.slice(0, 2)) {
-      lines.push(fullRow(`• ${truncate(entry, W - 4)}`, c.dim));
+      lines.push(fullRow(`  ${c.teal}•${c.reset} ${truncate(entry, W - 6)}`, ''));
     }
-    lines.push(fullRow(`Run /agileflow:whats-new for full changelog`, c.dim));
+    lines.push(fullRow(`  Run ${c.skyBlue}/agileflow:whats-new${c.reset} for full changelog`, ''));
   }
 
   lines.push(divider());
 
-  // Stories section
+  // Stories section (always colorful labels like obtain-context)
   lines.push(
     row(
       'In Progress',
       info.wipCount > 0 ? `${info.wipCount}` : '0',
-      c.dim,
-      info.wipCount > 0 ? c.yellow : c.dim
+      c.peach,
+      info.wipCount > 0 ? c.peach : c.dim
     )
   );
   lines.push(
     row(
       'Blocked',
       info.blockedCount > 0 ? `${info.blockedCount}` : '0',
-      c.dim,
-      info.blockedCount > 0 ? c.red : c.dim
+      c.coral,
+      info.blockedCount > 0 ? c.coral : c.dim
     )
   );
   lines.push(
     row(
       'Ready',
       info.readyCount > 0 ? `${info.readyCount}` : '0',
-      c.dim,
-      info.readyCount > 0 ? c.cyan : c.dim
+      c.skyBlue,
+      info.readyCount > 0 ? c.skyBlue : c.dim
     )
   );
+  const completedColor = `${c.bold}${c.mintGreen}`;
   lines.push(
     row(
       'Completed',
       info.completedCount > 0 ? `${info.completedCount}` : '0',
-      c.dim,
-      info.completedCount > 0 ? c.green : c.dim
+      completedColor,
+      info.completedCount > 0 ? completedColor : c.dim
     )
   );
 
   lines.push(divider());
 
-  // Archival section
+  // System section (colorful labels like obtain-context)
   if (archival.disabled) {
-    lines.push(row('Auto-archival', 'disabled', c.dim, c.dim));
+    lines.push(row('Auto-archival', 'disabled', c.lavender, c.slate));
   } else {
     const archivalStatus =
       archival.archived > 0 ? `archived ${archival.archived} stories` : `nothing to archive`;
     lines.push(
-      row('Auto-archival', archivalStatus, c.dim, archival.archived > 0 ? c.green : c.dim)
+      row('Auto-archival', archivalStatus, c.lavender, archival.archived > 0 ? c.mintGreen : c.dim)
     );
   }
 
   // Session cleanup
   const sessionStatus = session.cleared > 0 ? `cleared ${session.cleared} command(s)` : `clean`;
-  lines.push(row('Session state', sessionStatus, c.dim, session.cleared > 0 ? c.green : c.dim));
+  lines.push(row('Session state', sessionStatus, c.lavender, session.cleared > 0 ? c.mintGreen : c.dim));
 
   // PreCompact status with version check
   if (precompact.configured && precompact.scriptExists) {
     if (precompact.outdated) {
       const verStr = precompact.version ? ` (v${precompact.version})` : '';
-      lines.push(row('Context preserve', `outdated${verStr}`, c.dim, c.yellow));
+      lines.push(row('Context preserve', `outdated${verStr}`, c.peach, c.peach));
     } else if (session.commandNames && session.commandNames.length > 0) {
       // Show the preserved command names
       const cmdDisplay = session.commandNames.map(n => `/agileflow:${n}`).join(', ');
-      lines.push(row('Context preserve', cmdDisplay, c.dim, c.green));
+      lines.push(row('Context preserve', cmdDisplay, c.lavender, c.mintGreen));
     } else {
-      lines.push(row('Context preserve', 'nothing to compact', c.dim, c.dim));
+      lines.push(row('Context preserve', 'ready', c.lavender, c.dim));
     }
   } else if (precompact.configured) {
-    lines.push(row('Context preserve', 'script missing', c.dim, c.yellow));
+    lines.push(row('Context preserve', 'script missing', c.peach, c.peach));
   } else {
-    lines.push(row('Context preserve', 'not configured', c.dim, c.dim));
+    lines.push(row('Context preserve', 'not configured', c.slate, c.slate));
   }
 
   // Parallel sessions status
   if (parallelSessions && parallelSessions.available) {
     if (parallelSessions.otherActive > 0) {
       const sessionStr = `⚠️ ${parallelSessions.otherActive} other active`;
-      lines.push(row('Sessions', sessionStr, c.dim, c.yellow));
+      lines.push(row('Sessions', sessionStr, c.peach, c.peach));
     } else {
       const sessionStr = parallelSessions.currentId
         ? `✓ Session ${parallelSessions.currentId} (only)`
         : '✓ Only session';
-      lines.push(row('Sessions', sessionStr, c.dim, c.green));
+      lines.push(row('Sessions', sessionStr, c.lavender, c.mintGreen));
     }
   }
 
-  // Agent expertise validation (only show if issues exist)
+  // Agent expertise validation (always show with color)
   if (expertise && expertise.total > 0) {
     if (expertise.failed > 0) {
       const expertStr = `❌ ${expertise.failed} failed, ${expertise.warnings} warnings`;
-      lines.push(row('Expertise', expertStr, c.dim, c.red));
+      lines.push(row('Expertise', expertStr, c.coral, c.coral));
     } else if (expertise.warnings > 0) {
       const expertStr = `⚠️ ${expertise.warnings} warnings (${expertise.passed} ok)`;
-      lines.push(row('Expertise', expertStr, c.dim, c.yellow));
+      lines.push(row('Expertise', expertStr, c.peach, c.peach));
     } else {
-      lines.push(row('Expertise', `✓ ${expertise.total} valid`, c.dim, c.green));
+      lines.push(row('Expertise', `✓ ${expertise.total} valid`, c.lavender, c.mintGreen));
     }
   }
 
   lines.push(divider());
 
-  // Current story (if any) - row() auto-truncates
+  // Current story (colorful like obtain-context)
   if (info.currentStory) {
     lines.push(
       row(
         'Current',
-        `${c.blue}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`,
-        c.dim,
+        `${c.lightYellow}${info.currentStory.id}${c.reset}: ${info.currentStory.title}`,
+        c.skyBlue,
         ''
       )
     );
   } else {
-    lines.push(row('Current', 'No active story', c.dim, c.dim));
+    lines.push(row('Current', 'No active story', c.skyBlue, c.dim));
   }
 
-  // Last commit - row() auto-truncates
-  lines.push(row('Last commit', `${info.commit} ${info.lastCommit}`, c.dim, c.dim));
+  // Last commit (colorful like obtain-context)
+  lines.push(row('Last commit', `${c.peach}${info.commit}${c.reset} ${info.lastCommit}`, c.lavender, ''));
 
   lines.push(bottomBorder);
 
@@ -824,12 +843,12 @@ async function main() {
     formatTable(info, archival, session, precompact, parallelSessions, updateInfo, expertise)
   );
 
-  // Show warning and tip if other sessions are active
+  // Show warning and tip if other sessions are active (vibrant colors)
   if (parallelSessions.otherActive > 0) {
     console.log('');
-    console.log(`${c.yellow}⚠️  Other Claude session(s) active in this repo.${c.reset}`);
-    console.log(`${c.dim}   Run /agileflow:session:status to see all sessions.${c.reset}`);
-    console.log(`${c.dim}   Run /agileflow:session:new to create isolated workspace.${c.reset}`);
+    console.log(`${c.amber}⚠️  Other Claude session(s) active in this repo.${c.reset}`);
+    console.log(`${c.slate}   Run ${c.skyBlue}/agileflow:session:status${c.reset}${c.slate} to see all sessions.${c.reset}`);
+    console.log(`${c.slate}   Run ${c.skyBlue}/agileflow:session:new${c.reset}${c.slate} to create isolated workspace.${c.reset}`);
   }
 }
 
