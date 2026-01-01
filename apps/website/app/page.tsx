@@ -27,8 +27,8 @@ export default async function Page() {
             content={content.hero}
             version={content.version}
             stats={{
-              commands: content.stats[0].value,
-              agents: content.stats[1].value,
+              commands: content.stats[0].value as number,
+              agents: content.stats[1].value as number,
               skills: content.stats[2].value,
             }}
           />

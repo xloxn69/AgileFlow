@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/cn';
@@ -11,18 +11,8 @@ import { track } from '@/lib/track';
 
 type NavItem = { label: string; href: string; kind?: 'anchor' | 'external' };
 
-interface HeaderProps {
-  bannerClosed?: boolean;
-}
-
-export function Header({ bannerClosed = false }: HeaderProps) {
-  const { scrollY } = useScroll();
-  const [bannerHidden, setBannerHidden] = useState(false);
+export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setBannerHidden(latest > 40);
-  });
 
   const nav = useMemo<NavItem[]>(
     () => [
@@ -32,7 +22,7 @@ export function Header({ bannerClosed = false }: HeaderProps) {
       { label: 'Commands', href: '#commands' },
       { label: 'Agents', href: '#agents' },
       { label: 'Testimonials', href: '#testimonials' },
-      { label: 'Docs', href: '#docs' },
+      { label: 'Docs', href: LINKS.docs, kind: 'external' },
       { label: 'GitHub', href: LINKS.github, kind: 'external' },
     ],
     [],
@@ -49,13 +39,8 @@ export function Header({ bannerClosed = false }: HeaderProps) {
 
   return (
     <>
-      <motion.header
-        className="fixed left-0 right-0 z-40"
-        initial={{ top: 48 }}
-        animate={{
-          top: bannerHidden || bannerClosed ? 0 : 48,
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      <header
+        className="sticky top-0 left-0 right-0 z-40 border-b border-[var(--border-default)]"
         style={{
           backgroundColor: 'rgba(255,255,255,0.98)',
           backdropFilter: 'blur(12px)',
@@ -79,25 +64,29 @@ export function Header({ bannerClosed = false }: HeaderProps) {
           </div>
 
           <nav aria-label="Primary" className="hidden items-center gap-6 md:flex">
-            {nav.slice(0, 7).map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="focus-ring rounded-md text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-                onClick={() => track('nav_anchor', { href: item.href, label: item.label })}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <a
-              href={LINKS.github}
-              target="_blank"
-              rel="noreferrer"
-              className="focus-ring rounded-md text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-              onClick={() => track('nav_github')}
-            >
-              GitHub
-            </a>
+            {nav.map((item) =>
+              item.kind === 'external' ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="focus-ring rounded-md text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+                  onClick={() => track('nav_external', { href: item.href, label: item.label })}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="focus-ring rounded-md text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+                  onClick={() => track('nav_anchor', { href: item.href, label: item.label })}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -211,7 +200,7 @@ export function Header({ bannerClosed = false }: HeaderProps) {
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </motion.header>
+      </header>
     </>
   );
 }
