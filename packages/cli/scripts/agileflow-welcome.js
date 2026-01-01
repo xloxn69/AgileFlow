@@ -433,6 +433,85 @@ async function runAutoUpdate(rootDir) {
   }
 }
 
+function validateExpertise(rootDir) {
+  const result = { total: 0, passed: 0, warnings: 0, failed: 0, issues: [] };
+
+  // Find experts directory
+  let expertsDir = path.join(rootDir, '.agileflow', 'experts');
+  if (!fs.existsSync(expertsDir)) {
+    expertsDir = path.join(rootDir, 'packages', 'cli', 'src', 'core', 'experts');
+  }
+  if (!fs.existsSync(expertsDir)) {
+    return result; // No experts directory found
+  }
+
+  const STALE_DAYS = 30;
+  const MAX_LINES = 200;
+
+  try {
+    const domains = fs.readdirSync(expertsDir, { withFileTypes: true })
+      .filter(d => d.isDirectory() && d.name !== 'templates')
+      .map(d => d.name);
+
+    for (const domain of domains) {
+      const filePath = path.join(expertsDir, domain, 'expertise.yaml');
+      if (!fs.existsSync(filePath)) {
+        result.total++;
+        result.failed++;
+        result.issues.push(`${domain}: missing file`);
+        continue;
+      }
+
+      result.total++;
+      const content = fs.readFileSync(filePath, 'utf8');
+      const lines = content.split('\n');
+      let status = 'pass';
+      let issue = '';
+
+      // Check required fields (use multiline flag)
+      const hasVersion = /^version:/m.test(content);
+      const hasDomain = /^domain:/m.test(content);
+      const hasLastUpdated = /^last_updated:/m.test(content);
+
+      if (!hasVersion || !hasDomain || !hasLastUpdated) {
+        status = 'fail';
+        issue = 'missing required fields';
+      }
+
+      // Check staleness
+      const lastUpdatedMatch = content.match(/^last_updated:\s*['"]?(\d{4}-\d{2}-\d{2})/m);
+      if (lastUpdatedMatch && status !== 'fail') {
+        const lastDate = new Date(lastUpdatedMatch[1]);
+        const daysSince = Math.floor((Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (daysSince > STALE_DAYS) {
+          status = 'warn';
+          issue = `stale (${daysSince}d)`;
+        }
+      }
+
+      // Check file size
+      if (lines.length > MAX_LINES && status === 'pass') {
+        status = 'warn';
+        issue = `large (${lines.length} lines)`;
+      }
+
+      if (status === 'pass') {
+        result.passed++;
+      } else if (status === 'warn') {
+        result.warnings++;
+        result.issues.push(`${domain}: ${issue}`);
+      } else {
+        result.failed++;
+        result.issues.push(`${domain}: ${issue}`);
+      }
+    }
+  } catch (e) {
+    // Silently fail
+  }
+
+  return result;
+}
+
 function getFeatureVersions(rootDir) {
   const result = {
     hooks: { version: null, outdated: false },
@@ -505,7 +584,7 @@ function truncate(str, maxLen, suffix = '..') {
   return str.substring(0, cutIndex) + suffix;
 }
 
-function formatTable(info, archival, session, precompact, parallelSessions, updateInfo = {}) {
+function formatTable(info, archival, session, precompact, parallelSessions, updateInfo = {}, expertise = {}) {
   const W = 58; // inner width
   const R = W - 24; // right column width (34 chars)
   const lines = [];
@@ -662,6 +741,19 @@ function formatTable(info, archival, session, precompact, parallelSessions, upda
     }
   }
 
+  // Agent expertise validation (only show if issues exist)
+  if (expertise && expertise.total > 0) {
+    if (expertise.failed > 0) {
+      const expertStr = `❌ ${expertise.failed} failed, ${expertise.warnings} warnings`;
+      lines.push(row('Expertise', expertStr, c.dim, c.red));
+    } else if (expertise.warnings > 0) {
+      const expertStr = `⚠️ ${expertise.warnings} warnings (${expertise.passed} ok)`;
+      lines.push(row('Expertise', expertStr, c.dim, c.yellow));
+    } else {
+      lines.push(row('Expertise', `✓ ${expertise.total} valid`, c.dim, c.green));
+    }
+  }
+
   lines.push(divider());
 
   // Current story (if any) - row() auto-truncates
@@ -694,6 +786,7 @@ async function main() {
   const session = clearActiveCommands(rootDir);
   const precompact = checkPreCompact(rootDir);
   const parallelSessions = checkParallelSessions(rootDir);
+  const expertise = validateExpertise(rootDir);
 
   // Check for updates (async, cached)
   let updateInfo = {};
@@ -717,7 +810,7 @@ async function main() {
     // Update check failed - continue without it
   }
 
-  console.log(formatTable(info, archival, session, precompact, parallelSessions, updateInfo));
+  console.log(formatTable(info, archival, session, precompact, parallelSessions, updateInfo, expertise));
 
   // Show warning and tip if other sessions are active
   if (parallelSessions.otherActive > 0) {
