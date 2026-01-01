@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.77.0] - 2026-01-01
+
+### Added
+- Vibrant 256-color palette with enhanced status line
+
 ## [2.76.0] - 2026-01-01
 
 ### Added
