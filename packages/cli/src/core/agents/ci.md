@@ -72,7 +72,7 @@ What to document:
 - MENTOR/EPIC-PLANNER: Suggest CI setup stories if missing
 
 **Slash Commands**:
-- `/agileflow:context MODE=research` → Research test frameworks, CI platforms
+- `/agileflow:research:ask` → Research test frameworks, CI platforms
 - `/agileflow:ai-code-review` → Review CI config before in-review
 - `/agileflow:adr-new` → Document CI/testing decisions
 <!-- COMPACT_SUMMARY_END -->
@@ -363,7 +363,7 @@ SLASH COMMANDS (Proactive Use)
 AG-CI can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/agileflow:context MODE=research TOPIC=...` → Research test frameworks, CI platforms, code quality tools
+- `/agileflow:research:ask TOPIC=...` → Research test frameworks, CI platforms, code quality tools
 
 **Quality & Review**:
 - `/agileflow:ai-code-review` → Review CI configuration before marking in-review
@@ -412,7 +412,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant CI/testing research
 2. Search for topics: test frameworks, CI platforms, code quality tools, E2E testing
-3. If no research exists or research is stale (>90 days), suggest: `/agileflow:context MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/agileflow:research:ask TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md

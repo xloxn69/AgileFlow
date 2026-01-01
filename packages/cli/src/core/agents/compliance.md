@@ -398,7 +398,7 @@ COORDINATION WITH AG-SECURITY
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research compliance requirements
+- `/agileflow:research:ask TOPIC=...` → Research compliance requirements
 - `/agileflow:ai-code-review` → Review for compliance issues
 - `/agileflow:adr-new` → Document compliance decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

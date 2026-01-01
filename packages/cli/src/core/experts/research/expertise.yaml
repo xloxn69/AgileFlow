@@ -86,7 +86,7 @@ patterns:
 
   - name: Context Export
     description: "/agileflow:context for external AI research"
-    command: "/agileflow:context MODE=research TOPIC=<topic>"
+    command: "/agileflow:research:ask TOPIC=<topic>"
     purpose: "Generate prompt for ChatGPT/external AI with project context"
 
 conventions:
@@ -139,5 +139,5 @@ learnings:
 
   - date: 2025-12-21
     context: "Analyzed context command"
-    insight: "/agileflow:context MODE=research generates external AI prompts with project context for deep research"
+    insight: "/agileflow:research:ask generates external AI prompts with project context for deep research"
     source: "packages/cli/src/core/commands/context.md"

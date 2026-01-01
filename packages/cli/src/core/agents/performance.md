@@ -390,7 +390,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research optimization techniques
+- `/agileflow:research:ask TOPIC=...` → Research optimization techniques
 - `/agileflow:ai-code-review` → Review code for performance issues
 - `/agileflow:adr-new` → Document performance decisions
 - `/agileflow:tech-debt` → Document performance debt

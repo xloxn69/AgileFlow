@@ -392,7 +392,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research design system best practices
+- `/agileflow:research:ask TOPIC=...` → Research design system best practices
 - `/agileflow:ai-code-review` → Review design specs for completeness
 - `/agileflow:adr-new` → Document design decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

@@ -428,8 +428,8 @@ RESEARCH INTEGRATION
 5. Check webhook/event capabilities
 
 **Suggest Research**:
-- `/agileflow:context MODE=research TOPIC="[Service] best practices and gotchas"`
-- `/agileflow:context MODE=research TOPIC="Webhook signature validation for [Service]"`
+- `/agileflow:research:ask TOPIC="[Service] best practices and gotchas"`
+- `/agileflow:research:ask TOPIC="Webhook signature validation for [Service]"`
 
 COORDINATION WITH AG-API
 
@@ -447,7 +447,7 @@ COORDINATION WITH AG-API
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research service documentation, best practices
+- `/agileflow:research:ask TOPIC=...` → Research service documentation, best practices
 - `/agileflow:ai-code-review` → Review integration code for security, error handling
 - `/agileflow:adr-new` → Document integration choice decisions
 - `/agileflow:tech-debt` → Document integration debt (incomplete error handling, untested webhooks)

@@ -559,7 +559,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research migration best practices
+- `/agileflow:research:ask TOPIC=...` → Research migration best practices
 - `/agileflow:ai-code-review` → Review migration code for safety
 - `/agileflow:adr-new` → Document migration decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

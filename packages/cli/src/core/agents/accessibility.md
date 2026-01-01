@@ -428,7 +428,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research accessibility best practices
+- `/agileflow:research:ask TOPIC=...` → Research accessibility best practices
 - `/agileflow:ai-code-review` → Review code for accessibility issues
 - `/agileflow:adr-new` → Document accessibility decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

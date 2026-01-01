@@ -8,6 +8,8 @@ compact_context:
     - "MUST delegate complex work to domain experts (don't do everything yourself)"
     - "MUST use AskUserQuestion for decisions, TodoWrite for tracking"
     - "Simple task → do yourself | Complex single-domain → spawn expert | Multi-domain → spawn orchestrator"
+    - "STUCK DETECTION: If same error 2+ times, suggest /agileflow:research:ask with 200+ line detailed prompt"
+    - "Research prompts MUST include: 50+ lines actual code, exact error, what was tried, 3+ specific questions"
   state_fields:
     - current_story
     - current_epic
@@ -263,6 +265,141 @@ TaskOutput(task_id: "<ui_id>", block: true)
 13. **Update story status** → in-review
 14. **Generate PR description**
 15. **Present next steps** via AskUserQuestion
+
+---
+
+## STUCK DETECTION
+
+When you encounter repeated errors or problems you can't solve, **proactively suggest external research** instead of continuing to try and fail.
+
+### Error Complexity Classification
+
+**Immediate research suggestion** (don't retry more than once):
+- External API/library version mismatches
+- "Cannot find module" for unfamiliar packages
+- OAuth/authentication flow errors
+- Build/bundler configuration errors (webpack, vite, esbuild)
+- Errors from libraries you don't deeply understand
+- Cryptic errors with no clear solution
+
+**Research after 2 attempts** (try twice, then suggest):
+- Type errors persisting after fix attempts
+- Runtime errors with unclear stack traces
+- Test failures that don't match expectations
+- Integration errors between components
+- Database/ORM errors you haven't seen before
+
+**Keep trying** (simple errors, no research needed):
+- Typos, syntax errors
+- Missing imports for known modules
+- Obvious null checks
+- Simple logic errors with clear stack traces
+
+### When Stuck Is Detected
+
+1. **Acknowledge the situation clearly**:
+
+```
+I've tried [N] approaches but we're still hitting [error].
+
+This seems like a case where external research would help -
+the issue involves [library/API/pattern] that needs more
+context than I currently have.
+```
+
+2. **Gather context automatically**:
+   - Read the relevant files being modified
+   - Capture the full error message and stack trace
+   - List what approaches were already tried
+   - Note the exact versions of libraries involved
+
+3. **Generate comprehensive research prompt**:
+
+Run `/agileflow:research:ask` with detailed context:
+
+```
+TOPIC="[Specific error/problem description]"
+ERROR="[Exact error message]"
+```
+
+The research prompt MUST include:
+- **50+ lines of actual code** from your codebase
+- **Exact error messages** verbatim
+- **What was already tried** with results
+- **3+ specific questions** about the problem
+
+4. **Present to user**:
+
+```
+I've generated a detailed research prompt for ChatGPT/Claude web/Perplexity.
+
+It includes:
+- Your current code implementation
+- The exact error we're hitting
+- What I've already tried
+- Specific questions to answer
+
+Copy the prompt, paste it into your preferred AI tool, and when you
+get the answer, paste it back here. I'll save it to your research
+folder and continue implementing.
+```
+
+### Anti-Pattern: Lazy Research Prompts
+
+**NEVER generate basic prompts like:**
+
+```
+"How do I fix OAuth in Next.js?"
+```
+
+**ALWAYS generate detailed prompts with:**
+- Actual code from the codebase (50+ lines)
+- Exact error messages (verbatim, in code blocks)
+- What was already tried (with specific results)
+- Specific questions (not vague)
+
+**Example good prompt:**
+```markdown
+# OAuth Implementation Error in Next.js 14
+
+## Current Setup
+- Next.js 14.0.4 with App Router
+- next-auth 5.0.0-beta.4
+- Google OAuth provider
+
+## Current Code
+[50+ lines of actual implementation from src/app/api/auth/...]
+
+## Error
+```
+Error: [auth] unauthorized_client
+  at AuthHandler (node_modules/next-auth/src/lib/...)
+```
+
+## What I've Tried
+1. Verified client ID/secret - credentials are correct
+2. Checked redirect URI in Google Console - matches localhost:3000
+3. Cleared cookies and tried incognito - same error
+
+## Specific Questions
+1. Why does next-auth throw unauthorized_client when credentials are correct?
+2. Is there a known issue with next-auth 5.0.0-beta.4 and Google OAuth?
+3. What additional configuration is needed for App Router?
+```
+
+### Integration with Research Commands
+
+When stuck detection triggers:
+1. Use `/agileflow:research:ask` to generate the detailed prompt
+2. After user returns with results, use `/agileflow:research:import` to save
+3. Link the research to the current story if applicable
+4. Continue implementing with the new knowledge
+
+### Stuck Detection in Compact Summary
+
+Add to compact_context.preserve_rules:
+- "If same error 2+ times with different fixes, suggest /agileflow:research:ask"
+- "Generate 200+ line research prompts with actual code snippets"
 
 ---
 

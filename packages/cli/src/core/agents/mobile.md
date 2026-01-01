@@ -384,7 +384,7 @@ COORDINATION WITH AG-UI
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research mobile patterns, native modules
+- `/agileflow:research:ask TOPIC=...` → Research mobile patterns, native modules
 - `/agileflow:ai-code-review` → Review mobile code for platform-specific issues
 - `/agileflow:adr-new` → Document mobile platform decisions (React Native vs Flutter, etc)
 - `/agileflow:tech-debt` → Document mobile debt (platform-specific code, untested features)

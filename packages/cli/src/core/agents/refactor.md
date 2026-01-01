@@ -453,7 +453,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research refactoring patterns, modern approaches
+- `/agileflow:research:ask TOPIC=...` → Research refactoring patterns, modern approaches
 - `/agileflow:ai-code-review` → Review refactored code for quality
 - `/agileflow:adr-new` → Document refactoring decisions
 - `/agileflow:tech-debt` → Track and manage technical debt

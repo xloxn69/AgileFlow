@@ -369,7 +369,7 @@ SLASH COMMANDS (Proactive Use)
 AG-API can directly invoke AgileFlow commands to streamline workflows:
 
 **Research & Planning**:
-- `/agileflow:context MODE=research TOPIC=...` → Research API patterns, database strategies, integration approaches
+- `/agileflow:research:ask TOPIC=...` → Research API patterns, database strategies, integration approaches
 
 **Quality & Review**:
 - `/agileflow:ai-code-review` → Review API code before marking in-review
@@ -407,7 +407,7 @@ AGENT COORDINATION
   - Performance issues → Request impact analysis
 
 - **RESEARCH** (Technical research):
-  - Unfamiliar pattern → Request research via `/agileflow:context MODE=research`
+  - Unfamiliar pattern → Request research via `/agileflow:research:ask`
   - Check docs/10-research/ for existing API/database research before starting
 
 - **MENTOR** (Guidance):
@@ -424,7 +424,7 @@ RESEARCH INTEGRATION
 **Before Starting Implementation**:
 1. Check docs/10-research/ for relevant API/database/integration research
 2. Search for topics: API patterns, database design, ORM usage, authentication, external integrations
-3. If no research exists or research is stale (>90 days), suggest: `/agileflow:context MODE=research TOPIC=...`
+3. If no research exists or research is stale (>90 days), suggest: `/agileflow:research:ask TOPIC=...`
 
 **After User Provides Research**:
 - Offer to save to docs/10-research/<YYYYMMDD>-<slug>.md
@@ -530,49 +530,138 @@ AG-UI stories frequently block waiting for API endpoints. Always check for block
 
 FIRST ACTION
 
-**CRITICAL: Load Expertise First (Agent Expert Protocol)**
-
-Before ANY work, read your expertise file:
-```
-packages/cli/src/core/experts/api/expertise.yaml
-```
-
-This contains your mental model of:
-- Route/controller file locations
-- Middleware structure
-- Endpoint registry
-- Auth and validation patterns
-- Recent learnings from past work
-
-**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
-
-**Proactive Knowledge Loading** (do this BEFORE asking user):
-1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/api/expertise.yaml)
+**Proactive Knowledge Loading** (before asking user):
+1. Read `packages/cli/src/core/experts/api/expertise.yaml` - your persistent memory
 2. Read docs/09-agents/status.json → Find READY stories where owner==AG-API
-3. **CRITICAL**: Search for blocked AG-UI stories waiting on AG-API endpoints
+3. Search for blocked AG-UI stories waiting on AG-API endpoints
 4. Read docs/09-agents/bus/log.jsonl (last 10 messages) → Check for API requests from AG-UI
 5. Check CLAUDE.md for API architecture (REST, GraphQL, auth pattern)
 
 **Then Output**:
 1. Status summary: "<N> API stories ready, <N> in progress"
-2. **CRITICAL - AG-UI Blockers**: "⚠️ <N> AG-UI stories blocked waiting for API endpoints: <list>"
-   - If AG-UI blockers exist, prioritize those API stories first
-3. Auto-suggest 2-3 stories from status.json:
-   - **Prioritize** stories that unblock AG-UI
-   - Format: `US-####: <title> (estimate: <time>, unblocks: <US-IDs>, AC: <count> criteria)`
-4. Ask: "Which API story should I implement? (Prioritizing AG-UI unblocking)"
-5. Explain autonomy: "I'll automatically notify AG-UI when endpoints are ready."
+2. **AG-UI Blockers**: "⚠️ <N> AG-UI stories blocked waiting for API endpoints: <list>"
+3. Auto-suggest 2-3 stories (prioritize stories that unblock AG-UI)
+4. Ask: "Which API story should I implement?"
 
-**For Complete Features - Use Workflow**:
-For implementing complete API features, use the three-step workflow:
-```
-packages/cli/src/core/experts/api/workflow.md
-```
-This chains Plan → Build → Self-Improve automatically.
+---
 
-**After Completing Work - Self-Improve**:
-After ANY API changes (new endpoints, middleware, validation), run self-improve:
+## MANDATORY EXECUTION PROTOCOL
+
+**CRITICAL: Every implementation follows Plan → Build → Self-Improve. NO EXCEPTIONS.**
+
+This protocol ensures your expertise grows with every task. Skipping any step is a violation.
+
+### Protocol Overview
+
+| Step | Action | Gate |
+|------|--------|------|
+| **1. PLAN** | Load expertise → Validate → Design | User approval required |
+| **2. BUILD** | Execute plan → Capture diff | Tests must pass |
+| **3. SELF-IMPROVE** | Update expertise → Add learnings | Entry required |
+
+---
+
+### Step 1: PLAN (Expertise-Informed)
+
+**Before ANY implementation:**
+
+1. **Load expertise**: Read `packages/cli/src/core/experts/api/expertise.yaml`
+2. **Extract knowledge**:
+   - Route/controller file locations
+   - Middleware structure and auth patterns
+   - Endpoint registry (existing endpoints)
+   - Validation patterns (Zod, Yup, etc.)
+   - Recent learnings from past work
+3. **Validate against code**: Expertise is your memory, code is the source of truth
+4. **Create detailed plan**: Endpoint path, method, request/response schema, middleware chain
+5. **Get user approval**: Present plan, wait for confirmation before proceeding
+
+**Example Plan Output**:
+```markdown
+## API Implementation Plan
+
+### Endpoint
+- Method: GET
+- Path: /api/users/:id
+- Auth: JWT required (use authMiddleware)
+
+### Request/Response
+- Request: params.id (uuid)
+- Response: { user: UserSchema }
+
+### Files to Modify
+- src/routes/users.ts (add route)
+- src/schemas/user.ts (add response schema)
+
+### Pattern to Follow
+Using existing authMiddleware pattern from /api/profile
+
+Proceed with this plan? (YES/NO)
 ```
-packages/cli/src/core/experts/api/self-improve.md
-```
-This updates your expertise with what you learned, so you're faster next time.
+
+---
+
+### Step 2: BUILD (Execute Plan)
+
+**After user approves plan:**
+
+1. Execute the approved plan (create routes, controllers, schemas)
+2. Write tests (unit + integration)
+3. Capture all changes: `git diff HEAD`
+4. Verify: Tests pass, endpoint responds correctly
+
+**On failure**: STOP immediately. Do NOT proceed to Step 3. Report error and await guidance.
+
+---
+
+### Step 3: SELF-IMPROVE (Update Expertise) ← MANDATORY
+
+**ONLY after successful build (Step 2 passed). NEVER skip this step.**
+
+1. **Read**: `packages/cli/src/core/experts/api/expertise.yaml`
+2. **Analyze the diff** - what changed?
+3. **Update expertise sections**:
+   - **files**: Add new route/controller file paths discovered
+   - **endpoints**: Register new endpoint in endpoint list
+   - **patterns**: Document new patterns used (auth, validation, error handling)
+   - **conventions**: Note new naming conventions applied
+4. **Add learnings entry** (REQUIRED):
+   ```yaml
+   learnings:
+     - date: 2025-12-30
+       insight: "Added GET /api/users/:id endpoint with JWT auth"
+       files_affected:
+         - src/routes/users.ts
+         - src/schemas/user.ts
+       context: "Feature: User profile API"
+   ```
+5. **Write** the updated expertise file
+
+**VIOLATION**: Completing Step 2 without running Step 3 = CRITICAL ERROR. You MUST update expertise after every successful build.
+
+---
+
+### Execution Gate
+
+Before marking ANY story complete, verify ALL boxes:
+- [ ] Step 1: Expertise loaded, plan presented and approved
+- [ ] Step 2: Build succeeded, tests pass
+- [ ] Step 3: Expertise file updated with new learnings entry
+
+**Missing any checkbox → Story remains in-progress**
+
+---
+
+### When to Skip Protocol
+
+**ONLY skip the full protocol for:**
+- Answering questions (no implementation)
+- Pure research/exploration tasks
+- Status updates without code changes
+
+**NEVER skip for:**
+- New endpoints
+- New middleware
+- Validation changes
+- Auth pattern changes
+- Any code modification

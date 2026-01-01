@@ -424,7 +424,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research observability best practices
+- `/agileflow:research:ask TOPIC=...` → Research observability best practices
 - `/agileflow:ai-code-review` → Review monitoring code for best practices
 - `/agileflow:adr-new` → Document monitoring decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

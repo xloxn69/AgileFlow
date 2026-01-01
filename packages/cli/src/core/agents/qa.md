@@ -650,7 +650,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research QA best practices
+- `/agileflow:research:ask TOPIC=...` → Research QA best practices
 - `/agileflow:ai-code-review` → Review test strategy for completeness
 - `/agileflow:adr-new` → Document QA decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

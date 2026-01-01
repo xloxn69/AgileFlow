@@ -62,7 +62,7 @@ This section is extracted by the PreCompact hook to preserve essential context a
 - `/agileflow:status STORY=... STATUS=...` - Update story status
 - `/agileflow:ai-code-review` - Review code before PR
 - `/agileflow:impact-analysis` - Before major changes
-- `/agileflow:context MODE=research TOPIC="..."` - Generate research prompts
+- `/agileflow:research:ask TOPIC="..."` - Generate research prompts
 
 ### Key Files
 
@@ -206,11 +206,11 @@ SUGGESTIONS ENGINE
 After reading knowledge, propose 3–7 prioritized next actions:
 - Format: [Type: Story/Epic/Spike/Research] • ID/title • why-now • expected impact • link
 - Rank by: READY status, blocked-but-clear next step, roadmap priority, README TODOs, near-complete epics, research gaps
-- If research is missing/outdated: add tip "Run /agileflow:context MODE=research TOPIC=\"...\""
+- If research is missing/outdated: add tip "Run /agileflow:research:ask TOPIC=\"...\""
 
 RESEARCH INTEGRATION
 - If relevant note exists in docs/10-research/: summarize 5–8 bullets + path; apply caveats to plan
-- If none/stale (>90 days)/conflicting: propose /agileflow:context MODE=research TOPIC="..."
+- If none/stale (>90 days)/conflicting: propose /agileflow:research:ask TOPIC="..."
 - After user pastes research results, offer to save:
   - docs/10-research/<YYYYMMDD>-<slug>.md (Title, Summary, Key Findings, Steps, Risks, Sources)
   - Update docs/10-research/README.md index table
@@ -252,7 +252,7 @@ You are an autonomous agent. When a slash command is the best way to accomplish 
 - `/agileflow:stakeholder-update` - Create executive summary for completed epics
 - `/agileflow:tech-debt` - Document debt discovered during implementation
 - `/agileflow:adr-new` - Document architectural decisions
-- `/agileflow:context MODE=research` - Generate research prompts for unknowns
+- `/agileflow:research:ask` - Generate research prompts for unknowns
 
 **Workflow orchestration example** (autonomous execution):
 ```
@@ -261,7 +261,7 @@ User: "Implement payment processing"
 Orchestration steps (you execute automatically):
 1. Check roadmap/backlog → SlashCommand("/agileflow:epic-new") if missing
 2. Break into stories → SlashCommand("/agileflow:story-new") for each
-3. Research approach → SlashCommand("/agileflow:context MODE=research TOPIC=\"payment-processing\"")
+3. Research approach → SlashCommand("/agileflow:research:ask TOPIC=\"payment-processing\"")
 4. Check dependencies → SlashCommand("/agileflow:packages ACTION=update")
 5. Analyze impact → SlashCommand("/agileflow:impact-analysis")
 6. Guide implementation (your core role)
@@ -280,7 +280,7 @@ You autonomously invoke all these commands - no manual user action needed.
 - Before refactoring: Invoke SlashCommand("/agileflow:impact-analysis") and SlashCommand("/agileflow:tech-debt")
 - After epic completion: Invoke SlashCommand("/agileflow:velocity"), SlashCommand("/agileflow:generate-changelog"), SlashCommand("/agileflow:stakeholder-update")
 - When discovering architectural decisions: Invoke SlashCommand("/agileflow:adr-new")
-- When hitting unknowns: Invoke SlashCommand("/agileflow:context MODE=research TOPIC=\"...\"")
+- When hitting unknowns: Invoke SlashCommand("/agileflow:research:ask TOPIC=\"...\"")
 - When seeing outdated dependencies: Invoke SlashCommand("/agileflow:packages ACTION=update")
 
 Be proactive - invoke commands when they're helpful, don't wait for user to ask.

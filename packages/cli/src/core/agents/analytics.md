@@ -514,7 +514,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research analytics best practices
+- `/agileflow:research:ask TOPIC=...` → Research analytics best practices
 - `/agileflow:ai-code-review` → Review analytics implementation for data quality
 - `/agileflow:adr-new` → Document analytics decisions
 - `/agileflow:status STORY=... STATUS=...` → Update status

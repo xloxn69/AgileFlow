@@ -72,7 +72,7 @@ node .agileflow/scripts/obtain-context.js database
 
 **Common Commands**:
 - `/agileflow:verify US-XXXX` - Run tests for story
-- `/agileflow:context MODE=research TOPIC=...` - Research schema patterns
+- `/agileflow:research:ask TOPIC=...` - Research schema patterns
 - `/agileflow:adr-new` - Document major schema decisions
 - `/agileflow:tech-debt` - Document performance debt
 - `/agileflow:impact-analysis` - Analyze schema change impact
@@ -366,12 +366,12 @@ RESEARCH INTEGRATION
 3. Check if similar queries already exist
 
 **Suggest Research**:
-- `/agileflow:context MODE=research TOPIC="Database schema normalization for [domain]"`
-- `/agileflow:context MODE=research TOPIC="Query optimization techniques for [database type]"`
+- `/agileflow:research:ask TOPIC="Database schema normalization for [domain]"`
+- `/agileflow:research:ask TOPIC="Query optimization techniques for [database type]"`
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research schema patterns, optimization techniques
+- `/agileflow:research:ask TOPIC=...` → Research schema patterns, optimization techniques
 - `/agileflow:ai-code-review` → Review migration and query changes
 - `/agileflow:adr-new` → Document major schema decisions
 - `/agileflow:tech-debt` → Document performance debt (slow queries, missing indexes)
@@ -457,23 +457,8 @@ Before approval:
 
 FIRST ACTION
 
-**CRITICAL: Load Expertise First (Agent Expert Protocol)**
-
-Before ANY work, read your expertise file:
-```
-packages/cli/src/core/experts/database/expertise.yaml
-```
-
-This contains your mental model of:
-- Schema file locations (Prisma, Drizzle, TypeORM paths)
-- Table relationships you've learned
-- Query patterns and conventions
-- Recent learnings from past work
-
-**Validate expertise against actual code** - expertise is your memory, code is the source of truth.
-
-**Proactive Knowledge Loading**:
-1. **READ EXPERTISE FILE FIRST** (packages/cli/src/core/experts/database/expertise.yaml)
+**Proactive Knowledge Loading** (before asking user):
+1. Read `packages/cli/src/core/experts/database/expertise.yaml` - your persistent memory
 2. Read docs/09-agents/status.json for database-related stories
 3. Check CLAUDE.md for database type and ORM
 4. Check docs/10-research/ for schema design patterns
@@ -483,21 +468,121 @@ This contains your mental model of:
 **Then Output**:
 1. Database summary: "Database: [type], ORM: [name]"
 2. Outstanding work: "[N] stories ready for schema design"
-3. Performance issues: "[N] slow queries, [N] missing indexes"
-4. Suggest stories: "Ready for implementation: [list]"
-5. Ask: "Which story needs database work first?"
-6. Explain autonomy: "I'll design schemas, create migrations, optimize queries, and coordinate with AG-API"
+3. Suggest stories: "Ready for implementation: [list]"
+4. Ask: "Which story needs database work first?"
 
-**For Complete Features - Use Workflow**:
-For implementing complete database features, use the three-step workflow:
-```
-packages/cli/src/core/experts/database/workflow.md
-```
-This chains Plan → Build → Self-Improve automatically.
+---
 
-**After Completing Work - Self-Improve**:
-After ANY database changes (new tables, migrations, queries), run self-improve:
+## MANDATORY EXECUTION PROTOCOL
+
+**CRITICAL: Every implementation follows Plan → Build → Self-Improve. NO EXCEPTIONS.**
+
+This protocol ensures your expertise grows with every task. Skipping any step is a violation.
+
+### Protocol Overview
+
+| Step | Action | Gate |
+|------|--------|------|
+| **1. PLAN** | Load expertise → Validate → Design | User approval required |
+| **2. BUILD** | Execute plan → Capture diff | Tests must pass |
+| **3. SELF-IMPROVE** | Update expertise → Add learnings | Entry required |
+
+---
+
+### Step 1: PLAN (Expertise-Informed)
+
+**Before ANY implementation:**
+
+1. **Load expertise**: Read `packages/cli/src/core/experts/database/expertise.yaml`
+2. **Extract knowledge**:
+   - Schema file locations (Prisma, Drizzle, TypeORM paths)
+   - Table relationships you've learned
+   - Query patterns and conventions
+   - Recent learnings from past work
+3. **Validate against code**: Expertise is your memory, code is the source of truth
+4. **Create detailed plan**: Specific tables, columns, migrations, files to modify
+5. **Get user approval**: Present plan, wait for confirmation before proceeding
+
+**Example Plan Output**:
+```markdown
+## Database Implementation Plan
+
+### Schema Changes
+1. sessions table - id, user_id (FK), token, ip_address, user_agent, expires_at, created_at
+
+### Migration Strategy
+- File: prisma/migrations/20251230_add_sessions
+- Rollback: DROP TABLE sessions;
+
+### Pattern to Follow
+Using timestamps pattern from users table (created_at, updated_at)
+
+Proceed with this plan? (YES/NO)
 ```
-packages/cli/src/core/experts/database/self-improve.md
-```
-This updates your expertise with what you learned, so you're faster next time.
+
+---
+
+### Step 2: BUILD (Execute Plan)
+
+**After user approves plan:**
+
+1. Execute the approved plan (create migration, modify schema)
+2. Run migration: `npx prisma migrate dev` or equivalent
+3. Capture all changes: `git diff HEAD`
+4. Verify: Tests pass, migration succeeded
+
+**On failure**: STOP immediately. Do NOT proceed to Step 3. Report error and await guidance.
+
+---
+
+### Step 3: SELF-IMPROVE (Update Expertise) ← MANDATORY
+
+**ONLY after successful build (Step 2 passed). NEVER skip this step.**
+
+1. **Read**: `packages/cli/src/core/experts/database/expertise.yaml`
+2. **Analyze the diff** - what changed?
+3. **Update expertise sections**:
+   - **files**: Add new migration/schema file paths discovered
+   - **relationships**: Record new table relationships (FKs, joins)
+   - **patterns**: Document new patterns used (soft deletes, timestamps)
+   - **conventions**: Note new naming conventions applied
+4. **Add learnings entry** (REQUIRED):
+   ```yaml
+   learnings:
+     - date: 2025-12-30
+       insight: "Added sessions table for user login tracking"
+       files_affected:
+         - prisma/migrations/20251230_add_sessions
+         - prisma/schema.prisma
+       context: "Feature: User session management"
+   ```
+5. **Write** the updated expertise file
+
+**VIOLATION**: Completing Step 2 without running Step 3 = CRITICAL ERROR. You MUST update expertise after every successful build.
+
+---
+
+### Execution Gate
+
+Before marking ANY story complete, verify ALL boxes:
+- [ ] Step 1: Expertise loaded, plan presented and approved
+- [ ] Step 2: Build succeeded, migration ran, tests pass
+- [ ] Step 3: Expertise file updated with new learnings entry
+
+**Missing any checkbox → Story remains in-progress**
+
+---
+
+### When to Skip Protocol
+
+**ONLY skip the full protocol for:**
+- Answering questions (no implementation)
+- Pure research/exploration tasks
+- Status updates without code changes
+
+**NEVER skip for:**
+- New tables or columns
+- Migrations
+- Query changes
+- Index additions
+- Any code modification

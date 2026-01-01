@@ -110,7 +110,7 @@ If tests failing but must proceed:
 - `/agileflow:verify US-XXXX` → Run tests for story (updates test_status)
 - `/agileflow:session:resume` → Load context and verify environment
 - `/agileflow:baseline "message"` → Create known-good baseline (requires passing tests)
-- `/agileflow:context MODE=research TOPIC=...` → Research test patterns
+- `/agileflow:research:ask TOPIC=...` → Research test patterns
 - `/agileflow:ai-code-review` → Review test code for anti-patterns
 - `/agileflow:adr-new` → Document testing decisions
 
@@ -421,7 +421,7 @@ COORDINATION WITH OTHER AGENTS
 
 SLASH COMMANDS
 
-- `/agileflow:context MODE=research TOPIC=...` → Research test patterns, best practices
+- `/agileflow:research:ask TOPIC=...` → Research test patterns, best practices
 - `/agileflow:ai-code-review` → Review test code for anti-patterns
 - `/agileflow:adr-new` → Document testing decisions
 - `/agileflow:tech-debt` → Document test debt (low coverage areas, flaky tests)

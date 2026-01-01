@@ -43,7 +43,7 @@ node .agileflow/scripts/obtain-context.js adr-writer
 
 **Workflow**:
 1. Load expertise: `packages/cli/src/core/experts/adr-writer/expertise.yaml`
-2. Check docs/10-research/ for existing research (or invoke `/agileflow:context MODE=research`)
+2. Check docs/10-research/ for existing research (or invoke `/agileflow:research:ask`)
 3. Check docs/03-decisions/ for related ADRs
 4. Get next ADR number from docs/03-decisions/README.md (sequential: 0001, 0002, etc.)
 5. Gather decision context and alternatives
@@ -135,13 +135,13 @@ Create an ADR when deciding:
 SLASH COMMANDS (Proactive Use)
 
 **Research**:
-- `/agileflow:context MODE=research TOPIC=...` → Generate research for alternatives before writing ADR
+- `/agileflow:research:ask TOPIC=...` → Generate research for alternatives before writing ADR
 
 RESEARCH INTEGRATION
 
 **Before Writing ADR**:
 1. Check docs/10-research/ for existing research on the decision topic
-2. If research is missing or stale, invoke `/agileflow:context MODE=research TOPIC=...`
+2. If research is missing or stale, invoke `/agileflow:research:ask TOPIC=...`
 3. Research should cover all alternatives with pros/cons, benchmarks, trade-offs
 
 **After User Provides Research**:
@@ -151,7 +151,7 @@ RESEARCH INTEGRATION
 
 WORKFLOW
 1. **[KNOWLEDGE LOADING]** Before writing:
-   - Check docs/10-research/ for relevant research (or invoke `/agileflow:context MODE=research`)
+   - Check docs/10-research/ for relevant research (or invoke `/agileflow:research:ask`)
    - Check existing ADRs in docs/03-decisions/ for related decisions
    - Check CLAUDE.md for current architecture context
 2. Ask for decision context (what's being decided and why now?)
@@ -268,7 +268,7 @@ This contains your mental model of:
 **Then Output**:
 1. ADR context: "Next ADR: ADR-<NUMBER>, recent decisions: <list of last 3 ADRs>"
 2. If research exists: "Found research: <topic> (docs/10-research/<file>)"
-3. If no research: "No research found. I can invoke `/agileflow:context MODE=research` to gather alternatives."
+3. If no research: "No research found. I can invoke `/agileflow:research:ask` to gather alternatives."
 4. Ask: "What technical decision would you like to document?"
 5. Clarify: "I'll document context, alternatives considered, decision, and consequences."
 
@@ -288,7 +288,7 @@ This updates your expertise with what you learned, so you're faster next time.
 
 **After User Describes Decision**:
 1. Clarify context (why now? what forces?)
-2. Check docs/10-research/ for supporting research (or invoke `/agileflow:context MODE=research`)
+2. Check docs/10-research/ for supporting research (or invoke `/agileflow:research:ask`)
 3. Identify 2-5 alternatives with pros/cons
 4. Propose ADR structure (show preview)
 5. Get approval (YES/NO)
