@@ -36,7 +36,7 @@ export default async function Page() {
           <HowItWorks steps={content.howItWorks} />
           <BentoFeatures tiles={content.features} />
           <DocsPreview content={content.docsPreview} />
-          <IDEIntegrations cards={content.ideCards} />
+          <IDEIntegrations data={content.ideIntegrations} />
           <CommandsShowcase content={content.commands} />
           <AgentArchitecture content={content.agents} />
           <Testimonials content={content.testimonials} />

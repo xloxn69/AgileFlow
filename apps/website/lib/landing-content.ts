@@ -58,9 +58,17 @@ export type LandingContent = {
     lottieSrc: string;
     callout: { title: string; body: string };
   };
-  ideCards: {
+  ideIntegrations: {
     heading: string;
-    cards: Array<{ name: string; path: string; lottieSrc: string }>;
+    subhead: string;
+    ides: Array<{
+      id: string;
+      name: string;
+      configPath: string;
+      setupCommand: string;
+      features: string[];
+      note?: string;
+    }>;
   };
   commands: {
     heading: string;
@@ -376,12 +384,59 @@ index 3b18c71..8c2aa0f 100644
         body: 'docs/09-agents/status.json keeps WIP limits and lifecycle state explicit.',
       },
     },
-    ideCards: {
-      heading: 'IDE integrations',
-      cards: [
-        { name: 'Claude Code', path: '.claude/commands/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
-        { name: 'Cursor', path: '.cursor/rules/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
-        { name: 'Windsurf', path: '.windsurf/workflows/agileflow/', lottieSrc: '/lottie/ide-config-check.json' },
+    ideIntegrations: {
+      heading: 'Works with your favorite AI IDE',
+      subhead: 'One codebase, multiple AI assistants. Install once, work anywhere.',
+      ides: [
+        {
+          id: 'claude',
+          name: 'Claude Code',
+          configPath: '.claude/commands/agileflow/',
+          setupCommand: 'npx agileflow setup',
+          features: [
+            '58 slash commands',
+            '27 specialized agents',
+            'Status line integration',
+            'Hooks system for automation',
+          ],
+        },
+        {
+          id: 'cursor',
+          name: 'Cursor',
+          configPath: '.cursor/rules/agileflow/',
+          setupCommand: 'npx agileflow setup --ide cursor',
+          features: [
+            'Rule-based commands',
+            'Agent delegation',
+            'Project structure sync',
+            'Composer integration',
+          ],
+        },
+        {
+          id: 'windsurf',
+          name: 'Windsurf',
+          configPath: '.windsurf/workflows/agileflow/',
+          setupCommand: 'npx agileflow setup --ide windsurf',
+          features: [
+            'Workflow templates',
+            'Cascade mode support',
+            'Multi-file operations',
+            'Terminal automation',
+          ],
+        },
+        {
+          id: 'codex',
+          name: 'Codex CLI',
+          configPath: '~/.codex/prompts/',
+          setupCommand: 'npx agileflow setup --ide codex',
+          features: [
+            'Prompt library',
+            'Skill-based agents',
+            'OpenAI integration',
+            'CLI-first workflow',
+          ],
+          note: 'OpenAI Codex CLI',
+        },
       ],
     },
     commands: {

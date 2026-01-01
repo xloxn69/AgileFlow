@@ -212,19 +212,6 @@ export function Header({ bannerClosed = false }: HeaderProps) {
           ) : null}
         </AnimatePresence>
       </motion.header>
-
-      {/* Gradient fade overlay */}
-      <motion.div
-        className="pointer-events-none fixed left-0 right-0 z-30 h-24"
-        initial={{ top: 112 }}
-        animate={{
-          top: bannerHidden || bannerClosed ? 64 : 112,
-        }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-        style={{
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 100%)',
-        }}
-      />
     </>
   );
 }
