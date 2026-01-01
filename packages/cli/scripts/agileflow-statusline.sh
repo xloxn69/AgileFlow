@@ -193,8 +193,9 @@ fi
 # ============================================================================
 input=$(cat)
 
-# Parse model info
-MODEL_DISPLAY=$(echo "$input" | jq -r '.model.display_name // "Claude"')
+# Parse model info (fallback to empty if no input)
+MODEL_DISPLAY=$(echo "$input" | jq -r '.model.display_name // empty' 2>/dev/null)
+[ -z "$MODEL_DISPLAY" ] && MODEL_DISPLAY=""
 
 # Parse context usage
 CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
@@ -203,29 +204,31 @@ USAGE=$(echo "$input" | jq '.context_window.current_usage // null')
 CTX_DISPLAY=""
 CTX_BAR_DISPLAY=""
 CTX_COLOR="$CTX_GREEN"
+PERCENT_USED=0
+
 if [ "$USAGE" != "null" ]; then
-  CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)')
-  if [ "$CURRENT_TOKENS" != "null" ] && [ "$CURRENT_TOKENS" -gt 0 ] 2>/dev/null; then
+  CURRENT_TOKENS=$(echo "$USAGE" | jq '.input_tokens + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0)' 2>/dev/null)
+  if [ -n "$CURRENT_TOKENS" ] && [ "$CURRENT_TOKENS" != "null" ] && [ "$CURRENT_TOKENS" -gt 0 ] 2>/dev/null; then
     PERCENT_USED=$((CURRENT_TOKENS * 100 / CONTEXT_SIZE))
-
-    # Color based on usage level (using vibrant 256-color palette)
-    if [ "$PERCENT_USED" -ge 80 ]; then
-      CTX_COLOR="$CTX_RED"      # Coral red - critical
-    elif [ "$PERCENT_USED" -ge 60 ]; then
-      CTX_COLOR="$CTX_ORANGE"   # Peach - high usage
-    elif [ "$PERCENT_USED" -ge 40 ]; then
-      CTX_COLOR="$CTX_YELLOW"   # Peach - moderate
-    else
-      CTX_COLOR="$CTX_GREEN"    # Mint green - healthy
-    fi
-
-    CTX_DISPLAY="${CTX_COLOR}${PERCENT_USED}%${RESET}"
-
-    # Generate progress bar (8 chars wide for compactness)
-    CTX_BAR=$(progress_bar "$PERCENT_USED" 8)
-    CTX_BAR_DISPLAY="${DIM}[${RESET}${CTX_COLOR}${CTX_BAR}${RESET}${DIM}]${RESET}"
   fi
 fi
+
+# Color based on usage level (using vibrant 256-color palette)
+if [ "$PERCENT_USED" -ge 80 ]; then
+  CTX_COLOR="$CTX_RED"      # Coral red - critical
+elif [ "$PERCENT_USED" -ge 60 ]; then
+  CTX_COLOR="$CTX_ORANGE"   # Peach - high usage
+elif [ "$PERCENT_USED" -ge 40 ]; then
+  CTX_COLOR="$CTX_YELLOW"   # Peach - moderate
+else
+  CTX_COLOR="$CTX_GREEN"    # Mint green - healthy
+fi
+
+CTX_DISPLAY="${CTX_COLOR}${PERCENT_USED}%${RESET}"
+
+# Generate progress bar (8 chars wide for compactness)
+CTX_BAR=$(progress_bar "$PERCENT_USED" 8)
+CTX_BAR_DISPLAY="${DIM}[${RESET}${CTX_COLOR}${CTX_BAR}${RESET}${DIM}]${RESET}"
 
 # Parse cost
 TOTAL_COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
@@ -440,8 +443,8 @@ if [ "$SHOW_AGILEFLOW" = "true" ] && [ -n "$AGILEFLOW_DISPLAY" ]; then
   OUTPUT="${AGILEFLOW_DISPLAY}"
 fi
 
-# Model with subtle styling (if enabled)
-if [ "$SHOW_MODEL" = "true" ]; then
+# Model with subtle styling (if enabled and available)
+if [ "$SHOW_MODEL" = "true" ] && [ -n "$MODEL_DISPLAY" ]; then
   [ -n "$OUTPUT" ] && OUTPUT="${OUTPUT}${SEP}"
   OUTPUT="${OUTPUT}${DIM}[${RESET}${BOLD}${MODEL_DISPLAY}${RESET}${DIM}]${RESET}"
 fi
