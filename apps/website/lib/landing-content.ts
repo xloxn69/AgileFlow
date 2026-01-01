@@ -189,8 +189,8 @@ index 3b18c71..8c2aa0f 100644
       headline: 'Agile delivery, in your repo—powered by AI.',
       subhead:
         'Scrum, Kanban, ADRs, and docs-as-code—scaffolded into Claude Code, Cursor, or Windsurf. Everything versioned. Nothing hidden.',
-      primaryCommand: 'npm install --save-dev agileflow',
-      altCommand: 'npx agileflow setup',
+      primaryCommand: 'npx agileflow@latest setup',
+      altCommand: 'npx agileflow@latest update',
       secondaryCta: { label: 'See the docs structure', href: '#docs' },
       lottieSrc: '/lottie/hero-system-boot.json',
     },
@@ -207,14 +207,14 @@ index 3b18c71..8c2aa0f 100644
       steps: [
         {
           step: 1,
-          title: 'Install',
-          description: 'npm install --save-dev agileflow',
+          title: 'Setup',
+          description: 'npx agileflow@latest setup',
           lottieSrc: '/lottie/terminal-typing.json',
         },
         {
           step: 2,
-          title: 'Scaffold',
-          description: 'Run /agileflow:setup in your IDE',
+          title: 'Explore',
+          description: 'Run /agileflow:help to see all commands',
           lottieSrc: '/lottie/folder-scaffold.json',
         },
         {
@@ -688,7 +688,7 @@ index 3b18c71..8c2aa0f 100644
     finalCta: {
       heading: 'Install structure. Ship faster. Keep the record.',
       subhead: 'Takes ~2 minutes to scaffold. Fully reversible. MIT licensed.',
-      primaryCommand: 'npm install --save-dev agileflow',
+      primaryCommand: 'npx agileflow@latest setup',
       secondaryLabel: 'Read the docs',
       secondaryHref: LINKS.docs,
     },
