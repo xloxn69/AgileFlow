@@ -244,62 +244,120 @@ if [ "$TOTAL_COST" != "0" ] && [ "$TOTAL_COST" != "null" ]; then
 fi
 
 # ============================================================================
-# Session Time Remaining (via ccusage if available)
+# Session Time Remaining (Native - reads Claude Code's local JSONL files)
 # ============================================================================
+# Claude Code uses 5-hour billing blocks. Block starts with first message activity.
+# We scan ~/.claude/projects/*/*.jsonl to find the earliest message in the current
+# 5-hour window and calculate remaining time.
+#
+# Algorithm (like ccusage):
+# 1. Find all timestamps from JSONL files modified in last 5 hours
+# 2. Sort and find the earliest timestamp >= (now - 5 hours)
+# 3. That's the block start; block end = block start + 5 hours
+# 4. Remaining = block end - now
+#
+# Optimization: Cache result for 60 seconds to avoid repeated scans
 SESSION_DISPLAY=""
 if [ "$SHOW_SESSION_TIME" = "true" ]; then
-  # Try to get session info from ccusage (fast cached check)
-  if command -v npx >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
-    # Use timeout to prevent blocking - ccusage should be fast
-    BLOCKS_OUTPUT=$(timeout 3 npx ccusage@latest blocks --json 2>/dev/null || true)
+  SESSION_CACHE="/tmp/agileflow-session-cache"
+  CACHE_MAX_AGE=60  # seconds
+  NOW_SEC=$(date +%s)
 
-    if [ -n "$BLOCKS_OUTPUT" ]; then
-      ACTIVE_BLOCK=$(echo "$BLOCKS_OUTPUT" | jq -c '.blocks[] | select(.isActive == true)' 2>/dev/null | head -n1)
+  # Check cache first
+  CACHED_BLOCK_START=""
+  if [ -f "$SESSION_CACHE" ]; then
+    CACHE_DATA=$(cat "$SESSION_CACHE" 2>/dev/null)
+    CACHE_TIME=$(echo "$CACHE_DATA" | cut -d: -f1)
+    CACHE_VALUE=$(echo "$CACHE_DATA" | cut -d: -f2)
+    if [ -n "$CACHE_TIME" ] && [ $((NOW_SEC - CACHE_TIME)) -lt "$CACHE_MAX_AGE" ] 2>/dev/null; then
+      CACHED_BLOCK_START="$CACHE_VALUE"
+    fi
+  fi
 
-      if [ -n "$ACTIVE_BLOCK" ]; then
-        # Get reset time
-        RESET_TIME_STR=$(echo "$ACTIVE_BLOCK" | jq -r '.usageLimitResetTime // .endTime // empty')
-        START_TIME_STR=$(echo "$ACTIVE_BLOCK" | jq -r '.startTime // empty')
+  BLOCK_START_SEC=""
 
-        if [ -n "$RESET_TIME_STR" ] && [ -n "$START_TIME_STR" ]; then
-          START_SEC=$(to_epoch "$START_TIME_STR")
-          END_SEC=$(to_epoch "$RESET_TIME_STR")
-          NOW_SEC=$(date +%s)
+  if [ -n "$CACHED_BLOCK_START" ] && [ "$CACHED_BLOCK_START" != "none" ]; then
+    BLOCK_START_SEC="$CACHED_BLOCK_START"
+  elif [ "$CACHED_BLOCK_START" != "none" ]; then
+    # Need to scan - use Python for speed (handles ISO timestamps natively)
+    CLAUDE_DATA_DIR="$HOME/.claude/projects"
+    BLOCK_DURATION=$((5 * 60 * 60))  # 5 hours in seconds
+    WINDOW_START=$((NOW_SEC - BLOCK_DURATION))
 
-          if [ -n "$START_SEC" ] && [ -n "$END_SEC" ] && [ "$START_SEC" -gt 0 ] && [ "$END_SEC" -gt 0 ]; then
-            TOTAL=$(( END_SEC - START_SEC ))
-            [ "$TOTAL" -lt 1 ] && TOTAL=1
+    if [ -d "$CLAUDE_DATA_DIR" ]; then
+      BLOCK_START_SEC=$(python3 - "$CLAUDE_DATA_DIR" "$WINDOW_START" <<'PYTHON' 2>/dev/null
+import sys, os, json, glob
+from datetime import datetime
 
-            ELAPSED=$(( NOW_SEC - START_SEC ))
-            [ "$ELAPSED" -lt 0 ] && ELAPSED=0
-            [ "$ELAPSED" -gt "$TOTAL" ] && ELAPSED=$TOTAL
+data_dir = sys.argv[1]
+window_start = int(sys.argv[2])
 
-            SESSION_PCT=$(( ELAPSED * 100 / TOTAL ))
-            REMAINING=$(( END_SEC - NOW_SEC ))
-            [ "$REMAINING" -lt 0 ] && REMAINING=0
+earliest = None
+# Only check files modified in last 5 hours (300 minutes)
+for jsonl_path in glob.glob(f"{data_dir}/*/*.jsonl"):
+    try:
+        mtime = os.path.getmtime(jsonl_path)
+        if mtime < window_start:
+            continue  # Skip old files
+        with open(jsonl_path, 'r') as f:
+            for line in f:
+                if '"timestamp"' not in line:
+                    continue
+                try:
+                    data = json.loads(line)
+                    ts_str = data.get('timestamp', '')
+                    if ts_str:
+                        # Parse ISO timestamp
+                        ts_str = ts_str.replace('Z', '+00:00')
+                        dt = datetime.fromisoformat(ts_str)
+                        epoch = int(dt.timestamp())
+                        if epoch >= window_start:
+                            if earliest is None or epoch < earliest:
+                                earliest = epoch
+                except:
+                    pass
+    except:
+        pass
 
-            # Format remaining time
-            RH=$(( REMAINING / 3600 ))
-            RM=$(( (REMAINING % 3600) / 60 ))
+if earliest:
+    print(earliest)
+PYTHON
+)
 
-            # Color based on time remaining (using vibrant 256-color palette)
-            if [ "$RH" -eq 0 ] && [ "$RM" -lt 30 ]; then
-              SESSION_COLOR="$SESSION_RED"     # Light pink - critical
-            elif [ "$RH" -eq 0 ]; then
-              SESSION_COLOR="$SESSION_YELLOW"  # Light yellow - getting low
-            else
-              SESSION_COLOR="$SESSION_GREEN"   # Light green - plenty of time
-            fi
-
-            # Build compact display: "⏱2h15m" or "⏱45m"
-            if [ "$RH" -gt 0 ]; then
-              SESSION_DISPLAY="${SESSION_COLOR}⏱${RH}h${RM}m${RESET}"
-            else
-              SESSION_DISPLAY="${SESSION_COLOR}⏱${RM}m${RESET}"
-            fi
-          fi
-        fi
+      # Cache the result
+      if [ -n "$BLOCK_START_SEC" ] && [ "$BLOCK_START_SEC" -gt 0 ] 2>/dev/null; then
+        echo "${NOW_SEC}:${BLOCK_START_SEC}" > "$SESSION_CACHE"
+      else
+        echo "${NOW_SEC}:none" > "$SESSION_CACHE"
       fi
+    fi
+  fi
+
+  # Calculate remaining time if we found a block start
+  if [ -n "$BLOCK_START_SEC" ] && [ "$BLOCK_START_SEC" -gt 0 ] 2>/dev/null; then
+    BLOCK_DURATION=$((5 * 60 * 60))
+    BLOCK_END_SEC=$((BLOCK_START_SEC + BLOCK_DURATION))
+    REMAINING=$((BLOCK_END_SEC - NOW_SEC))
+    [ "$REMAINING" -lt 0 ] && REMAINING=0
+
+    # Format remaining time
+    RH=$((REMAINING / 3600))
+    RM=$(((REMAINING % 3600) / 60))
+
+    # Color based on time remaining (using vibrant 256-color palette)
+    if [ "$RH" -eq 0 ] && [ "$RM" -lt 30 ]; then
+      SESSION_COLOR="$SESSION_RED"     # Light pink - critical
+    elif [ "$RH" -eq 0 ]; then
+      SESSION_COLOR="$SESSION_YELLOW"  # Light yellow - getting low
+    else
+      SESSION_COLOR="$SESSION_GREEN"   # Light green - plenty of time
+    fi
+
+    # Build compact display: "⏱2h15m" or "⏱45m"
+    if [ "$RH" -gt 0 ]; then
+      SESSION_DISPLAY="${SESSION_COLOR}⏱${RH}h${RM}m${RESET}"
+    else
+      SESSION_DISPLAY="${SESSION_COLOR}⏱${RM}m${RESET}"
     fi
   fi
 fi
