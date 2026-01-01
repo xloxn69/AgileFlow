@@ -35,7 +35,6 @@ export type LandingContent = {
     headline: string;
     subhead: string;
     primaryCommand: string;
-    altCommand: string;
     secondaryCta: { label: string; href: string };
     lottieSrc: string;
   };
@@ -187,7 +186,6 @@ index 3b18c71..8c2aa0f 100644
       subhead:
         'Scrum, Kanban, ADRs, and docs-as-code—scaffolded into Claude Code, Cursor, or Windsurf. Everything versioned. Nothing hidden.',
       primaryCommand: 'npx agileflow@latest setup',
-      altCommand: 'npx agileflow@latest update',
       secondaryCta: { label: 'See the docs structure', href: '#docs' },
       lottieSrc: '/lottie/hero-system-boot.json',
     },

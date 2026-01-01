@@ -50,10 +50,6 @@ export function Hero({ content, version, stats }: HeroProps) {
                   >
                     {content.secondaryCta.label}
                   </Link>
-                  <div className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--border-default)] bg-white/60 px-4 text-sm text-[var(--text-secondary)]">
-                    <span className="text-xs font-medium tracking-wide text-[var(--text-muted)]">Alternative</span>
-                    <code className="text-[13px] text-[var(--text-primary)]">{content.altCommand}</code>
-                  </div>
                   <a
                     href={LINKS.github}
                     target="_blank"
