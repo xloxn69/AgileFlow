@@ -23,7 +23,7 @@
  *   --detect                            Show current status
  *   --help                              Show help
  *
- * Features: sessionstart, precompact, archival, statusline, autoupdate
+ * Features: sessionstart, precompact, ralphloop, selfimprove, archival, statusline, autoupdate
  */
 
 const fs = require('fs');
@@ -71,7 +71,8 @@ const VERSION = getVersion();
 const FEATURES = {
   sessionstart: { hook: 'SessionStart', script: 'agileflow-welcome.js', type: 'node' },
   precompact: { hook: 'PreCompact', script: 'precompact-context.sh', type: 'bash' },
-  // Note: Stop hook removed due to Claude Code reliability issues (see GitHub issues #6974, #11544)
+  ralphloop: { hook: 'Stop', script: 'ralph-loop.js', type: 'node' },
+  selfimprove: { hook: 'Stop', script: 'auto-self-improve.js', type: 'node' },
   archival: { script: 'archive-completed-stories.sh', requiresHook: 'sessionstart' },
   statusline: { script: 'agileflow-statusline.sh' },
   autoupdate: { metadataOnly: true }, // Stored in metadata.updates.autoUpdate
@@ -82,6 +83,8 @@ const ALL_SCRIPTS = {
   // Core feature scripts (linked to FEATURES)
   'agileflow-welcome.js': { feature: 'sessionstart', required: true },
   'precompact-context.sh': { feature: 'precompact', required: true },
+  'ralph-loop.js': { feature: 'ralphloop', required: true },
+  'auto-self-improve.js': { feature: 'selfimprove', required: true },
   'archive-completed-stories.sh': { feature: 'archival', required: true },
   'agileflow-statusline.sh': { feature: 'statusline', required: true },
 
@@ -119,25 +122,25 @@ const STATUSLINE_COMPONENTS = [
 
 const PROFILES = {
   full: {
-    description: 'All features enabled',
-    enable: ['sessionstart', 'precompact', 'archival', 'statusline'],
+    description: 'All features enabled (including experimental Stop hooks)',
+    enable: ['sessionstart', 'precompact', 'archival', 'statusline', 'ralphloop', 'selfimprove'],
     archivalDays: 30,
   },
   basic: {
     description: 'Essential hooks + archival (SessionStart + PreCompact + Archival)',
     enable: ['sessionstart', 'precompact', 'archival'],
-    disable: ['statusline'],
+    disable: ['statusline', 'ralphloop', 'selfimprove'],
     archivalDays: 30,
   },
   minimal: {
     description: 'SessionStart + archival only',
     enable: ['sessionstart', 'archival'],
-    disable: ['precompact', 'statusline'],
+    disable: ['precompact', 'statusline', 'ralphloop', 'selfimprove'],
     archivalDays: 30,
   },
   none: {
     description: 'Disable all AgileFlow features',
-    disable: ['sessionstart', 'precompact', 'archival', 'statusline'],
+    disable: ['sessionstart', 'precompact', 'archival', 'statusline', 'ralphloop', 'selfimprove'],
   },
 };
 
@@ -208,6 +211,8 @@ function detectConfig() {
     features: {
       sessionstart: { enabled: false, valid: true, issues: [], version: null, outdated: false },
       precompact: { enabled: false, valid: true, issues: [], version: null, outdated: false },
+      ralphloop: { enabled: false, valid: true, issues: [], version: null, outdated: false },
+      selfimprove: { enabled: false, valid: true, issues: [], version: null, outdated: false },
       archival: { enabled: false, threshold: null, version: null, outdated: false },
       statusline: { enabled: false, valid: true, issues: [], version: null, outdated: false },
     },
@@ -276,7 +281,23 @@ function detectConfig() {
           }
         }
 
-        // Note: Stop hook removed due to reliability issues
+        // Stop hooks (ralphloop and selfimprove)
+        if (settings.hooks.Stop) {
+          if (Array.isArray(settings.hooks.Stop) && settings.hooks.Stop.length > 0) {
+            const hook = settings.hooks.Stop[0];
+            if (hook.matcher !== undefined && hook.hooks) {
+              // Check for each Stop hook feature
+              for (const h of hook.hooks) {
+                if (h.command?.includes('ralph-loop')) {
+                  status.features.ralphloop.enabled = true;
+                }
+                if (h.command?.includes('auto-self-improve')) {
+                  status.features.selfimprove.enabled = true;
+                }
+              }
+            }
+          }
+        }
       }
 
       // StatusLine
@@ -370,6 +391,8 @@ function printStatus(status) {
 
   printFeature('sessionstart', 'SessionStart Hook');
   printFeature('precompact', 'PreCompact Hook');
+  printFeature('ralphloop', 'RalphLoop (Stop)');
+  printFeature('selfimprove', 'SelfImprove (Stop)');
 
   const arch = status.features.archival;
   log(
@@ -417,9 +440,9 @@ function migrateSettings() {
 
   let migrated = false;
 
-  // Migrate hooks (Stop hook removed due to reliability issues)
+  // Migrate hooks to new format
   if (settings.hooks) {
-    ['SessionStart', 'PreCompact', 'UserPromptSubmit'].forEach(hookName => {
+    ['SessionStart', 'PreCompact', 'UserPromptSubmit', 'Stop'].forEach(hookName => {
       const hook = settings.hooks[hookName];
       if (!hook) return;
 
@@ -558,15 +581,44 @@ function enableFeature(feature, options = {}) {
 
     // Use absolute path so hooks work from any subdirectory
     const absoluteScriptPath = path.join(process.cwd(), scriptPath);
-    const command = config.type === 'node' ? `node ${absoluteScriptPath}` : `bash ${absoluteScriptPath}`;
 
-    settings.hooks[config.hook] = [
-      {
-        matcher: '',
-        hooks: [{ type: 'command', command }],
-      },
-    ];
-    success(`${config.hook} hook enabled (${config.script})`);
+    // Stop hooks use error suppression to avoid blocking Claude
+    const isStoHook = config.hook === 'Stop';
+    const command = config.type === 'node'
+      ? `node ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`
+      : `bash ${absoluteScriptPath}${isStoHook ? ' 2>/dev/null || true' : ''}`;
+
+    if (isStoHook) {
+      // Stop hooks stack - add to existing hooks instead of replacing
+      if (!settings.hooks.Stop) {
+        settings.hooks.Stop = [{ matcher: '', hooks: [] }];
+      } else if (!Array.isArray(settings.hooks.Stop) || settings.hooks.Stop.length === 0) {
+        settings.hooks.Stop = [{ matcher: '', hooks: [] }];
+      } else if (!settings.hooks.Stop[0].hooks) {
+        settings.hooks.Stop[0].hooks = [];
+      }
+
+      // Check if this script is already added
+      const hasHook = settings.hooks.Stop[0].hooks.some(h =>
+        h.command?.includes(config.script)
+      );
+
+      if (!hasHook) {
+        settings.hooks.Stop[0].hooks.push({ type: 'command', command });
+        success(`Stop hook added (${config.script})`);
+      } else {
+        info(`${feature} already enabled`);
+      }
+    } else {
+      // Other hooks (SessionStart, PreCompact) replace entirely
+      settings.hooks[config.hook] = [
+        {
+          matcher: '',
+          hooks: [{ type: 'command', command }],
+        },
+      ];
+      success(`${config.hook} hook enabled (${config.script})`);
+    }
   }
 
   // Handle archival
@@ -660,8 +712,28 @@ function disableFeature(feature) {
 
   // Disable hook
   if (config.hook && settings.hooks?.[config.hook]) {
-    delete settings.hooks[config.hook];
-    success(`${config.hook} hook disabled`);
+    if (config.hook === 'Stop') {
+      // Stop hooks stack - remove only this script, not the entire hook
+      if (settings.hooks.Stop?.[0]?.hooks) {
+        const before = settings.hooks.Stop[0].hooks.length;
+        settings.hooks.Stop[0].hooks = settings.hooks.Stop[0].hooks.filter(
+          h => !h.command?.includes(config.script)
+        );
+        const after = settings.hooks.Stop[0].hooks.length;
+
+        if (before > after) {
+          success(`Stop hook removed (${config.script})`);
+        }
+
+        // If no more Stop hooks, remove the entire Stop hook
+        if (settings.hooks.Stop[0].hooks.length === 0) {
+          delete settings.hooks.Stop;
+        }
+      }
+    } else {
+      delete settings.hooks[config.hook];
+      success(`${config.hook} hook disabled`);
+    }
   }
 
   // Disable archival
@@ -1146,8 +1218,8 @@ ${c.cyan}Usage:${c.reset}
   node .agileflow/scripts/agileflow-configure.js [options]
 
 ${c.cyan}Profiles:${c.reset}
-  --profile=full      All features (hooks, archival, statusline)
-  --profile=basic     SessionStart + PreCompact + archival
+  --profile=full      All features (hooks, Stop hooks, archival, statusline)
+  --profile=basic     SessionStart + PreCompact + archival (no Stop hooks)
   --profile=minimal   SessionStart + archival only
   --profile=none      Disable all AgileFlow features
 
@@ -1155,7 +1227,9 @@ ${c.cyan}Feature Control:${c.reset}
   --enable=<list>     Enable features (comma-separated)
   --disable=<list>    Disable features (comma-separated)
 
-  Features: sessionstart, precompact, archival, statusline
+  Features: sessionstart, precompact, ralphloop, selfimprove, archival, statusline
+
+  Stop hooks (ralphloop, selfimprove) run when Claude completes/pauses
 
 ${c.cyan}Statusline Components:${c.reset}
   --show=<list>       Show statusline components (comma-separated)

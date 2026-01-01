@@ -36,7 +36,9 @@ node .agileflow/scripts/agileflow-configure.js --repair=statusline  # Fix specif
 
 ### Features
 
-`sessionstart`, `precompact`, `archival`, `statusline`, `autoupdate`
+`sessionstart`, `precompact`, `ralphloop`, `selfimprove`, `archival`, `statusline`, `autoupdate`
+
+**Stop hooks** (ralphloop, selfimprove) run when Claude completes or pauses work.
 
 ### Critical Rules
 
@@ -162,12 +164,12 @@ node .agileflow/scripts/agileflow-configure.js --enable=archival --archival-days
 
 ## Profile Details
 
-| Profile | SessionStart | PreCompact | Archival | StatusLine |
-|---------|-------------|------------|----------|------------|
-| `full` | ✅ | ✅ | ✅ 30 days | ✅ |
-| `basic` | ✅ | ✅ | ✅ 30 days | ❌ |
-| `minimal` | ✅ | ❌ | ✅ 30 days | ❌ |
-| `none` | ❌ | ❌ | ❌ | ❌ |
+| Profile | SessionStart | PreCompact | RalphLoop | SelfImprove | Archival | StatusLine |
+|---------|-------------|------------|-----------|-------------|----------|------------|
+| `full` | ✅ | ✅ | ✅ | ✅ | ✅ 30 days | ✅ |
+| `basic` | ✅ | ✅ | ❌ | ❌ | ✅ 30 days | ❌ |
+| `minimal` | ✅ | ❌ | ❌ | ❌ | ✅ 30 days | ❌ |
+| `none` | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 ## Interactive Mode (via /configure command)
 
@@ -204,6 +206,8 @@ Based on selection, run appropriate command.
   "options": [
     {"label": "SessionStart Hook", "description": "Welcome display with project status"},
     {"label": "PreCompact Hook", "description": "Context preservation on compact"},
+    {"label": "RalphLoop (Stop Hook)", "description": "Autonomous story loop - runs tests, advances stories"},
+    {"label": "SelfImprove (Stop Hook)", "description": "Auto-update agent expertise from work"},
     {"label": "Archival", "description": "Auto-archive old completed stories"},
     {"label": "Status Line", "description": "Custom status bar"},
     {"label": "Auto-Update", "description": "Automatically update AgileFlow on session start"}
@@ -215,6 +219,8 @@ Based on selection, run appropriate command.
 Map selections:
 - "SessionStart Hook" → `sessionstart`
 - "PreCompact Hook" → `precompact`
+- "RalphLoop (Stop Hook)" → `ralphloop`
+- "SelfImprove (Stop Hook)" → `selfimprove`
 - "Archival" → `archival`
 - "Status Line" → `statusline`
 - "Auto-Update" → `autoupdate`
@@ -240,6 +246,43 @@ node .agileflow/scripts/agileflow-configure.js --enable=autoupdate
 ```
 
 **Check frequencies:** `hourly`, `daily`, `weekly`, `never`
+
+## Stop Hook Features
+
+Stop hooks run when Claude completes a task or pauses for user input. These enable autonomous workflows.
+
+### RalphLoop (`ralphloop`)
+
+Autonomous story processing loop (named after the "Ralph Wiggum" pattern):
+- Runs tests automatically when Claude stops
+- If tests pass → marks story as completed, loads next story in epic
+- If tests fail → shows failures for Claude to fix
+- Tracks iterations with configurable limits (default: 20)
+- Enable: `--enable=ralphloop`
+
+**How to use:**
+1. Enable: `node .agileflow/scripts/agileflow-configure.js --enable=ralphloop`
+2. Start a loop: `node .agileflow/scripts/ralph-loop.js --init --epic=EP-XXXX`
+3. Work on stories - tests run automatically when Claude stops
+4. Check status: `node .agileflow/scripts/ralph-loop.js --status`
+5. Stop loop: `node .agileflow/scripts/ralph-loop.js --stop`
+
+### SelfImprove (`selfimprove`)
+
+Automatic agent expertise learning:
+- Analyzes git changes when Claude stops
+- Detects which domain (database, api, ui, etc.) was modified
+- Appends learnings to the relevant agent's expertise.yaml
+- Helps agents improve over time based on actual work
+- Enable: `--enable=selfimprove`
+
+**What it learns:**
+- Files modified per domain
+- New patterns discovered
+- Test file changes
+- Configuration updates
+
+Both Stop hooks use error suppression (`2>/dev/null || true`) to avoid blocking Claude if they fail.
 
 ## Format Migration Details
 
