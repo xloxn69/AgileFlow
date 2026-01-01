@@ -57,7 +57,7 @@ Agent content here.
       expect(result).toContain('**test-agent** (model: sonnet)');
       expect(result).toContain('**Purpose**: A test agent for unit testing');
       expect(result).toContain('**Tools**: Read, Write, Bash');
-      expect(result).toContain('`subagent_type: "AgileFlow:test-agent"`');
+      expect(result).toContain('`subagent_type: "agileflow-test-agent"`');
     });
 
     it('handles multiple agents and sorts alphabetically', () => {
@@ -388,7 +388,7 @@ tools:
 ## Footer
 `;
 
-      const result = injectContent(template, agentsDir, commandsDir);
+      const result = injectContent(template, { coreDir: tempDir });
 
       expect(result).toContain('**AVAILABLE AGENTS (1 total)**');
       expect(result).toContain('test-agent');
@@ -418,7 +418,7 @@ description: Show status
 Done.
 `;
 
-      const result = injectContent(template, agentsDir, commandsDir);
+      const result = injectContent(template, { coreDir: tempDir });
 
       expect(result).toContain('Available commands (1 total)');
       expect(result).toContain('/agileflow:status');
@@ -459,7 +459,7 @@ description: My command
 <!-- {{COMMAND_LIST}} -->
 `;
 
-      const result = injectContent(template, agentsDir, commandsDir);
+      const result = injectContent(template, { coreDir: tempDir });
 
       expect(result).toContain('**AVAILABLE AGENTS (1 total)**');
       expect(result).toContain('my-agent');
@@ -478,7 +478,7 @@ description: My command
 Just regular content.
 `;
 
-      const result = injectContent(template, agentsDir, commandsDir);
+      const result = injectContent(template, { coreDir: tempDir });
 
       expect(result).toBe(template);
     });
@@ -505,7 +505,7 @@ tools:
 Second: <!-- {{AGENT_LIST}} -->
 `;
 
-      const result = injectContent(template, agentsDir, commandsDir);
+      const result = injectContent(template, { coreDir: tempDir });
 
       // Both should be replaced
       const matches = result.match(/\*\*AVAILABLE AGENTS/g);
