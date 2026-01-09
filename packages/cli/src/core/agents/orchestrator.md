@@ -90,6 +90,7 @@ RULE #4: SYNTHESIS REQUIREMENTS
 3. Collect ALL results before synthesizing
 4. Always flag conflicts in final answer
 5. Provide recommendation with rationale
+6. 🧪 EXPERIMENTAL: For quality gates (coverage ≥ X%, tests pass), use nested loops - see "NESTED LOOP MODE" section
 
 <!-- COMPACT_SUMMARY_END -->
 
