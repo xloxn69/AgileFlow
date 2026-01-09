@@ -1,6 +1,6 @@
 ---
 description: Interactive mentor for end-to-end feature implementation
-argument-hint: "[EPIC=<id>] [MODE=loop] [MAX=<iterations>] [VISUAL=true]"
+argument-hint: "[EPIC=<id>] [MODE=loop] [MAX=<iterations>] [VISUAL=true] [COVERAGE=<percent>]"
 compact_context:
   priority: critical
   preserve_rules:
@@ -62,6 +62,7 @@ When invoked with `MODE=loop`, babysit runs autonomously through an epic's stori
 | `MODE` | Yes | Must be `loop` for autonomous mode |
 | `MAX` | No | Max iterations (default: 20) |
 | `VISUAL` | No | Enable Visual Mode for UI development (screenshot verification) |
+| `COVERAGE` | No | Enable Coverage Mode - iterate until N% test coverage reached |
 
 ### To Start Loop Mode
 
@@ -73,6 +74,9 @@ node scripts/ralph-loop.js --init --epic=EP-0042 --max=20
 
 # With Visual Mode for UI development
 node scripts/ralph-loop.js --init --epic=EP-0042 --max=20 --visual
+
+# With Coverage Mode - iterate until 80% coverage
+node scripts/ralph-loop.js --init --epic=EP-0042 --max=20 --coverage=80
 ```
 
 Or manually write to session-state.json:
@@ -86,7 +90,43 @@ Or manually write to session-state.json:
     "iteration": 0,
     "max_iterations": 20,
     "visual_mode": false,
-    "screenshots_verified": false
+    "screenshots_verified": false,
+    "coverage_mode": false,
+    "coverage_threshold": 80,
+    "coverage_baseline": 0,
+    "coverage_current": 0,
+    "coverage_verified": false
+  }
+}
+```
+
+### Coverage Mode
+
+When `COVERAGE=<percent>` is specified, the loop adds test coverage verification:
+
+```
+/agileflow:babysit EPIC=EP-0042 MODE=loop COVERAGE=80
+```
+
+**Coverage Mode behavior:**
+1. After tests pass, runs coverage check command
+2. Parses `coverage/coverage-summary.json` (Jest/NYC format)
+3. Compares line coverage to threshold
+4. Requires minimum 2 iterations before completion
+5. Story completes only when coverage ≥ threshold AND confirmed
+
+**When to use Coverage Mode:**
+- Test-driven epics where coverage matters
+- "Write tests until X% coverage" goals
+- Batch test generation overnight
+
+**Configuration** (optional):
+Add to `docs/00-meta/agileflow-metadata.json`:
+```json
+{
+  "ralph_loop": {
+    "coverage_command": "npm run test:coverage",
+    "coverage_report_path": "coverage/coverage-summary.json"
   }
 }
 ```
@@ -111,7 +151,7 @@ When `VISUAL=true` is specified, the loop adds screenshot verification:
 - Any work where visual appearance matters
 
 **Setup requirement:**
-Run `/agileflow:setup:visual-e2e` first to install Playwright and create e2e tests.
+Run `/agileflow:configure` and select "Set up Visual E2E testing" to install Playwright and create e2e tests.
 
 ### Loop Control Commands
 
