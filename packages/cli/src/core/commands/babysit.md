@@ -240,7 +240,7 @@ Analysis/Review                   → /agileflow:multi-expert or Task(subagent_t
 - `agileflow-api` - Endpoints, business logic
 - `agileflow-ui` - Components, styling
 - `agileflow-testing` - Tests, coverage
-- `agileflow-orchestrator` - Multi-domain coordination
+- `agileflow-orchestrator` - Multi-domain coordination (supports nested loops for quality gates)
 
 ---
 
@@ -392,6 +392,23 @@ Task(
   subagent_type: "agileflow-orchestrator"
 )
 ```
+
+**🧪 EXPERIMENTAL: Nested Loops with Quality Gates**
+
+When you need agents to iterate until quality gates pass (coverage ≥ 80%, tests pass, etc.), the orchestrator can use **nested agent loops**. Each agent runs its own isolated loop.
+
+```
+Task(
+  description: "Profile feature with quality gates",
+  prompt: "Implement profile with quality enforcement:
+    1. API: /api/profile with COVERAGE >= 80% (agent loop)
+    2. UI: ProfilePage with VISUAL verification (agent loop)
+    Use agent-loop.js for isolated quality iterations.",
+  subagent_type: "agileflow-orchestrator"
+)
+```
+
+See `orchestrator.md` → "NESTED LOOP MODE" section for full details.
 
 ---
 
