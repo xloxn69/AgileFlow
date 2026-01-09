@@ -133,7 +133,15 @@ const STATUSLINE_COMPONENTS = [
 const PROFILES = {
   full: {
     description: 'All features enabled (including experimental Stop hooks)',
-    enable: ['sessionstart', 'precompact', 'archival', 'statusline', 'ralphloop', 'selfimprove', 'askuserquestion'],
+    enable: [
+      'sessionstart',
+      'precompact',
+      'archival',
+      'statusline',
+      'ralphloop',
+      'selfimprove',
+      'askuserquestion',
+    ],
     archivalDays: 30,
   },
   basic: {
@@ -150,7 +158,15 @@ const PROFILES = {
   },
   none: {
     description: 'Disable all AgileFlow features',
-    disable: ['sessionstart', 'precompact', 'archival', 'statusline', 'ralphloop', 'selfimprove', 'askuserquestion'],
+    disable: [
+      'sessionstart',
+      'precompact',
+      'archival',
+      'statusline',
+      'ralphloop',
+      'selfimprove',
+      'askuserquestion',
+    ],
   },
 };
 
@@ -225,8 +241,23 @@ function detectConfig() {
       selfimprove: { enabled: false, valid: true, issues: [], version: null, outdated: false },
       archival: { enabled: false, threshold: null, version: null, outdated: false },
       statusline: { enabled: false, valid: true, issues: [], version: null, outdated: false },
-      damagecontrol: { enabled: false, valid: true, issues: [], version: null, outdated: false, level: null, patternCount: 0 },
-      askuserquestion: { enabled: false, valid: true, issues: [], version: null, outdated: false, mode: null },
+      damagecontrol: {
+        enabled: false,
+        valid: true,
+        issues: [],
+        version: null,
+        outdated: false,
+        level: null,
+        patternCount: 0,
+      },
+      askuserquestion: {
+        enabled: false,
+        valid: true,
+        issues: [],
+        version: null,
+        outdated: false,
+        mode: null,
+      },
     },
     metadata: { exists: false, version: null },
     currentVersion: VERSION,
@@ -316,13 +347,16 @@ function detectConfig() {
           if (Array.isArray(settings.hooks.PreToolUse) && settings.hooks.PreToolUse.length > 0) {
             // Check for damage-control hooks by looking for damage-control scripts
             const hasBashHook = settings.hooks.PreToolUse.some(
-              h => h.matcher === 'Bash' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
+              h =>
+                h.matcher === 'Bash' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
             );
             const hasEditHook = settings.hooks.PreToolUse.some(
-              h => h.matcher === 'Edit' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
+              h =>
+                h.matcher === 'Edit' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
             );
             const hasWriteHook = settings.hooks.PreToolUse.some(
-              h => h.matcher === 'Write' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
+              h =>
+                h.matcher === 'Write' && h.hooks?.some(hk => hk.command?.includes('damage-control'))
             );
 
             if (hasBashHook || hasEditHook || hasWriteHook) {
@@ -366,7 +400,8 @@ function detectConfig() {
 
       // Damage control metadata
       if (meta.features?.damagecontrol?.enabled) {
-        status.features.damagecontrol.level = meta.features.damagecontrol.protectionLevel || 'standard';
+        status.features.damagecontrol.level =
+          meta.features.damagecontrol.protectionLevel || 'standard';
       }
 
       // AskUserQuestion metadata
@@ -789,7 +824,11 @@ function enableFeature(feature, options = {}) {
     const level = options.protectionLevel || 'standard';
 
     // Verify all required scripts exist
-    const requiredScripts = ['damage-control-bash.js', 'damage-control-edit.js', 'damage-control-write.js'];
+    const requiredScripts = [
+      'damage-control-bash.js',
+      'damage-control-edit.js',
+      'damage-control-write.js',
+    ];
     for (const script of requiredScripts) {
       if (!scriptExists(script)) {
         error(`Script not found: ${getScriptPath(script)}`);
@@ -804,7 +843,12 @@ function enableFeature(feature, options = {}) {
     if (!fs.existsSync(patternsDest)) {
       ensureDir(patternsDir);
       // Try to copy from templates
-      const templatePath = path.join(process.cwd(), '.agileflow', 'templates', 'damage-control-patterns.yaml');
+      const templatePath = path.join(
+        process.cwd(),
+        '.agileflow',
+        'templates',
+        'damage-control-patterns.yaml'
+      );
       if (fs.existsSync(templatePath)) {
         fs.copyFileSync(templatePath, patternsDest);
         success('Deployed damage control patterns');
@@ -1580,7 +1624,8 @@ function main() {
         .split('=')[1]
         .split(',')
         .map(s => s.trim().toLowerCase());
-    else if (arg.startsWith('--archival-days=')) archivalDays = parseIntBounded(arg.split('=')[1], 30, 1, 365);
+    else if (arg.startsWith('--archival-days='))
+      archivalDays = parseIntBounded(arg.split('=')[1], 30, 1, 365);
     else if (arg === '--migrate') migrate = true;
     else if (arg === '--detect' || arg === '--validate') detect = true;
     else if (arg === '--upgrade') upgrade = true;

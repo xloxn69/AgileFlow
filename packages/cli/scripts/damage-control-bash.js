@@ -20,7 +20,7 @@ const {
   loadPatterns,
   outputBlocked,
   runDamageControlHook,
-  c
+  c,
 } = require('./lib/damage-control-utils');
 
 /**
@@ -31,7 +31,7 @@ function parseSimpleYAML(content) {
   const config = {
     bashToolPatterns: [],
     askPatterns: [],
-    agileflowProtections: []
+    agileflowProtections: [],
   };
 
   let currentSection = null;
@@ -59,13 +59,22 @@ function parseSimpleYAML(content) {
       currentPattern = null;
     } else if (trimmed.startsWith('- pattern:') && currentSection) {
       // New pattern entry
-      const patternValue = trimmed.replace('- pattern:', '').trim().replace(/^["']|["']$/g, '');
+      const patternValue = trimmed
+        .replace('- pattern:', '')
+        .trim()
+        .replace(/^["']|["']$/g, '');
       currentPattern = { pattern: patternValue };
       config[currentSection].push(currentPattern);
     } else if (trimmed.startsWith('reason:') && currentPattern) {
-      currentPattern.reason = trimmed.replace('reason:', '').trim().replace(/^["']|["']$/g, '');
+      currentPattern.reason = trimmed
+        .replace('reason:', '')
+        .trim()
+        .replace(/^["']|["']$/g, '');
     } else if (trimmed.startsWith('flags:') && currentPattern) {
-      currentPattern.flags = trimmed.replace('flags:', '').trim().replace(/^["']|["']$/g, '');
+      currentPattern.flags = trimmed
+        .replace('flags:', '')
+        .trim()
+        .replace(/^["']|["']$/g, '');
     }
   }
 
@@ -93,14 +102,14 @@ function validateCommand(command, config) {
   // Check blocked patterns (bashToolPatterns + agileflowProtections)
   const blockedPatterns = [
     ...(config.bashToolPatterns || []),
-    ...(config.agileflowProtections || [])
+    ...(config.agileflowProtections || []),
   ];
 
   for (const rule of blockedPatterns) {
     if (matchesPattern(command, rule)) {
       return {
         action: 'block',
-        reason: rule.reason || 'Command blocked by damage control'
+        reason: rule.reason || 'Command blocked by damage control',
       };
     }
   }
@@ -110,7 +119,7 @@ function validateCommand(command, config) {
     if (matchesPattern(command, rule)) {
       return {
         action: 'ask',
-        reason: rule.reason || 'Please confirm this command'
+        reason: rule.reason || 'Please confirm this command',
       };
     }
   }
@@ -124,7 +133,7 @@ const projectRoot = findProjectRoot();
 const defaultConfig = { bashToolPatterns: [], askPatterns: [], agileflowProtections: [] };
 
 runDamageControlHook({
-  getInputValue: (input) => input.command || input.tool_input?.command,
+  getInputValue: input => input.command || input.tool_input?.command,
   loadConfig: () => loadPatterns(projectRoot, parseSimpleYAML, defaultConfig),
   validate: validateCommand,
   onBlock: (result, command) => {
@@ -132,5 +141,5 @@ runDamageControlHook({
       result.reason,
       `Command: ${command.substring(0, 100)}${command.length > 100 ? '...' : ''}`
     );
-  }
+  },
 });

@@ -202,7 +202,8 @@ function generateSummary() {
 
   // Header row (full width, no column divider)
   const title = commandName ? `Context [${commandName}]` : 'Context Summary';
-  const branchColor = branch === 'main' ? C.mintGreen : branch.startsWith('fix') ? C.coral : C.skyBlue;
+  const branchColor =
+    branch === 'main' ? C.mintGreen : branch.startsWith('fix') ? C.coral : C.skyBlue;
   const maxBranchLen = 20;
   const branchDisplay =
     branch.length > maxBranchLen ? branch.substring(0, maxBranchLen - 2) + '..' : branch;
@@ -277,7 +278,12 @@ function generateSummary() {
 
   // Research
   const researchText = researchFiles.length > 0 ? `${researchFiles.length} notes` : 'none';
-  summary += row('Research', researchText, C.lavender, researchFiles.length > 0 ? C.skyBlue : C.dim);
+  summary += row(
+    'Research',
+    researchText,
+    C.lavender,
+    researchFiles.length > 0 ? C.skyBlue : C.dim
+  );
 
   // Epics
   const epicText = epicFiles.length > 0 ? `${epicFiles.length} epics` : 'none';
@@ -379,7 +385,9 @@ function generateFullContent() {
   const altSessionManagerPath = '.agileflow/scripts/session-manager.js';
 
   if (fs.existsSync(sessionManagerPath) || fs.existsSync(altSessionManagerPath)) {
-    const managerPath = fs.existsSync(sessionManagerPath) ? sessionManagerPath : altSessionManagerPath;
+    const managerPath = fs.existsSync(sessionManagerPath)
+      ? sessionManagerPath
+      : altSessionManagerPath;
     const sessionStatus = safeExec(`node "${managerPath}" status`);
 
     if (sessionStatus) {

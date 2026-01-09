@@ -17,7 +17,7 @@ const {
   loadPatterns,
   pathMatches,
   outputBlocked,
-  runDamageControlHook
+  runDamageControlHook,
 } = require('./lib/damage-control-utils');
 
 /**
@@ -27,7 +27,7 @@ function parseSimpleYAML(content) {
   const config = {
     zeroAccessPaths: [],
     readOnlyPaths: [],
-    noDeletePaths: []
+    noDeletePaths: [],
   };
 
   let currentSection = null;
@@ -68,7 +68,7 @@ function validatePath(filePath, config) {
     return {
       action: 'block',
       reason: `Zero-access path: ${zeroMatch}`,
-      detail: 'This file is protected and cannot be accessed'
+      detail: 'This file is protected and cannot be accessed',
     };
   }
 
@@ -78,7 +78,7 @@ function validatePath(filePath, config) {
     return {
       action: 'block',
       reason: `Read-only path: ${readOnlyMatch}`,
-      detail: 'This file is read-only and cannot be written to'
+      detail: 'This file is read-only and cannot be written to',
     };
   }
 
@@ -91,10 +91,10 @@ const projectRoot = findProjectRoot();
 const defaultConfig = { zeroAccessPaths: [], readOnlyPaths: [], noDeletePaths: [] };
 
 runDamageControlHook({
-  getInputValue: (input) => input.file_path || input.tool_input?.file_path,
+  getInputValue: input => input.file_path || input.tool_input?.file_path,
   loadConfig: () => loadPatterns(projectRoot, parseSimpleYAML, defaultConfig),
   validate: validatePath,
   onBlock: (result, filePath) => {
     outputBlocked(result.reason, result.detail, `File: ${filePath}`);
-  }
+  },
 });

@@ -254,10 +254,14 @@ function createSession(options = {}) {
   }
 
   // Create branch if it doesn't exist (using spawnSync for safety)
-  const checkRef = spawnSync('git', ['show-ref', '--verify', '--quiet', `refs/heads/${branchName}`], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  });
+  const checkRef = spawnSync(
+    'git',
+    ['show-ref', '--verify', '--quiet', `refs/heads/${branchName}`],
+    {
+      cwd: ROOT,
+      encoding: 'utf8',
+    }
+  );
 
   if (checkRef.status !== 0) {
     // Branch doesn't exist, create it
@@ -267,7 +271,10 @@ function createSession(options = {}) {
     });
 
     if (createBranch.status !== 0) {
-      return { success: false, error: `Failed to create branch: ${createBranch.stderr || 'unknown error'}` };
+      return {
+        success: false,
+        error: `Failed to create branch: ${createBranch.stderr || 'unknown error'}`,
+      };
     }
   }
 
@@ -278,7 +285,10 @@ function createSession(options = {}) {
   });
 
   if (createWorktree.status !== 0) {
-    return { success: false, error: `Failed to create worktree: ${createWorktree.stderr || 'unknown error'}` };
+    return {
+      success: false,
+      error: `Failed to create worktree: ${createWorktree.stderr || 'unknown error'}`,
+    };
   }
 
   // Register session
@@ -508,26 +518,18 @@ function getMergePreview(sessionId) {
   const mainBranch = getMainBranch();
 
   // Get commits that would be merged
-  const logResult = spawnSync(
-    'git',
-    ['log', '--oneline', `${mainBranch}..${branchName}`],
-    {
-      cwd: ROOT,
-      encoding: 'utf8',
-    }
-  );
+  const logResult = spawnSync('git', ['log', '--oneline', `${mainBranch}..${branchName}`], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
 
   const commits = (logResult.stdout || '').trim().split('\n').filter(Boolean);
 
   // Get files changed
-  const diffResult = spawnSync(
-    'git',
-    ['diff', '--name-status', `${mainBranch}...${branchName}`],
-    {
-      cwd: ROOT,
-      encoding: 'utf8',
-    }
-  );
+  const diffResult = spawnSync('git', ['diff', '--name-status', `${mainBranch}...${branchName}`], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
 
   const filesChanged = (diffResult.stdout || '').trim().split('\n').filter(Boolean);
 
@@ -545,7 +547,12 @@ function getMergePreview(sessionId) {
 
 // Execute merge operation
 function integrateSession(sessionId, options = {}) {
-  const { strategy = 'squash', deleteBranch = true, deleteWorktree = true, message = null } = options;
+  const {
+    strategy = 'squash',
+    deleteBranch = true,
+    deleteWorktree = true,
+    message = null,
+  } = options;
 
   const registry = loadRegistry();
   const session = registry.sessions[sessionId];
@@ -576,7 +583,8 @@ function integrateSession(sessionId, options = {}) {
 
   // Build commit message
   const commitMessage =
-    message || `Merge session ${sessionId}${session.nickname ? ` "${session.nickname}"` : ''}: ${branchName}`;
+    message ||
+    `Merge session ${sessionId}${session.nickname ? ` "${session.nickname}"` : ''}: ${branchName}`;
 
   // Execute merge based on strategy
   let mergeResult;

@@ -85,10 +85,11 @@ function emitEvent(event) {
     fs.mkdirSync(busDir, { recursive: true });
   }
 
-  const line = JSON.stringify({
-    ...event,
-    timestamp: new Date().toISOString(),
-  }) + '\n';
+  const line =
+    JSON.stringify({
+      ...event,
+      timestamp: new Date().toISOString(),
+    }) + '\n';
 
   fs.appendFileSync(BUS_PATH, line);
 }
@@ -189,9 +190,9 @@ function checkVisualGate() {
     };
   }
 
-  const files = fs.readdirSync(screenshotsDir).filter(f =>
-    f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg')
-  );
+  const files = fs
+    .readdirSync(screenshotsDir)
+    .filter(f => f.endsWith('.png') || f.endsWith('.jpg') || f.endsWith('.jpeg'));
 
   if (files.length === 0) {
     return {
@@ -276,7 +277,8 @@ function initLoop(options) {
 
   // Check if we're under the agent limit
   ensureLoopsDir();
-  const existingLoops = fs.readdirSync(LOOPS_DIR)
+  const existingLoops = fs
+    .readdirSync(LOOPS_DIR)
     .filter(f => f.endsWith('.json'))
     .map(f => {
       const loop = safeReadJSON(path.join(LOOPS_DIR, f), { defaultValue: null });
@@ -285,7 +287,9 @@ function initLoop(options) {
     .filter(l => l && l.status === 'running');
 
   if (existingLoops.length >= MAX_AGENTS_HARD_LIMIT) {
-    console.error(`${c.red}Max concurrent agent loops (${MAX_AGENTS_HARD_LIMIT}) reached${c.reset}`);
+    console.error(
+      `${c.red}Max concurrent agent loops (${MAX_AGENTS_HARD_LIMIT}) reached${c.reset}`
+    );
     return null;
   }
 
@@ -383,7 +387,9 @@ function checkLoop(loopId) {
     return state;
   }
 
-  console.log(`\n${c.cyan}${c.bold}Agent Loop - Iteration ${state.iteration}/${state.max_iterations}${c.reset}`);
+  console.log(
+    `\n${c.cyan}${c.bold}Agent Loop - Iteration ${state.iteration}/${state.max_iterations}${c.reset}`
+  );
   console.log(`${c.dim}${'─'.repeat(40)}${c.reset}`);
 
   // Run gate check
@@ -415,7 +421,9 @@ function checkLoop(loopId) {
   // Check for regression
   if (state.iteration > 1 && result.value < previousValue) {
     state.regression_count++;
-    console.log(`${c.yellow}Warning: Regression detected (${previousValue} → ${result.value})${c.reset}`);
+    console.log(
+      `${c.yellow}Warning: Regression detected (${previousValue} → ${result.value})${c.reset}`
+    );
 
     if (state.regression_count >= 2) {
       state.status = 'failed';
@@ -516,7 +524,9 @@ function getStatus(loopId) {
   console.log(`  Loop ID: ${state.loop_id}`);
   console.log(`  Agent: ${state.agent_type}`);
   console.log(`  Gate: ${GATES[state.quality_gate]?.name || state.quality_gate}`);
-  console.log(`  Status: ${state.status === 'passed' ? c.green : state.status === 'running' ? c.yellow : c.red}${state.status}${c.reset}`);
+  console.log(
+    `  Status: ${state.status === 'passed' ? c.green : state.status === 'running' ? c.yellow : c.red}${state.status}${c.reset}`
+  );
   console.log(`  Iteration: ${state.iteration}/${state.max_iterations}`);
   console.log(`  Current Value: ${state.current_value}${state.threshold > 0 ? '%' : ''}`);
   console.log(`  Threshold: ${state.threshold > 0 ? state.threshold + '%' : 'pass/fail'}`);
@@ -576,21 +586,24 @@ function listLoops() {
     return [];
   }
 
-  const loops = files.map(f => {
-    const result = safeReadJSON(path.join(LOOPS_DIR, f), { defaultValue: null });
-    return result.ok ? result.data : null;
-  }).filter(Boolean);
+  const loops = files
+    .map(f => {
+      const result = safeReadJSON(path.join(LOOPS_DIR, f), { defaultValue: null });
+      return result.ok ? result.data : null;
+    })
+    .filter(Boolean);
 
   console.log(`\n${c.cyan}${c.bold}Agent Loops${c.reset}`);
   console.log(`${c.dim}${'─'.repeat(60)}${c.reset}`);
 
   loops.forEach(loop => {
-    const statusColor = loop.status === 'passed' ? c.green
-      : loop.status === 'running' ? c.yellow
-      : c.red;
+    const statusColor =
+      loop.status === 'passed' ? c.green : loop.status === 'running' ? c.yellow : c.red;
 
     console.log(`  ${statusColor}●${c.reset} [${loop.loop_id}] ${loop.agent_type}`);
-    console.log(`      ${GATES[loop.quality_gate]?.name || loop.quality_gate}: ${loop.current_value}${loop.threshold > 0 ? '%' : ''} / ${loop.threshold > 0 ? loop.threshold + '%' : 'pass'}  |  Iter: ${loop.iteration}/${loop.max_iterations}  |  ${loop.status}`);
+    console.log(
+      `      ${GATES[loop.quality_gate]?.name || loop.quality_gate}: ${loop.current_value}${loop.threshold > 0 ? '%' : ''} / ${loop.threshold > 0 ? loop.threshold + '%' : 'pass'}  |  Iter: ${loop.iteration}/${loop.max_iterations}  |  ${loop.status}`
+    );
   });
 
   console.log(`${c.dim}${'─'.repeat(60)}${c.reset}\n`);
@@ -624,12 +637,12 @@ function main() {
   const args = process.argv.slice(2);
 
   // Parse arguments
-  const getArg = (name) => {
+  const getArg = name => {
     const arg = args.find(a => a.startsWith(`--${name}=`));
     return arg ? arg.split('=')[1] : null;
   };
 
-  const hasFlag = (name) => args.includes(`--${name}`);
+  const hasFlag = name => args.includes(`--${name}`);
 
   if (hasFlag('init')) {
     const loopId = initLoop({

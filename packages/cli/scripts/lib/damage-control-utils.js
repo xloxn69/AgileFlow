@@ -16,14 +16,14 @@ const os = require('os');
 const c = {
   coral: '\x1b[38;5;203m',
   dim: '\x1b[2m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 // Shared constants
 const CONFIG_PATHS = [
   '.agileflow/config/damage-control-patterns.yaml',
   '.agileflow/config/damage-control-patterns.yml',
-  '.agileflow/templates/damage-control-patterns.yaml'
+  '.agileflow/templates/damage-control-patterns.yaml',
 ];
 
 const STDIN_TIMEOUT_MS = 4000;
@@ -150,8 +150,12 @@ function outputBlocked(reason, detail, context) {
   }
   // Help message for AI and user
   console.error('');
-  console.error(`${c.dim}This is intentional - AgileFlow Damage Control blocked a potentially dangerous operation.${c.reset}`);
-  console.error(`${c.dim}DO NOT retry this command. Ask the user if they want to proceed manually.${c.reset}`);
+  console.error(
+    `${c.dim}This is intentional - AgileFlow Damage Control blocked a potentially dangerous operation.${c.reset}`
+  );
+  console.error(
+    `${c.dim}DO NOT retry this command. Ask the user if they want to proceed manually.${c.reset}`
+  );
   console.error(`${c.dim}To disable: run /configure → Infrastructure → Damage Control${c.reset}`);
 }
 
@@ -203,10 +207,12 @@ function runDamageControlHook(options) {
             onAsk(result, value);
           } else {
             // Default ask behavior - output JSON
-            console.log(JSON.stringify({
-              result: 'ask',
-              message: result.reason
-            }));
+            console.log(
+              JSON.stringify({
+                result: 'ask',
+                message: result.reason,
+              })
+            );
           }
           process.exit(0);
           break;
@@ -241,5 +247,5 @@ module.exports = {
   outputBlocked,
   runDamageControlHook,
   CONFIG_PATHS,
-  STDIN_TIMEOUT_MS
+  STDIN_TIMEOUT_MS,
 };

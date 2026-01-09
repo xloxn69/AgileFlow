@@ -158,7 +158,7 @@ function verifyCoverage(rootDir, threshold) {
     return {
       passed: false,
       coverage: 0,
-      message: `${c.red}✗ ${result.error}${c.reset}`
+      message: `${c.red}✗ ${result.error}${c.reset}`,
     };
   }
 
@@ -170,7 +170,7 @@ function verifyCoverage(rootDir, threshold) {
     threshold: threshold,
     message: met
       ? `${c.green}✓ Coverage ${result.coverage.toFixed(1)}% ≥ ${threshold}%${c.reset}`
-      : `${c.yellow}⏳ Coverage ${result.coverage.toFixed(1)}% < ${threshold}% (need ${(threshold - result.coverage).toFixed(1)}% more)${c.reset}`
+      : `${c.yellow}⏳ Coverage ${result.coverage.toFixed(1)}% < ${threshold}% (need ${(threshold - result.coverage).toFixed(1)}% more)${c.reset}`,
   };
 }
 
@@ -230,7 +230,7 @@ function verifyScreenshots(rootDir) {
   const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
   let files;
   try {
-    files = fs.readdirSync(fullPath).filter((file) => {
+    files = fs.readdirSync(fullPath).filter(file => {
       const ext = path.extname(file).toLowerCase();
       return imageExtensions.includes(ext);
     });
@@ -352,7 +352,7 @@ function handleLoop(rootDir) {
   const coverageMode = loop.coverage_mode || false;
   const coverageThreshold = loop.coverage_threshold || 80;
   // Visual and Coverage modes require at least 2 iterations for confirmation
-  const minIterations = (visualMode || coverageMode) ? 2 : 1;
+  const minIterations = visualMode || coverageMode ? 2 : 1;
 
   console.log('');
   console.log(
@@ -421,11 +421,13 @@ function handleLoop(rootDir) {
         console.log(`${c.yellow}⚠ ${screenshotResult.output}${c.reset}`);
         if (screenshotResult.unverified.length > 0) {
           console.log(`${c.dim}Unverified screenshots:${c.reset}`);
-          screenshotResult.unverified.slice(0, 5).forEach((file) => {
+          screenshotResult.unverified.slice(0, 5).forEach(file => {
             console.log(`  ${c.yellow}- ${file}${c.reset}`);
           });
           if (screenshotResult.unverified.length > 5) {
-            console.log(`  ${c.dim}... and ${screenshotResult.unverified.length - 5} more${c.reset}`);
+            console.log(
+              `  ${c.dim}... and ${screenshotResult.unverified.length - 5} more${c.reset}`
+            );
           }
         }
         state.ralph_loop.screenshots_verified = false;
@@ -458,8 +460,12 @@ function handleLoop(rootDir) {
       if (coverageMode) modeNames.push('Coverage');
 
       console.log('');
-      console.log(`${c.yellow}⚠ ${modeNames.join(' + ')} Mode requires ${minIterations}+ iterations for confirmation${c.reset}`);
-      console.log(`${c.dim}Current: iteration ${iteration}. Let loop run once more to confirm.${c.reset}`);
+      console.log(
+        `${c.yellow}⚠ ${modeNames.join(' + ')} Mode requires ${minIterations}+ iterations for confirmation${c.reset}`
+      );
+      console.log(
+        `${c.dim}Current: iteration ${iteration}. Let loop run once more to confirm.${c.reset}`
+      );
 
       state.ralph_loop.iteration = iteration;
       saveSessionState(rootDir, state);
@@ -470,9 +476,10 @@ function handleLoop(rootDir) {
     }
 
     // Check if all verification modes passed
-    const canComplete = testResult.passed
-      && (!visualMode || screenshotResult.passed)
-      && (!coverageMode || coverageResult.passed);
+    const canComplete =
+      testResult.passed &&
+      (!visualMode || screenshotResult.passed) &&
+      (!coverageMode || coverageResult.passed);
 
     if (!canComplete) {
       // Something not verified yet
@@ -588,18 +595,25 @@ function handleCLI() {
     } else {
       let modeLabel = '';
       if (loop.visual_mode) modeLabel += ` ${c.cyan}[VISUAL]${c.reset}`;
-      if (loop.coverage_mode) modeLabel += ` ${c.magenta}[COVERAGE ≥${loop.coverage_threshold}%]${c.reset}`;
+      if (loop.coverage_mode)
+        modeLabel += ` ${c.magenta}[COVERAGE ≥${loop.coverage_threshold}%]${c.reset}`;
       console.log(`${c.green}Ralph Loop: active${c.reset}${modeLabel}`);
       console.log(`  Epic: ${loop.epic}`);
       console.log(`  Current Story: ${loop.current_story}`);
       console.log(`  Iteration: ${loop.iteration || 0}/${loop.max_iterations || 20}`);
       if (loop.visual_mode) {
-        const verified = loop.screenshots_verified ? `${c.green}yes${c.reset}` : `${c.yellow}no${c.reset}`;
+        const verified = loop.screenshots_verified
+          ? `${c.green}yes${c.reset}`
+          : `${c.yellow}no${c.reset}`;
         console.log(`  Screenshots Verified: ${verified}`);
       }
       if (loop.coverage_mode) {
-        const verified = loop.coverage_verified ? `${c.green}yes${c.reset}` : `${c.yellow}no${c.reset}`;
-        console.log(`  Coverage: ${(loop.coverage_current || 0).toFixed(1)}% / ${loop.coverage_threshold}% (Verified: ${verified})`);
+        const verified = loop.coverage_verified
+          ? `${c.green}yes${c.reset}`
+          : `${c.yellow}no${c.reset}`;
+        console.log(
+          `  Coverage: ${(loop.coverage_current || 0).toFixed(1)}% / ${loop.coverage_threshold}% (Verified: ${verified})`
+        );
         console.log(`  Baseline: ${(loop.coverage_baseline || 0).toFixed(1)}%`);
       }
     }
@@ -731,7 +745,9 @@ function handleCLI() {
       console.log(`  Visual Mode: ${c.cyan}enabled${c.reset} (screenshot verification)`);
     }
     if (coverageMode) {
-      console.log(`  Coverage Mode: ${c.magenta}enabled${c.reset} (threshold: ${coverageThreshold}%)`);
+      console.log(
+        `  Coverage Mode: ${c.magenta}enabled${c.reset} (threshold: ${coverageThreshold}%)`
+      );
       console.log(`  Baseline: ${coverageBaseline.toFixed(1)}%`);
     }
     if (visualMode || coverageMode) {
