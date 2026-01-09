@@ -12,7 +12,7 @@
 const PATTERNS = {
   // Git branch: alphanumeric, underscores, hyphens, forward slashes
   // Examples: main, feature/US-0001, session-1, my_branch
-  branchName: /^[a-zA-Z0-9][a-zA-Z0-9_\-\/]*$/,
+  branchName: /^[a-zA-Z0-9][a-zA-Z0-9_/-]*$/,
 
   // Story ID: US-0001 to US-99999
   storyId: /^US-\d{4,5}$/,
@@ -22,19 +22,19 @@ const PATTERNS = {
 
   // Feature name: lowercase with hyphens, starts with letter
   // Examples: damage-control, status-line, archival
-  featureName: /^[a-z][a-z0-9\-]*$/,
+  featureName: /^[a-z][a-z0-9-]*$/,
 
   // Profile name: alphanumeric with underscores/hyphens, starts with letter
   // Examples: default, my-profile, dev_config
-  profileName: /^[a-zA-Z][a-zA-Z0-9_\-]*$/,
+  profileName: /^[a-zA-Z][a-zA-Z0-9_-]*$/,
 
   // Command name: alphanumeric with hyphens/colons, starts with letter
   // Examples: babysit, story:list, agileflow:configure
-  commandName: /^[a-zA-Z][a-zA-Z0-9\-:]*$/,
+  commandName: /^[a-zA-Z][a-zA-Z0-9:-]*$/,
 
   // Session nickname: alphanumeric with hyphens/underscores
   // Examples: auth-work, feature_1, main
-  sessionNickname: /^[a-zA-Z0-9][a-zA-Z0-9_\-]*$/,
+  sessionNickname: /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/,
 
   // Merge strategy: squash or merge
   // Examples: squash, merge
@@ -277,7 +277,7 @@ function validateArgs(args, schema) {
         }
         break;
 
-      case 'positiveInt':
+      case 'positiveInt': {
         const min = config.min || 1;
         const max = config.max || Number.MAX_SAFE_INTEGER;
         if (!isPositiveInteger(value, min, max)) {
@@ -287,10 +287,13 @@ function validateArgs(args, schema) {
           result[field] = parseInt(value, 10);
         }
         break;
+      }
 
       case 'enum':
         if (!config.values.includes(value)) {
-          errors.push(`Invalid value for ${field}: ${value} (expected: ${config.values.join(', ')})`);
+          errors.push(
+            `Invalid value for ${field}: ${value} (expected: ${config.values.join(', ')})`
+          );
         } else {
           result[field] = value;
         }
