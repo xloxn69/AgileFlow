@@ -498,8 +498,6 @@ Task(
 | `docs/09-agents/status.json` | Story tracking, WIP status |
 | `docs/09-agents/session-state.json` | Session state, active command |
 | `CLAUDE.md` | Project conventions (included in full above) |
-| `docs/02-practices/*.md` | Implementation patterns |
-| `docs/04-architecture/*.md` | System design docs |
 
 ---
 
@@ -973,15 +971,6 @@ After loading context, analyze and present ranked options:
 - Epics/stories from status.json
 - Session state, current story
 - Docs structure, research notes
-
-**Read manually for deep dives:**
-
-| Domain | Docs |
-|--------|------|
-| Database | `docs/04-architecture/database-*.md` |
-| API | `docs/04-architecture/api-*.md` |
-| UI | `docs/02-practices/styling.md` |
-| Testing | `docs/02-practices/testing.md` |
 
 **State files:**
 - `docs/09-agents/status.json` - Story tracking
